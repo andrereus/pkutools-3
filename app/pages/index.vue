@@ -143,7 +143,7 @@ onMounted(() => {
             class="max-w-4xl w-full rounded-xl bg-gray-900/5 dark:bg-gray-800 p-2 ring-1 ring-inset ring-gray-900/10 dark:ring-gray-700 lg:rounded-2xl lg:p-4"
           >
             <video
-              :src="publicPath + 'video/demo.mp4'"
+              src="/videos/pkutools-demo.mp4"
               autoplay
               loop
               muted

@@ -39,6 +39,8 @@ const lang = [
   { name: 'Français', abbr: 'fr' }
 ]
 
+const showCookieBanner = ref(false)
+
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
 const userPhotoUrl = computed(() => (store.user ? store.user.photoUrl : null))
@@ -189,6 +191,9 @@ onMounted(() => {
       localStorage.removeItem(item)
     }
   })
+
+  // Set showCookieBanner based on localStorage
+  showCookieBanner.value = !localStorage.getItem('cookie_consent')
 })
 
 // Add an icon map to reference the actual icon components
@@ -209,8 +214,6 @@ const iconMap = {
   ChartLine,
   Bot
 }
-
-const showCookieBanner = ref(!localStorage.getItem('cookie_consent'))
 
 const handleCookieConsent = (consent) => {
   if (window.posthog) {
@@ -283,7 +286,7 @@ const handleCookieConsent = (consent) => {
               :to="userIsAuthenticated ? '/?log=true' : '/?home=true'"
               class="flex shrink-0 items-center"
             >
-              <img class="h-8 w-auto mr-3" src="./assets/pkutools-logo.png" alt="PKU Tools Logo" />
+              <img class="h-8 w-auto mr-3" src="~/assets/pkutools-logo.png" alt="PKU Tools Logo" />
               <span class="dark:text-white">PKU Tools</span>
             </RouterLink>
           </div>
@@ -532,7 +535,7 @@ const handleCookieConsent = (consent) => {
             :to="userIsAuthenticated ? '/?log=true' : '/?home=true'"
             class="hidden lg:block"
           >
-            <img class="h-8" src="./assets/pkutools-logo.png" alt="PKU Tools Logo" />
+            <img class="h-8" src="~/assets/pkutools-logo.png" alt="PKU Tools Logo" />
           </RouterLink>
           <div class="lg:mt-12 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
             <div class="md:grid md:grid-cols-2 md:gap-8">
