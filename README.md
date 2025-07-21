@@ -81,9 +81,11 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 - nuxt-headlessui is not Nuxt 4 compatible yet
 - @nextjs/tailwindcss doesn't fully support Nuxt 4 yet
 
-### Files not imported yet
+### Not set up yet
 
-- index.html content
-- main.js content
+- firebase emulators
+- posthog
+- sentry
+- i18n
 - public files
 - root files
