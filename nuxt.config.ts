@@ -18,7 +18,7 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          innerHTML: `
+          textContent: `
             function updateTheme() {
               const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
               const selectedTheme = localStorage.getItem('theme') || 'system'
