@@ -76,4 +76,5 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 
 ## Notes
 
-- nuxt-headlessui is not v4 compatible yet
+- nuxt-headlessui is not Nuxt 4 compatible yet
+- @nextjs/tailwindcss doesn't fully support Nuxt 4 yet
