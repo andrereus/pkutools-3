@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useStore } from '../../stores/index'
 import { getDatabase, ref as dbRef, push, remove, update } from 'firebase/database'
-import foodIcons from '../components/data/food-icons.json'
+import foodIcons from '~/assets/data/food-icons-map.json'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { BadgeCheck, BadgeMinus, ChevronDown } from 'lucide-vue-next'
 import { format } from 'date-fns'
@@ -232,15 +232,15 @@ const setIcon = (item, close) => {
         >
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
             <img
-              :src="publicPath + 'img/food-icons/' + item.icon + '.svg'"
+              :src="'/images/food-icons/' + item.icon + '.svg'"
               v-if="item.icon !== undefined && item.icon !== ''"
-              onerror="this.src='img/food-icons/organic-food.svg'"
+              onerror="this.src='/images/food-icons/organic-food.svg'"
               width="25"
               class="food-icon"
               alt="Food Icon"
             />
             <img
-              :src="publicPath + 'img/food-icons/organic-food.svg'"
+              :src="'/images/food-icons/organic-food.svg'"
               v-if="item.icon === undefined || item.icon === ''"
               width="25"
               class="food-icon"
@@ -274,14 +274,14 @@ const setIcon = (item, close) => {
         <Popover v-if="license">
           <PopoverButton class="my-1">
             <img
-              :src="publicPath + 'img/food-icons/' + editedItem.icon + '.svg'"
+              :src="'/images/food-icons/' + editedItem.icon + '.svg'"
               v-if="editedItem.icon !== undefined && editedItem.icon !== null"
               width="30"
               class="food-icon float-left"
               alt="Food Icon"
             />
             <img
-              :src="publicPath + 'img/food-icons/organic-food.svg'"
+              :src="'/images/food-icons/organic-food.svg'"
               v-if="editedItem.icon === undefined || editedItem.icon === null"
               width="30"
               class="food-icon float-left"
@@ -302,7 +302,7 @@ const setIcon = (item, close) => {
             <PopoverPanel v-slot="{ close }">
               <span v-for="(item, index) in foodIcons" :key="index">
                 <img
-                  :src="publicPath + 'img/food-icons/' + item.svg + '.svg'"
+                  :src="'/images/food-icons/' + item.svg + '.svg'"
                   v-if="item.svg !== undefined"
                   width="35"
                   class="food-icon pick-icon m-2"

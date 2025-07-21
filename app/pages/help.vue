@@ -31,19 +31,19 @@ const part3 = ref('com')
       </a>
       {{ $t('help.install-p2-2') }}
     </p>
-    <img src="../assets/pwa-android.png" alt="PWA on Android" class="pwa-img" />
+    <img src="~/assets/images/install-pwa-android.png" alt="PWA on Android" class="pwa-img" />
 
     <p class="mb-2">
       <span class="font-bold">iOS:</span>
       {{ $t('help.install-p3') }}
     </p>
-    <img src="../assets/pwa-ios.png" alt="PWA on iOS" class="pwa-img" />
+    <img src="~/assets/images/install-pwa-ios.png" alt="PWA on iOS" class="pwa-img" />
 
     <p class="mb-2">
       <span class="font-bold">PC:</span>
       {{ $t('help.install-p4') }}
     </p>
-    <img src="../assets/pwa-desktop.png" alt="PWA on desktop" class="pwa-img" />
+    <img src="~/assets/images/install-pwa-desktop.png" alt="PWA on desktop" class="pwa-img" />
   </div>
 </template>
 

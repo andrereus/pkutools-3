@@ -107,7 +107,7 @@ const searchFood = async () => {
   let res, food
 
   // Load multilingual food data
-  res = await fetch(publicPath + 'data/usda-phe-kcal.json')
+  res = await fetch('/data/usda-phe-kcal.json')
   const foodData = await res.json()
 
   // Map the food data to use the correct language

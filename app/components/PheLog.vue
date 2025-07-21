@@ -337,15 +337,15 @@ const nextDay = () => {
         >
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
             <img
-              :src="publicPath + 'img/food-icons/' + item.icon + '.svg'"
+              :src="'/images/food-icons/' + item.icon + '.svg'"
               v-if="item.icon !== undefined && item.icon !== ''"
-              onerror="this.src='img/food-icons/organic-food.svg'"
+              onerror="this.src='/images/food-icons/organic-food.svg'"
               width="25"
               class="food-icon"
               alt="Food Icon"
             />
             <img
-              :src="publicPath + 'img/food-icons/organic-food.svg'"
+              :src="'/images/food-icons/organic-food.svg'"
               v-if="(item.icon === undefined || item.icon === '') && item.emoji === undefined"
               width="25"
               class="food-icon"
