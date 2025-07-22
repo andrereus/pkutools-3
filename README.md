@@ -79,7 +79,7 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ### Modules not used yet
 
 - nuxt-headlessui is not Nuxt 4 compatible yet
-- @nextjs/tailwindcss doesn't fully support Nuxt 4 yet
+- @nuxtjs/tailwindcss doesn't fully support Nuxt 4 yet
 
 ### Not set up yet
 
