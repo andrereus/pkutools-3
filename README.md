@@ -1,41 +1,49 @@
-# Nuxt Minimal Starter
+# PKU Tools
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+PKU Tools is a nutrition app for low-phenylalanine diets aimed at people with PKU. It combines a calculator, pencil, paper and nutritional table.
+
+## Features
+
+- 🔍 Food Search
+- 📷 Barcode Scanner
+- 📱 Phenylalanine Calculator
+- ➗ Protein Calculator
+- 🍎 Own Foods
+- 📝 Phe Log
+- 📅 Phe Diary
+- 📈 Lab Values
+- 🤖 Assistant
+- 🌍 Multi-language Support
+- 📱 PWA Support
+- 🔄 Real-time Sync
+- 🌓 Dark Mode
+
+## Tech Stack
+
+- **Framework**: Nuxt
+- **Styling**: Tailwind
+- **State Management**: Pinia
+- **Internationalization**: I18n
+- **Server**: Vercel
+- **Authentication**: Firebase
+- **Database**: Firebase
 
 ## Setup
 
-Make sure to install dependencies:
+Make sure to have npm, pnpm, yarn or bun and install dependencies:
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
+
+Create a `.env` from `.env.example`.
 
 ## Development Server
 
 Start the development server on `http://localhost:3000`:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
 ## Production
@@ -43,36 +51,14 @@ bun run dev
 Build the application for production:
 
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
 Locally preview production build:
 
 ```bash
-# npm
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
 
 ## Notes
 
@@ -89,4 +75,7 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 - i18n
 - urls
 - license
-- readme
+
+## Contributing
+
+Contributions are welcome.
