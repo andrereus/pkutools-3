@@ -87,4 +87,6 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 - posthog
 - sentry
 - i18n
-- root files
+- urls
+- license
+- readme
