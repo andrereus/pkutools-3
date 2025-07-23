@@ -244,9 +244,9 @@ const save = () => {
 
       <div v-if="!result.product.nutriments.proteins_100g" class="mb-6">
         <p>{{ $t('barcode-scanner.no-protein') }}</p>
-        <RouterLink to="/protein-calculator" class="text-sky-500">
+        <NuxtLink to="/protein-calculator" class="text-sky-500">
           {{ $t('barcode-scanner.protein-link') }} <span aria-hidden="true">→</span>
-        </RouterLink>
+        </NuxtLink>
       </div>
     </div>
 

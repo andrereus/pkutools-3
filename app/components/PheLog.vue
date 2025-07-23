@@ -259,13 +259,13 @@ const nextDay = () => {
     <div v-if="!userIsAuthenticated">
       <SecondaryButton :text="$t('app.signin-google')" @click="signInGoogle" />
       <br />
-      <RouterLink
+      <NuxtLink
         type="button"
         to="/email-auth"
         class="rounded-sm bg-black/5 dark:bg-white/15 px-2 py-1 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 mr-3 mb-6"
       >
         {{ $t('email-auth.title') }}
-      </RouterLink>
+      </NuxtLink>
     </div>
 
     <div v-if="userIsAuthenticated">
@@ -293,9 +293,7 @@ const nextDay = () => {
               Math.round(((pheResult * 100) / settings.maxPhe - 100) * -1)
             }}%)</span
           >
-          <RouterLink v-if="!settings?.maxPhe" to="/settings">{{
-            $t('settings.title')
-          }}</RouterLink>
+          <NuxtLink v-if="!settings?.maxPhe" to="/settings">{{ $t('settings.title') }}</NuxtLink>
         </div>
         <div
           class="relative w-full bg-gray-200 dark:bg-gray-800 rounded-md overflow-hidden h-1 mt-2"
@@ -312,9 +310,7 @@ const nextDay = () => {
               Math.round(((kcalResult * 100) / settings.maxKcal - 100) * -1)
             }}%)</span
           >
-          <RouterLink v-if="!settings?.maxKcal" to="/settings">{{
-            $t('settings.title')
-          }}</RouterLink>
+          <NuxtLink v-if="!settings?.maxKcal" to="/settings">{{ $t('settings.title') }}</NuxtLink>
         </div>
         <div
           class="relative w-full bg-gray-200 dark:bg-gray-800 rounded-md overflow-hidden h-1 mt-2"
@@ -433,10 +429,10 @@ const nextDay = () => {
       </p>
 
       <p v-if="!license" class="mt-3 text-sm">
-        <RouterLink to="/settings">
+        <NuxtLink to="/settings">
           <BadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
           {{ $t('app.limited') }}
-        </RouterLink>
+        </NuxtLink>
       </p>
       <p v-if="license" class="mt-3 text-sm">
         <BadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />

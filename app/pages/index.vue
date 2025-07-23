@@ -157,7 +157,7 @@ onMounted(() => {
             <dl
               class="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16"
             >
-              <RouterLink
+              <NuxtLink
                 v-for="feature in features"
                 :key="feature.name"
                 :to="feature.route"
@@ -174,7 +174,7 @@ onMounted(() => {
                 <dd class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-300">
                   {{ $t(feature.description) }}
                 </dd>
-              </RouterLink>
+              </NuxtLink>
             </dl>
           </div>
         </div>
@@ -198,12 +198,12 @@ onMounted(() => {
             >
               {{ $t('app.signin-google') }}
             </a>
-            <RouterLink
+            <NuxtLink
               to="/email-auth"
               class="rounded-sm bg-sky-500 px-2 py-1 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
             >
               {{ $t('email-auth.title') }}
-            </RouterLink>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -227,12 +227,12 @@ onMounted(() => {
                 class="inline-block w-28 align-middle"
               />
             </a>
-            <RouterLink
+            <NuxtLink
               to="/help"
               class="rounded-sm bg-black/5 dark:bg-white/15 px-2 py-1 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10"
             >
               {{ $t('app.install') }} <span aria-hidden="true">→</span>
-            </RouterLink>
+            </NuxtLink>
           </div>
         </div>
       </div>

@@ -282,13 +282,13 @@ const handleCookieConsent = (consent) => {
           </div>
 
           <div class="flex flex-1 items-stretch justify-start ml-3">
-            <RouterLink
+            <NuxtLink
               :to="userIsAuthenticated ? '/?log=true' : '/?home=true'"
               class="flex shrink-0 items-center"
             >
               <img class="h-8 w-auto mr-3" src="~/assets/pkutools-logo.png" alt="PKU Tools Logo" />
               <span class="dark:text-white">PKU Tools</span>
-            </RouterLink>
+            </NuxtLink>
           </div>
 
           <div
@@ -498,7 +498,7 @@ const handleCookieConsent = (consent) => {
           class="flex py-2 justify-around sm:justify-center sm:space-x-12 lg:justify-start lg:space-x-4"
           aria-label="Global"
         >
-          <RouterLink
+          <NuxtLink
             v-for="item in tabNavigation"
             :key="item.name"
             :to="item.route"
@@ -515,7 +515,7 @@ const handleCookieConsent = (consent) => {
               aria-hidden="true"
             />
             <span class="hidden lg:inline-block">{{ $t(item.name) }}</span>
-          </RouterLink>
+          </NuxtLink>
         </nav>
       </div>
     </div>
@@ -531,12 +531,12 @@ const handleCookieConsent = (consent) => {
     <footer class="bg-white dark:bg-gray-800 hidden xl:block">
       <div class="mx-auto max-w-7xl px-6 py-12 sm:py-12 lg:px-8 lg:py-12">
         <div class="xl:grid xl:grid-cols-3 xl:gap-8">
-          <RouterLink
+          <NuxtLink
             :to="userIsAuthenticated ? '/?log=true' : '/?home=true'"
             class="hidden lg:block"
           >
             <img class="h-8" src="~/assets/pkutools-logo.png" alt="PKU Tools Logo" />
-          </RouterLink>
+          </NuxtLink>
           <div class="lg:mt-12 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
             <div class="md:grid md:grid-cols-2 md:gap-8">
               <div>
@@ -545,10 +545,10 @@ const handleCookieConsent = (consent) => {
                 </h3>
                 <ul role="list" class="mt-6 space-y-4">
                   <li v-for="item in footerNavigation.tools" :key="item.name">
-                    <RouterLink
+                    <NuxtLink
                       :to="item.route"
                       class="text-sm/6 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                      >{{ $t(item.name) }}</RouterLink
+                      >{{ $t(item.name) }}</NuxtLink
                     >
                   </li>
                 </ul>
@@ -559,10 +559,10 @@ const handleCookieConsent = (consent) => {
                 </h3>
                 <ul role="list" class="mt-6 space-y-4">
                   <li v-for="item in footerNavigation.features" :key="item.name">
-                    <RouterLink
+                    <NuxtLink
                       :to="item.route"
                       class="text-sm/6 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                      >{{ $t(item.name) }}</RouterLink
+                      >{{ $t(item.name) }}</NuxtLink
                     >
                   </li>
                 </ul>
@@ -575,10 +575,10 @@ const handleCookieConsent = (consent) => {
                 </h3>
                 <ul role="list" class="mt-6 space-y-4">
                   <li v-for="item in footerNavigation.account" :key="item.name">
-                    <RouterLink
+                    <NuxtLink
                       :to="item.route"
                       class="text-sm/6 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                      >{{ $t(item.name) }}</RouterLink
+                      >{{ $t(item.name) }}</NuxtLink
                     >
                   </li>
                 </ul>
@@ -589,10 +589,10 @@ const handleCookieConsent = (consent) => {
                 </h3>
                 <ul role="list" class="mt-6 space-y-4">
                   <li v-for="item in footerNavigation.about" :key="item.name">
-                    <RouterLink
+                    <NuxtLink
                       :to="item.route"
                       class="text-sm/6 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                      >{{ $t(item.name) }}</RouterLink
+                      >{{ $t(item.name) }}</NuxtLink
                     >
                   </li>
                 </ul>

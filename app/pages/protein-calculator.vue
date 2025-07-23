@@ -106,16 +106,16 @@ const save = () => {
 
     <div class="block mb-6">
       <nav class="flex space-x-2" aria-label="Tabs">
-        <RouterLink
+        <NuxtLink
           to="/phe-calculator"
           class="text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300"
-          >{{ $t('phe-calculator.tab-title') }}</RouterLink
+          >{{ $t('phe-calculator.tab-title') }}</NuxtLink
         >
-        <RouterLink
+        <NuxtLink
           to="/protein-calculator"
           class="bg-black/5 dark:bg-white/15 text-gray-700 rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300"
           aria-current="page"
-          >{{ $t('protein-calculator.tab-title') }}</RouterLink
+          >{{ $t('protein-calculator.tab-title') }}</NuxtLink
         >
       </nav>
     </div>
