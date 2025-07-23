@@ -1,7 +1,6 @@
 <script setup>
 /* global Headway */
 import { computed, onBeforeMount, onMounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useStore } from '../../stores/index'
 import { useRoute } from 'vue-router'
 
@@ -28,17 +27,10 @@ import {
 } from 'lucide-vue-next'
 
 const store = useStore()
-const { t, locale } = useI18n()
+const { t, locale, locales, setLocale } = useI18n()
 const route = useRoute()
 
 // Reactive state
-const lang = [
-  { name: 'Deutsch', abbr: 'de' },
-  { name: 'English', abbr: 'en' },
-  { name: 'Español', abbr: 'es' },
-  { name: 'Français', abbr: 'fr' }
-]
-
 const showCookieBanner = ref(false)
 
 // Computed properties
@@ -160,17 +152,6 @@ const signInGoogle = async () => {
 const signOut = () => {
   store.signOut()
 }
-
-const setLocale = (newLocale) => {
-  localStorage.i18nCurrentLocale = JSON.stringify(newLocale)
-  locale.value = newLocale
-  document.getElementsByTagName('html')[0].lang = newLocale
-}
-
-// Lifecycle hooks
-onBeforeMount(() => {
-  document.getElementsByTagName('html')[0].lang = locale.value
-})
 
 onMounted(() => {
   store.checkAuthState()
@@ -318,21 +299,25 @@ const handleCookieConsent = (consent) => {
                 <MenuItems
                   class="absolute right-0 z-10 mt-4 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700"
                 >
-                  <MenuItem v-for="(lang, i) in lang" :key="i" v-slot="{ active, close }">
+                  <MenuItem
+                    v-for="localeItem in locales"
+                    :key="localeItem.code"
+                    v-slot="{ active, close }"
+                  >
                     <a
                       :class="[
                         active ? 'bg-gray-100 dark:bg-gray-700' : '',
-                        locale === lang.abbr ? 'bg-gray-100 dark:bg-gray-700' : '',
+                        locale === localeItem.code ? 'bg-gray-100 dark:bg-gray-700' : '',
                         'block px-6 py-3 text-gray-700 cursor-pointer dark:text-gray-300'
                       ]"
                       @click.prevent="
                         () => {
-                          setLocale(lang.abbr)
+                          setLocale(localeItem.code)
                           close()
                         }
                       "
                     >
-                      {{ lang.name }}
+                      {{ localeItem.name }}
                     </a>
                   </MenuItem>
                 </MenuItems>
