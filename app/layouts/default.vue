@@ -245,7 +245,7 @@ const handleCookieConsent = (consent) => {
                       ]"
                       @click.prevent="
                         () => {
-                          $router.push(item.route)
+                          navigateTo($localePath(item.route))
                           close()
                         }
                       "
@@ -264,7 +264,7 @@ const handleCookieConsent = (consent) => {
 
           <div class="flex flex-1 items-stretch justify-start ml-3">
             <NuxtLink
-              :to="userIsAuthenticated ? '/?log=true' : '/?home=true'"
+              :to="userIsAuthenticated ? $localePath('/?log=true') : $localePath('/?home=true')"
               class="flex shrink-0 items-center"
             >
               <img class="h-8 w-auto mr-3" src="~/assets/pkutools-logo.png" alt="PKU Tools Logo" />
@@ -396,7 +396,7 @@ const handleCookieConsent = (consent) => {
                         ]"
                         @click.prevent="
                           () => {
-                            $router.push('/email-auth')
+                            navigateTo($localePath('email-auth'))
                             close()
                           }
                         "
@@ -415,7 +415,7 @@ const handleCookieConsent = (consent) => {
                         ]"
                         @click.prevent="
                           () => {
-                            $router.push('/settings')
+                            navigateTo($localePath('settings'))
                             close()
                           }
                         "
@@ -460,7 +460,7 @@ const handleCookieConsent = (consent) => {
                         ]"
                         @click.prevent="
                           () => {
-                            $router.push(item.route)
+                            navigateTo($localePath(item.route))
                             close()
                           }
                         "
@@ -517,7 +517,7 @@ const handleCookieConsent = (consent) => {
       <div class="mx-auto max-w-7xl px-6 py-12 sm:py-12 lg:px-8 lg:py-12">
         <div class="xl:grid xl:grid-cols-3 xl:gap-8">
           <NuxtLink
-            :to="userIsAuthenticated ? '/?log=true' : '/?home=true'"
+            :to="userIsAuthenticated ? $localePath('/?log=true') : $localePath('/?home=true')"
             class="hidden lg:block"
           >
             <img class="h-8" src="~/assets/pkutools-logo.png" alt="PKU Tools Logo" />

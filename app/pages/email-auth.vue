@@ -11,9 +11,9 @@ import PasswordInput from '../components/PasswordInput.vue'
 import TextInput from '../components/TextInput.vue'
 import PrimaryButton from '../components/PrimaryButton.vue'
 
-const router = useRouter()
 const store = useStore()
 const { t } = useI18n()
+const localePath = useLocalePath()
 
 // Reactive state
 const name = ref(null)
@@ -27,7 +27,7 @@ const userIsAuthenticated = computed(() => store.user !== null)
 const signInGoogle = async () => {
   try {
     await store.signInGoogle()
-    router.push('/')
+    navigateTo(localePath('/'))
   } catch (error) {
     alert(t('app.auth-error'))
     console.error(error)
@@ -37,7 +37,7 @@ const signInGoogle = async () => {
 const registerEmailPassword = async () => {
   try {
     await store.registerWithEmail(email.value, password.value, name.value)
-    router.push('/')
+    navigateTo(localePath('/'))
   } catch (error) {
     alert(t('email-auth.error'))
     console.error(error)
@@ -47,7 +47,7 @@ const registerEmailPassword = async () => {
 const signInEmailPassword = async () => {
   try {
     await store.signInWithEmail(email.value, password.value)
-    router.push('/')
+    navigateTo(localePath('/'))
   } catch (error) {
     alert(t('email-auth.error'))
     console.error(error)

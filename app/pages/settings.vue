@@ -15,10 +15,10 @@ import PrimaryButton from '../components/PrimaryButton.vue'
 import SecondaryButton from '../components/SecondaryButton.vue'
 import TiersCard from '../components/TiersCard.vue'
 
-const router = useRouter()
 const store = useStore()
 const { t } = useI18n()
 const config = useRuntimeConfig()
+const localePath = useLocalePath()
 
 // Reactive state
 const selectedTheme = ref('system')
@@ -78,7 +78,7 @@ const resetDiary = () => {
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/pheDiary`))
-    router.push('phe-diary')
+    navigateTo(localePath('/phe-diary'))
   }
 }
 
@@ -87,7 +87,7 @@ const resetLabValues = () => {
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/labValues`))
-    router.push('lab-values')
+    navigateTo(localePath('/lab-values'))
   }
 }
 
@@ -96,7 +96,7 @@ const resetOwnFood = () => {
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/ownFood`))
-    router.push('own-food')
+    navigateTo(localePath('/own-food'))
   }
 }
 
@@ -110,7 +110,7 @@ const deleteAccount = () => {
       .delete()
       .then(() => {
         store.signOut()
-        router.push('/')
+        navigateTo(localePath('/'))
       })
       .catch((error) => {
         alert(t('settings.delete-account-error'))

@@ -13,11 +13,11 @@ import ModalDialog from '../components/ModalDialog.vue'
 import NumberInput from '../components/NumberInput.vue'
 import DataTable from '../components/DataTable.vue'
 
-const router = useRouter()
 const store = useStore()
 const { t, locale } = useI18n()
 const dialog = ref(null)
 const config = useRuntimeConfig()
+const localePath = useLocalePath()
 
 // Reactive state
 const search = ref(null)
@@ -99,7 +99,7 @@ const save = () => {
     }
   }
   dialog.value.closeDialog()
-  router.push('/')
+  navigateTo(localePath('/'))
 }
 
 const searchFood = async () => {

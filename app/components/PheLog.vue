@@ -16,12 +16,12 @@ import PrimaryButton from './PrimaryButton.vue'
 import PageHeader from './PageHeader.vue'
 import TodaysTipCard from './TodaysTipCard.vue'
 
-const router = useRouter()
 const store = useStore()
 const { t } = useI18n()
 const dialog = ref(null)
 const dialog2 = ref(null)
 const config = useRuntimeConfig()
+const localePath = useLocalePath()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -229,7 +229,7 @@ const saveResult = () => {
     }).then(() => {
       remove(dbRef(db, `${user.value.id}/pheLog`))
     })
-    router.push('phe-diary')
+    navigateTo(localePath('phe-diary'))
   }
 }
 

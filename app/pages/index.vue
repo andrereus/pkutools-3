@@ -17,10 +17,10 @@ import {
   Check
 } from 'lucide-vue-next'
 
-const router = useRouter()
 const route = useRoute()
 const store = useStore()
 const { t } = useI18n()
+const localePath = useLocalePath()
 
 // Reactive state
 const pheLog = ref(false)
@@ -93,9 +93,9 @@ const signInGoogle = async () => {
 // Watchers
 watch(userIsAuthenticated, (newVal) => {
   if (newVal) {
-    router.push({ path: '/', query: { log: true } })
+    navigateTo(localePath('/?log=true'))
   } else {
-    router.push({ path: '/', query: { home: true } })
+    navigateTo(localePath('/?home=true'))
   }
 })
 
@@ -114,7 +114,7 @@ watch(
 // Lifecycle hooks
 onMounted(() => {
   if (userIsAuthenticated.value && !route.query.home) {
-    router.push({ path: '/', query: { log: true } })
+    navigateTo(localePath('/?log=true'))
   }
 })
 </script>

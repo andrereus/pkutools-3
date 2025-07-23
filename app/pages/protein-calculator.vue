@@ -12,10 +12,10 @@ import TextInput from '../components/TextInput.vue'
 import NumberInput from '../components/NumberInput.vue'
 import PrimaryButton from '../components/PrimaryButton.vue'
 
-const router = useRouter()
 const store = useStore()
 const { t } = useI18n()
 const config = useRuntimeConfig()
+const localePath = useLocalePath()
 
 // Reactive state
 const protein = ref(null)
@@ -95,7 +95,7 @@ const save = () => {
       })
     }
   }
-  router.push('/')
+  navigateTo(localePath('/'))
 }
 </script>
 

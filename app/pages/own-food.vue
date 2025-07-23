@@ -17,12 +17,12 @@ import PrimaryButton from '../components/PrimaryButton.vue'
 import TextInput from '../components/TextInput.vue'
 import NumberInput from '../components/NumberInput.vue'
 
-const router = useRouter()
 const store = useStore()
 const { t } = useI18n()
 const dialog = ref(null)
 const dialog2 = ref(null)
 const config = useRuntimeConfig()
+const localePath = useLocalePath()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -158,7 +158,7 @@ const add = () => {
     })
   }
   dialog2.value.closeDialog()
-  router.push('/')
+  navigateTo(localePath('/'))
 }
 
 const escapeCSV = (value) => {

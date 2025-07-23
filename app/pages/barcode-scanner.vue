@@ -13,11 +13,11 @@ import NumberInput from '../components/NumberInput.vue'
 import SimpleDialog from '../components/SimpleDialog.vue'
 import SelectMenu from '../components/SelectMenu.vue'
 
-const router = useRouter()
 const store = useStore()
 const { t } = useI18n()
 const dialog = ref(null)
 const config = useRuntimeConfig()
+const localePath = useLocalePath()
 
 // Reactive state
 const loaded = ref(false)
@@ -169,7 +169,7 @@ const save = () => {
       })
     }
   }
-  router.push('/')
+  navigateTo(localePath('/'))
 }
 </script>
 
