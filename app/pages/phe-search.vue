@@ -17,7 +17,7 @@ const router = useRouter()
 const store = useStore()
 const { t, locale } = useI18n()
 const dialog = ref(null)
-const publicPath = import.meta.env.BASE_URL
+const config = useRuntimeConfig()
 
 // Reactive state
 const search = ref(null)
@@ -86,7 +86,7 @@ const save = () => {
   } else {
     if (
       store.pheDiary.length >= 50 &&
-      store.settings.license !== import.meta.env.VITE_PKU_TOOLS_LICENSE_KEY
+      store.settings.license !== config.public.pkutoolsLicenseKey
     ) {
       alert(t('app.limit'))
     } else {

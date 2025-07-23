@@ -19,14 +19,13 @@ import SecondaryButton from '../components/SecondaryButton.vue'
 import DateInput from '../components/DateInput.vue'
 import TextInput from '../components/TextInput.vue'
 import PageHeader from '../components/PageHeader.vue'
-import MotivationCard from '../components/MotivationCard.vue'
 import PheDiaryCard from '../components/PheDiaryCard.vue'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
 const dialog = ref(null)
 const dialog2 = ref(null)
-const publicPath = import.meta.env.BASE_URL
+const config = useRuntimeConfig()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -49,9 +48,7 @@ const user = computed(() => store.user)
 const pheDiary = computed(() => store.pheDiary)
 const settings = computed(() => store.settings)
 
-const license = computed(
-  () => settings.value.license === import.meta.env.VITE_PKU_TOOLS_LICENSE_KEY
-)
+const license = computed(() => settings.value.license === config.public.pkutoolsLicenseKey)
 
 const tableHeaders = computed(() => [
   { key: 'date', title: t('phe-diary.date') },
@@ -235,7 +232,7 @@ const save = () => {
   } else {
     if (
       pheDiary.value.length >= 30 &&
-      settings.value.license !== import.meta.env.VITE_PKU_TOOLS_LICENSE_KEY
+      settings.value.license !== config.public.pkutoolsLicenseKey
     ) {
       alert(t('app.limit'))
     } else {

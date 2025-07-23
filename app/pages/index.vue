@@ -21,7 +21,6 @@ const router = useRouter()
 const route = useRoute()
 const store = useStore()
 const { t } = useI18n()
-const publicPath = import.meta.env.BASE_URL
 
 // Reactive state
 const pheLog = ref(false)

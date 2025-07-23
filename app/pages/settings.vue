@@ -18,6 +18,7 @@ import TiersCard from '../components/TiersCard.vue'
 const router = useRouter()
 const store = useStore()
 const { t } = useI18n()
+const config = useRuntimeConfig()
 
 // Reactive state
 const selectedTheme = ref('system')
@@ -64,7 +65,7 @@ const saveLicense = () => {
   update(dbRef(db, `${user.value.id}/settings`), {
     license: settings.value.license || ''
   }).then(() => {
-    if (settings.value.license === import.meta.env.VITE_PKU_TOOLS_LICENSE_KEY) {
+    if (settings.value.license === config.public.pkutoolsLicenseKey) {
       alert(t('settings.license-active') + ' 🎉')
     } else {
       alert(t('settings.license-inactive'))

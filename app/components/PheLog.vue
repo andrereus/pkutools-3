@@ -14,7 +14,6 @@ import TextInput from './TextInput.vue'
 import NumberInput from './NumberInput.vue'
 import PrimaryButton from './PrimaryButton.vue'
 import PageHeader from './PageHeader.vue'
-import CurrentTipCard from './CurrentTipCard.vue'
 import TodaysTipCard from './TodaysTipCard.vue'
 
 const router = useRouter()
@@ -22,7 +21,7 @@ const store = useStore()
 const { t } = useI18n()
 const dialog = ref(null)
 const dialog2 = ref(null)
-const publicPath = import.meta.env.BASE_URL
+const config = useRuntimeConfig()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -51,9 +50,7 @@ const pheLog = computed(() => store.pheLog)
 const pheDiary = computed(() => store.pheDiary)
 const settings = computed(() => store.settings)
 
-const license = computed(
-  () => settings.value.license === import.meta.env.VITE_PKU_TOOLS_LICENSE_KEY
-)
+const license = computed(() => settings.value.license === config.public.pkutoolsLicenseKey)
 
 const tableHeaders = computed(() => [
   { key: 'food', title: t('common.food') },
@@ -198,7 +195,7 @@ const save = () => {
   } else {
     if (
       pheDiary.value.length >= 30 &&
-      settings.value.license !== import.meta.env.VITE_PKU_TOOLS_LICENSE_KEY
+      settings.value.license !== config.public.pkutoolsLicenseKey
     ) {
       alert(t('app.limit'))
     } else {
@@ -215,10 +212,7 @@ const save = () => {
 
 const saveResult = () => {
   const db = getDatabase()
-  if (
-    pheDiary.value.length >= 30 &&
-    settings.value.license !== import.meta.env.VITE_PKU_TOOLS_LICENSE_KEY
-  ) {
+  if (pheDiary.value.length >= 30 && settings.value.license !== config.public.pkutoolsLicenseKey) {
     alert(t('app.limit'))
   } else {
     const pheLogForFirebase = pheLog.value.map(

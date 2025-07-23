@@ -22,7 +22,7 @@ const store = useStore()
 const { t } = useI18n()
 const dialog = ref(null)
 const dialog2 = ref(null)
-const publicPath = import.meta.env.BASE_URL
+const config = useRuntimeConfig()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -44,9 +44,7 @@ const user = computed(() => store.user)
 const ownFood = computed(() => store.ownFood)
 const settings = computed(() => store.settings)
 
-const license = computed(
-  () => settings.value.license === import.meta.env.VITE_PKU_TOOLS_LICENSE_KEY
-)
+const license = computed(() => settings.value.license === config.public.pkutoolsLicenseKey)
 
 const tableHeaders = computed(() => [
   { key: 'food', title: t('common.food') },
@@ -97,10 +95,7 @@ const save = () => {
       kcal: Number(editedItem.value.kcal) || 0
     })
   } else {
-    if (
-      ownFood.value.length >= 50 &&
-      settings.value.license !== import.meta.env.VITE_PKU_TOOLS_LICENSE_KEY
-    ) {
+    if (ownFood.value.length >= 50 && settings.value.license !== config.public.pkutoolsLicenseKey) {
       alert(t('app.limit'))
     } else {
       push(dbRef(db, `${user.value.id}/ownFood`), {

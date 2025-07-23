@@ -73,7 +73,6 @@ npm run preview
 - posthog
 - sentry
 - i18n
-- license
 
 ## Contributing
 

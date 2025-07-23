@@ -23,6 +23,7 @@ import LabValuesCard from '../components/LabValuesCard.vue'
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
 const dialog = ref(null)
+const config = useRuntimeConfig()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -42,9 +43,7 @@ const user = computed(() => store.user)
 const labValues = computed(() => store.labValues)
 const settings = computed(() => store.settings)
 
-const license = computed(
-  () => settings.value.license === import.meta.env.VITE_PKU_TOOLS_LICENSE_KEY
-)
+const license = computed(() => settings.value.license === config.public.pkutoolsLicenseKey)
 
 const tableHeaders = computed(() => [
   { key: 'date', title: t('lab-values.date') },
@@ -177,7 +176,7 @@ const save = () => {
   } else {
     if (
       labValues.value.length >= 30 &&
-      settings.value.license !== import.meta.env.VITE_PKU_TOOLS_LICENSE_KEY
+      settings.value.license !== config.public.pkutoolsLicenseKey
     ) {
       alert(t('app.limit'))
     } else {

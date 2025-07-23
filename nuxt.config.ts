@@ -64,7 +64,8 @@ export default defineNuxtConfig({
       firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET,
       firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
       firebaseAppId: process.env.FIREBASE_APP_ID,
-      firebaseDatabaseURL: process.env.FIREBASE_DATABASE_URL
+      firebaseDatabaseURL: process.env.FIREBASE_DATABASE_URL,
+      pkutoolsLicenseKey: process.env.PKU_TOOLS_LICENSE_KEY
     }
   },
   i18n: {

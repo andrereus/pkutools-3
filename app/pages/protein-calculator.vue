@@ -15,6 +15,7 @@ import PrimaryButton from '../components/PrimaryButton.vue'
 const router = useRouter()
 const store = useStore()
 const { t } = useI18n()
+const config = useRuntimeConfig()
 
 // Reactive state
 const protein = ref(null)
@@ -82,7 +83,7 @@ const save = () => {
   } else {
     if (
       store.pheDiary.length >= 50 &&
-      store.settings.license !== import.meta.env.VITE_PKU_TOOLS_LICENSE_KEY
+      store.settings.license !== config.public.pkutoolsLicenseKey
     ) {
       alert(t('app.limit'))
     } else {
