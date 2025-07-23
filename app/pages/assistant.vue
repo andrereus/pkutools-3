@@ -27,7 +27,7 @@ const userIsAuthenticated = computed(() => store.user !== null)
       <br />
       <NuxtLink
         type="button"
-        to="/email-auth"
+        :to="$localePath('email-auth')"
         class="rounded-sm bg-black/5 dark:bg-white/15 px-2 py-1 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 mr-3 mb-6"
       >
         {{ $t('email-auth.title') }}

@@ -31,25 +31,25 @@ const features = [
     name: 'features.search-name',
     description: 'features.search-description',
     icon: Search,
-    route: '/phe-search'
+    route: 'phe-search'
   },
   {
     name: 'features.scanner-name',
     description: 'features.scanner-description',
     icon: ScanBarcode,
-    route: '/barcode-scanner'
+    route: 'barcode-scanner'
   },
   {
     name: 'features.calculator-name',
     description: 'features.calculator-description',
     icon: Calculator,
-    route: '/phe-calculator'
+    route: 'phe-calculator'
   },
   {
     name: 'features.assistant-name',
     description: 'features.assistant-description',
     icon: Bot,
-    route: '/assistant'
+    route: 'assistant'
   },
   {
     name: 'features.diary-name',
@@ -61,7 +61,7 @@ const features = [
     name: 'features.lab-values-name',
     description: 'features.lab-values-description',
     icon: ChartLine,
-    route: '/lab-values'
+    route: 'lab-values'
   },
   {
     name: 'features.suggestions-name',
@@ -73,7 +73,7 @@ const features = [
     name: 'features.own-food-name',
     description: 'features.own-food-description',
     icon: Apple,
-    route: '/own-food'
+    route: 'own-food'
   }
 ]
 
@@ -159,7 +159,7 @@ onMounted(() => {
               <NuxtLink
                 v-for="feature in features"
                 :key="feature.name"
-                :to="feature.route"
+                :to="$localePath(feature.route)"
                 class="relative pl-16"
               >
                 <dt class="text-base font-semibold leading-7 text-gray-900 dark:text-white">
@@ -198,7 +198,7 @@ onMounted(() => {
               {{ $t('app.signin-google') }}
             </a>
             <NuxtLink
-              to="/email-auth"
+              :to="$localePath('email-auth')"
               class="rounded-sm bg-sky-500 px-2 py-1 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
             >
               {{ $t('email-auth.title') }}
@@ -227,7 +227,7 @@ onMounted(() => {
               />
             </a>
             <NuxtLink
-              to="/help"
+              :to="$localePath('help')"
               class="rounded-sm bg-black/5 dark:bg-white/15 px-2 py-1 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10"
             >
               {{ $t('app.install') }} <span aria-hidden="true">→</span>

@@ -43,14 +43,14 @@ const settings = computed(() => store.settings)
 const navigation = computed(() => {
   return [
     { name: 'app.start', icon: 'House', route: '/?home=true' },
-    { name: 'phe-search.title', icon: 'Search', route: '/phe-search' },
-    { name: 'barcode-scanner.title', icon: 'ScanBarcode', route: '/barcode-scanner' },
-    { name: 'phe-calculator.title', icon: 'Calculator', route: '/phe-calculator' },
-    { name: 'protein-calculator.title', icon: 'SquareDivide', route: '/protein-calculator' },
-    { name: 'assistant.title', icon: 'Bot', route: '/assistant' },
+    { name: 'phe-search.title', icon: 'Search', route: 'phe-search' },
+    { name: 'barcode-scanner.title', icon: 'ScanBarcode', route: 'barcode-scanner' },
+    { name: 'phe-calculator.title', icon: 'Calculator', route: 'phe-calculator' },
+    { name: 'protein-calculator.title', icon: 'SquareDivide', route: 'protein-calculator' },
+    { name: 'assistant.title', icon: 'Bot', route: 'assistant' },
     { name: 'phe-log.title', icon: 'Book', route: '/?log=true' },
-    { name: 'phe-diary.title', icon: 'Calendar', route: '/phe-diary' },
-    { name: 'lab-values.title', icon: 'ChartLine', route: '/lab-values' }
+    { name: 'phe-diary.title', icon: 'Calendar', route: 'phe-diary' },
+    { name: 'lab-values.title', icon: 'ChartLine', route: 'lab-values' }
   ]
 })
 
@@ -58,60 +58,60 @@ const tabNavigation = computed(() => {
   if (userIsAuthenticated.value) {
     return [
       { name: 'home.title', icon: 'House', route: '/?log=true' },
-      { name: 'app.search', icon: 'Search', route: '/phe-search' },
-      { name: 'app.scanner', icon: 'ScanBarcode', route: '/barcode-scanner' },
-      { name: 'app.calculator', icon: 'Calculator', route: '/phe-calculator' },
-      { name: 'phe-diary.tab-title', icon: 'Calendar', route: '/phe-diary' },
-      { name: 'lab-values.tab-title', icon: 'ChartLine', route: '/lab-values' }
+      { name: 'app.search', icon: 'Search', route: 'phe-search' },
+      { name: 'app.scanner', icon: 'ScanBarcode', route: 'barcode-scanner' },
+      { name: 'app.calculator', icon: 'Calculator', route: 'phe-calculator' },
+      { name: 'phe-diary.tab-title', icon: 'Calendar', route: 'phe-diary' },
+      { name: 'lab-values.tab-title', icon: 'ChartLine', route: 'lab-values' }
     ]
   } else {
     return [
       { name: 'home.title', icon: 'House', route: '/?home=true' },
-      { name: 'app.search', icon: 'Search', route: '/phe-search' },
-      { name: 'app.scanner', icon: 'ScanBarcode', route: '/barcode-scanner' },
-      { name: 'app.calculator', icon: 'Calculator', route: '/phe-calculator' },
-      { name: 'phe-diary.tab-title', icon: 'Calendar', route: '/phe-diary' },
-      { name: 'lab-values.tab-title', icon: 'ChartLine', route: '/lab-values' }
+      { name: 'app.search', icon: 'Search', route: 'phe-search' },
+      { name: 'app.scanner', icon: 'ScanBarcode', route: 'barcode-scanner' },
+      { name: 'app.calculator', icon: 'Calculator', route: 'phe-calculator' },
+      { name: 'phe-diary.tab-title', icon: 'Calendar', route: 'phe-diary' },
+      { name: 'lab-values.tab-title', icon: 'ChartLine', route: 'lab-values' }
     ]
   }
 })
 
 const userNavigation = computed(() => {
   return [
-    { name: 'own-food.title', icon: 'Apple', route: '/own-food' },
-    { name: 'settings.title', icon: 'Settings', route: '/settings' },
-    { name: 'help.title', icon: 'LifeBuoy', route: '/help' },
-    { name: 'imprint.title', icon: 'Info', route: '/imprint' },
-    { name: 'disclaimer.title', icon: 'Info', route: '/disclaimer' },
-    { name: 'privacy-policy.title', icon: 'Info', route: '/privacy-policy' }
+    { name: 'own-food.title', icon: 'Apple', route: 'own-food' },
+    { name: 'settings.title', icon: 'Settings', route: 'settings' },
+    { name: 'help.title', icon: 'LifeBuoy', route: 'help' },
+    { name: 'imprint.title', icon: 'Info', route: 'imprint' },
+    { name: 'disclaimer.title', icon: 'Info', route: 'disclaimer' },
+    { name: 'privacy-policy.title', icon: 'Info', route: 'privacy-policy' }
   ]
 })
 
 const footerNavigation = computed(() => {
   return {
     tools: [
-      { name: 'phe-search.title', route: '/phe-search' },
-      { name: 'barcode-scanner.title', route: '/barcode-scanner' },
-      { name: 'phe-calculator.title', route: '/phe-calculator' },
-      { name: 'protein-calculator.title', route: '/protein-calculator' },
-      { name: 'assistant.title', route: '/assistant' }
+      { name: 'phe-search.title', route: 'phe-search' },
+      { name: 'barcode-scanner.title', route: 'barcode-scanner' },
+      { name: 'phe-calculator.title', route: 'phe-calculator' },
+      { name: 'protein-calculator.title', route: 'protein-calculator' },
+      { name: 'assistant.title', route: 'assistant' }
     ],
     features: [
       { name: 'phe-log.title', route: '/?log=true' },
-      { name: 'phe-diary.title', route: '/phe-diary' },
-      { name: 'lab-values.title', route: '/lab-values' }
+      { name: 'phe-diary.title', route: 'phe-diary' },
+      { name: 'lab-values.title', route: 'lab-values' }
     ],
     account: [
-      { name: 'email-auth.tab-title', route: '/email-auth' },
-      { name: 'own-food.title', route: '/own-food' },
-      { name: 'settings.title', route: '/settings' }
+      { name: 'email-auth.tab-title', route: 'email-auth' },
+      { name: 'own-food.title', route: 'own-food' },
+      { name: 'settings.title', route: 'settings' }
     ],
     about: [
       { name: 'app.start', route: '/?home=true' },
-      { name: 'help.title', route: '/help' },
-      { name: 'imprint.title', route: '/imprint' },
-      { name: 'disclaimer.title', route: '/disclaimer' },
-      { name: 'privacy-policy.title', route: '/privacy-policy' }
+      { name: 'help.title', route: 'help' },
+      { name: 'imprint.title', route: 'imprint' },
+      { name: 'disclaimer.title', route: 'disclaimer' },
+      { name: 'privacy-policy.title', route: 'privacy-policy' }
     ]
   }
 })
@@ -486,7 +486,7 @@ const handleCookieConsent = (consent) => {
           <NuxtLink
             v-for="item in tabNavigation"
             :key="item.name"
-            :to="item.route"
+            :to="$localePath(item.route)"
             :class="[
               isTabActive(item)
                 ? 'bg-gray-100 dark:bg-gray-700'
@@ -531,7 +531,7 @@ const handleCookieConsent = (consent) => {
                 <ul role="list" class="mt-6 space-y-4">
                   <li v-for="item in footerNavigation.tools" :key="item.name">
                     <NuxtLink
-                      :to="item.route"
+                      :to="$localePath(item.route)"
                       class="text-sm/6 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                       >{{ $t(item.name) }}</NuxtLink
                     >
@@ -545,7 +545,7 @@ const handleCookieConsent = (consent) => {
                 <ul role="list" class="mt-6 space-y-4">
                   <li v-for="item in footerNavigation.features" :key="item.name">
                     <NuxtLink
-                      :to="item.route"
+                      :to="$localePath(item.route)"
                       class="text-sm/6 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                       >{{ $t(item.name) }}</NuxtLink
                     >
@@ -561,7 +561,7 @@ const handleCookieConsent = (consent) => {
                 <ul role="list" class="mt-6 space-y-4">
                   <li v-for="item in footerNavigation.account" :key="item.name">
                     <NuxtLink
-                      :to="item.route"
+                      :to="$localePath(item.route)"
                       class="text-sm/6 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                       >{{ $t(item.name) }}</NuxtLink
                     >
@@ -575,7 +575,7 @@ const handleCookieConsent = (consent) => {
                 <ul role="list" class="mt-6 space-y-4">
                   <li v-for="item in footerNavigation.about" :key="item.name">
                     <NuxtLink
-                      :to="item.route"
+                      :to="$localePath(item.route)"
                       class="text-sm/6 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                       >{{ $t(item.name) }}</NuxtLink
                     >

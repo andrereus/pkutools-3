@@ -72,7 +72,8 @@ npm run preview
 - firebase emulators
 - posthog
 - sentry
-- i18n
+- home & log routing
+- programmatic routing
 
 ## Contributing
 

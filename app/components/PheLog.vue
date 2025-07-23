@@ -255,7 +255,7 @@ const nextDay = () => {
       <br />
       <NuxtLink
         type="button"
-        to="/email-auth"
+        :to="$localePath('email-auth')"
         class="rounded-sm bg-black/5 dark:bg-white/15 px-2 py-1 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 mr-3 mb-6"
       >
         {{ $t('email-auth.title') }}
@@ -287,7 +287,9 @@ const nextDay = () => {
               Math.round(((pheResult * 100) / settings.maxPhe - 100) * -1)
             }}%)</span
           >
-          <NuxtLink v-if="!settings?.maxPhe" to="/settings">{{ $t('settings.title') }}</NuxtLink>
+          <NuxtLink v-if="!settings?.maxPhe" :to="$localePath('settings')">{{
+            $t('settings.title')
+          }}</NuxtLink>
         </div>
         <div
           class="relative w-full bg-gray-200 dark:bg-gray-800 rounded-md overflow-hidden h-1 mt-2"
@@ -304,7 +306,9 @@ const nextDay = () => {
               Math.round(((kcalResult * 100) / settings.maxKcal - 100) * -1)
             }}%)</span
           >
-          <NuxtLink v-if="!settings?.maxKcal" to="/settings">{{ $t('settings.title') }}</NuxtLink>
+          <NuxtLink v-if="!settings?.maxKcal" :to="$localePath('settings')">{{
+            $t('settings.title')
+          }}</NuxtLink>
         </div>
         <div
           class="relative w-full bg-gray-200 dark:bg-gray-800 rounded-md overflow-hidden h-1 mt-2"
@@ -423,7 +427,7 @@ const nextDay = () => {
       </p>
 
       <p v-if="!license" class="mt-3 text-sm">
-        <NuxtLink to="/settings">
+        <NuxtLink :to="$localePath('settings')">
           <BadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
           {{ $t('app.limited') }}
         </NuxtLink>
