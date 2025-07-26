@@ -9,12 +9,12 @@ const { t } = useI18n()
 
 const validateEmail = () => {
   const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  errorMessage.value = pattern.test(model.value) ? '' : t('login.invalid-email')
+  errorMessage.value = pattern.test(model.value) ? '' : t('sign-in.invalid-email')
 }
 
 watch(model, () => {
   if (!model.value) {
-    errorMessage.value = t('login.required')
+    errorMessage.value = t('sign-in.required')
   } else {
     validateEmail()
   }

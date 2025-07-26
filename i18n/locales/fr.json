@@ -90,7 +90,7 @@
     "data-warning": "Attention : Phe pour 100g manque.",
     "more": "Plus"
   },
-  "diary-report": {
+  "diet-report": {
     "title": "Rapport de régime",
     "tab-title": "Rapport",
     "date": "Date",
@@ -154,7 +154,7 @@
     "subscribe": "Rejoindre",
     "buy": "Rejoindre"
   },
-  "login": {
+  "sign-in": {
     "title": "Se connecter avec un e-mail",
     "tab-title": "Se connecter",
     "signedin": "Vous êtes connecté.",
@@ -243,7 +243,7 @@
     "week": "C'est une semaine entière d'engagement!",
     "keep-going": "Continuez ainsi!",
     "start-tracking": "Commencez à suivre votre nutrition quotidiennement pour créer une série et obtenir des aperçus personnalisés!",
-    "diary-report": "Journal",
+    "diet-report": "Journal",
     "phe-stats-average": "Au cours des 14 derniers jours (hors aujourd'hui), votre apport moyen en Phe était de {average} mg.",
     "phe-stats-deviation": "L'écart moyen par rapport à l'optimum est de {deviation}%."
   },

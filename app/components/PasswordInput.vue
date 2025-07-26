@@ -13,13 +13,13 @@ const validatePassword = () => {
   if (model.value && model.value.length >= 8) {
     errorMessage.value = ''
   } else {
-    errorMessage.value = t('login.min-length')
+    errorMessage.value = t('sign-in.min-length')
   }
 }
 
 watch(model, () => {
   if (!model.value) {
-    errorMessage.value = t('login.required')
+    errorMessage.value = t('sign-in.required')
   } else {
     validatePassword()
   }

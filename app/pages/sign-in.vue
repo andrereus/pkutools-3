@@ -39,7 +39,7 @@ const registerEmailPassword = async () => {
     await store.registerWithEmail(email.value, password.value, name.value)
     navigateTo(localePath('/'))
   } catch (error) {
-    alert(t('login.error'))
+    alert(t('sign-in.error'))
     console.error(error)
   }
 }
@@ -49,7 +49,7 @@ const signInEmailPassword = async () => {
     await store.signInWithEmail(email.value, password.value)
     navigateTo(localePath('/'))
   } catch (error) {
-    alert(t('login.error'))
+    alert(t('sign-in.error'))
     console.error(error)
   }
 }
@@ -57,9 +57,9 @@ const signInEmailPassword = async () => {
 const resetPassword = async () => {
   try {
     await store.resetPassword(email.value)
-    alert(t('login.password-sent'))
+    alert(t('sign-in.password-sent'))
   } catch (error) {
-    alert(t('login.error'))
+    alert(t('sign-in.error'))
     console.error(error)
   }
 }
@@ -70,7 +70,7 @@ const resetPassword = async () => {
     <div v-if="userIsAuthenticated">
       <h2 class="text-lg text-gray-900 dark:text-gray-300 mb-6">
         <BadgeCheck class="h-6 w-6 text-sky-500 inline-block ml-2 mr-1" aria-hidden="true" />
-        {{ $t('login.signedin') }}
+        {{ $t('sign-in.signedin') }}
       </h2>
     </div>
 
@@ -106,13 +106,13 @@ const resetPassword = async () => {
         </div>
         <div class="relative flex justify-center text-sm/6 font-medium">
           <span class="bg-gray-50 dark:bg-gray-950 px-6 text-gray-900 dark:text-gray-300">{{
-            $t('login.or')
+            $t('sign-in.or')
           }}</span>
         </div>
       </div>
 
       <h2 class="text-lg text-gray-900 dark:text-gray-300 mb-6">
-        {{ $t('login.title') }}
+        {{ $t('sign-in.title') }}
       </h2>
 
       <TabGroup>
@@ -126,7 +126,7 @@ const resetPassword = async () => {
                   : 'text-gray-500 hover:text-gray-700'
               ]"
             >
-              {{ $t('login.signin') }}
+              {{ $t('sign-in.signin') }}
             </button>
           </Tab>
           <Tab v-slot="{ selected }">
@@ -138,7 +138,7 @@ const resetPassword = async () => {
                   : 'text-gray-500 hover:text-gray-700'
               ]"
             >
-              {{ $t('login.register') }}
+              {{ $t('sign-in.register') }}
             </button>
           </Tab>
           <Tab v-slot="{ selected }">
@@ -150,40 +150,44 @@ const resetPassword = async () => {
                   : 'text-gray-500 hover:text-gray-700'
               ]"
             >
-              {{ $t('login.forgot-password') }}
+              {{ $t('sign-in.forgot-password') }}
             </button>
           </Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
-            <EmailInput id-name="email" :label="$t('login.email')" v-model="email" />
-            <PasswordInput id-name="password" :label="$t('login.password')" v-model="password" />
+            <EmailInput id-name="email" :label="$t('sign-in.email')" v-model="email" />
+            <PasswordInput id-name="password" :label="$t('sign-in.password')" v-model="password" />
 
-            <PrimaryButton :text="$t('login.signin')" @click="signInEmailPassword" class="mt-4" />
+            <PrimaryButton :text="$t('sign-in.signin')" @click="signInEmailPassword" class="mt-4" />
           </TabPanel>
           <TabPanel>
-            <p class="mt-2 mb-6">{{ $t('login.register-note') }}</p>
+            <p class="mt-2 mb-6">{{ $t('sign-in.register-note') }}</p>
 
-            <TextInput id-name="name" :label="$t('login.name')" v-model="name" />
-            <EmailInput id-name="register-email" :label="$t('login.email')" v-model="email" />
+            <TextInput id-name="name" :label="$t('sign-in.name')" v-model="name" />
+            <EmailInput id-name="register-email" :label="$t('sign-in.email')" v-model="email" />
             <PasswordInput
               id-name="register-password"
-              :label="$t('login.password')"
+              :label="$t('sign-in.password')"
               v-model="password"
             />
 
             <PrimaryButton
-              :text="$t('login.register')"
+              :text="$t('sign-in.register')"
               @click="registerEmailPassword"
               class="mt-4"
             />
           </TabPanel>
           <TabPanel>
-            <p class="mt-2 mb-6">{{ $t('login.reset-note') }}</p>
+            <p class="mt-2 mb-6">{{ $t('sign-in.reset-note') }}</p>
 
-            <EmailInput id-name="reset-email" :label="$t('login.email')" v-model="email" />
+            <EmailInput id-name="reset-email" :label="$t('sign-in.email')" v-model="email" />
 
-            <PrimaryButton :text="$t('login.reset-password')" @click="resetPassword" class="mt-4" />
+            <PrimaryButton
+              :text="$t('sign-in.reset-password')"
+              @click="resetPassword"
+              class="mt-4"
+            />
           </TabPanel>
         </TabPanels>
       </TabGroup>

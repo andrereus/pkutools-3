@@ -49,7 +49,7 @@ const navigation = computed(() => {
     { name: 'protein-calculator.title', icon: 'SquareDivide', route: 'protein-calculator' },
     { name: 'assistant.title', icon: 'Bot', route: 'assistant' },
     { name: 'diary.title', icon: 'Book', route: 'diary' },
-    { name: 'diary-report.title', icon: 'Calendar', route: 'diary-report' },
+    { name: 'diet-report.title', icon: 'Calendar', route: 'diet-report' },
     { name: 'blood-values.title', icon: 'ChartLine', route: 'blood-values' }
   ]
 })
@@ -61,7 +61,7 @@ const tabNavigation = computed(() => {
       { name: 'app.search', icon: 'Search', route: 'food-search' },
       { name: 'app.scanner', icon: 'ScanBarcode', route: 'barcode-scanner' },
       { name: 'app.calculator', icon: 'Calculator', route: 'phe-calculator' },
-      { name: 'diary-report.tab-title', icon: 'Calendar', route: 'diary-report' },
+      { name: 'diet-report.tab-title', icon: 'Calendar', route: 'diet-report' },
       { name: 'blood-values.tab-title', icon: 'ChartLine', route: 'blood-values' }
     ]
   } else {
@@ -70,7 +70,7 @@ const tabNavigation = computed(() => {
       { name: 'app.search', icon: 'Search', route: 'food-search' },
       { name: 'app.scanner', icon: 'ScanBarcode', route: 'barcode-scanner' },
       { name: 'app.calculator', icon: 'Calculator', route: 'phe-calculator' },
-      { name: 'diary-report.tab-title', icon: 'Calendar', route: 'diary-report' },
+      { name: 'diet-report.tab-title', icon: 'Calendar', route: 'diet-report' },
       { name: 'blood-values.tab-title', icon: 'ChartLine', route: 'blood-values' }
     ]
   }
@@ -98,11 +98,11 @@ const footerNavigation = computed(() => {
     ],
     features: [
       { name: 'diary.title', route: 'diary' },
-      { name: 'diary-report.title', route: 'diary-report' },
+      { name: 'diet-report.title', route: 'diet-report' },
       { name: 'blood-values.title', route: 'blood-values' }
     ],
     account: [
-      { name: 'login.tab-title', route: 'login' },
+      { name: 'sign-in.tab-title', route: 'sign-in' },
       { name: 'own-food.title', route: 'own-food' },
       { name: 'settings.title', route: 'settings' }
     ],
@@ -391,7 +391,7 @@ const handleCookieConsent = (consent) => {
                         ]"
                         @click.prevent="
                           () => {
-                            navigateTo($localePath('login'))
+                            navigateTo($localePath('sign-in'))
                             close()
                           }
                         "
@@ -399,7 +399,7 @@ const handleCookieConsent = (consent) => {
                         <Mail
                           class="mr-3 h-5 w-5 text-gray-700 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
                           aria-hidden="true"
-                        />{{ $t('login.title') }}
+                        />{{ $t('sign-in.title') }}
                       </a>
                     </MenuItem>
                     <MenuItem v-if="userIsAuthenticated" v-slot="{ active, close }">

@@ -90,7 +90,7 @@
     "data-warning": "Achtung: Phe pro 100g fehlt.",
     "more": "Mehr"
   },
-  "diary-report": {
+  "diet-report": {
     "title": "Diätbericht",
     "tab-title": "Bericht",
     "date": "Datum",
@@ -154,7 +154,7 @@
     "subscribe": "Abonnieren",
     "buy": "Abonnieren"
   },
-  "login": {
+  "sign-in": {
     "title": "Anmelden mit E-Mail",
     "tab-title": "Anmelden",
     "signedin": "Du bist angemeldet.",
@@ -243,7 +243,7 @@
     "week": "Das ist eine ganze Woche Engagement!",
     "keep-going": "Weiter so!",
     "start-tracking": "Beginne deine Ernährung täglich zu protokollieren, um eine Serie aufzubauen und personalisierte Einblicke zu erhalten!",
-    "diary-report": "Tagebuch",
+    "diet-report": "Tagebuch",
     "phe-stats-average": "In den letzten 14 Tagen (ohne heute) lag deine durchschnittliche Phe-Aufnahme bei {average} mg.",
     "phe-stats-deviation": "Die durchschnittliche Abweichung vom Optimum beträgt {deviation}%."
   },
