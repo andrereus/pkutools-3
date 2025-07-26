@@ -21,7 +21,6 @@ const defaultSettings = {
 export const useStore = defineStore('main', {
   state: () => ({
     user: null,
-    pheLog: [],
     pheDiary: [],
     labValues: [],
     ownFood: [],
@@ -106,7 +105,6 @@ export const useStore = defineStore('main', {
       const db = getDatabase()
       const userId = this.user.id
       const initialState = {
-        pheLog: [],
         pheDiary: [],
         labValues: [],
         ownFood: [],
@@ -139,7 +137,6 @@ export const useStore = defineStore('main', {
         this.unsubscribeFunctions[key] = unsubscribe
       }
 
-      bindRef('pheLog', ref(db, `${userId}/pheLog`))
       bindRef('pheDiary', ref(db, `${userId}/pheDiary`))
       bindRef('labValues', ref(db, `${userId}/labValues`))
       bindRef('ownFood', ref(db, `${userId}/ownFood`))

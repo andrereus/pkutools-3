@@ -58,7 +58,7 @@
     "about-description": "Par le développeur de l'une des premières applications PKU pour Android \"Phe Rechner\", ainsi que du \"PKU Manager\". Développement de PKU Apps depuis 2013.",
     "social": "Reste au courant"
   },
-  "phe-search": {
+  "food-search": {
     "title": "Recherche de Phe",
     "description": "Recherche de valeurs de Phe.",
     "search": "Chercher des aliments",
@@ -95,7 +95,7 @@
     "export-filename": "PKU Tools - Aliments personnels",
     "choose-icon": "Sélectionner une icône"
   },
-  "phe-log": {
+  "diary": {
     "title": "Protocole Phe",
     "tab-title": "Protocole",
     "description": "Enregistrez les valeurs de Phe tout au long de la journée.",
@@ -109,7 +109,7 @@
     "data-warning": "Attention : Phe pour 100g manque.",
     "more": "Plus"
   },
-  "phe-diary": {
+  "diary-report": {
     "title": "Journal de Phe",
     "tab-title": "Journal",
     "description": "Enregistrez les valeurs de Phe sur plusieurs jours.",
@@ -121,7 +121,7 @@
     "export-filename": "PKU Tools - Journal de Phe",
     "chart-info": "Le diagramme s'affiche après la deuxième entrée."
   },
-  "lab-values": {
+  "blood-values": {
     "title": "Valeurs de laboratoire",
     "tab-title": "Valeurs de laboratoire",
     "description": "Enregistre les résultats de laboratoire.",
@@ -152,7 +152,7 @@
     "change-password-info": "Veuillez utiliser la fonction \"Mot de passe oublié\" sous \"Se connecter avec un e-mail\".",
     "reset-heading": "Supprimer les données",
     "reset-diary": "Supprimer Journal",
-    "reset-lab-values": "Supprimer les Valeurs de laboratoire",
+    "reset-blood-values": "Supprimer les Valeurs de laboratoire",
     "reset-own-food": "Supprimer Aliments personnels",
     "delete-account": "Supprimer le compte",
     "delete-account-info": "Cela ne fonctionne que si la dernière connexion ne date pas de trop longtemps. Pour cela, veuillez vous déconnecter et vous reconnecter une fois.",
@@ -181,7 +181,7 @@
     "subscribe": "Rejoindre",
     "buy": "Rejoindre"
   },
-  "email-auth": {
+  "login": {
     "title": "Se connecter avec un e-mail",
     "tab-title": "Se connecter",
     "signedin": "Vous êtes connecté.",
@@ -238,8 +238,8 @@
     "own-food-description": "Enregistrez vos propres aliments pour un ajout rapide.",
     "diary-name": "Journal et Carnet",
     "diary-description": "Suivez vos aliments et surveillez votre tolérance à la Phe.",
-    "lab-values-name": "Valeurs de laboratoire",
-    "lab-values-description": "Suivez les valeurs de laboratoire sur un graphique.",
+    "blood-values-name": "Valeurs de laboratoire",
+    "blood-values-description": "Suivez les valeurs de laboratoire sur un graphique.",
     "suggestions-name": "Suggestions en 1 clic",
     "suggestions-description": "Ajoute des suggestions au protocole en un seul clic.",
     "assistant-name": "Assistant",
@@ -263,19 +263,19 @@
     "previous-day-low": "L'apport en Phe d'hier était assez bas. Envisagez d'inclure plus d'aliments contenant du Phe aujourd'hui.",
     "previous-day-high": "Vous avez dépassé votre objectif de Phe hier. Essayez d'inclure moins d'aliments contenant du Phe aujourd'hui.",
     "previous-day-good": "Vous avez maintenu un bon apport en Phe hier. Continuez ainsi!",
-    "lab-values": "Valeurs de Laboratoire",
-    "lab-values-high": "Votre dernière valeur de Phe de {phe} {unit} est au-dessus de la plage cible. Essayez de respecter strictement vos limites de Phe dans les prochains jours.",
-    "lab-values-low": "Votre dernière valeur de Phe de {phe} {unit} est en dessous de la plage cible. Parlez à votre médecin de la possibilité d'inclure plus de Phe dans votre alimentation.",
-    "lab-values-good": "Votre dernière valeur de Phe de {phe} {unit} est dans la bonne plage. Continuez ainsi!",
-    "lab-values-tyrosine-low": "Votre dernière valeur de Tyrosine de {tyrosine} {unit} est basse. Assurez-vous de prendre votre mélange d'acides aminés régulièrement.",
-    "lab-values-tyrosine-high": "Votre dernière valeur de Tyrosine de {tyrosine} {unit} est élevée. Discutez du dosage de votre mélange d'acides aminés avec votre médecin.",
-    "lab-values-tyrosine-good": "Votre dernière valeur de Tyrosine de {tyrosine} {unit} est dans la bonne plage.",
+    "blood-values": "Valeurs de Laboratoire",
+    "blood-values-high": "Votre dernière valeur de Phe de {phe} {unit} est au-dessus de la plage cible. Essayez de respecter strictement vos limites de Phe dans les prochains jours.",
+    "blood-values-low": "Votre dernière valeur de Phe de {phe} {unit} est en dessous de la plage cible. Parlez à votre médecin de la possibilité d'inclure plus de Phe dans votre alimentation.",
+    "blood-values-good": "Votre dernière valeur de Phe de {phe} {unit} est dans la bonne plage. Continuez ainsi!",
+    "blood-values-tyrosine-low": "Votre dernière valeur de Tyrosine de {tyrosine} {unit} est basse. Assurez-vous de prendre votre mélange d'acides aminés régulièrement.",
+    "blood-values-tyrosine-high": "Votre dernière valeur de Tyrosine de {tyrosine} {unit} est élevée. Discutez du dosage de votre mélange d'acides aminés avec votre médecin.",
+    "blood-values-tyrosine-good": "Votre dernière valeur de Tyrosine de {tyrosine} {unit} est dans la bonne plage.",
     "motivation": "Motivation",
     "streak": "Incroyable! Vous avez suivi votre nutrition pendant {streak} jours d'affilée!",
     "week": "C'est une semaine entière d'engagement!",
     "keep-going": "Continuez ainsi!",
     "start-tracking": "Commencez à suivre votre nutrition quotidiennement pour créer une série et obtenir des aperçus personnalisés!",
-    "phe-diary": "Journal",
+    "diary-report": "Journal",
     "phe-stats-average": "Au cours des 14 derniers jours (hors aujourd'hui), votre apport moyen en Phe était de {average} mg.",
     "phe-stats-deviation": "L'écart moyen par rapport à l'optimum est de {deviation}%."
   },

@@ -19,7 +19,7 @@ import SecondaryButton from '../components/SecondaryButton.vue'
 import DateInput from '../components/DateInput.vue'
 import TextInput from '../components/TextInput.vue'
 import PageHeader from '../components/PageHeader.vue'
-import PheDiaryCard from '../components/PheDiaryCard.vue'
+import DiaryReportCard from '../components/DiaryReportCard.vue'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
@@ -51,7 +51,7 @@ const settings = computed(() => store.settings)
 const license = computed(() => settings.value.license === config.public.pkutoolsLicenseKey)
 
 const tableHeaders = computed(() => [
-  { key: 'date', title: t('phe-diary.date') },
+  { key: 'date', title: t('diary-report.date') },
   { key: 'phe', title: t('common.phe') },
   { key: 'kcal', title: t('common.kcal') }
 ])
@@ -334,7 +334,7 @@ const escapeCSV = (value) => {
 }
 
 const exportAllFoodItems = () => {
-  let r = confirm(t('phe-diary.export-food') + '?')
+  let r = confirm(t('diary-report.export-food') + '?')
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
     csvContent += 'Date,Name,Weight,Phe,Kcal\n'
@@ -360,7 +360,7 @@ const exportAllFoodItems = () => {
 }
 
 const exportDailyPheTotals = () => {
-  let r = confirm(t('phe-diary.export-days') + '?')
+  let r = confirm(t('diary-report.export-days') + '?')
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
     csvContent += 'Date,Total Phe,Total Kcal\n'
@@ -379,7 +379,7 @@ const triggerDownload = (csvContent) => {
   const encodedUri = encodeURI(csvContent)
   const link = document.createElement('a')
   link.setAttribute('href', encodedUri)
-  link.setAttribute('download', t('phe-diary.export-filename') + '.csv')
+  link.setAttribute('download', t('diary-report.export-filename') + '.csv')
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
@@ -423,7 +423,7 @@ const updateData = (timeline) => {
 <template>
   <div>
     <header>
-      <PageHeader :title="$t('phe-diary.tab-title')" class="inline-block" />
+      <PageHeader :title="$t('diary-report.tab-title')" class="inline-block" />
     </header>
 
     <div v-if="!userIsAuthenticated">
@@ -431,15 +431,15 @@ const updateData = (timeline) => {
       <br />
       <NuxtLink
         type="button"
-        :to="$localePath('email-auth')"
+        :to="$localePath('login')"
         class="rounded-sm bg-black/5 dark:bg-white/15 px-2 py-1 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 mr-3 mb-6"
       >
-        {{ $t('email-auth.title') }}
+        {{ $t('login.title') }}
       </NuxtLink>
     </div>
 
     <div v-if="userIsAuthenticated">
-      <p v-if="pheDiary.length < 2" class="mb-6">{{ $t('phe-diary.chart-info') }}</p>
+      <p v-if="pheDiary.length < 2" class="mb-6">{{ $t('diary-report.chart-info') }}</p>
 
       <div v-if="pheDiary.length >= 2">
         <div class="flex gap-2 mb-4">
@@ -478,7 +478,7 @@ const updateData = (timeline) => {
         ></apexchart>
       </div>
 
-      <PheDiaryCard />
+      <DiaryReportCard />
 
       <!-- TODO: Add sort feature -->
       <DataTable :headers="tableHeaders" class="mb-8">
@@ -514,12 +514,12 @@ const updateData = (timeline) => {
         @delete="deleteItem"
         @close="close"
       >
-        <DateInput id-name="date" :label="$t('phe-diary.date')" v-model="editedItem.date" />
+        <DateInput id-name="date" :label="$t('diary-report.date')" v-model="editedItem.date" />
 
         <div class="flex gap-4">
           <NumberInput
             id-name="total-phe"
-            :label="$t('phe-diary.phe')"
+            :label="$t('diary-report.phe')"
             v-model.number="editedItem.phe"
             class="flex-1"
           />
@@ -533,7 +533,7 @@ const updateData = (timeline) => {
 
         <div v-if="editedItem.log" class="flex justify-between items-center -mb-3">
           <h4 class="text-sm font-medium">
-            {{ $t('phe-log.title') }}
+            {{ $t('diary.title') }}
           </h4>
           <SecondaryButton
             :text="$t('common.add')"
@@ -622,12 +622,12 @@ const updateData = (timeline) => {
 
       <SecondaryButton
         v-if="license"
-        :text="$t('phe-diary.export-food')"
+        :text="$t('diary-report.export-food')"
         @click="exportAllFoodItems"
       />
       <SecondaryButton
         v-if="license"
-        :text="$t('phe-diary.export-days')"
+        :text="$t('diary-report.export-days')"
         @click="exportDailyPheTotals"
       />
 

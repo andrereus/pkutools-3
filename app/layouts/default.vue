@@ -38,41 +38,40 @@ const showCookieBanner = ref(false)
 const userIsAuthenticated = computed(() => store.user !== null)
 const userPhotoUrl = computed(() => (store.user ? store.user.photoUrl : null))
 const user = computed(() => store.user)
-const pheLog = computed(() => store.pheLog)
 const settings = computed(() => store.settings)
 
 const navigation = computed(() => {
   return [
     { name: 'app.start', icon: 'House', route: 'index' },
-    { name: 'phe-search.title', icon: 'Search', route: 'phe-search' },
+    { name: 'food-search.title', icon: 'Search', route: 'food-search' },
     { name: 'barcode-scanner.title', icon: 'ScanBarcode', route: 'barcode-scanner' },
     { name: 'phe-calculator.title', icon: 'Calculator', route: 'phe-calculator' },
     { name: 'protein-calculator.title', icon: 'SquareDivide', route: 'protein-calculator' },
     { name: 'assistant.title', icon: 'Bot', route: 'assistant' },
-    { name: 'phe-log.title', icon: 'Book', route: 'phe-log' },
-    { name: 'phe-diary.title', icon: 'Calendar', route: 'phe-diary' },
-    { name: 'lab-values.title', icon: 'ChartLine', route: 'lab-values' }
+    { name: 'diary.title', icon: 'Book', route: 'diary' },
+    { name: 'diary-report.title', icon: 'Calendar', route: 'diary-report' },
+    { name: 'blood-values.title', icon: 'ChartLine', route: 'blood-values' }
   ]
 })
 
 const tabNavigation = computed(() => {
   if (userIsAuthenticated.value) {
     return [
-      { name: 'home.title', icon: 'House', route: 'phe-log' },
-      { name: 'app.search', icon: 'Search', route: 'phe-search' },
+      { name: 'home.title', icon: 'House', route: 'diary' },
+      { name: 'app.search', icon: 'Search', route: 'food-search' },
       { name: 'app.scanner', icon: 'ScanBarcode', route: 'barcode-scanner' },
       { name: 'app.calculator', icon: 'Calculator', route: 'phe-calculator' },
-      { name: 'phe-diary.tab-title', icon: 'Calendar', route: 'phe-diary' },
-      { name: 'lab-values.tab-title', icon: 'ChartLine', route: 'lab-values' }
+      { name: 'diary-report.tab-title', icon: 'Calendar', route: 'diary-report' },
+      { name: 'blood-values.tab-title', icon: 'ChartLine', route: 'blood-values' }
     ]
   } else {
     return [
       { name: 'home.title', icon: 'House', route: 'index' },
-      { name: 'app.search', icon: 'Search', route: 'phe-search' },
+      { name: 'app.search', icon: 'Search', route: 'food-search' },
       { name: 'app.scanner', icon: 'ScanBarcode', route: 'barcode-scanner' },
       { name: 'app.calculator', icon: 'Calculator', route: 'phe-calculator' },
-      { name: 'phe-diary.tab-title', icon: 'Calendar', route: 'phe-diary' },
-      { name: 'lab-values.tab-title', icon: 'ChartLine', route: 'lab-values' }
+      { name: 'diary-report.tab-title', icon: 'Calendar', route: 'diary-report' },
+      { name: 'blood-values.tab-title', icon: 'ChartLine', route: 'blood-values' }
     ]
   }
 })
@@ -91,19 +90,19 @@ const userNavigation = computed(() => {
 const footerNavigation = computed(() => {
   return {
     tools: [
-      { name: 'phe-search.title', route: 'phe-search' },
+      { name: 'food-search.title', route: 'food-search' },
       { name: 'barcode-scanner.title', route: 'barcode-scanner' },
       { name: 'phe-calculator.title', route: 'phe-calculator' },
       { name: 'protein-calculator.title', route: 'protein-calculator' },
       { name: 'assistant.title', route: 'assistant' }
     ],
     features: [
-      { name: 'phe-log.title', route: 'phe-log' },
-      { name: 'phe-diary.title', route: 'phe-diary' },
-      { name: 'lab-values.title', route: 'lab-values' }
+      { name: 'diary.title', route: 'diary' },
+      { name: 'diary-report.title', route: 'diary-report' },
+      { name: 'blood-values.title', route: 'blood-values' }
     ],
     account: [
-      { name: 'email-auth.tab-title', route: 'email-auth' },
+      { name: 'login.tab-title', route: 'login' },
       { name: 'own-food.title', route: 'own-food' },
       { name: 'settings.title', route: 'settings' }
     ],
@@ -117,17 +116,9 @@ const footerNavigation = computed(() => {
   }
 })
 
-const pheResult = computed(() => {
-  let phe = 0
-  pheLog.value.forEach((item) => {
-    phe += item.phe
-  })
-  return Math.round(phe)
-})
-
 const isTabActive = computed(() => (item) => {
-  // Home-Tab aktiv für index und phe-log
-  const homeRoutes = [localePath('index'), localePath('phe-log')]
+  // Home-Tab aktiv für index und diary
+  const homeRoutes = [localePath('index'), localePath('diary')]
   if (homeRoutes.includes(route.fullPath) && homeRoutes.includes(localePath(item.route))) {
     return true
   }
@@ -268,7 +259,7 @@ const handleCookieConsent = (consent) => {
 
           <div class="flex flex-1 items-stretch justify-start ml-3">
             <NuxtLink
-              :to="userIsAuthenticated ? $localePath('phe-log') : $localePath('index')"
+              :to="userIsAuthenticated ? $localePath('diary') : $localePath('index')"
               class="flex shrink-0 items-center"
             >
               <img class="h-8 w-auto mr-3" src="~/assets/pkutools-logo.png" alt="PKU Tools Logo" />
@@ -400,7 +391,7 @@ const handleCookieConsent = (consent) => {
                         ]"
                         @click.prevent="
                           () => {
-                            navigateTo($localePath('email-auth'))
+                            navigateTo($localePath('login'))
                             close()
                           }
                         "
@@ -408,7 +399,7 @@ const handleCookieConsent = (consent) => {
                         <Mail
                           class="mr-3 h-5 w-5 text-gray-700 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
                           aria-hidden="true"
-                        />{{ $t('email-auth.title') }}
+                        />{{ $t('login.title') }}
                       </a>
                     </MenuItem>
                     <MenuItem v-if="userIsAuthenticated" v-slot="{ active, close }">
@@ -521,7 +512,7 @@ const handleCookieConsent = (consent) => {
       <div class="mx-auto max-w-7xl px-6 py-12 sm:py-12 lg:px-8 lg:py-12">
         <div class="xl:grid xl:grid-cols-3 xl:gap-8">
           <NuxtLink
-            :to="userIsAuthenticated ? $localePath('phe-log') : $localePath('index')"
+            :to="userIsAuthenticated ? $localePath('diary') : $localePath('index')"
             class="hidden lg:block"
           >
             <img class="h-8" src="~/assets/pkutools-logo.png" alt="PKU Tools Logo" />

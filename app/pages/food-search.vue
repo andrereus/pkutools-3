@@ -142,7 +142,7 @@ const searchFood = async () => {
 
     <div>
       <div class="w-full mb-6">
-        <label for="search" class="sr-only">{{ $t('phe-search.search') }}</label>
+        <label for="search" class="sr-only">{{ $t('food-search.search') }}</label>
         <div class="relative">
           <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             <Search class="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -152,7 +152,7 @@ const searchFood = async () => {
             id="search"
             name="search"
             v-model="search"
-            :placeholder="$t('phe-search.search')"
+            :placeholder="$t('food-search.search')"
             @keyup="searchFood"
             autocomplete="off"
             class="block w-full rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
@@ -180,7 +180,7 @@ const searchFood = async () => {
         </tr>
       </DataTable>
 
-      <p class="mt-8">{{ $t('phe-search.search-info') }}</p>
+      <p class="mt-8">{{ $t('food-search.search-info') }}</p>
 
       <ModalDialog
         ref="dialog"

@@ -7,8 +7,8 @@ import SecondaryButton from '../components/SecondaryButton.vue'
 import MotivationCard from '../components/MotivationCard.vue'
 import CurrentTipCard from '../components/CurrentTipCard.vue'
 import TodaysTipCard from '../components/TodaysTipCard.vue'
-import PheDiaryCard from '../components/PheDiaryCard.vue'
-import LabValuesCard from '../components/LabValuesCard.vue'
+import DiaryReportCard from '../components/DiaryReportCard.vue'
+import BloodValuesCard from '../components/BloodValuesCard.vue'
 
 const store = useStore()
 const { t } = useI18n()
@@ -27,10 +27,10 @@ const userIsAuthenticated = computed(() => store.user !== null)
       <br />
       <NuxtLink
         type="button"
-        :to="$localePath('email-auth')"
+        :to="$localePath('login')"
         class="rounded-sm bg-black/5 dark:bg-white/15 px-2 py-1 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 mr-3 mb-6"
       >
-        {{ $t('email-auth.title') }}
+        {{ $t('login.title') }}
       </NuxtLink>
     </div>
 
@@ -39,8 +39,8 @@ const userIsAuthenticated = computed(() => store.user !== null)
         <MotivationCard />
         <CurrentTipCard />
         <TodaysTipCard />
-        <PheDiaryCard />
-        <LabValuesCard />
+        <DiaryReportCard />
+        <BloodValuesCard />
         <p class="mt-2">{{ $t('assistant.info') }}</p>
       </div>
     </div>

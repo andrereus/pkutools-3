@@ -58,7 +58,7 @@
     "about-description": "From the developer of one of the first PKU apps for Android \"Phe Rechner\", as well as \"PKU Manager\". Development of PKU apps since 2013.",
     "social": "Stay up to date"
   },
-  "phe-search": {
+  "food-search": {
     "title": "Phe Search",
     "description": "Search for phe values.",
     "search": "Search for food",
@@ -95,7 +95,7 @@
     "export-filename": "PKU Tools - Own Food",
     "choose-icon": "Select icon"
   },
-  "phe-log": {
+  "diary": {
     "title": "Phe Log",
     "tab-title": "Log",
     "description": "Log phe values throughout the day.",
@@ -109,7 +109,7 @@
     "data-warning": "Attention: Phe per 100g is missing.",
     "more": "More"
   },
-  "phe-diary": {
+  "diary-report": {
     "title": "Phe Diary",
     "tab-title": "Diary",
     "description": "Log phe values over several days.",
@@ -121,7 +121,7 @@
     "export-filename": "PKU Tools - Phe Diary",
     "chart-info": "The chart gets displayed after the second entry."
   },
-  "lab-values": {
+  "blood-values": {
     "title": "Lab Values",
     "tab-title": "Lab Values",
     "description": "Log lab values.",
@@ -152,7 +152,7 @@
     "change-password-info": "Please use the \"Forgot Password\" function under \"Sign in with Email\".",
     "reset-heading": "Delete data",
     "reset-diary": "Delete Diary",
-    "reset-lab-values": "Delete Lab Values",
+    "reset-blood-values": "Delete Lab Values",
     "reset-own-food": "Delete Own Food",
     "delete-account": "Delete account",
     "delete-account-info": "Only works if the last login was not too long ago. Please log out once and log in again.",
@@ -181,7 +181,7 @@
     "subscribe": "Join",
     "buy": "Join"
   },
-  "email-auth": {
+  "login": {
     "title": "Sign in with Email",
     "tab-title": "Sign in",
     "signedin": "You are signed in.",
@@ -238,8 +238,8 @@
     "own-food-description": "Save your own foods for quick addition.",
     "diary-name": "Log and Diary",
     "diary-description": "Keep track of your food and monitor your Phe tolerance.",
-    "lab-values-name": "Lab Values",
-    "lab-values-description": "Track laboratory values in a diagram.",
+    "blood-values-name": "Lab Values",
+    "blood-values-description": "Track laboratory values in a diagram.",
     "suggestions-name": "1-Click Suggestions",
     "suggestions-description": "Add suggestions to the log with one click.",
     "assistant-name": "Assistant",
@@ -263,19 +263,19 @@
     "previous-day-low": "Yesterday's Phe intake was quite low. Consider including more Phe-containing foods today.",
     "previous-day-high": "You exceeded your Phe goal yesterday. Try to include fewer Phe-containing foods today.",
     "previous-day-good": "You maintained a good Phe intake yesterday. Keep it up!",
-    "lab-values": "Lab Values",
-    "lab-values-high": "Your last Phe value of {phe} {unit} is above the target range. Try to strictly adhere to your Phe limits in the coming days.",
-    "lab-values-low": "Your last Phe value of {phe} {unit} is below the target range. Talk to your doctor about potentially including more Phe in your diet.",
-    "lab-values-good": "Your last Phe value of {phe} {unit} is in the good range. Keep it up!",
-    "lab-values-tyrosine-low": "Your last Tyrosine value of {tyrosine} {unit} is low. Make sure to take your amino acid mixture regularly.",
-    "lab-values-tyrosine-high": "Your last Tyrosine value of {tyrosine} {unit} is elevated. Discuss the dosage of your amino acid mixture with your doctor.",
-    "lab-values-tyrosine-good": "Your last Tyrosine value of {tyrosine} {unit} is in the good range.",
+    "blood-values": "Lab Values",
+    "blood-values-high": "Your last Phe value of {phe} {unit} is above the target range. Try to strictly adhere to your Phe limits in the coming days.",
+    "blood-values-low": "Your last Phe value of {phe} {unit} is below the target range. Talk to your doctor about potentially including more Phe in your diet.",
+    "blood-values-good": "Your last Phe value of {phe} {unit} is in the good range. Keep it up!",
+    "blood-values-tyrosine-low": "Your last Tyrosine value of {tyrosine} {unit} is low. Make sure to take your amino acid mixture regularly.",
+    "blood-values-tyrosine-high": "Your last Tyrosine value of {tyrosine} {unit} is elevated. Discuss the dosage of your amino acid mixture with your doctor.",
+    "blood-values-tyrosine-good": "Your last Tyrosine value of {tyrosine} {unit} is in the good range.",
     "motivation": "Motivation",
     "streak": "Amazing! You've tracked your nutrition for {streak} days in a row!",
     "week": "That's a whole week of commitment!",
     "keep-going": "Keep it up!",
     "start-tracking": "Start tracking your nutrition daily to build a streak and get personalized insights!",
-    "phe-diary": "Diary",
+    "diary-report": "Diary",
     "phe-stats-average": "In the last 14 days (excluding today), your average Phe intake was {average} mg.",
     "phe-stats-deviation": "The average deviation from optimum is {deviation}%."
   },

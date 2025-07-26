@@ -4,7 +4,7 @@
         <loc>https://pkutools.com/</loc>
     </url>
     <url>
-        <loc>https://pkutools.com/phe-search</loc>
+        <loc>https://pkutools.com/food-search</loc>
     </url>
     <url>
         <loc>https://pkutools.com/barcode-scanner</loc>
@@ -19,13 +19,13 @@
         <loc>https://pkutools.com/assistant</loc>
     </url>
     <url>
-        <loc>https://pkutools.com/phe-log</loc>
+        <loc>https://pkutools.com/diary</loc>
     </url>
     <url>
-        <loc>https://pkutools.com/phe-diary</loc>
+        <loc>https://pkutools.com/diary-report</loc>
     </url>
     <url>
-        <loc>https://pkutools.com/lab-values</loc>
+        <loc>https://pkutools.com/blood-values</loc>
     </url>
     <url>
         <loc>https://pkutools.com/own-food</loc>
@@ -34,7 +34,7 @@
         <loc>https://pkutools.com/settings</loc>
     </url>
     <url>
-        <loc>https://pkutools.com/email-auth</loc>
+        <loc>https://pkutools.com/login</loc>
     </url>
     <url>
         <loc>https://pkutools.com/help</loc>

@@ -13,13 +13,13 @@ const validatePassword = () => {
   if (model.value && model.value.length >= 8) {
     errorMessage.value = ''
   } else {
-    errorMessage.value = t('email-auth.min-length')
+    errorMessage.value = t('login.min-length')
   }
 }
 
 watch(model, () => {
   if (!model.value) {
-    errorMessage.value = t('email-auth.required')
+    errorMessage.value = t('login.required')
   } else {
     validatePassword()
   }

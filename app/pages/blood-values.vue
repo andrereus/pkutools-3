@@ -18,7 +18,7 @@ import NumberInput from '../components/NumberInput.vue'
 import SecondaryButton from '../components/SecondaryButton.vue'
 import DateInput from '../components/DateInput.vue'
 import PageHeader from '../components/PageHeader.vue'
-import LabValuesCard from '../components/LabValuesCard.vue'
+import BloodValuesCard from '../components/BloodValuesCard.vue'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
@@ -46,9 +46,9 @@ const settings = computed(() => store.settings)
 const license = computed(() => settings.value.license === config.public.pkutoolsLicenseKey)
 
 const tableHeaders = computed(() => [
-  { key: 'date', title: t('lab-values.date') },
-  { key: 'phe', title: t('lab-values.phe') },
-  { key: 'tyrosine', title: t('lab-values.tyrosine') }
+  { key: 'date', title: t('blood-values.date') },
+  { key: 'phe', title: t('blood-values.phe') },
+  { key: 'tyrosine', title: t('blood-values.tyrosine') }
 ])
 
 const formTitle = computed(() => {
@@ -205,7 +205,7 @@ const escapeCSV = (value) => {
 }
 
 const exportLabValues = () => {
-  let r = confirm(t('lab-values.export') + '?')
+  let r = confirm(t('blood-values.export') + '?')
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
     csvContent += 'Date,Phe,Tyrosine\n'
@@ -224,7 +224,7 @@ const triggerDownload = (csvContent) => {
   const encodedUri = encodeURI(csvContent)
   const link = document.createElement('a')
   link.setAttribute('href', encodedUri)
-  link.setAttribute('download', t('lab-values.export-filename') + '.csv')
+  link.setAttribute('download', t('blood-values.export-filename') + '.csv')
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
@@ -234,7 +234,7 @@ const triggerDownload = (csvContent) => {
 <template>
   <div>
     <header>
-      <PageHeader :title="$t('lab-values.title')" />
+      <PageHeader :title="$t('blood-values.title')" />
     </header>
 
     <div v-if="!userIsAuthenticated">
@@ -242,15 +242,15 @@ const triggerDownload = (csvContent) => {
       <br />
       <NuxtLink
         type="button"
-        :to="$localePath('email-auth')"
+        :to="$localePath('login')"
         class="rounded-sm bg-black/5 dark:bg-white/15 px-2 py-1 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 mr-3 mb-6"
       >
-        {{ $t('email-auth.title') }}
+        {{ $t('login.title') }}
       </NuxtLink>
     </div>
 
     <div v-if="userIsAuthenticated">
-      <p v-if="labValues.length < 2" class="mb-6">{{ $t('lab-values.chart-info') }}</p>
+      <p v-if="labValues.length < 2" class="mb-6">{{ $t('blood-values.chart-info') }}</p>
 
       <apexchart
         v-if="labValues.length >= 2"
@@ -260,7 +260,7 @@ const triggerDownload = (csvContent) => {
         :series="graph"
         class="-mb-2"
       ></apexchart>
-      <LabValuesCard />
+      <BloodValuesCard />
       <!-- TODO: Add sort feature -->
       <DataTable :headers="tableHeaders" class="mb-8">
         <tr
@@ -295,26 +295,26 @@ const triggerDownload = (csvContent) => {
         @delete="deleteItem"
         @close="close"
       >
-        <DateInput id-name="date" :label="$t('lab-values.date')" v-model="editedItem.date" />
+        <DateInput id-name="date" :label="$t('blood-values.date')" v-model="editedItem.date" />
 
         <NumberInput
           id-name="phe"
-          :label="$t('lab-values.phe') + (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')"
+          :label="$t('blood-values.phe') + (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')"
           v-model.number="editedItem.phe"
         />
 
         <NumberInput
           id-name="tyrosine"
           :label="
-            $t('lab-values.tyrosine') + (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
+            $t('blood-values.tyrosine') + (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
           "
           v-model.number="editedItem.tyrosine"
         />
 
-        <p class="text-sm mt-4">{{ $t('lab-values.unit-info') }}</p>
+        <p class="text-sm mt-4">{{ $t('blood-values.unit-info') }}</p>
       </ModalDialog>
 
-      <SecondaryButton v-if="license" :text="$t('lab-values.export')" @click="exportLabValues" />
+      <SecondaryButton v-if="license" :text="$t('blood-values.export')" @click="exportLabValues" />
 
       <p v-if="!license" class="mt-3 text-sm">
         <NuxtLink :to="$localePath('settings')">

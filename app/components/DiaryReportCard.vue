@@ -48,7 +48,7 @@ const pheStats = computed(() => {
     <div class="px-4 py-5 sm:p-6">
       <div class="flex items-center gap-3 font-medium mb-2">
         <Book class="h-5 w-5" />
-        {{ $t('assistant.phe-diary') }}
+        {{ $t('assistant.diary-report') }}
       </div>
       <div>
         <p>{{ $t('assistant.phe-stats-average', { average: pheStats.average }) }}</p>

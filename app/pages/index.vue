@@ -27,7 +27,7 @@ const features = [
     name: 'features.search-name',
     description: 'features.search-description',
     icon: Search,
-    route: 'phe-search'
+    route: 'food-search'
   },
   {
     name: 'features.scanner-name',
@@ -51,19 +51,19 @@ const features = [
     name: 'features.diary-name',
     description: 'features.diary-description',
     icon: Book,
-    route: 'phe-log'
+    route: 'diary'
   },
   {
-    name: 'features.lab-values-name',
-    description: 'features.lab-values-description',
+    name: 'features.blood-values-name',
+    description: 'features.blood-values-description',
     icon: ChartLine,
-    route: 'lab-values'
+    route: 'blood-values'
   },
   {
     name: 'features.suggestions-name',
     description: 'features.suggestions-description',
     icon: Sparkles,
-    route: 'phe-log'
+    route: 'diary'
   },
   {
     name: 'features.own-food-name',
@@ -89,7 +89,7 @@ const signInGoogle = async () => {
 // Watchers
 watch(userIsAuthenticated, (newVal) => {
   if (newVal) {
-    navigateTo(localePath('phe-log'))
+    navigateTo(localePath('diary'))
   }
 })
 </script>
@@ -170,10 +170,10 @@ watch(userIsAuthenticated, (newVal) => {
             {{ $t('app.signin-google') }}
           </a>
           <NuxtLink
-            :to="$localePath('email-auth')"
+            :to="$localePath('login')"
             class="rounded-sm bg-sky-500 px-2 py-1 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
           >
-            {{ $t('email-auth.title') }}
+            {{ $t('login.title') }}
           </NuxtLink>
         </div>
       </div>

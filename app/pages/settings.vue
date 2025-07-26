@@ -78,16 +78,16 @@ const resetDiary = () => {
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/pheDiary`))
-    navigateTo(localePath('/phe-diary'))
+    navigateTo(localePath('diary-report'))
   }
 }
 
 const resetLabValues = () => {
-  let r = confirm(t('settings.reset-lab-values') + '?')
+  let r = confirm(t('settings.reset-blood-values') + '?')
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/labValues`))
-    navigateTo(localePath('/lab-values'))
+    navigateTo(localePath('blood-values'))
   }
 }
 
@@ -96,7 +96,7 @@ const resetOwnFood = () => {
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/ownFood`))
-    navigateTo(localePath('/own-food'))
+    navigateTo(localePath('own-food'))
   }
 }
 
@@ -164,10 +164,10 @@ onMounted(() => {
       <br />
       <NuxtLink
         type="button"
-        :to="$localePath('email-auth')"
+        :to="$localePath('login')"
         class="rounded-sm bg-black/5 dark:bg-white/15 px-2 py-1 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 mr-3 mb-6"
       >
-        {{ $t('email-auth.title') }}
+        {{ $t('login.title') }}
       </NuxtLink>
     </div>
 
@@ -186,7 +186,7 @@ onMounted(() => {
 
       <SelectMenu
         id-name="unit"
-        :label="$t('lab-values.unit')"
+        :label="$t('blood-values.unit')"
         v-model="settings.labUnit"
         class="mb-6"
       >
@@ -214,7 +214,7 @@ onMounted(() => {
 
       <PageHeader :title="$t('settings.reset-heading')" class="mt-6" />
       <SecondaryButton :text="$t('settings.reset-diary')" @click="resetDiary" />
-      <SecondaryButton :text="$t('settings.reset-lab-values')" @click="resetLabValues" />
+      <SecondaryButton :text="$t('settings.reset-blood-values')" @click="resetLabValues" />
       <SecondaryButton :text="$t('settings.reset-own-food')" @click="resetOwnFood" />
 
       <PageHeader :title="$t('settings.delete-account')" class="mt-6" />

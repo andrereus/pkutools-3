@@ -46,7 +46,6 @@ const editedItem = ref({ ...defaultItem })
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
 const user = computed(() => store.user)
-const pheLog = computed(() => store.pheLog)
 const pheDiary = computed(() => store.pheDiary)
 const settings = computed(() => store.settings)
 
@@ -210,29 +209,6 @@ const save = () => {
   close()
 }
 
-const saveResult = () => {
-  const db = getDatabase()
-  if (pheDiary.value.length >= 30 && settings.value.license !== config.public.pkutoolsLicenseKey) {
-    alert(t('app.limit'))
-  } else {
-    const pheLogForFirebase = pheLog.value.map(
-      ({
-        // eslint-disable-next-line no-unused-vars
-        '.key': key,
-        ...itemWithoutKey
-      }) => itemWithoutKey
-    )
-    push(dbRef(db, `${user.value.id}/pheDiary`), {
-      date: date.value,
-      phe: pheResult.value,
-      log: pheLogForFirebase
-    }).then(() => {
-      remove(dbRef(db, `${user.value.id}/pheLog`))
-    })
-    navigateTo(localePath('phe-diary'))
-  }
-}
-
 const prevDay = () => {
   const currentDate = parseISO(date.value)
   date.value = format(subDays(currentDate, 1), 'yyyy-MM-dd')
@@ -254,7 +230,7 @@ watch(userIsAuthenticated, (newVal) => {
 <template>
   <div>
     <header>
-      <PageHeader :title="$t('phe-log.tab-title')" class="inline-block" />
+      <PageHeader :title="$t('diary.tab-title')" class="inline-block" />
     </header>
 
     <div v-if="!userIsAuthenticated">
@@ -262,10 +238,10 @@ watch(userIsAuthenticated, (newVal) => {
       <br />
       <NuxtLink
         type="button"
-        :to="$localePath('email-auth')"
+        :to="$localePath('login')"
         class="rounded-sm bg-black/5 dark:bg-white/15 px-2 py-1 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 mr-3 mb-6"
       >
-        {{ $t('email-auth.title') }}
+        {{ $t('login.title') }}
       </NuxtLink>
     </div>
 
@@ -384,7 +360,7 @@ watch(userIsAuthenticated, (newVal) => {
         @close="close"
       >
         <p v-if="!editedItem.pheReference && editedIndex !== -1" class="mb-3">
-          {{ $t('phe-log.data-warning') }}
+          {{ $t('diary.data-warning') }}
         </p>
         <TextInput id-name="food" :label="$t('common.food-name')" v-model="editedItem.name" />
         <div class="flex gap-4">
@@ -424,13 +400,13 @@ watch(userIsAuthenticated, (newVal) => {
         />
         <SecondaryButton
           v-if="visibleItems < lastAdded.length"
-          :text="$t('phe-log.more')"
+          :text="$t('diary.more')"
           @click="showMoreItems"
         />
       </span>
 
       <p v-if="lastAdded.length === 0" class="mt-3">
-        {{ $t('phe-log.info') }}
+        {{ $t('diary.info') }}
       </p>
 
       <p v-if="!license" class="mt-3 text-sm">
