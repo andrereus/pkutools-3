@@ -92,7 +92,7 @@
   },
   "diet-report": {
     "title": "Diätbericht",
-    "tab-title": "Bericht",
+    "tab-title": "Diätbericht",
     "date": "Datum",
     "phe": "Gesamt Phe (in mg)",
     "export-food": "Lebensmittel exportieren",
@@ -205,7 +205,7 @@
     "calculator-description": "Berechne die Phe-Menge für ein bestimmtes Gewicht oder rechne Eiweiß in Phe um.",
     "own-food-name": "Eigene Lebensmittel",
     "own-food-description": "Hinterlege eigene Lebensmittel zum schnellen Hinzufügen.",
-    "diary-name": "Tagebuch und Bericht",
+    "diary-name": "Tagebuch und Diätbericht",
     "diary-description": "Halte Protokoll über dein Essen und verfolge deine Phe-Toleranz.",
     "blood-values-name": "Blutwerte",
     "blood-values-description": "Verfolge Blutwerte in einem Diagramm.",

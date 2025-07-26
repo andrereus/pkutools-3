@@ -92,7 +92,7 @@
   },
   "diet-report": {
     "title": "Rapport de régime",
-    "tab-title": "Rapport",
+    "tab-title": "Rapport de régime",
     "date": "Date",
     "phe": "Phe total (en mg)",
     "export-food": "Exporter des aliments",
@@ -205,7 +205,7 @@
     "calculator-description": "Calculez la quantité de Phe pour un poids spécifique ou convertissez des protéines en Phe.",
     "own-food-name": "Aliments Personnalisés",
     "own-food-description": "Enregistrez vos propres aliments pour un ajout rapide.",
-    "diary-name": "Journal et rapport",
+    "diary-name": "Rapport de journal et de régime",
     "diary-description": "Suivez vos aliments et surveillez votre tolérance à la Phe.",
     "blood-values-name": "Valeurs sanguines",
     "blood-values-description": "Suivez les valeurs sanguines dans un diagramme.",
