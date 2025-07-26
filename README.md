@@ -70,7 +70,6 @@ npm run preview
 ### Not set up yet
 
 - firebase emulators
-- posthog
 - sentry
 
 ## Contributing
