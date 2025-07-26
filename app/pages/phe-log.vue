@@ -7,14 +7,14 @@ import { getDatabase, ref as dbRef, push, remove, update } from 'firebase/databa
 import { format, parseISO, subDays, addDays } from 'date-fns'
 import { ChevronLeft, ChevronRight, BadgeCheck, BadgeMinus } from 'lucide-vue-next'
 
-import DataTable from './DataTable.vue'
-import ModalDialog from './ModalDialog.vue'
-import SecondaryButton from './SecondaryButton.vue'
-import TextInput from './TextInput.vue'
-import NumberInput from './NumberInput.vue'
-import PrimaryButton from './PrimaryButton.vue'
-import PageHeader from './PageHeader.vue'
-import TodaysTipCard from './TodaysTipCard.vue'
+import DataTable from '../components/DataTable.vue'
+import ModalDialog from '../components/ModalDialog.vue'
+import SecondaryButton from '../components/SecondaryButton.vue'
+import TextInput from '../components/TextInput.vue'
+import NumberInput from '../components/NumberInput.vue'
+import PrimaryButton from '../components/PrimaryButton.vue'
+import PageHeader from '../components/PageHeader.vue'
+import TodaysTipCard from '../components/TodaysTipCard.vue'
 
 const store = useStore()
 const { t } = useI18n()
@@ -242,6 +242,13 @@ const nextDay = () => {
   const currentDate = parseISO(date.value)
   date.value = format(addDays(currentDate, 1), 'yyyy-MM-dd')
 }
+
+// Watchers
+watch(userIsAuthenticated, (newVal) => {
+  if (!newVal) {
+    navigateTo(localePath('index'))
+  }
+})
 </script>
 
 <template>

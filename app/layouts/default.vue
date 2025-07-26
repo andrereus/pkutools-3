@@ -29,6 +29,7 @@ import {
 const store = useStore()
 const { t, locale, locales, setLocale } = useI18n()
 const route = useRoute()
+const localePath = useLocalePath()
 
 // Reactive state
 const showCookieBanner = ref(false)
@@ -42,13 +43,13 @@ const settings = computed(() => store.settings)
 
 const navigation = computed(() => {
   return [
-    { name: 'app.start', icon: 'House', route: '/?home=true' },
+    { name: 'app.start', icon: 'House', route: 'index' },
     { name: 'phe-search.title', icon: 'Search', route: 'phe-search' },
     { name: 'barcode-scanner.title', icon: 'ScanBarcode', route: 'barcode-scanner' },
     { name: 'phe-calculator.title', icon: 'Calculator', route: 'phe-calculator' },
     { name: 'protein-calculator.title', icon: 'SquareDivide', route: 'protein-calculator' },
     { name: 'assistant.title', icon: 'Bot', route: 'assistant' },
-    { name: 'phe-log.title', icon: 'Book', route: '/?log=true' },
+    { name: 'phe-log.title', icon: 'Book', route: 'phe-log' },
     { name: 'phe-diary.title', icon: 'Calendar', route: 'phe-diary' },
     { name: 'lab-values.title', icon: 'ChartLine', route: 'lab-values' }
   ]
@@ -57,7 +58,7 @@ const navigation = computed(() => {
 const tabNavigation = computed(() => {
   if (userIsAuthenticated.value) {
     return [
-      { name: 'home.title', icon: 'House', route: '/?log=true' },
+      { name: 'home.title', icon: 'House', route: 'phe-log' },
       { name: 'app.search', icon: 'Search', route: 'phe-search' },
       { name: 'app.scanner', icon: 'ScanBarcode', route: 'barcode-scanner' },
       { name: 'app.calculator', icon: 'Calculator', route: 'phe-calculator' },
@@ -66,7 +67,7 @@ const tabNavigation = computed(() => {
     ]
   } else {
     return [
-      { name: 'home.title', icon: 'House', route: '/?home=true' },
+      { name: 'home.title', icon: 'House', route: 'index' },
       { name: 'app.search', icon: 'Search', route: 'phe-search' },
       { name: 'app.scanner', icon: 'ScanBarcode', route: 'barcode-scanner' },
       { name: 'app.calculator', icon: 'Calculator', route: 'phe-calculator' },
@@ -97,7 +98,7 @@ const footerNavigation = computed(() => {
       { name: 'assistant.title', route: 'assistant' }
     ],
     features: [
-      { name: 'phe-log.title', route: '/?log=true' },
+      { name: 'phe-log.title', route: 'phe-log' },
       { name: 'phe-diary.title', route: 'phe-diary' },
       { name: 'lab-values.title', route: 'lab-values' }
     ],
@@ -107,7 +108,7 @@ const footerNavigation = computed(() => {
       { name: 'settings.title', route: 'settings' }
     ],
     about: [
-      { name: 'app.start', route: '/?home=true' },
+      { name: 'app.start', route: 'index' },
       { name: 'help.title', route: 'help' },
       { name: 'imprint.title', route: 'imprint' },
       { name: 'disclaimer.title', route: 'disclaimer' },
@@ -125,18 +126,21 @@ const pheResult = computed(() => {
 })
 
 const isTabActive = computed(() => (item) => {
-  if (item.route.startsWith('/?') && route.path === '/') {
+  // Home-Tab aktiv für index und phe-log
+  const homeRoutes = [localePath('index'), localePath('phe-log')]
+  if (homeRoutes.includes(route.fullPath) && homeRoutes.includes(localePath(item.route))) {
     return true
   }
-
+  // Calculator-Tab aktiv für phe-calculator und protein-calculator
+  const calculatorRoutes = [localePath('phe-calculator'), localePath('protein-calculator')]
   if (
-    item.route === '/phe-calculator' &&
-    (route.path === '/phe-calculator' || route.path === '/protein-calculator')
+    calculatorRoutes.includes(route.fullPath) &&
+    calculatorRoutes.includes(localePath(item.route))
   ) {
     return true
   }
-
-  return route.fullPath === item.route
+  // Standard: exakte Übereinstimmung
+  return route.fullPath === localePath(item.route)
 })
 
 // Methods
@@ -264,7 +268,7 @@ const handleCookieConsent = (consent) => {
 
           <div class="flex flex-1 items-stretch justify-start ml-3">
             <NuxtLink
-              :to="userIsAuthenticated ? $localePath('/?log=true') : $localePath('/?home=true')"
+              :to="userIsAuthenticated ? $localePath('phe-log') : $localePath('index')"
               class="flex shrink-0 items-center"
             >
               <img class="h-8 w-auto mr-3" src="~/assets/pkutools-logo.png" alt="PKU Tools Logo" />
@@ -517,7 +521,7 @@ const handleCookieConsent = (consent) => {
       <div class="mx-auto max-w-7xl px-6 py-12 sm:py-12 lg:px-8 lg:py-12">
         <div class="xl:grid xl:grid-cols-3 xl:gap-8">
           <NuxtLink
-            :to="userIsAuthenticated ? $localePath('/?log=true') : $localePath('/?home=true')"
+            :to="userIsAuthenticated ? $localePath('phe-log') : $localePath('index')"
             class="hidden lg:block"
           >
             <img class="h-8" src="~/assets/pkutools-logo.png" alt="PKU Tools Logo" />
