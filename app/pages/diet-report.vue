@@ -19,7 +19,7 @@ import SecondaryButton from '../components/SecondaryButton.vue'
 import DateInput from '../components/DateInput.vue'
 import TextInput from '../components/TextInput.vue'
 import PageHeader from '../components/PageHeader.vue'
-import DiaryReportCard from '../components/DiaryReportCard.vue'
+import DietReportCard from '../components/DietReportCard.vue'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
@@ -478,7 +478,7 @@ const updateData = (timeline) => {
         ></apexchart>
       </div>
 
-      <DiaryReportCard />
+      <DietReportCard />
 
       <!-- TODO: Add sort feature -->
       <DataTable :headers="tableHeaders" class="mb-8">

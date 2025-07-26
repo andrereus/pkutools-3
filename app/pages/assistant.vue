@@ -7,7 +7,7 @@ import SecondaryButton from '../components/SecondaryButton.vue'
 import MotivationCard from '../components/MotivationCard.vue'
 import CurrentTipCard from '../components/CurrentTipCard.vue'
 import TodaysTipCard from '../components/TodaysTipCard.vue'
-import DiaryReportCard from '../components/DiaryReportCard.vue'
+import DietReportCard from '../components/DietReportCard.vue'
 import BloodValuesCard from '../components/BloodValuesCard.vue'
 
 const store = useStore()
@@ -39,7 +39,7 @@ const userIsAuthenticated = computed(() => store.user !== null)
         <MotivationCard />
         <CurrentTipCard />
         <TodaysTipCard />
-        <DiaryReportCard />
+        <DietReportCard />
         <BloodValuesCard />
         <p class="mt-2">{{ $t('assistant.info') }}</p>
       </div>
