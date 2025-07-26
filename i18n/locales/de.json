@@ -52,7 +52,7 @@
     "social": "Bleibe auf dem Laufenden"
   },
   "food-search": {
-    "title": "Phe Suche",
+    "title": "Lebensmittelsuche",
     "search": "Lebensmittel suchen",
     "search-info": "Verfeinere deine Suche mit mehreren Wörtern, z.B. \"äpfel roh\" oder \"kartoffeln gekocht\". Quelle: fdc.nal.usda.gov"
   },
@@ -84,32 +84,32 @@
     "choose-icon": "Icon auswählen"
   },
   "diary": {
-    "title": "Phe Protokoll",
-    "tab-title": "Protokoll",
+    "title": "Tagebuch",
+    "tab-title": "Tagebuch",
     "info": "Verwende die Tools in der Navigationsleiste um Lebensmittel hinzuzufügen.",
     "data-warning": "Achtung: Phe pro 100g fehlt.",
     "more": "Mehr"
   },
   "diary-report": {
-    "title": "Phe Tagebuch",
-    "tab-title": "Tagebuch",
+    "title": "Diätbericht",
+    "tab-title": "Bericht",
     "date": "Datum",
     "phe": "Gesamt Phe (in mg)",
     "export-food": "Lebensmittel exportieren",
     "export-days": "Tage exportieren",
-    "export-filename": "PKU Tools - Phe Tagebuch",
+    "export-filename": "PKU Tools - Diätbericht",
     "chart-info": "Das Diagramm wird nach dem zweiten Eintrag angezeigt."
   },
   "blood-values": {
-    "title": "Laborwerte",
-    "tab-title": "Laborwerte",
+    "title": "Blutwerte",
+    "tab-title": "Blutwerte",
     "date": "Datum",
     "phe": "Phenylalanin",
     "tyrosine": "Tyrosin",
     "export": "Exportieren",
-    "export-filename": "PKU Tools - Laborwerte",
+    "export-filename": "PKU Tools - Blutwerte",
     "chart-info": "Das Diagramm wird nach dem zweiten Eintrag angezeigt.",
-    "unit": "Einheit für Laborwerte",
+    "unit": "Einheit für Blutwerte",
     "unit-info": "Einheit änderbar in den Einstellungen."
   },
   "settings": {
@@ -197,18 +197,18 @@
     "title": "Datenschutz"
   },
   "features": {
-    "search-name": "Lebensmittel Suche",
+    "search-name": "Lebensmittelsuche",
     "search-description": "Durchsuche eine Lebensmitteldatenbank.",
     "scanner-name": "Barcode Scanner",
     "scanner-description": "Scanne Barcodes von Produkten.",
-    "calculator-name": "Phenylalanin Rechner",
+    "calculator-name": "Phe Rechner",
     "calculator-description": "Berechne die Phe-Menge für ein bestimmtes Gewicht oder rechne Eiweiß in Phe um.",
     "own-food-name": "Eigene Lebensmittel",
     "own-food-description": "Hinterlege eigene Lebensmittel zum schnellen Hinzufügen.",
-    "diary-name": "Protokoll und Tagebuch",
+    "diary-name": "Tagebuch und Bericht",
     "diary-description": "Halte Protokoll über dein Essen und verfolge deine Phe-Toleranz.",
-    "blood-values-name": "Laborwerte",
-    "blood-values-description": "Verfolge Laborwerte in einem Diagramm.",
+    "blood-values-name": "Blutwerte",
+    "blood-values-description": "Verfolge Blutwerte in einem Diagramm.",
     "suggestions-name": "1-Klick Vorschläge",
     "suggestions-description": "Füge Vorschläge mit einem Klick dem Protokoll hinzu.",
     "assistant-name": "Assistent",

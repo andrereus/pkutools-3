@@ -52,7 +52,7 @@
     "social": "Stay up to date"
   },
   "food-search": {
-    "title": "Phe Search",
+    "title": "Food Search",
     "search": "Search for food",
     "search-info": "Refine your search with several words, e.g. \"apples raw\" or \"potatoes cooked\". Source: fdc.nal.usda.gov"
   },
@@ -84,32 +84,32 @@
     "choose-icon": "Select icon"
   },
   "diary": {
-    "title": "Phe Log",
-    "tab-title": "Log",
+    "title": "Diary",
+    "tab-title": "Diary",
     "info": "Use the tools in the navigation bar to add food.",
     "data-warning": "Attention: Phe per 100g is missing.",
     "more": "More"
   },
   "diary-report": {
-    "title": "Phe Diary",
-    "tab-title": "Diary",
+    "title": "Diet Report",
+    "tab-title": "Report",
     "date": "Date",
     "phe": "Total Phe (in mg)",
     "export-food": "Export food",
     "export-days": "Export days",
-    "export-filename": "PKU Tools - Phe Diary",
+    "export-filename": "PKU Tools - Diet Report",
     "chart-info": "The chart gets displayed after the second entry."
   },
   "blood-values": {
-    "title": "Lab Values",
-    "tab-title": "Lab Values",
+    "title": "Blood Values",
+    "tab-title": "Blood Values",
     "date": "Date",
     "phe": "Phenylalanine",
     "tyrosine": "Tyrosine",
     "export": "Export",
-    "export-filename": "PKU Tools - Lab Values",
+    "export-filename": "PKU Tools - Blood Values",
     "chart-info": "The chart gets displayed after the second entry.",
-    "unit": "Unit for laboratory values",
+    "unit": "Unit for blood values",
     "unit-info": "Unit can be changed in the settings."
   },
   "settings": {
@@ -201,14 +201,14 @@
     "search-description": "Search a food database.",
     "scanner-name": "Barcode Scanner",
     "scanner-description": "Scan barcodes from products.",
-    "calculator-name": "Phenylalanine Calculator",
+    "calculator-name": "Phe Calculator",
     "calculator-description": "Calculate the amount of Phe for a specific weight or convert protein to Phe.",
     "own-food-name": "Own Foods",
     "own-food-description": "Save your own foods for quick addition.",
-    "diary-name": "Log and Diary",
+    "diary-name": "Diary and Report",
     "diary-description": "Keep track of your food and monitor your Phe tolerance.",
-    "blood-values-name": "Lab Values",
-    "blood-values-description": "Track laboratory values in a diagram.",
+    "blood-values-name": "Blood Values",
+    "blood-values-description": "Track blood values in a diagram.",
     "suggestions-name": "1-Click Suggestions",
     "suggestions-description": "Add suggestions to the log with one click.",
     "assistant-name": "Assistant",

@@ -52,7 +52,7 @@
     "social": "Manténgase al día"
   },
   "food-search": {
-    "title": "Búsqueda de Phe",
+    "title": "Búsqueda de alimentos",
     "search": "Buscar alimentos",
     "search-info": "Afine su búsqueda con varias palabras, por ejemplo \"manzanas crudas\" o \"patatas cocidas\". Fuente: fdc.nal.usda.gov"
   },
@@ -84,32 +84,32 @@
     "choose-icon": "Seleccionar icono"
   },
   "diary": {
-    "title": "Protocolo Phe",
-    "tab-title": "Protocolo",
+    "title": "Diario",
+    "tab-title": "Diario",
     "info": "Utilice las herramientas de la barra de navegación para añadir alimentos.",
     "data-warning": "Atención: Falta Phe por 100g.",
     "more": "Más"
   },
   "diary-report": {
-    "title": "Diario de Phe",
-    "tab-title": "Diario",
+    "title": "Informe de dieta",
+    "tab-title": "Informe",
     "date": "Fecha",
     "phe": "Total de Phe (en mg)",
     "export-food": "Exportar alimentos",
     "export-days": "Días de exportación",
-    "export-filename": "PKU Tools - Diario de Phe",
+    "export-filename": "PKU Tools - Informe de dieta",
     "chart-info": "El diagrama se muestra después de la segunda entrada."
   },
   "blood-values": {
-    "title": "Valores de laboratorio",
-    "tab-title": "Valores de laboratorio",
+    "title": "Valores de sangre",
+    "tab-title": "Valores de sangre",
     "date": "Fecha",
     "phe": "Fenilalanina",
     "tyrosine": "Tirosina",
     "export": "Exportar",
-    "export-filename": "PKU Tools - Valores de laboratorio",
+    "export-filename": "PKU Tools - Valores de sangre",
     "chart-info": "El diagrama se muestra después de la segunda entrada.",
-    "unit": "Unidad para valores de laboratorio",
+    "unit": "Unidad para valores de sangre",
     "unit-info": "La unidad puede cambiarse en los ajustes."
   },
   "settings": {
@@ -197,18 +197,18 @@
     "title": "Política de privacidad"
   },
   "features": {
-    "search-name": "Búsqueda de Alimentos",
+    "search-name": "Búsqueda de alimentos",
     "search-description": "Busca en una base de datos de alimentos.",
     "scanner-name": "Escáner de Código de Barras",
     "scanner-description": "Escanea los códigos de barras de los productos.",
-    "calculator-name": "Calculadora de Fenilalanina",
+    "calculator-name": "Calculadora de Phe",
     "calculator-description": "Calcula la cantidad de Phe para un peso específico o convierte proteína en Phe.",
     "own-food-name": "Alimentos Propios",
     "own-food-description": "Guarda tus propios alimentos para añadir rápidamente.",
-    "diary-name": "Registro y Diario",
+    "diary-name": "Diario e informe",
     "diary-description": "Lleva un registro de tu comida y controla tu tolerancia a la Phe.",
-    "blood-values-name": "Valores de laboratorio",
-    "blood-values-description": "Seguimiento de los valores de laboratorio en un diagrama.",
+    "blood-values-name": "Valores de sangre",
+    "blood-values-description": "Rastrear los valores de sangre en un diagrama.",
     "suggestions-name": "Sugerencias de 1 clic",
     "suggestions-description": "Añade sugerencias al registro con un solo clic.",
     "assistant-name": "Asistente",
