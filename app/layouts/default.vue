@@ -48,8 +48,8 @@ const navigation = computed(() => {
     { name: 'phe-calculator.title', icon: 'Calculator', route: 'phe-calculator' },
     { name: 'protein-calculator.title', icon: 'SquareDivide', route: 'protein-calculator' },
     { name: 'assistant.title', icon: 'Bot', route: 'assistant' },
-    { name: 'diary.title', icon: 'Book', route: 'diary' },
-    { name: 'diet-report.title', icon: 'Calendar', route: 'diet-report' },
+    { name: 'diary.title', icon: 'Calendar', route: 'diary' },
+    { name: 'diet-report.title', icon: 'Book', route: 'diet-report' },
     { name: 'blood-values.title', icon: 'ChartLine', route: 'blood-values' }
   ]
 })
@@ -61,7 +61,7 @@ const tabNavigation = computed(() => {
       { name: 'app.search', icon: 'Search', route: 'food-search' },
       { name: 'app.scanner', icon: 'ScanBarcode', route: 'barcode-scanner' },
       { name: 'app.calculator', icon: 'Calculator', route: 'phe-calculator' },
-      { name: 'diet-report.tab-title', icon: 'Calendar', route: 'diet-report' },
+      { name: 'diet-report.tab-title', icon: 'Book', route: 'diet-report' },
       { name: 'blood-values.tab-title', icon: 'ChartLine', route: 'blood-values' }
     ]
   } else {
@@ -70,7 +70,7 @@ const tabNavigation = computed(() => {
       { name: 'app.search', icon: 'Search', route: 'food-search' },
       { name: 'app.scanner', icon: 'ScanBarcode', route: 'barcode-scanner' },
       { name: 'app.calculator', icon: 'Calculator', route: 'phe-calculator' },
-      { name: 'diet-report.tab-title', icon: 'Calendar', route: 'diet-report' },
+      { name: 'diet-report.tab-title', icon: 'Book', route: 'diet-report' },
       { name: 'blood-values.tab-title', icon: 'ChartLine', route: 'blood-values' }
     ]
   }

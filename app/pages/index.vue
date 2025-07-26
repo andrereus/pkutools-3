@@ -9,7 +9,7 @@ import {
   Calculator,
   ScanBarcode,
   Apple,
-  Book,
+  Calendar,
   ChartLine,
   Sparkles,
   Bot,
@@ -50,7 +50,7 @@ const features = [
   {
     name: 'features.diary-name',
     description: 'features.diary-description',
-    icon: Book,
+    icon: Calendar,
     route: 'diary'
   },
   {
