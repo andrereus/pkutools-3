@@ -235,7 +235,9 @@ const handleCookieConsent = (consent) => {
                     <a
                       :class="[
                         active ? 'bg-gray-100 dark:bg-gray-700' : '',
-                        route.fullPath === item.route ? 'bg-gray-100 dark:bg-gray-700' : '',
+                        route.fullPath === $localePath(item.route)
+                          ? 'bg-gray-100 dark:bg-gray-700'
+                          : '',
                         'group flex items-center px-6 py-3 text-gray-700 cursor-pointer dark:text-gray-300'
                       ]"
                       @click.prevent="
@@ -450,7 +452,9 @@ const handleCookieConsent = (consent) => {
                       <a
                         :class="[
                           active ? 'bg-gray-100 dark:bg-gray-700' : '',
-                          route.path === item.route ? 'bg-gray-100 dark:bg-gray-700' : '',
+                          route.fullPath === $localePath(item.route)
+                            ? 'bg-gray-100 dark:bg-gray-700'
+                            : '',
                           'group flex items-center px-6 py-3 text-gray-700 cursor-pointer dark:text-gray-300'
                         ]"
                         @click.prevent="
