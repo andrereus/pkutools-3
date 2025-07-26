@@ -96,7 +96,7 @@ const tiers = computed(() => [
       <a
         href="https://buymeacoffee.com/andrereus/membership"
         target="_blank"
-        class="bg-sky-500 text-white shadow-xs hover:bg-sky-400 focus-visible:outline-sky-500 mt-6 block rounded-md px-3.5 py-1 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
+        class="bg-black/5 dark:bg-white/15 text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-sky-500 mt-6 block rounded-md px-3.5 py-1 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
         v-if="tier.id === 'tier-unlimited'"
         >{{ $t('settings.subscribe') }}</a
       >
