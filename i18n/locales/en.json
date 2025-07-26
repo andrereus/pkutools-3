@@ -1,6 +1,5 @@
 {
   "app": {
-    "title": "PKU Tools",
     "description": "Nutrition app for low-phenylalanine diets",
     "long-description": "This app is aimed at people with PKU. It combines a calculator, pencil, paper and nutritional table.",
     "signin-google": "Sign in with Google",
@@ -27,8 +26,6 @@
     "delete": "Delete",
     "cancel": "Cancel",
     "close": "Close",
-    "ok": "Ok",
-    "note": "Note",
     "export": "Export",
     "food": "Food",
     "food-name": "Food name",
@@ -37,11 +34,9 @@
     "weight-in-g": "Weight (in g)",
     "consumed-weight": "Consumed weight (in g)",
     "phe": "Phe",
-    "phe-in-mg": "Phe (in mg)",
     "phe-per-100g": "Phe per 100g (in mg)",
     "protein-per-100g": "Protein per 100g (in g)",
     "short-protein-per-100g": "Protein (per 100g)",
-    "new": "New",
     "kcal": "Kcal",
     "kcal-per-100g": "Kcal per 100g",
     "total-kcal": "Total kcal",
@@ -49,30 +44,25 @@
   },
   "home": {
     "title": "Home",
-    "features": "Features",
     "signin": "Sign in everywhere",
     "signin-desc": "Easily sign in on any device. Data syncs in real time.",
     "install": "Install everywhere",
     "install-desc": "Can be installed on any device (Android, iOS, Mac, Windows).",
-    "about-title": "From the idea to the app",
     "about-description": "From the developer of one of the first PKU apps for Android \"Phe Rechner\", as well as \"PKU Manager\". Development of PKU apps since 2013.",
     "social": "Stay up to date"
   },
   "food-search": {
     "title": "Phe Search",
-    "description": "Search for phe values.",
     "search": "Search for food",
     "search-info": "Refine your search with several words, e.g. \"apples raw\" or \"potatoes cooked\". Source: fdc.nal.usda.gov"
   },
   "phe-calculator": {
     "title": "Phe Calculator",
-    "tab-title": "Phe",
-    "description": "Calculate phe values."
+    "tab-title": "Phe"
   },
   "protein-calculator": {
     "title": "Protein Calculator",
     "tab-title": "Protein",
-    "description": "Calculate approximate phe values from protein.",
     "other": "General",
     "meat": "Meat",
     "vegetable": "Vegetables",
@@ -80,7 +70,6 @@
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",
-    "description": "Experimental feature",
     "scan-barcode": "Scan barcode",
     "please-wait": "Please wait ...",
     "info": "Phe gets calculated from protein. Source: openfoodfacts.org",
@@ -90,7 +79,6 @@
   },
   "own-food": {
     "title": "Own Food",
-    "description": "Save own food and phe values.",
     "search-info": "Own food is also available in the search.",
     "export-filename": "PKU Tools - Own Food",
     "choose-icon": "Select icon"
@@ -98,13 +86,6 @@
   "diary": {
     "title": "Phe Log",
     "tab-title": "Log",
-    "description": "Log phe values throughout the day.",
-    "save-diary": "Save in Phe Diary and reset Phe Log",
-    "total": "Total",
-    "remaining": "Remaining",
-    "save-day": "Finish log",
-    "preview": "Preview Phe Log",
-    "optimum": "deviation from the optimum",
     "info": "Use the tools in the navigation bar to add food.",
     "data-warning": "Attention: Phe per 100g is missing.",
     "more": "More"
@@ -112,19 +93,16 @@
   "diary-report": {
     "title": "Phe Diary",
     "tab-title": "Diary",
-    "description": "Log phe values over several days.",
     "date": "Date",
     "phe": "Total Phe (in mg)",
     "export-food": "Export food",
     "export-days": "Export days",
-    "log": "Log",
     "export-filename": "PKU Tools - Phe Diary",
     "chart-info": "The chart gets displayed after the second entry."
   },
   "blood-values": {
     "title": "Lab Values",
     "tab-title": "Lab Values",
-    "description": "Log lab values.",
     "date": "Date",
     "phe": "Phenylalanine",
     "tyrosine": "Tyrosine",
@@ -136,14 +114,10 @@
   },
   "settings": {
     "title": "Settings",
-    "description": "App / Account Settings",
     "max-phe": "Phe tolerance per day",
     "max-kcal": "Kcal per day",
     "saved": "Saved",
     "license-heading": "Licenses",
-    "license-text": "Unlimited entries and priority support.",
-    "license-kofi": "PayPal (Ko-fi)",
-    "license-bmac": "Credit card (Buymeacoffee)",
     "license-key": "License key",
     "license-active": "License active!",
     "license-inactive": "License inactive.",
@@ -168,7 +142,6 @@
     "tier-unlimited-feature-1": "Unlimited diary entries",
     "tier-unlimited-feature-2": "Unlimited lab value entries",
     "tier-unlimited-feature-3": "Unlimited own foods",
-    "tier-unlimited-feature-4": "Assistant recommendations",
     "tier-unlimited-feature-5": "Own food icons",
     "tier-unlimited-feature-6": "CSV export (Excel)",
     "tier-basic": "Basic",
@@ -203,7 +176,6 @@
   },
   "help": {
     "title": "Help",
-    "description": "Help and FAQ for PKU Tools.",
     "contact-me": "Contact me via email:",
     "contact": "Contact",
     "install": "Installation",
@@ -215,17 +187,14 @@
   },
   "imprint": {
     "title": "Imprint",
-    "description": "Imprint of PKU Tools",
     "email": "Email",
     "sources": "Sources: USDA, FoodData Central (fdc.nal.usda.gov) & openfoodfacts.org"
   },
   "disclaimer": {
-    "title": "Disclaimer",
-    "description": "PKU Tools Disclaimer"
+    "title": "Disclaimer"
   },
   "privacy-policy": {
-    "title": "Privacy Policy",
-    "description": "PKU Tools Privacy Policy"
+    "title": "Privacy Policy"
   },
   "features": {
     "search-name": "Food Search",
@@ -253,7 +222,6 @@
   },
   "assistant": {
     "title": "Assistant",
-    "description": "Get an overview, recommendations and motivation.",
     "info": "Assistant can make mistakes.",
     "satiety-tip": "Currently",
     "satiety-tip-high": "Consider foods with less Phe for satiety. Your Phe intake ({phePercentage}%) is higher than your calorie intake ({kcalPercentage}%).",

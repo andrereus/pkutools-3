@@ -1,6 +1,5 @@
 {
   "app": {
-    "title": "PKU Tools",
     "description": "Nährwert-App für phenylalaninarme Diät",
     "long-description": "Diese App richtet sich an Menschen mit PKU. Sie kombiniert Taschenrechner, Bleistift, Papier und Nährwerttabelle.",
     "signin-google": "Anmelden mit Google",
@@ -27,8 +26,6 @@
     "delete": "Löschen",
     "cancel": "Abbrechen",
     "close": "Schließen",
-    "ok": "Ok",
-    "note": "Hinweis",
     "export": "Exportieren",
     "food": "Lebensmittel",
     "food-name": "Lebensmittelname",
@@ -37,11 +34,9 @@
     "weight-in-g": "Gewicht (in g)",
     "consumed-weight": "Konsumiertes Gewicht (in g)",
     "phe": "Phe",
-    "phe-in-mg": "Phe (in mg)",
     "phe-per-100g": "Phe pro 100g (in mg)",
     "protein-per-100g": "Eiweiß pro 100g (in g)",
     "short-protein-per-100g": "Eiweiß (pro 100g)",
-    "new": "Neu",
     "kcal": "Kcal",
     "kcal-per-100g": "Kcal pro 100g",
     "total-kcal": "Gesamt kcal",
@@ -49,30 +44,25 @@
   },
   "home": {
     "title": "Start",
-    "features": "Funktionen",
     "signin": "Überall anmelden",
     "signin-desc": "Einfach auf jedem Gerät anmelden. Daten synchronisieren in Echtzeit.",
     "install": "Überall installieren",
     "install-desc": "Kann auf jedem Gerät installiert werden (Android, iOS, Mac, Windows).",
-    "about-title": "Von der Idee zur App",
     "about-description": "Vom Entwickler einer der ersten PKU Apps für Android \"Phe Rechner\", sowie vom \"PKU Manager\". Entwicklung von PKU Apps seit 2013.",
     "social": "Bleibe auf dem Laufenden"
   },
   "food-search": {
     "title": "Phe Suche",
-    "description": "Suche nach Phe-Werten.",
     "search": "Lebensmittel suchen",
     "search-info": "Verfeinere deine Suche mit mehreren Wörtern, z.B. \"äpfel roh\" oder \"kartoffeln gekocht\". Quelle: fdc.nal.usda.gov"
   },
   "phe-calculator": {
     "title": "Phe Rechner",
-    "tab-title": "Phe",
-    "description": "Berechne Phe-Werte."
+    "tab-title": "Phe"
   },
   "protein-calculator": {
     "title": "Eiweiß Rechner",
     "tab-title": "Eiweiß",
-    "description": "Berechne ungefähre Phe-Werte aus Eiweiß.",
     "other": "Allgemein",
     "meat": "Fleisch",
     "vegetable": "Gemüse",
@@ -80,7 +70,6 @@
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",
-    "description": "Experimentelle Funktion",
     "scan-barcode": "Barcode scannen",
     "please-wait": "Bitte warten ...",
     "info": "Phe wird aus Eiweiß berechnet. Quelle: openfoodfacts.org",
@@ -90,7 +79,6 @@
   },
   "own-food": {
     "title": "Eigene Lebensmittel",
-    "description": "Speichere eigene Lebensmittel und Phe-Werte.",
     "search-info": "Eigene Lebensmittel sind auch in der Suche verfügbar.",
     "export-filename": "PKU Tools - Eigene Lebensmittel",
     "choose-icon": "Icon auswählen"
@@ -98,13 +86,6 @@
   "diary": {
     "title": "Phe Protokoll",
     "tab-title": "Protokoll",
-    "description": "Protokolliere Phe-Werte über den Tag.",
-    "save-diary": "In Phe Tagebuch speichern und Phe Protokoll zurücksetzen",
-    "total": "Gesamt",
-    "remaining": "Übrig",
-    "save-day": "Protokoll abschließen",
-    "preview": "Vorschau Phe Protokoll",
-    "optimum": "Abweichung vom Optimum",
     "info": "Verwende die Tools in der Navigationsleiste um Lebensmittel hinzuzufügen.",
     "data-warning": "Achtung: Phe pro 100g fehlt.",
     "more": "Mehr"
@@ -112,19 +93,16 @@
   "diary-report": {
     "title": "Phe Tagebuch",
     "tab-title": "Tagebuch",
-    "description": "Protokolliere Phe-Werte über mehrere Tage.",
     "date": "Datum",
     "phe": "Gesamt Phe (in mg)",
     "export-food": "Lebensmittel exportieren",
     "export-days": "Tage exportieren",
-    "log": "Protokoll",
     "export-filename": "PKU Tools - Phe Tagebuch",
     "chart-info": "Das Diagramm wird nach dem zweiten Eintrag angezeigt."
   },
   "blood-values": {
     "title": "Laborwerte",
     "tab-title": "Laborwerte",
-    "description": "Protokolliere Laborwerte.",
     "date": "Datum",
     "phe": "Phenylalanin",
     "tyrosine": "Tyrosin",
@@ -136,14 +114,10 @@
   },
   "settings": {
     "title": "Einstellungen",
-    "description": "App / Account Einstellungen",
     "max-phe": "Phe-Toleranz pro Tag",
     "max-kcal": "Kcal pro Tag",
     "saved": "Gespeichert",
     "license-heading": "Lizenzen",
-    "license-text": "Unbegrenzte Einträge und vorrangiger Support.",
-    "license-kofi": "PayPal (Ko-fi)",
-    "license-bmac": "Kreditkarte (Buymeacoffee)",
     "license-key": "Lizenzschlüssel",
     "license-active": "Lizenz aktiv!",
     "license-inactive": "Lizenz inaktiv.",
@@ -168,7 +142,6 @@
     "tier-unlimited-feature-1": "Unbegrenzte Tagebuch-Einträge",
     "tier-unlimited-feature-2": "Unbegrenzte Laborwert-Einträge",
     "tier-unlimited-feature-3": "Unbegrenzte eigene Lebensmittel",
-    "tier-unlimited-feature-4": "Assistent Empfehlungen",
     "tier-unlimited-feature-5": "Eigene Lebensmittel Icons",
     "tier-unlimited-feature-6": "CSV-Export (Excel)",
     "tier-basic": "Basic",
@@ -203,7 +176,6 @@
   },
   "help": {
     "title": "Hilfe",
-    "description": "Hilfe und FAQ für PKU Tools.",
     "contact-me": "Kontaktiere mich per E-Mail:",
     "contact": "Kontakt",
     "install": "Installation",
@@ -215,17 +187,14 @@
   },
   "imprint": {
     "title": "Impressum",
-    "description": "Impressum von PKU Tools",
     "email": "E-Mail",
     "sources": "Quellen: USDA, FoodData Central (fdc.nal.usda.gov) & openfoodfacts.org"
   },
   "disclaimer": {
-    "title": "Disclaimer",
-    "description": "PKU Tools Disclaimer"
+    "title": "Disclaimer"
   },
   "privacy-policy": {
-    "title": "Datenschutz",
-    "description": "PKU Tools Datenschutz"
+    "title": "Datenschutz"
   },
   "features": {
     "search-name": "Lebensmittel Suche",
@@ -253,7 +222,6 @@
   },
   "assistant": {
     "title": "Assistent",
-    "description": "Erhalte eine Übersicht, Empfehlungen und Motivation.",
     "info": "Assistent kann Fehler machen.",
     "satiety-tip": "Aktuell",
     "satiety-tip-high": "Erwäge Lebensmittel mit weniger Phe für die Sättigung. Deine Phe-Aufnahme ({phePercentage}%) ist höher als deine Kalorienaufnahme ({kcalPercentage}%).",
