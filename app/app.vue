@@ -17,7 +17,7 @@
 
 .page-enter-from {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(30px);
 }
 
 .page-leave-to {
