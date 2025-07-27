@@ -7,13 +7,20 @@
 </template>
 
 <style>
-.page-enter-active,
-.page-leave-active {
+.page-enter-active {
   transition: all 0.1s ease-out;
 }
 
-.page-enter-from,
-.page-leave-to {
+.page-leave-active {
+  transition: none;
+}
+
+.page-enter-from {
+  opacity: 0;
   transform: scale(0.97);
+}
+
+.page-leave-to {
+  opacity: 0;
 }
 </style>
