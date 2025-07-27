@@ -100,7 +100,7 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: 'en',
         translate: 'no',
-        class: 'h-full'
+        class: 'h-full notranslate'
       },
       bodyAttrs: {
         class: 'h-full bg-gray-50 dark:bg-gray-950'
