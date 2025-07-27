@@ -8,7 +8,7 @@
 
 <style>
 .page-enter-active {
-  transition: all 0.2s ease-out;
+  transition: all 0.2s cubic-bezier(0.68, -0.8, 0.265, 1.8);
 }
 
 .page-leave-active {
@@ -17,7 +17,7 @@
 
 .page-enter-from {
   opacity: 0;
-  transform: scale(0.95);
+  transform: translateY(20px);
 }
 
 .page-leave-to {
