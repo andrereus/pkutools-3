@@ -97,6 +97,7 @@ export default defineNuxtConfig({
         { src: '//cdn.headwayapp.co/widget.js', async: true }
       ],
       htmlAttrs: {
+        lang: 'en',
         class: 'h-full'
       },
       bodyAttrs: {
