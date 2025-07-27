@@ -8,7 +8,7 @@
 
 <style>
 .page-enter-active {
-  transition: all 0.1s ease-out;
+  transition: all 0.2s ease-out;
 }
 
 .page-leave-active {
