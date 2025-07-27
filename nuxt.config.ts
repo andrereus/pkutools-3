@@ -105,7 +105,8 @@ export default defineNuxtConfig({
       bodyAttrs: {
         class: 'h-full bg-gray-50 dark:bg-gray-950'
       }
-    }
+    },
+    pageTransition: { name: 'page', mode: 'out-in' }
   },
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
