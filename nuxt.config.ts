@@ -9,7 +9,8 @@ export default defineNuxtConfig({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0, viewport-fit=cover' },
         { name: 'description', content: 'Tools and apps for PKU.' },
-        { name: 'theme-color', content: '#3498db' }
+        { name: 'theme-color', content: '#3498db' },
+        { name: 'google', content: 'notranslate' }
       ],
       link: [
         { rel: 'manifest', href: '/manifest.webmanifest' },
@@ -98,6 +99,7 @@ export default defineNuxtConfig({
       ],
       htmlAttrs: {
         lang: 'en',
+        translate: 'no',
         class: 'h-full'
       },
       bodyAttrs: {
