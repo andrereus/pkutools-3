@@ -27,7 +27,7 @@ const userIsAuthenticated = computed(() => store.user !== null)
 const signInGoogle = async () => {
   try {
     await store.signInGoogle()
-    navigateTo(localePath('/'))
+    navigateTo(localePath('diary'))
   } catch (error) {
     alert(t('app.auth-error'))
     console.error(error)
@@ -37,7 +37,7 @@ const signInGoogle = async () => {
 const registerEmailPassword = async () => {
   try {
     await store.registerWithEmail(email.value, password.value, name.value)
-    navigateTo(localePath('/'))
+    navigateTo(localePath('diary'))
   } catch (error) {
     alert(t('sign-in.error'))
     console.error(error)
@@ -47,7 +47,7 @@ const registerEmailPassword = async () => {
 const signInEmailPassword = async () => {
   try {
     await store.signInWithEmail(email.value, password.value)
-    navigateTo(localePath('/'))
+    navigateTo(localePath('diary'))
   } catch (error) {
     alert(t('sign-in.error'))
     console.error(error)

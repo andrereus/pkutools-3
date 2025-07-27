@@ -75,7 +75,7 @@ const save = () => {
       })
     }
   }
-  navigateTo(localePath('/'))
+  navigateTo(localePath('diary'))
 }
 </script>
 

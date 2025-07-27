@@ -99,7 +99,7 @@ const save = () => {
     }
   }
   dialog.value.closeDialog()
-  navigateTo(localePath('/'))
+  navigateTo(localePath('diary'))
 }
 
 const searchFood = async () => {

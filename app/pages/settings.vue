@@ -110,7 +110,7 @@ const deleteAccount = () => {
       .delete()
       .then(() => {
         store.signOut()
-        navigateTo(localePath('/'))
+        navigateTo(localePath('index'))
       })
       .catch((error) => {
         alert(t('settings.delete-account-error'))

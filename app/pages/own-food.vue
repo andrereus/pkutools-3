@@ -159,7 +159,7 @@ const add = () => {
     })
   }
   dialog2.value.closeDialog()
-  navigateTo(localePath('/'))
+  navigateTo(localePath('diary'))
 }
 
 const escapeCSV = (value) => {
