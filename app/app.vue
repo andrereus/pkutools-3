@@ -17,7 +17,7 @@
 
 .page-enter-from {
   opacity: 0;
-  transform: scale(0.97);
+  transform: scale(0.95);
 }
 
 .page-leave-to {
