@@ -119,6 +119,7 @@ watch(userIsAuthenticated, (newVal) => {
             loop
             muted
             playsinline
+            preload="auto"
             class="w-full rounded-md shadow-2xl ring-1 ring-gray-900/10 dark:ring-gray-700"
           ></video>
         </div>
