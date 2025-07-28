@@ -76,7 +76,7 @@
     "no-protein": "Eiweiß zur Berechnung nicht vorhanden.",
     "protein-link": "Eiweiß manuell umrechnen",
     "error": "Etwas ist schief gelaufen. Falls der Fehler erneut auftritt, versuche die App neu zu starten.",
-    "error-camera-permission": "Kamerazugriff verweigert. Überprüfen die Kameraberechtigung für deinen Browser (Web) oder die \"Site Settings\" wenn du das App Icon lang drückst (Android).",
+    "error-camera-permission": "Kamerazugriff verweigert. Überprüfe die Kameraberechtigung für deinen Browser (Web) oder die \"Site Settings\" wenn du das App Icon lang drückst (Android).",
     "error-no-camera": "Keine Kamera auf diesem Gerät gefunden.",
     "error-not-supported": "Kamera wird nicht unterstützt. Eine sichere Verbindung (HTTPS oder localhost) ist erforderlich.",
     "error-not-readable": "Kamera kann nicht verwendet werden. Ist sie bereits in einer anderen App aktiv?",
