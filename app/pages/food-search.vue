@@ -115,7 +115,7 @@ const searchFood = async () => {
     .map((item) => ({
       name: item[locale.value] || item.en, // fallback to English if translation missing
       emoji: item.emoji,
-      phe: item.phe * 1000,
+      phe: Math.round(item.phe * 1000),
       kcal: item.kcal
     }))
     .concat(ownFood.value)
