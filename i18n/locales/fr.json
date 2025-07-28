@@ -76,7 +76,7 @@
     "no-protein": "Protéines non disponibles pour le calcul.",
     "protein-link": "Convertir manuellement les protéines",
     "error": "Quelque chose s'est mal passé. Si l'erreur se reproduit, essaie de redémarrer l'application.",
-    "error-camera-permission": "Accès à la caméra refusée. Vérifiez l'autorisation de la caméra pour votre navigateur (Web) ou les \"Paramètres du site\" en appuyant longtemps sur l'icône de l'application (Android).",
+    "error-camera-permission": "Accès à la caméra refusée. Vérifiez l'autorisation de la caméra pour votre navigateur (Web) ou les \"Site Settings\" en appuyant longtemps sur l'icône de l'application (Android).",
     "error-no-camera": "Aucune caméra trouvée sur cet appareil.",
     "error-not-supported": "Caméra non prise en charge. Une connexion sécurisée (HTTPS ou LocalHost) est requise.",
     "error-not-readable": "La caméra ne peut pas être utilisée. Est-ce déjà actif dans une autre application?",

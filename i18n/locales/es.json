@@ -76,7 +76,7 @@
     "no-protein": "Proteína no disponible para el cálculo.",
     "protein-link": "Convertir proteínas manualmente",
     "error": "Algo ha ido mal. Si el error se repite, prueba a reiniciar la aplicación.",
-    "error-camera-permission": "Acceso a la cámara denegado. Verifique el permiso de la cámara para su navegador (web) o la \"configuración del sitio\" presionando durante mucho tiempo el icono de la aplicación (Android).",
+    "error-camera-permission": "Acceso a la cámara denegado. Verifique el permiso de la cámara para su navegador (web) o la \"Site Settings\" presionando durante mucho tiempo el icono de la aplicación (Android).",
     "error-no-camera": "No se encuentra una cámara en este dispositivo.",
     "error-not-supported": "Cámara no es compatible. Se requiere una conexión segura (https o localhost).",
     "error-not-readable": "La cámara no se puede usar. ¿Ya está activo en otra aplicación?",
