@@ -22,6 +22,7 @@ const localePath = useLocalePath()
 // Reactive state
 const loaded = ref(false)
 const open = ref(false)
+const paused = ref(false)
 const code = ref('')
 const error = ref('')
 const result = ref(null)
@@ -69,6 +70,7 @@ const onReady = () => {
 }
 
 const onDetect = async (detectedCodes) => {
+  paused.value = true
   code.value = detectedCodes[0].rawValue
 
   try {
@@ -110,11 +112,13 @@ const onError = (err) => {
 }
 
 const openDialog = () => {
+  paused.value = false
   open.value = true
   dialog.value.openDialog()
 }
 
 const cancel = () => {
+  paused.value = true
   loaded.value = false
   open.value = false
   dialog.value.closeDialog()
@@ -189,6 +193,7 @@ const save = () => {
 
       <QrcodeStream
         v-if="open"
+        :paused="paused"
         :track="paintBoundingBox"
         :formats="['ean_13', 'ean_8']"
         @camera-on="onReady"
