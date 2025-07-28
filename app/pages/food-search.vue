@@ -20,7 +20,7 @@ const config = useRuntimeConfig()
 const localePath = useLocalePath()
 
 // Reactive state
-const search = ref(null)
+const search = ref('')
 const phe = ref(null)
 const weight = ref(100)
 const name = ref('')
@@ -153,7 +153,7 @@ const searchFood = async () => {
             name="search"
             v-model="search"
             :placeholder="$t('food-search.search')"
-            @keyup="searchFood"
+            @input="searchFood"
             autocomplete="off"
             class="block w-full rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
           />
