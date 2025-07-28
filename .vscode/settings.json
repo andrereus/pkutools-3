@@ -29,6 +29,14 @@
     "features.suggestions-name",
     "features.suggestions-description",
     "features.assistant-name",
-    "features.assistant-description"
+    "features.assistant-description",
+    "barcode-scanner.error-camera-permission",
+    "barcode-scanner.error-no-camera",
+    "barcode-scanner.error-not-supported",
+    "barcode-scanner.error-not-readable",
+    "barcode-scanner.error-overconstrained",
+    "barcode-scanner.error-stream-api",
+    "barcode-scanner.error-insecure-context",
+    "barcode-scanner.error-generic"
   ]
 }

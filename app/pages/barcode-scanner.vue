@@ -89,26 +89,33 @@ const onDetect = async (detectedCodes) => {
 }
 
 const onError = (err) => {
-  error.value = `[${err.name}]: `
-
-  if (err.name === 'NotAllowedError') {
-    error.value += 'you need to grant camera access permission'
-  } else if (err.name === 'NotFoundError') {
-    error.value += 'no camera on this device'
-  } else if (err.name === 'NotSupportedError') {
-    error.value += 'secure context required (HTTPS, localhost)'
-  } else if (err.name === 'NotReadableError') {
-    error.value += 'is the camera already in use?'
-  } else if (err.name === 'OverconstrainedError') {
-    error.value += 'installed cameras are not suitable'
-  } else if (err.name === 'StreamApiNotSupportedError') {
-    error.value += 'Stream API is not supported in this browser'
-  } else if (err.name === 'InsecureContextError') {
-    error.value +=
-      'Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.'
-  } else {
-    error.value += err.message
+  let translationKey = ''
+  switch (err.name) {
+    case 'NotAllowedError':
+      translationKey = 'barcode-scanner.error-camera-permission'
+      break
+    case 'NotFoundError':
+      translationKey = 'barcode-scanner.error-no-camera'
+      break
+    case 'NotSupportedError':
+      translationKey = 'barcode-scanner.error-not-supported'
+      break
+    case 'NotReadableError':
+      translationKey = 'barcode-scanner.error-not-readable'
+      break
+    case 'OverconstrainedError':
+      translationKey = 'barcode-scanner.error-overconstrained'
+      break
+    case 'StreamApiNotSupportedError':
+      translationKey = 'barcode-scanner.error-stream-api'
+      break
+    case 'InsecureContextError':
+      translationKey = 'barcode-scanner.error-insecure-context'
+      break
+    default:
+      translationKey = 'barcode-scanner.error-generic'
   }
+  error.value = t(translationKey, { message: err.message })
 }
 
 const openDialog = () => {

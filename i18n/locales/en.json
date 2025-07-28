@@ -75,7 +75,15 @@
     "info": "Phe gets calculated from protein. Source: openfoodfacts.org",
     "no-protein": "Protein not available for calculation.",
     "protein-link": "Convert protein manually",
-    "error": "Something went wrong. If the error occurs again, try restarting the app."
+    "error": "Something went wrong. If the error occurs again, try restarting the app.",
+    "error-camera-permission": "Camera access denied. Check the camera permission for your browser (Web) or the \"Site Settings\" by long pressing the app icon (Android).",
+    "error-no-camera": "No camera found on this device.",
+    "error-not-supported": "Camera not supported. A secure connection (HTTPS or localhost) is required.",
+    "error-not-readable": "Camera cannot be used. Is it already active in another app?",
+    "error-overconstrained": "No suitable camera found. Check your camera settings.",
+    "error-stream-api": "Stream API is not supported in this browser.",
+    "error-insecure-context": "Camera access is only permitted in a secure context. Use HTTPS or localhost.",
+    "error-generic": "Unknown error: {message}"
   },
   "own-food": {
     "title": "Own Food",

@@ -75,7 +75,15 @@
     "info": "Le Phe est calculé à partir des protéines. Source: openfoodfacts.org",
     "no-protein": "Protéines non disponibles pour le calcul.",
     "protein-link": "Convertir manuellement les protéines",
-    "error": "Quelque chose s'est mal passé. Si l'erreur se reproduit, essaie de redémarrer l'application."
+    "error": "Quelque chose s'est mal passé. Si l'erreur se reproduit, essaie de redémarrer l'application.",
+    "error-camera-permission": "Accès à la caméra refusée. Vérifiez l'autorisation de la caméra pour votre navigateur (Web) ou les \"Paramètres du site\" en appuyant longtemps sur l'icône de l'application (Android).",
+    "error-no-camera": "Aucune caméra trouvée sur cet appareil.",
+    "error-not-supported": "Caméra non prise en charge. Une connexion sécurisée (HTTPS ou LocalHost) est requise.",
+    "error-not-readable": "La caméra ne peut pas être utilisée. Est-ce déjà actif dans une autre application?",
+    "error-overconstrained": "Aucune caméra appropriée trouvée. Vérifiez les paramètres de votre appareil photo.",
+    "error-stream-api": "L'API Stream n'est pas prise en charge dans ce navigateur.",
+    "error-insecure-context": "L'accès à la caméra n'est autorisé que dans un contexte sécurisé. Utilisez HTTPS ou LocalHost.",
+    "error-generic": "Erreur inconnue: {message}"
   },
   "own-food": {
     "title": "Aliments personnels",
