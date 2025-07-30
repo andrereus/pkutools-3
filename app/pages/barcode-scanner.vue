@@ -65,13 +65,7 @@ const onDetect = async (detectedCodes) => {
   code.value = detectedCodes[0].rawValue
 
   try {
-    const response = await fetch(
-      'https://world.openfoodfacts.org/api/v2/product/' + code.value + '.json'
-    )
-    if (!response.ok) {
-      throw new Error(response.status)
-    }
-    result.value = await response.json()
+    result.value = await $fetch(`https://world.openfoodfacts.org/api/v2/product/${code.value}.json`)
   } catch (error) {
     alert(t('barcode-scanner.error'))
     console.log(error)

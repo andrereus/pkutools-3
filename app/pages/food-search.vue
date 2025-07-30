@@ -96,11 +96,10 @@ const save = () => {
 
 const searchFood = async () => {
   loading.value = true
-  let res, food
+  let food
 
   // Load multilingual food data
-  res = await fetch('/data/usda-phe-kcal.json')
-  const foodData = await res.json()
+  const foodData = await $fetch('/data/usda-phe-kcal.json')
 
   // Map the food data to use the correct language
   food = foodData
