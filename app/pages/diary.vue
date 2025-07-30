@@ -14,7 +14,6 @@ const editedIndex = ref(-1)
 const editedKey = ref(null)
 const date = ref(format(new Date(), 'yyyy-MM-dd'))
 const visibleItems = ref(5)
-const selectedDiaryEntry = ref(null)
 
 const defaultItem = {
   name: '',
@@ -50,9 +49,12 @@ const formTitle = computed(() => {
 
 const selectedDayLog = computed(() => {
   const entry = pheDiary.value.find((entry) => entry.date === date.value)
-  selectedDiaryEntry.value = entry
   return entry?.log || []
 })
+
+const selectedDiaryEntry = computed(
+  () => pheDiary.value.find((entry) => entry.date === date.value) || null
+)
 
 const pheResult = computed(() => {
   return selectedDayLog.value.reduce((sum, item) => sum + item.phe, 0)
