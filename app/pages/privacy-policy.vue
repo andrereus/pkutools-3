@@ -470,15 +470,6 @@ const part3 = ref('com')
         </p>
       </li>
       <li>
-        <p><strong>Sentry</strong></p>
-        <p>
-          Their Privacy Policy can be viewed at
-          <a href="https://sentry.io/privacy" rel="external nofollow noopener" target="_blank"
-            >https://sentry.io/privacy</a
-          >
-        </p>
-      </li>
-      <li>
         <p><strong>Headway</strong></p>
         <p>
           Their Privacy Policy can be viewed at

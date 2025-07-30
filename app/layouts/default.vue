@@ -337,7 +337,7 @@ const handleCookieConsent = (consent) => {
                   />
                   <img
                     v-if="userIsAuthenticated && userPhotoUrl"
-                    class="h-8 w-8 rounded-full ph-no-capture sentry-block"
+                    class="h-8 w-8 rounded-full ph-no-capture"
                     :src="userPhotoUrl"
                     :alt="$t('app.profile-picture')"
                   />
@@ -405,7 +405,7 @@ const handleCookieConsent = (consent) => {
                       <a
                         :class="[
                           active ? 'bg-gray-100 dark:bg-gray-700' : '',
-                          'group flex items-center px-6 py-3 text-gray-700 cursor-pointer dark:text-gray-300 ph-no-capture sentry-mask'
+                          'group flex items-center px-6 py-3 text-gray-700 cursor-pointer dark:text-gray-300 ph-no-capture'
                         ]"
                         @click.prevent="
                           () => {

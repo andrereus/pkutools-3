@@ -67,11 +67,6 @@ npm run preview
 - nuxt-headlessui is not Nuxt 4 compatible yet
 - @nuxtjs/tailwindcss doesn't fully support Nuxt 4 yet
 
-### Not set up yet
-
-- firebase emulators
-- sentry
-
 ## Contributing
 
 Contributions are welcome.
