@@ -1,17 +1,9 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { useStore } from '../../stores/index'
 import { getDatabase, ref as dbRef, push, update } from 'firebase/database'
 import Fuse from 'fuse.js'
 import { Search } from 'lucide-vue-next'
 import { format } from 'date-fns'
-
-import PageHeader from '../components/PageHeader.vue'
-import ModalDialog from '../components/ModalDialog.vue'
-import NumberInput from '../components/NumberInput.vue'
-import DataTable from '../components/DataTable.vue'
 
 const store = useStore()
 const { t, locale } = useI18n()

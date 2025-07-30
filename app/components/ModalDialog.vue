@@ -1,6 +1,4 @@
 <script setup>
-import { ref, computed } from 'vue'
-
 const props = defineProps(['title', 'buttons'])
 const emit = defineEmits(['close', 'edit', 'submit', 'delete'])
 

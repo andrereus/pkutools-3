@@ -1,24 +1,11 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { useStore } from '../../stores/index'
-import { getDatabase, ref as dbRef, push, remove, update } from 'firebase/database'
+import { getDatabase, ref as dbRef, push, update } from 'firebase/database'
 import { format, parseISO, subDays, addDays } from 'date-fns'
 import { ChevronLeft, ChevronRight, BadgeCheck, BadgeMinus } from 'lucide-vue-next'
 
-import DataTable from '../components/DataTable.vue'
-import ModalDialog from '../components/ModalDialog.vue'
-import SecondaryButton from '../components/SecondaryButton.vue'
-import TextInput from '../components/TextInput.vue'
-import NumberInput from '../components/NumberInput.vue'
-import PrimaryButton from '../components/PrimaryButton.vue'
-import PageHeader from '../components/PageHeader.vue'
-import TodaysTipCard from '../components/TodaysTipCard.vue'
-
 const store = useStore()
 const { t } = useI18n()
-const dialog = ref(null)
 const dialog2 = ref(null)
 const config = useRuntimeConfig()
 const localePath = useLocalePath()

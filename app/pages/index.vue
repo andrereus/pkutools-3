@@ -1,9 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { useStore } from '../../stores/index'
-import TiersCard from '../components/TiersCard.vue'
 import {
   Search,
   Calculator,
@@ -12,11 +8,9 @@ import {
   Calendar,
   ChartLine,
   Sparkles,
-  Bot,
-  Check
+  Bot
 } from 'lucide-vue-next'
 
-const route = useRoute()
 const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()

@@ -1,19 +1,7 @@
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { useStore } from '../../stores/index'
 import { getDatabase, ref as dbRef, remove, update } from 'firebase/database'
 import { getAuth } from 'firebase/auth'
-import { Check } from 'lucide-vue-next'
-
-import PageHeader from '../components/PageHeader.vue'
-import SelectMenu from '../components/SelectMenu.vue'
-import NumberInput from '../components/NumberInput.vue'
-import TextInput from '../components/TextInput.vue'
-import PrimaryButton from '../components/PrimaryButton.vue'
-import SecondaryButton from '../components/SecondaryButton.vue'
-import TiersCard from '../components/TiersCard.vue'
 
 const store = useStore()
 const { t } = useI18n()

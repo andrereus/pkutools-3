@@ -1,9 +1,6 @@
 <script setup>
 /* global Headway */
-import { computed, onBeforeMount, onMounted, ref } from 'vue'
 import { useStore } from '../../stores/index'
-import { useRoute } from 'vue-router'
-
 import { Menu as MenuComponent, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import {
   Menu as MenuIcon,

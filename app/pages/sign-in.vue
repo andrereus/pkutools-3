@@ -1,15 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { useStore } from '../../stores/index'
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
 import { BadgeCheck } from 'lucide-vue-next'
-
-import EmailInput from '../components/EmailInput.vue'
-import PasswordInput from '../components/PasswordInput.vue'
-import TextInput from '../components/TextInput.vue'
-import PrimaryButton from '../components/PrimaryButton.vue'
 
 const store = useStore()
 const { t } = useI18n()

@@ -1,7 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
 import { EyeOff, Eye } from 'lucide-vue-next'
-import { useI18n } from 'vue-i18n'
 
 defineProps(['idName', 'label'])
 const model = defineModel()

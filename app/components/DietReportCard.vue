@@ -1,12 +1,9 @@
 <script setup>
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useStore } from '../../stores/index'
 import { format, subDays } from 'date-fns'
 import { Book } from 'lucide-vue-next'
 
 const store = useStore()
-const { t } = useI18n()
 
 const settings = computed(() => store.settings)
 const pheDiary = computed(() => store.pheDiary)

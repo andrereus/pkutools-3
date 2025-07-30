@@ -1,6 +1,4 @@
 <script setup>
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useStore } from '../../stores/index'
 import { format, subDays } from 'date-fns'
 import { Award, Activity, BicepsFlexed } from 'lucide-vue-next'

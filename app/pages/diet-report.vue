@@ -1,6 +1,4 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useStore } from '../../stores/index'
 import { getDatabase, ref as dbRef, push, remove, update } from 'firebase/database'
 import { format, parseISO, formatISO, subMonths, subWeeks } from 'date-fns'
@@ -10,16 +8,6 @@ import deChart from 'apexcharts/dist/locales/de.json'
 import frChart from 'apexcharts/dist/locales/fr.json'
 import esChart from 'apexcharts/dist/locales/es.json'
 import { BadgeCheck, BadgeMinus } from 'lucide-vue-next'
-
-import DataTable from '../components/DataTable.vue'
-import ModalDialog from '../components/ModalDialog.vue'
-import PrimaryButton from '../components/PrimaryButton.vue'
-import NumberInput from '../components/NumberInput.vue'
-import SecondaryButton from '../components/SecondaryButton.vue'
-import DateInput from '../components/DateInput.vue'
-import TextInput from '../components/TextInput.vue'
-import PageHeader from '../components/PageHeader.vue'
-import DietReportCard from '../components/DietReportCard.vue'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()

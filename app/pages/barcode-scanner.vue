@@ -1,17 +1,8 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { useStore } from '../../stores/index'
 import { getDatabase, ref as dbRef, push, update } from 'firebase/database'
 import { QrcodeStream } from 'vue-qrcode-reader'
 import { format } from 'date-fns'
-
-import PageHeader from '../components/PageHeader.vue'
-import PrimaryButton from '../components/PrimaryButton.vue'
-import NumberInput from '../components/NumberInput.vue'
-import SimpleDialog from '../components/SimpleDialog.vue'
-import SelectMenu from '../components/SelectMenu.vue'
 
 const store = useStore()
 const { t } = useI18n()

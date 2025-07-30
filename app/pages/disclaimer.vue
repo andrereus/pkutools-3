@@ -1,6 +1,4 @@
 <script setup>
-import { ref } from 'vue'
-
 const part1 = ref('mail')
 const part2 = ref('pkutools')
 const part3 = ref('com')

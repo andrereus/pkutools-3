@@ -1,17 +1,7 @@
 <script setup>
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 import { useStore } from '../../stores/index'
-import PageHeader from '../components/PageHeader.vue'
-import SecondaryButton from '../components/SecondaryButton.vue'
-import MotivationCard from '../components/MotivationCard.vue'
-import CurrentTipCard from '../components/CurrentTipCard.vue'
-import TodaysTipCard from '../components/TodaysTipCard.vue'
-import DietReportCard from '../components/DietReportCard.vue'
-import BloodValuesCard from '../components/BloodValuesCard.vue'
 
 const store = useStore()
-const { t } = useI18n()
 
 const userIsAuthenticated = computed(() => store.user !== null)
 </script>
