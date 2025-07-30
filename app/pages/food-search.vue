@@ -95,13 +95,12 @@ const save = () => {
 
 const searchFood = async () => {
   loading.value = true
-  let food
 
   // Load multilingual food data
   const foodData = await $fetch('/data/usda-phe-kcal.json')
 
   // Map the food data to use the correct language
-  food = foodData
+  const food = foodData
     .map((item) => ({
       name: item[locale.value] || item.en, // fallback to English if translation missing
       emoji: item.emoji,

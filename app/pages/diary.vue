@@ -50,8 +50,11 @@ const formTitle = computed(() => {
 
 const selectedDayLog = computed(() => {
   const entry = pheDiary.value.find((entry) => entry.date === date.value)
-  selectedDiaryEntry.value = entry
   return entry?.log || []
+})
+
+watch([pheDiary, date], () => {
+  selectedDiaryEntry.value = pheDiary.value.find((entry) => entry.date === date.value) || null
 })
 
 const pheResult = computed(() => {
