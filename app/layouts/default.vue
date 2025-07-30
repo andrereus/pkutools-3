@@ -1,26 +1,24 @@
 <script setup>
 /* global Headway */
 import { useStore } from '../../stores/index'
-import { Menu as MenuComponent, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import {
-  Menu as MenuIcon,
-  CircleUser,
-  User,
-  House,
-  Search,
-  Calculator,
-  SquareDivide,
-  ScanBarcode,
-  Apple,
-  Book,
-  Mail,
-  LogOut,
-  Settings,
-  LifeBuoy,
-  Info,
-  Calendar,
-  ChartLine,
-  Bot
+  LucideCircleUser,
+  LucideUser,
+  LucideHouse,
+  LucideSearch,
+  LucideCalculator,
+  LucideSquareDivide,
+  LucideScanBarcode,
+  LucideApple,
+  LucideBook,
+  LucideMail,
+  LucideLogOut,
+  LucideSettings,
+  LucideLifeBuoy,
+  LucideInfo,
+  LucideCalendar,
+  LucideChartLine,
+  LucideBot
 } from 'lucide-vue-next'
 
 const store = useStore()
@@ -39,48 +37,48 @@ const settings = computed(() => store.settings)
 
 const navigation = computed(() => {
   return [
-    { name: 'app.start', icon: 'House', route: 'index' },
-    { name: 'food-search.title', icon: 'Search', route: 'food-search' },
-    { name: 'barcode-scanner.title', icon: 'ScanBarcode', route: 'barcode-scanner' },
-    { name: 'phe-calculator.title', icon: 'Calculator', route: 'phe-calculator' },
-    { name: 'protein-calculator.title', icon: 'SquareDivide', route: 'protein-calculator' },
-    { name: 'assistant.title', icon: 'Bot', route: 'assistant' },
-    { name: 'diary.title', icon: 'Calendar', route: 'diary' },
-    { name: 'diet-report.title', icon: 'Book', route: 'diet-report' },
-    { name: 'blood-values.title', icon: 'ChartLine', route: 'blood-values' }
+    { name: 'app.start', icon: 'LucideHouse', route: 'index' },
+    { name: 'food-search.title', icon: 'LucideSearch', route: 'food-search' },
+    { name: 'barcode-scanner.title', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
+    { name: 'phe-calculator.title', icon: 'LucideCalculator', route: 'phe-calculator' },
+    { name: 'protein-calculator.title', icon: 'LucideSquareDivide', route: 'protein-calculator' },
+    { name: 'assistant.title', icon: 'LucideBot', route: 'assistant' },
+    { name: 'diary.title', icon: 'LucideCalendar', route: 'diary' },
+    { name: 'diet-report.title', icon: 'LucideBook', route: 'diet-report' },
+    { name: 'blood-values.title', icon: 'LucideChartLine', route: 'blood-values' }
   ]
 })
 
 const tabNavigation = computed(() => {
   if (userIsAuthenticated.value) {
     return [
-      { name: 'home.title', icon: 'House', route: 'diary' },
-      { name: 'app.search', icon: 'Search', route: 'food-search' },
-      { name: 'app.scanner', icon: 'ScanBarcode', route: 'barcode-scanner' },
-      { name: 'app.calculator', icon: 'Calculator', route: 'phe-calculator' },
-      { name: 'diet-report.tab-title', icon: 'Book', route: 'diet-report' },
-      { name: 'blood-values.tab-title', icon: 'ChartLine', route: 'blood-values' }
+      { name: 'home.title', icon: 'LucideHouse', route: 'diary' },
+      { name: 'app.search', icon: 'LucideSearch', route: 'food-search' },
+      { name: 'app.scanner', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
+      { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' },
+      { name: 'diet-report.tab-title', icon: 'LucideBook', route: 'diet-report' },
+      { name: 'blood-values.tab-title', icon: 'LucideChartLine', route: 'blood-values' }
     ]
   } else {
     return [
-      { name: 'home.title', icon: 'House', route: 'index' },
-      { name: 'app.search', icon: 'Search', route: 'food-search' },
-      { name: 'app.scanner', icon: 'ScanBarcode', route: 'barcode-scanner' },
-      { name: 'app.calculator', icon: 'Calculator', route: 'phe-calculator' },
-      { name: 'diet-report.tab-title', icon: 'Book', route: 'diet-report' },
-      { name: 'blood-values.tab-title', icon: 'ChartLine', route: 'blood-values' }
+      { name: 'home.title', icon: 'LucideHouse', route: 'index' },
+      { name: 'app.search', icon: 'LucideSearch', route: 'food-search' },
+      { name: 'app.scanner', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
+      { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' },
+      { name: 'diet-report.tab-title', icon: 'LucideBook', route: 'diet-report' },
+      { name: 'blood-values.tab-title', icon: 'LucideChartLine', route: 'blood-values' }
     ]
   }
 })
 
 const userNavigation = computed(() => {
   return [
-    { name: 'own-food.title', icon: 'Apple', route: 'own-food' },
-    { name: 'settings.title', icon: 'Settings', route: 'settings' },
-    { name: 'help.title', icon: 'LifeBuoy', route: 'help' },
-    { name: 'imprint.title', icon: 'Info', route: 'imprint' },
-    { name: 'disclaimer.title', icon: 'Info', route: 'disclaimer' },
-    { name: 'privacy-policy.title', icon: 'Info', route: 'privacy-policy' }
+    { name: 'own-food.title', icon: 'LucideApple', route: 'own-food' },
+    { name: 'settings.title', icon: 'LucideSettings', route: 'settings' },
+    { name: 'help.title', icon: 'LucideLifeBuoy', route: 'help' },
+    { name: 'imprint.title', icon: 'LucideInfo', route: 'imprint' },
+    { name: 'disclaimer.title', icon: 'LucideInfo', route: 'disclaimer' },
+    { name: 'privacy-policy.title', icon: 'LucideInfo', route: 'privacy-policy' }
   ]
 })
 
@@ -171,21 +169,21 @@ onMounted(() => {
 
 // Add an icon map to reference the actual icon components
 const iconMap = {
-  House,
-  Search,
-  Calculator,
-  SquareDivide,
-  ScanBarcode,
-  Apple,
-  Book,
-  Mail,
-  LogOut,
-  Settings,
-  LifeBuoy,
-  Info,
-  Calendar,
-  ChartLine,
-  Bot
+  LucideHouse,
+  LucideSearch,
+  LucideCalculator,
+  LucideSquareDivide,
+  LucideScanBarcode,
+  LucideApple,
+  LucideBook,
+  LucideMail,
+  LucideLogOut,
+  LucideSettings,
+  LucideLifeBuoy,
+  LucideInfo,
+  LucideCalendar,
+  LucideChartLine,
+  LucideBot
 }
 
 const handleCookieConsent = (consent) => {
@@ -207,15 +205,15 @@ const handleCookieConsent = (consent) => {
       <div class="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
         <div class="relative flex h-16 justify-between">
           <div class="relative inset-y-0 left-0 flex items-center">
-            <MenuComponent as="div" class="relative">
+            <HeadlessMenu as="div" class="relative">
               <div>
-                <MenuButton
+                <HeadlessMenuButton
                   class="relative rounded-full p-1 text-gray-600 hover:text-black focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 dark:text-gray-200 dark:hover:text-white cursor-pointer"
                 >
                   <span class="absolute -inset-1.5" />
                   <span class="sr-only">{{ $t('app.main-menu') }}</span>
-                  <MenuIcon class="h-6 w-6" aria-hidden="true" />
-                </MenuButton>
+                  <LucideMenu class="h-6 w-6" aria-hidden="true" />
+                </HeadlessMenuButton>
               </div>
               <transition
                 enter-active-class="transition ease-out duration-200"
@@ -225,10 +223,14 @@ const handleCookieConsent = (consent) => {
                 leave-from-class="transform opacity-100 scale-100"
                 leave-to-class="transform opacity-0 scale-95"
               >
-                <MenuItems
+                <HeadlessMenuItems
                   class="absolute left-0 z-10 mt-4 w-64 origin-top-left rounded-md bg-white py-1 shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700"
                 >
-                  <MenuItem v-for="item in navigation" :key="item.name" v-slot="{ active, close }">
+                  <HeadlessMenuItem
+                    v-for="item in navigation"
+                    :key="item.name"
+                    v-slot="{ active, close }"
+                  >
                     <a
                       :class="[
                         active ? 'bg-gray-100 dark:bg-gray-700' : '',
@@ -250,10 +252,10 @@ const handleCookieConsent = (consent) => {
                         aria-hidden="true"
                       />{{ $t(item.name) }}
                     </a>
-                  </MenuItem>
-                </MenuItems>
+                  </HeadlessMenuItem>
+                </HeadlessMenuItems>
               </transition>
-            </MenuComponent>
+            </HeadlessMenu>
           </div>
 
           <div class="flex flex-1 items-stretch justify-start ml-3">
@@ -274,13 +276,13 @@ const handleCookieConsent = (consent) => {
               class="headway relative rounded-full p-1 text-gray-600 hover:text-black focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 dark:text-gray-200 dark:hover:text-white"
             ></button>
 
-            <MenuComponent as="div" class="relative ml-2">
+            <HeadlessMenu as="div" class="relative ml-2">
               <div>
-                <MenuButton
+                <HeadlessMenuButton
                   class="relative rounded-full p-1 text-gray-600 hover:text-black focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 uppercase dark:text-gray-200 dark:hover:text-white mr-2 cursor-pointer"
                 >
                   {{ locale }}
-                </MenuButton>
+                </HeadlessMenuButton>
               </div>
               <transition
                 enter-active-class="transition ease-out duration-200"
@@ -290,10 +292,10 @@ const handleCookieConsent = (consent) => {
                 leave-from-class="transform opacity-100 scale-100"
                 leave-to-class="transform opacity-0 scale-95"
               >
-                <MenuItems
+                <HeadlessMenuItems
                   class="absolute right-0 z-10 mt-4 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700"
                 >
-                  <MenuItem
+                  <HeadlessMenuItem
                     v-for="localeItem in locales"
                     :key="localeItem.code"
                     v-slot="{ active, close }"
@@ -313,24 +315,24 @@ const handleCookieConsent = (consent) => {
                     >
                       {{ localeItem.name }}
                     </a>
-                  </MenuItem>
-                </MenuItems>
+                  </HeadlessMenuItem>
+                </HeadlessMenuItems>
               </transition>
-            </MenuComponent>
+            </HeadlessMenu>
 
-            <MenuComponent as="div" class="relative ml-3">
+            <HeadlessMenu as="div" class="relative ml-3">
               <div>
-                <MenuButton
+                <HeadlessMenuButton
                   class="relative flex rounded-full text-sm focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 cursor-pointer"
                 >
                   <span class="absolute -inset-1.5" />
                   <span class="sr-only">{{ $t('app.account-menu') }}</span>
-                  <CircleUser
+                  <LucideCircleUser
                     v-if="!userIsAuthenticated"
                     class="h-6 w-6 dark:text-gray-300"
                     aria-hidden="true"
                   />
-                  <User
+                  <LucideUser
                     v-if="userIsAuthenticated && !userPhotoUrl"
                     class="h-6 w-6 dark:text-gray-300"
                     aria-hidden="true"
@@ -341,7 +343,7 @@ const handleCookieConsent = (consent) => {
                     :src="userPhotoUrl"
                     :alt="$t('app.profile-picture')"
                   />
-                </MenuButton>
+                </HeadlessMenuButton>
               </div>
               <transition
                 enter-active-class="transition ease-out duration-200"
@@ -351,11 +353,11 @@ const handleCookieConsent = (consent) => {
                 leave-from-class="transform opacity-100 scale-100"
                 leave-to-class="transform opacity-0 scale-95"
               >
-                <MenuItems
+                <HeadlessMenuItems
                   class="absolute right-0 z-10 mt-4 w-64 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700 dark:divide-gray-700"
                 >
                   <div class="py-1">
-                    <MenuItem v-if="!userIsAuthenticated" v-slot="{ active, close }">
+                    <HeadlessMenuItem v-if="!userIsAuthenticated" v-slot="{ active, close }">
                       <a
                         :class="[
                           active ? 'bg-gray-100 dark:bg-gray-700' : '',
@@ -381,8 +383,8 @@ const handleCookieConsent = (consent) => {
                         </svg>
                         {{ $t('app.signin-google') }}
                       </a>
-                    </MenuItem>
-                    <MenuItem v-if="!userIsAuthenticated" v-slot="{ active, close }">
+                    </HeadlessMenuItem>
+                    <HeadlessMenuItem v-if="!userIsAuthenticated" v-slot="{ active, close }">
                       <a
                         :class="[
                           active ? 'bg-gray-100 dark:bg-gray-700' : '',
@@ -395,13 +397,13 @@ const handleCookieConsent = (consent) => {
                           }
                         "
                       >
-                        <Mail
+                        <LucideMail
                           class="mr-3 h-5 w-5 text-gray-700 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
                           aria-hidden="true"
                         />{{ $t('sign-in.title') }}
                       </a>
-                    </MenuItem>
-                    <MenuItem v-if="userIsAuthenticated" v-slot="{ active, close }">
+                    </HeadlessMenuItem>
+                    <HeadlessMenuItem v-if="userIsAuthenticated" v-slot="{ active, close }">
                       <a
                         :class="[
                           active ? 'bg-gray-100 dark:bg-gray-700' : '',
@@ -414,13 +416,13 @@ const handleCookieConsent = (consent) => {
                           }
                         "
                       >
-                        <User
+                        <LucideUser
                           class="mr-3 h-5 w-5 text-gray-700 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
                           aria-hidden="true"
                         />{{ user.name || user.email }}
                       </a>
-                    </MenuItem>
-                    <MenuItem v-if="userIsAuthenticated" v-slot="{ active, close }">
+                    </HeadlessMenuItem>
+                    <HeadlessMenuItem v-if="userIsAuthenticated" v-slot="{ active, close }">
                       <a
                         :class="[
                           active ? 'bg-gray-100 dark:bg-gray-700' : '',
@@ -433,15 +435,15 @@ const handleCookieConsent = (consent) => {
                           }
                         "
                       >
-                        <LogOut
+                        <LucideLogOut
                           class="mr-3 h-5 w-5 text-gray-700 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
                           aria-hidden="true"
                         />{{ $t('app.signout') }}
                       </a>
-                    </MenuItem>
+                    </HeadlessMenuItem>
                   </div>
                   <div class="py-1">
-                    <MenuItem
+                    <HeadlessMenuItem
                       v-for="item in userNavigation"
                       :key="item.name"
                       v-slot="{ active, close }"
@@ -467,11 +469,11 @@ const handleCookieConsent = (consent) => {
                           aria-hidden="true"
                         />{{ $t(item.name) }}
                       </a>
-                    </MenuItem>
+                    </HeadlessMenuItem>
                   </div>
-                </MenuItems>
+                </HeadlessMenuItems>
               </transition>
-            </MenuComponent>
+            </HeadlessMenu>
           </div>
         </div>
         <div class="border-b dark:border-gray-700"></div>

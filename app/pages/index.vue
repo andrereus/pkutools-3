@@ -1,14 +1,14 @@
 <script setup>
 import { useStore } from '../../stores/index'
 import {
-  Search,
-  Calculator,
-  ScanBarcode,
-  Apple,
-  Calendar,
-  ChartLine,
-  Sparkles,
-  Bot
+  LucideSearch,
+  LucideCalculator,
+  LucideScanBarcode,
+  LucideApple,
+  LucideCalendar,
+  LucideChartLine,
+  LucideSparkles,
+  LucideBot
 } from 'lucide-vue-next'
 
 const store = useStore()
@@ -20,49 +20,49 @@ const features = [
   {
     name: 'features.search-name',
     description: 'features.search-description',
-    icon: Search,
+    icon: LucideSearch,
     route: 'food-search'
   },
   {
     name: 'features.scanner-name',
     description: 'features.scanner-description',
-    icon: ScanBarcode,
+    icon: LucideScanBarcode,
     route: 'barcode-scanner'
   },
   {
     name: 'features.calculator-name',
     description: 'features.calculator-description',
-    icon: Calculator,
+    icon: LucideCalculator,
     route: 'phe-calculator'
   },
   {
     name: 'features.assistant-name',
     description: 'features.assistant-description',
-    icon: Bot,
+    icon: LucideBot,
     route: 'assistant'
   },
   {
     name: 'features.diary-name',
     description: 'features.diary-description',
-    icon: Calendar,
+    icon: LucideCalendar,
     route: 'diary'
   },
   {
     name: 'features.blood-values-name',
     description: 'features.blood-values-description',
-    icon: ChartLine,
+    icon: LucideChartLine,
     route: 'blood-values'
   },
   {
     name: 'features.suggestions-name',
     description: 'features.suggestions-description',
-    icon: Sparkles,
+    icon: LucideSparkles,
     route: 'diary'
   },
   {
     name: 'features.own-food-name',
     description: 'features.own-food-description',
-    icon: Apple,
+    icon: LucideApple,
     route: 'own-food'
   }
 ]

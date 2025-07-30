@@ -7,7 +7,6 @@ import enChart from 'apexcharts/dist/locales/en.json'
 import deChart from 'apexcharts/dist/locales/de.json'
 import frChart from 'apexcharts/dist/locales/fr.json'
 import esChart from 'apexcharts/dist/locales/es.json'
-import { BadgeCheck, BadgeMinus } from 'lucide-vue-next'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
@@ -307,12 +306,12 @@ const triggerDownload = (csvContent) => {
 
       <p v-if="!license" class="mt-3 text-sm">
         <NuxtLink :to="$localePath('settings')">
-          <BadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
+          <LucideBadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
           {{ $t('app.limited') }}
         </NuxtLink>
       </p>
       <p v-if="license" class="mt-3 text-sm">
-        <BadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
+        <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
         {{ $t('app.unlimited') }}
       </p>
     </div>

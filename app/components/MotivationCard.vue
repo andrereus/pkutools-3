@@ -1,7 +1,6 @@
 <script setup>
 import { useStore } from '../../stores/index'
 import { format, subDays } from 'date-fns'
-import { Award, Activity, BicepsFlexed } from 'lucide-vue-next'
 
 const store = useStore()
 const { t } = useI18n()
@@ -74,7 +73,7 @@ const badges = computed(() => [
   <div class="overflow-hidden rounded-lg bg-white dark:bg-gray-900 shadow-sm">
     <div class="px-4 py-5 sm:p-6">
       <div class="flex items-center gap-3 font-medium mb-2">
-        <Award class="h-5 w-5" />
+        <LucideAward class="h-5 w-5" />
         {{ $t('assistant.motivation') }}
       </div>
       <div class="flex flex-col gap-4">
@@ -97,7 +96,7 @@ const badges = computed(() => [
                 : 'bg-gray-100 text-gray-400 dark:bg-gray-800'
             "
           >
-            <Activity class="h-5 w-5" />
+            <LucideActivity class="h-5 w-5" />
           </div>
           <div class="flex-1">
             <div class="flex justify-between items-center">
@@ -124,7 +123,7 @@ const badges = computed(() => [
                 : 'bg-gray-100 text-gray-400 dark:bg-gray-800'
             "
           >
-            <BicepsFlexed class="h-5 w-5" />
+            <LucideBicepsFlexed class="h-5 w-5" />
           </div>
           <div class="flex-1">
             <div class="flex justify-between items-center">

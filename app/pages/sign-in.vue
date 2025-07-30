@@ -1,7 +1,5 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
-import { BadgeCheck } from 'lucide-vue-next'
 
 const store = useStore()
 const { t } = useI18n()
@@ -61,7 +59,7 @@ const resetPassword = async () => {
   <div class="max-w-2xl">
     <div v-if="userIsAuthenticated">
       <h2 class="text-lg text-gray-900 dark:text-gray-300 mb-6">
-        <BadgeCheck class="h-6 w-6 text-sky-500 inline-block ml-2 mr-1" aria-hidden="true" />
+        <LucideBadgeCheck class="h-6 w-6 text-sky-500 inline-block ml-2 mr-1" aria-hidden="true" />
         {{ $t('sign-in.signedin') }}
       </h2>
     </div>
@@ -107,9 +105,9 @@ const resetPassword = async () => {
         {{ $t('sign-in.title') }}
       </h2>
 
-      <TabGroup>
-        <TabList class="mb-6">
-          <Tab v-slot="{ selected }">
+      <HeadlessTabGroup>
+        <HeadlessTabList class="mb-6">
+          <HeadlessTab v-slot="{ selected }">
             <button
               :class="[
                 'rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300 cursor-pointer',
@@ -120,8 +118,8 @@ const resetPassword = async () => {
             >
               {{ $t('sign-in.signin') }}
             </button>
-          </Tab>
-          <Tab v-slot="{ selected }">
+          </HeadlessTab>
+          <HeadlessTab v-slot="{ selected }">
             <button
               :class="[
                 'rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300 cursor-pointer',
@@ -132,8 +130,8 @@ const resetPassword = async () => {
             >
               {{ $t('sign-in.register') }}
             </button>
-          </Tab>
-          <Tab v-slot="{ selected }">
+          </HeadlessTab>
+          <HeadlessTab v-slot="{ selected }">
             <button
               :class="[
                 'rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300 cursor-pointer',
@@ -144,16 +142,16 @@ const resetPassword = async () => {
             >
               {{ $t('sign-in.forgot-password') }}
             </button>
-          </Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
+          </HeadlessTab>
+        </HeadlessTabList>
+        <HeadlessTabPanels>
+          <HeadlessTabPanel>
             <EmailInput id-name="email" :label="$t('sign-in.email')" v-model="email" />
             <PasswordInput id-name="password" :label="$t('sign-in.password')" v-model="password" />
 
             <PrimaryButton :text="$t('sign-in.signin')" @click="signInEmailPassword" class="mt-4" />
-          </TabPanel>
-          <TabPanel>
+          </HeadlessTabPanel>
+          <HeadlessTabPanel>
             <p class="mt-2 mb-6">{{ $t('sign-in.register-note') }}</p>
 
             <TextInput id-name="name" :label="$t('sign-in.name')" v-model="name" />
@@ -169,8 +167,8 @@ const resetPassword = async () => {
               @click="registerEmailPassword"
               class="mt-4"
             />
-          </TabPanel>
-          <TabPanel>
+          </HeadlessTabPanel>
+          <HeadlessTabPanel>
             <p class="mt-2 mb-6">{{ $t('sign-in.reset-note') }}</p>
 
             <EmailInput id-name="reset-email" :label="$t('sign-in.email')" v-model="email" />
@@ -180,9 +178,9 @@ const resetPassword = async () => {
               @click="resetPassword"
               class="mt-4"
             />
-          </TabPanel>
-        </TabPanels>
-      </TabGroup>
+          </HeadlessTabPanel>
+        </HeadlessTabPanels>
+      </HeadlessTabGroup>
     </div>
   </div>
 </template>

@@ -1,7 +1,6 @@
 <script setup>
 import { useStore } from '../../stores/index'
 import { format, subDays } from 'date-fns'
-import { Calendar } from 'lucide-vue-next'
 
 const store = useStore()
 
@@ -21,7 +20,7 @@ const yesterdayEntry = computed(() => {
   >
     <div class="px-4 py-5 sm:p-6">
       <div class="flex items-center gap-3 font-medium mb-2">
-        <Calendar class="h-5 w-5" />
+        <LucideCalendar class="h-5 w-5" />
         {{ $t('assistant.previous-day') }}
       </div>
       <p>

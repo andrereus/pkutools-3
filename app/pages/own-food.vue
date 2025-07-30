@@ -2,8 +2,6 @@
 import { useStore } from '../../stores/index'
 import { getDatabase, ref as dbRef, push, remove, update } from 'firebase/database'
 import foodIcons from '~/assets/data/food-icons-map.json'
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
-import { BadgeCheck, BadgeMinus, ChevronDown } from 'lucide-vue-next'
 import { format } from 'date-fns'
 
 const store = useStore()
@@ -256,8 +254,8 @@ const setIcon = (item, close) => {
         @delete="deleteItem"
         @close="closeModal"
       >
-        <Popover v-if="license">
-          <PopoverButton class="my-1">
+        <HeadlessPopover v-if="license">
+          <HeadlessPopoverButton class="my-1">
             <img
               :src="'/images/food-icons/' + editedItem.icon + '.svg'"
               v-if="editedItem.icon !== undefined && editedItem.icon !== null"
@@ -273,8 +271,8 @@ const setIcon = (item, close) => {
               alt="Food Icon"
             />
             <span class="float-left my-1 ml-2 text-sm">{{ $t('own-food.choose-icon') }}</span>
-            <ChevronDown class="h-5 w-5 inline-block ml-2" aria-hidden="true" />
-          </PopoverButton>
+            <LucideChevronDown class="h-5 w-5 inline-block ml-2" aria-hidden="true" />
+          </HeadlessPopoverButton>
 
           <transition
             enter-active-class="transition ease-out duration-200"
@@ -284,7 +282,7 @@ const setIcon = (item, close) => {
             leave-from-class="transform opacity-100 scale-100"
             leave-to-class="transform opacity-0 scale-95"
           >
-            <PopoverPanel v-slot="{ close }">
+            <HeadlessPopoverPanel v-slot="{ close }">
               <span v-for="(item, index) in foodIcons" :key="index">
                 <img
                   :src="'/images/food-icons/' + item.svg + '.svg'"
@@ -295,9 +293,9 @@ const setIcon = (item, close) => {
                   @click="setIcon(item, close)"
                 />
               </span>
-            </PopoverPanel>
+            </HeadlessPopoverPanel>
           </transition>
-        </Popover>
+        </HeadlessPopover>
 
         <TextInput
           id-name="food"
@@ -325,12 +323,12 @@ const setIcon = (item, close) => {
 
       <p v-if="!license" class="mt-3 text-sm">
         <NuxtLink :to="$localePath('settings')">
-          <BadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
+          <LucideBadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
           {{ $t('app.limited') }}
         </NuxtLink>
       </p>
       <p v-if="license" class="mt-3 text-sm">
-        <BadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
+        <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
         {{ $t('app.unlimited') }}
       </p>
 

@@ -1,7 +1,6 @@
 <script setup>
 import { useStore } from '../../stores/index'
 import { parseISO } from 'date-fns'
-import { ChartLine } from 'lucide-vue-next'
 
 const store = useStore()
 
@@ -21,7 +20,7 @@ const recentLabValues = computed(() => {
   >
     <div class="px-4 py-5 sm:p-6">
       <div class="flex items-center gap-3 font-medium mb-2">
-        <ChartLine class="h-5 w-5" />
+        <LucideChartLine class="h-5 w-5" />
         {{ $t('assistant.blood-values') }}
       </div>
       <p>

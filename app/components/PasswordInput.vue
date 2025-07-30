@@ -1,6 +1,4 @@
 <script setup>
-import { EyeOff, Eye } from 'lucide-vue-next'
-
 defineProps(['idName', 'label'])
 const model = defineModel()
 const showPassword = ref(false)
@@ -46,8 +44,8 @@ watch(model, () => {
           @click="showPassword = !showPassword"
           class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
         >
-          <Eye v-if="showPassword" class="h-5 w-5 text-gray-400" aria-hidden="true" />
-          <EyeOff v-else class="h-5 w-5 text-gray-400" aria-hidden="true" />
+          <LucideEye v-if="showPassword" class="h-5 w-5 text-gray-400" aria-hidden="true" />
+          <LucideEyeOff v-else class="h-5 w-5 text-gray-400" aria-hidden="true" />
         </div>
       </div>
       <p v-if="errorMessage" class="text-red-600 text-sm mt-1.5">{{ errorMessage }}</p>

@@ -2,7 +2,6 @@
 import { useStore } from '../../stores/index'
 import { getDatabase, ref as dbRef, push, update } from 'firebase/database'
 import { format, parseISO, subDays, addDays } from 'date-fns'
-import { ChevronLeft, ChevronRight, BadgeCheck, BadgeMinus } from 'lucide-vue-next'
 
 const store = useStore()
 const { t } = useI18n()
@@ -235,7 +234,7 @@ watch(userIsAuthenticated, (newVal) => {
     <div v-if="userIsAuthenticated">
       <div class="flex justify-between items-center gap-4 mb-6">
         <button class="p-1 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer" @click="prevDay">
-          <ChevronLeft class="h-6 w-6" aria-hidden="true" />
+          <LucideChevronLeft class="h-6 w-6" aria-hidden="true" />
         </button>
         <input
           type="date"
@@ -245,7 +244,7 @@ watch(userIsAuthenticated, (newVal) => {
           class="flex-1 block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
         />
         <button class="p-1 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer" @click="nextDay">
-          <ChevronRight class="h-6 w-6" aria-hidden="true" />
+          <LucideChevronRight class="h-6 w-6" aria-hidden="true" />
         </button>
       </div>
 
@@ -398,12 +397,12 @@ watch(userIsAuthenticated, (newVal) => {
 
       <p v-if="!license" class="mt-3 text-sm">
         <NuxtLink :to="$localePath('settings')">
-          <BadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
+          <LucideBadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
           {{ $t('app.limited') }}
         </NuxtLink>
       </p>
       <p v-if="license" class="mt-3 text-sm">
-        <BadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
+        <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
         {{ $t('app.unlimited') }}
       </p>
     </div>

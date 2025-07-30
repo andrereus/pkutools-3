@@ -1,6 +1,4 @@
 <script setup>
-import { Check } from 'lucide-vue-next'
-
 const { t } = useI18n()
 
 const tiers = computed(() => [
@@ -84,7 +82,7 @@ const tiers = computed(() => [
       </p>
       <ul role="list" :class="[tier.featured ? '' : '', 'text-gray-500 mt-4 space-y-1 text-sm/6']">
         <li v-for="feature in tier.features" :key="feature" class="flex gap-x-2">
-          <Check
+          <LucideCheck
             :class="[tier.featured ? '' : '', 'text-sky-500 h-6 w-5 flex-none']"
             aria-hidden="true"
           />

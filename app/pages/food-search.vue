@@ -2,7 +2,6 @@
 import { useStore } from '../../stores/index'
 import { getDatabase, ref as dbRef, push, update } from 'firebase/database'
 import Fuse from 'fuse.js'
-import { Search } from 'lucide-vue-next'
 import { format } from 'date-fns'
 
 const store = useStore()
@@ -136,7 +135,7 @@ const searchFood = async () => {
         <label for="search" class="sr-only">{{ $t('food-search.search') }}</label>
         <div class="relative">
           <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <Search class="h-5 w-5 text-gray-400" aria-hidden="true" />
+            <LucideSearch class="h-5 w-5 text-gray-400" aria-hidden="true" />
           </div>
           <input
             type="search"

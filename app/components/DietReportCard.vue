@@ -1,7 +1,6 @@
 <script setup>
 import { useStore } from '../../stores/index'
 import { format, subDays } from 'date-fns'
-import { Book } from 'lucide-vue-next'
 
 const store = useStore()
 
@@ -44,7 +43,7 @@ const pheStats = computed(() => {
   <div v-if="showCard" class="overflow-hidden rounded-lg bg-white dark:bg-gray-900 shadow-sm">
     <div class="px-4 py-5 sm:p-6">
       <div class="flex items-center gap-3 font-medium mb-2">
-        <Book class="h-5 w-5" />
+        <LucideBook class="h-5 w-5" />
         {{ $t('assistant.diet-report') }}
       </div>
       <div>
