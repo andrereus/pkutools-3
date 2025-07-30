@@ -96,7 +96,9 @@
     "tab-title": "Tagebuch",
     "info": "Verwende die Tools in der Navigationsleiste um Lebensmittel hinzuzufügen.",
     "data-warning": "Achtung: Phe pro 100g fehlt.",
-    "more": "Mehr"
+    "more": "Mehr",
+    "set-phe": "Phe-Toleranz einstellen",
+    "set-kcal": "Kalorienbedarf einstellen"
   },
   "diet-report": {
     "title": "Diätbericht",

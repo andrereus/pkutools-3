@@ -96,7 +96,9 @@
     "tab-title": "Diario",
     "info": "Utilice las herramientas de la barra de navegación para añadir alimentos.",
     "data-warning": "Atención: Falta Phe por 100g.",
-    "more": "Más"
+    "more": "Más",
+    "set-phe": "Establecer tolerancia Phe",
+    "set-kcal": "Fijar las necesidades calóricas"
   },
   "diet-report": {
     "title": "Informe de dieta",

@@ -96,7 +96,9 @@
     "tab-title": "Journal",
     "info": "Utilise les outils de la barre de navigation pour ajouter des aliments.",
     "data-warning": "Attention : Phe pour 100g manque.",
-    "more": "Plus"
+    "more": "Plus",
+    "set-phe": "Régler la tolérance Phe",
+    "set-kcal": "Régler les besoins en calories"
   },
   "diet-report": {
     "title": "Rapport de régime",

@@ -260,7 +260,7 @@ watch(userIsAuthenticated, (newVal) => {
             }}%)</span
           >
           <NuxtLink v-if="!settings?.maxPhe" :to="$localePath('settings')">{{
-            $t('settings.title')
+            $t('diary.set-phe')
           }}</NuxtLink>
         </div>
         <div
@@ -279,7 +279,7 @@ watch(userIsAuthenticated, (newVal) => {
             }}%)</span
           >
           <NuxtLink v-if="!settings?.maxKcal" :to="$localePath('settings')">{{
-            $t('settings.title')
+            $t('diary.set-kcal')
           }}</NuxtLink>
         </div>
         <div

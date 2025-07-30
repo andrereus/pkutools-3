@@ -96,7 +96,9 @@
     "tab-title": "Diary",
     "info": "Use the tools in the navigation bar to add food.",
     "data-warning": "Attention: Phe per 100g is missing.",
-    "more": "More"
+    "more": "More",
+    "set-phe": "Set Phe tolerance",
+    "set-kcal": "Set calorie requirement"
   },
   "diet-report": {
     "title": "Diet Report",

@@ -66,7 +66,7 @@ const resetDiary = () => {
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/pheDiary`))
-    navigateTo(localePath('diet-report'))
+    navigateTo(localePath('diary'))
   }
 }
 
