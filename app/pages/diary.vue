@@ -237,10 +237,10 @@ watch(userIsAuthenticated, (newVal) => {
           <LucideChevronLeft class="h-6 w-6" aria-hidden="true" />
         </button>
         <input
-          type="date"
-          name="date"
           id="date"
           v-model="date"
+          type="date"
+          name="date"
           class="flex-1 block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
         />
         <button class="p-1 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer" @click="nextDay">
@@ -266,7 +266,7 @@ watch(userIsAuthenticated, (newVal) => {
           <div
             class="bg-sky-500 h-full rounded-md"
             :style="{ width: `${(pheResult * 100) / (settings?.maxPhe || 1)}%` }"
-          ></div>
+          />
         </div>
         <div class="text-sm flex justify-between mt-2">
           <span>{{ kcalResult }} {{ $t('common.kcal') }} {{ $t('app.total') }}</span>
@@ -285,7 +285,7 @@ watch(userIsAuthenticated, (newVal) => {
           <div
             class="bg-sky-500 h-full rounded-md"
             :style="{ width: `${(kcalResult * 100) / (settings?.maxKcal || 1)}%` }"
-          ></div>
+          />
         </div>
       </div>
 
@@ -295,21 +295,21 @@ watch(userIsAuthenticated, (newVal) => {
         <tr
           v-for="(item, index) in selectedDayLog"
           :key="index"
-          @click="editItem(item, index)"
           class="cursor-pointer"
+          @click="editItem(item, index)"
         >
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
             <img
-              :src="'/images/food-icons/' + item.icon + '.svg'"
               v-if="item.icon !== undefined && item.icon !== ''"
+              :src="'/images/food-icons/' + item.icon + '.svg'"
               onerror="this.src='/images/food-icons/organic-food.svg'"
               width="25"
               class="food-icon"
               alt="Food Icon"
             />
             <img
-              :src="'/images/food-icons/organic-food.svg'"
               v-if="(item.icon === undefined || item.icon === '') && item.emoji === undefined"
+              :src="'/images/food-icons/organic-food.svg'"
               width="25"
               class="food-icon"
               alt="Food Icon"
@@ -348,25 +348,25 @@ watch(userIsAuthenticated, (newVal) => {
         <p v-if="!editedItem.pheReference && editedIndex !== -1" class="mb-3">
           {{ $t('diary.data-warning') }}
         </p>
-        <TextInput id-name="food" :label="$t('common.food-name')" v-model="editedItem.name" />
+        <TextInput v-model="editedItem.name" id-name="food" :label="$t('common.food-name')" />
         <div class="flex gap-4">
           <NumberInput
+            v-model.number="editedItem.pheReference"
             id-name="phe"
             :label="$t('common.phe-per-100g')"
-            v-model.number="editedItem.pheReference"
             class="flex-1"
           />
           <NumberInput
+            v-model.number="editedItem.kcalReference"
             id-name="kcalRef"
             :label="$t('common.kcal-per-100g')"
-            v-model.number="editedItem.kcalReference"
             class="flex-1"
           />
         </div>
         <NumberInput
+          v-model.number="editedItem.weight"
           id-name="weight"
           :label="$t('common.consumed-weight')"
-          v-model.number="editedItem.weight"
         />
         <div class="flex gap-4 mt-4">
           <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>
@@ -381,8 +381,8 @@ watch(userIsAuthenticated, (newVal) => {
           v-for="(item, index) in lastAdded.slice(0, visibleItems)"
           :key="index"
           :text="`${item.weight}g ${item.name.length > 14 ? item.name.slice(0, 13) + '…' : item.name}`"
-          @click="addLastAdded(item)"
           class="!t-font-normal"
+          @click="addLastAdded(item)"
         />
         <SecondaryButton
           v-if="visibleItems < lastAdded.length"

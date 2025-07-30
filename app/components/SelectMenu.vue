@@ -12,8 +12,8 @@ const model = defineModel()
     >
     <select
       :id="idName"
-      :name="idName"
       v-model="model"
+      :name="idName"
       class="mt-1 mb-3 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-sky-500 sm:text-sm sm:leading-6 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500 bg-white dark:bg-gray-800"
     >
       <slot />

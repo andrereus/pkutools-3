@@ -155,7 +155,7 @@ const escapeCSV = (value) => {
 }
 
 const exportOwnFood = () => {
-  let r = confirm(t('common.export') + '?')
+  const r = confirm(t('common.export') + '?')
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
     csvContent += 'Name,Phe per 100g,Kcal per 100g\n'
@@ -210,21 +210,21 @@ const setIcon = (item, close) => {
         <tr
           v-for="(item, index) in ownFood"
           :key="index"
-          @click="addItem(item)"
           class="cursor-pointer"
+          @click="addItem(item)"
         >
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
             <img
-              :src="'/images/food-icons/' + item.icon + '.svg'"
               v-if="item.icon !== undefined && item.icon !== ''"
+              :src="'/images/food-icons/' + item.icon + '.svg'"
               onerror="this.src='/images/food-icons/organic-food.svg'"
               width="25"
               class="food-icon"
               alt="Food Icon"
             />
             <img
-              :src="'/images/food-icons/organic-food.svg'"
               v-if="item.icon === undefined || item.icon === ''"
+              :src="'/images/food-icons/organic-food.svg'"
               width="25"
               class="food-icon"
               alt="Food Icon"
@@ -257,15 +257,15 @@ const setIcon = (item, close) => {
         <HeadlessPopover v-if="license">
           <HeadlessPopoverButton class="my-1">
             <img
-              :src="'/images/food-icons/' + editedItem.icon + '.svg'"
               v-if="editedItem.icon !== undefined && editedItem.icon !== null"
+              :src="'/images/food-icons/' + editedItem.icon + '.svg'"
               width="30"
               class="food-icon float-left"
               alt="Food Icon"
             />
             <img
-              :src="'/images/food-icons/organic-food.svg'"
               v-if="editedItem.icon === undefined || editedItem.icon === null"
+              :src="'/images/food-icons/organic-food.svg'"
               width="30"
               class="food-icon float-left"
               alt="Food Icon"
@@ -285,8 +285,8 @@ const setIcon = (item, close) => {
             <HeadlessPopoverPanel v-slot="{ close }">
               <span v-for="(item, index) in foodIcons" :key="index">
                 <img
-                  :src="'/images/food-icons/' + item.svg + '.svg'"
                   v-if="item.svg !== undefined"
+                  :src="'/images/food-icons/' + item.svg + '.svg'"
                   width="35"
                   class="food-icon pick-icon m-2"
                   alt="Food Icon"
@@ -298,22 +298,22 @@ const setIcon = (item, close) => {
         </HeadlessPopover>
 
         <TextInput
+          v-model="editedItem.name"
           id-name="food"
           :label="$t('common.food-name')"
-          v-model="editedItem.name"
           class="mt-2"
         />
         <div class="flex gap-4">
           <NumberInput
+            v-model.number="editedItem.phe"
             id-name="phe"
             :label="$t('common.phe-per-100g')"
-            v-model.number="editedItem.phe"
             class="flex-1"
           />
           <NumberInput
+            v-model.number="editedItem.kcal"
             id-name="kcal"
             :label="$t('common.kcal-per-100g')"
-            v-model.number="editedItem.kcal"
             class="flex-1"
           />
         </div>
@@ -344,7 +344,7 @@ const setIcon = (item, close) => {
         @edit="editItem"
         @close="closeModal"
       >
-        <NumberInput id-name="weight" :label="$t('common.weight-in-g')" v-model.number="weight" />
+        <NumberInput v-model.number="weight" id-name="weight" :label="$t('common.weight-in-g')" />
         <div class="flex gap-4 mt-4">
           <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>
           <span class="flex-1 ml-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>

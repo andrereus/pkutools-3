@@ -54,8 +54,8 @@ const formTitle = computed(() => {
 })
 
 const graph = computed(() => {
-  let newPheDiary = pheDiary.value
-  let chartPheDiary = newPheDiary
+  const newPheDiary = pheDiary.value
+  const chartPheDiary = newPheDiary
     .map((obj) => {
       return { x: obj.date, y: obj.phe }
     })
@@ -71,10 +71,10 @@ const graph = computed(() => {
 })
 
 const chartOptions = computed(() => {
-  let en = enChart
-  let de = deChart
-  let fr = frChart
-  let es = esChart
+  const en = enChart
+  const de = deChart
+  const fr = frChart
+  const es = esChart
   return {
     chart: {
       locales: [en, de, fr, es],
@@ -184,7 +184,7 @@ const editItem = (item) => {
 }
 
 const deleteItem = () => {
-  let r = confirm(t('common.delete') + '?')
+  const r = confirm(t('common.delete') + '?')
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/pheDiary/${editedKey.value}`))
@@ -321,7 +321,7 @@ const escapeCSV = (value) => {
 }
 
 const exportAllFoodItems = () => {
-  let r = confirm(t('diet-report.export-food') + '?')
+  const r = confirm(t('diet-report.export-food') + '?')
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
     csvContent += 'Date,Name,Weight,Phe,Kcal\n'
@@ -347,7 +347,7 @@ const exportAllFoodItems = () => {
 }
 
 const exportDailyPheTotals = () => {
-  let r = confirm(t('diet-report.export-days') + '?')
+  const r = confirm(t('diet-report.export-days') + '?')
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
     csvContent += 'Date,Total Phe,Total Kcal\n'
@@ -433,13 +433,13 @@ const updateData = (timeline) => {
           <button
             v-for="(period, idx) in ['all', 'one_week', 'two_weeks', 'one_month', 'three_months']"
             :key="idx"
-            @click="updateData(period)"
             :class="[
               'px-3 py-1 text-sm rounded-md',
               selection === period
                 ? 'bg-black/5 dark:bg-white/15'
                 : 'text-gray-700 dark:text-gray-300'
             ]"
+            @click="updateData(period)"
           >
             {{
               period === 'one_week'
@@ -462,7 +462,7 @@ const updateData = (timeline) => {
           :options="chartOptions"
           :series="graph"
           class="-mb-2"
-        ></apexchart>
+        />
       </div>
 
       <DietReportCard />
@@ -472,8 +472,8 @@ const updateData = (timeline) => {
         <tr
           v-for="(item, index) in sortedPheDiary"
           :key="index"
-          @click="editItem(item)"
           class="cursor-pointer"
+          @click="editItem(item)"
         >
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
             {{ getlocalDate(item.date) }}
@@ -501,19 +501,19 @@ const updateData = (timeline) => {
         @delete="deleteItem"
         @close="close"
       >
-        <DateInput id-name="date" :label="$t('diet-report.date')" v-model="editedItem.date" />
+        <DateInput v-model="editedItem.date" id-name="date" :label="$t('diet-report.date')" />
 
         <div class="flex gap-4">
           <NumberInput
+            v-model.number="editedItem.phe"
             id-name="total-phe"
             :label="$t('diet-report.phe')"
-            v-model.number="editedItem.phe"
             class="flex-1"
           />
           <NumberInput
+            v-model.number="editedItem.kcal"
             id-name="kcal"
             :label="$t('common.total-kcal')"
-            v-model.number="editedItem.kcal"
             class="flex-1"
           />
         </div>
@@ -524,8 +524,8 @@ const updateData = (timeline) => {
           </h4>
           <SecondaryButton
             :text="$t('common.add')"
-            @click="$refs.dialog2.openDialog()"
             class="mr-0! mb-0!"
+            @click="$refs.dialog2.openDialog()"
           />
         </div>
 
@@ -533,21 +533,21 @@ const updateData = (timeline) => {
           <tr
             v-for="(item, index) in editedItem.log"
             :key="index"
-            @click="editLogItem(item, index)"
             class="cursor-pointer"
+            @click="editLogItem(item, index)"
           >
             <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
               <img
-                :src="'/images/food-icons/' + item.icon + '.svg'"
                 v-if="item.icon !== undefined && item.icon !== ''"
+                :src="'/images/food-icons/' + item.icon + '.svg'"
                 onerror="this.src='/images/food-icons/organic-food.svg'"
                 width="25"
                 class="food-icon"
                 alt="Food Icon"
               />
               <img
-                :src="'/images/food-icons/organic-food.svg'"
                 v-if="(item.icon === undefined || item.icon === '') && item.emoji === undefined"
+                :src="'/images/food-icons/organic-food.svg'"
                 width="25"
                 class="food-icon"
                 alt="Food Icon"
@@ -581,25 +581,25 @@ const updateData = (timeline) => {
         @delete="deleteLogItem"
         @close="closeLogEdit"
       >
-        <TextInput id-name="food" :label="$t('common.food-name')" v-model="editedLogItem.name" />
+        <TextInput v-model="editedLogItem.name" id-name="food" :label="$t('common.food-name')" />
         <div class="flex gap-4">
           <NumberInput
+            v-model.number="editedLogItem.pheReference"
             id-name="phe"
             :label="$t('common.phe-per-100g')"
-            v-model.number="editedLogItem.pheReference"
             class="flex-1"
           />
           <NumberInput
+            v-model.number="editedLogItem.kcalReference"
             id-name="kcalRef"
             :label="$t('common.kcal-per-100g')"
-            v-model.number="editedLogItem.kcalReference"
             class="flex-1"
           />
         </div>
         <NumberInput
+          v-model.number="editedLogItem.weight"
           id-name="weight"
           :label="$t('common.consumed-weight')"
-          v-model.number="editedLogItem.weight"
         />
         <div class="flex gap-4 mt-4">
           <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>

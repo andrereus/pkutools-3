@@ -16,7 +16,7 @@ defineExpose({ openDialog, closeDialog })
 </script>
 
 <template>
-  <dialog class="relative z-10 dark:text-white" ref="dialog">
+  <dialog ref="dialog" class="relative z-10 dark:text-white">
     <div class="fixed inset-0 bg-gray-500/75 transition-opacity" />
 
     <div class="fixed inset-0 z-10 w-screen overflow-y-auto">

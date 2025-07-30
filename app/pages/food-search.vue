@@ -118,7 +118,7 @@ const searchFood = async () => {
     useExtendedSearch: true
   })
 
-  let results = fuse.search(search.value.trim())
+  const results = fuse.search(search.value.trim())
   advancedFood.value = results.map((result) => result.item)
   loading.value = false
 }
@@ -138,14 +138,14 @@ const searchFood = async () => {
             <LucideSearch class="h-5 w-5 text-gray-400" aria-hidden="true" />
           </div>
           <input
-            type="search"
             id="search"
-            name="search"
             v-model="search"
+            type="search"
+            name="search"
             :placeholder="$t('food-search.search')"
-            @input="searchFood"
             autocomplete="off"
             class="block w-full rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+            @input="searchFood"
           />
         </div>
       </div>
@@ -154,8 +154,8 @@ const searchFood = async () => {
         <tr
           v-for="(item, index) in advancedFood"
           :key="index"
-          @click="loadItem(item)"
           class="cursor-pointer"
+          @click="loadItem(item)"
         >
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
             {{ item.emoji }}
@@ -181,7 +181,7 @@ const searchFood = async () => {
         ]"
         @submit="save"
       >
-        <NumberInput id-name="weight" :label="$t('common.weight-in-g')" v-model.number="weight" />
+        <NumberInput v-model.number="weight" id-name="weight" :label="$t('common.weight-in-g')" />
         <div class="flex gap-4 my-6">
           <span class="flex-1">= {{ calculatePhe() }} mg Phe</span>
           <span class="flex-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>

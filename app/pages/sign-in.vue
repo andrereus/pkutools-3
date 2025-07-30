@@ -66,8 +66,8 @@ const resetPassword = async () => {
 
     <div v-if="!userIsAuthenticated">
       <a
-        @click.prevent="signInGoogle"
         class="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent cursor-pointer my-4"
+        @click.prevent="signInGoogle"
       >
         <svg class="h-5 w-5" aria-hidden="true" viewBox="0 0 24 24">
           <path
@@ -146,37 +146,37 @@ const resetPassword = async () => {
         </HeadlessTabList>
         <HeadlessTabPanels>
           <HeadlessTabPanel>
-            <EmailInput id-name="email" :label="$t('sign-in.email')" v-model="email" />
-            <PasswordInput id-name="password" :label="$t('sign-in.password')" v-model="password" />
+            <EmailInput v-model="email" id-name="email" :label="$t('sign-in.email')" />
+            <PasswordInput v-model="password" id-name="password" :label="$t('sign-in.password')" />
 
-            <PrimaryButton :text="$t('sign-in.signin')" @click="signInEmailPassword" class="mt-4" />
+            <PrimaryButton :text="$t('sign-in.signin')" class="mt-4" @click="signInEmailPassword" />
           </HeadlessTabPanel>
           <HeadlessTabPanel>
             <p class="mt-2 mb-6">{{ $t('sign-in.register-note') }}</p>
 
-            <TextInput id-name="name" :label="$t('sign-in.name')" v-model="name" />
-            <EmailInput id-name="register-email" :label="$t('sign-in.email')" v-model="email" />
+            <TextInput v-model="name" id-name="name" :label="$t('sign-in.name')" />
+            <EmailInput v-model="email" id-name="register-email" :label="$t('sign-in.email')" />
             <PasswordInput
+              v-model="password"
               id-name="register-password"
               :label="$t('sign-in.password')"
-              v-model="password"
             />
 
             <PrimaryButton
               :text="$t('sign-in.register')"
-              @click="registerEmailPassword"
               class="mt-4"
+              @click="registerEmailPassword"
             />
           </HeadlessTabPanel>
           <HeadlessTabPanel>
             <p class="mt-2 mb-6">{{ $t('sign-in.reset-note') }}</p>
 
-            <EmailInput id-name="reset-email" :label="$t('sign-in.email')" v-model="email" />
+            <EmailInput v-model="email" id-name="reset-email" :label="$t('sign-in.email')" />
 
             <PrimaryButton
               :text="$t('sign-in.reset-password')"
-              @click="resetPassword"
               class="mt-4"
+              @click="resetPassword"
             />
           </HeadlessTabPanel>
         </HeadlessTabPanels>

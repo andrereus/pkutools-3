@@ -32,17 +32,17 @@ watch(model, () => {
     <div class="mt-1 mb-3">
       <div class="relative mt-1.5">
         <input
-          :type="showPassword ? 'text' : 'password'"
-          :name="idName"
           :id="idName"
           v-model="model"
-          @blur="validatePassword"
+          :type="showPassword ? 'text' : 'password'"
+          :name="idName"
           class="block w-full rounded-md border-0 bg-white py-1.5 pr-10 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
           spellcheck="false"
+          @blur="validatePassword"
         />
         <div
-          @click="showPassword = !showPassword"
           class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+          @click="showPassword = !showPassword"
         >
           <LucideEye v-if="showPassword" class="h-5 w-5 text-gray-400" aria-hidden="true" />
           <LucideEyeOff v-else class="h-5 w-5 text-gray-400" aria-hidden="true" />

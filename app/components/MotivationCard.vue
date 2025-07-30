@@ -109,7 +109,7 @@ const badges = computed(() => [
                 class="h-1.5 rounded-full"
                 :class="badges[0].earned ? 'bg-sky-500' : 'bg-gray-400'"
                 :style="{ width: `${badges[0].progress}%` }"
-              ></div>
+              />
             </div>
           </div>
         </div>
@@ -136,7 +136,7 @@ const badges = computed(() => [
                 class="h-1.5 rounded-full"
                 :class="badges[1].earned ? 'bg-sky-500' : 'bg-gray-400'"
                 :style="{ width: `${badges[1].progress}%` }"
-              ></div>
+              />
             </div>
           </div>
         </div>

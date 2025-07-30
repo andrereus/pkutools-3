@@ -33,7 +33,6 @@ const showCookieBanner = ref(false)
 const userIsAuthenticated = computed(() => store.user !== null)
 const userPhotoUrl = computed(() => (store.user ? store.user.photoUrl : null))
 const user = computed(() => store.user)
-const settings = computed(() => store.settings)
 
 const navigation = computed(() => {
   return [
@@ -274,7 +273,7 @@ const handleCookieConsent = (consent) => {
             <button
               type="button"
               class="headway relative rounded-full p-1 text-gray-600 hover:text-black focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 dark:text-gray-200 dark:hover:text-white"
-            ></button>
+            />
 
             <HeadlessMenu as="div" class="relative ml-2">
               <div>
@@ -476,7 +475,7 @@ const handleCookieConsent = (consent) => {
             </HeadlessMenu>
           </div>
         </div>
-        <div class="border-b dark:border-gray-700"></div>
+        <div class="border-b dark:border-gray-700" />
         <nav
           class="flex py-2 justify-around sm:justify-center sm:space-x-12 lg:justify-start lg:space-x-4"
           aria-label="Global"
@@ -595,14 +594,14 @@ const handleCookieConsent = (consent) => {
       </span>
       <div class="flex gap-2 justify-end">
         <button
-          @click="handleCookieConsent('yes')"
           class="bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+          @click="handleCookieConsent('yes')"
         >
           {{ $t('cookie-consent.accept') }}
         </button>
         <button
-          @click="handleCookieConsent('no')"
           class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 text-sm font-medium px-4 py-2 rounded-lg transition"
+          @click="handleCookieConsent('no')"
         >
           {{ $t('cookie-consent.decline') }}
         </button>

@@ -115,7 +115,7 @@ watch(userIsAuthenticated, (newVal) => {
             playsinline
             preload="auto"
             class="w-full rounded-md shadow-2xl ring-1 ring-gray-900/10 dark:ring-gray-700"
-          ></video>
+          />
         </div>
       </div>
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
@@ -159,8 +159,8 @@ watch(userIsAuthenticated, (newVal) => {
           class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
         >
           <a
-            @click.prevent="signInGoogle"
             class="rounded-sm bg-sky-500 px-2 py-1 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 cursor-pointer"
+            @click.prevent="signInGoogle"
           >
             {{ $t('app.signin-google') }}
           </a>

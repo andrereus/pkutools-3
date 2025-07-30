@@ -34,7 +34,7 @@ function handleButtonClick(buttonType) {
 </script>
 
 <template>
-  <dialog class="relative z-10 dark:text-white" ref="dialog">
+  <dialog ref="dialog" class="relative z-10 dark:text-white">
     <div class="fixed inset-0 bg-gray-500/75 transition-opacity" />
 
     <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -75,10 +75,10 @@ function handleButtonClick(buttonType) {
                     : 'bg-sky-500 text-white hover:bg-sky-600 focus-visible:outline-sky-500',
                 filteredButtons.length > 1 && index > 0 ? 'mt-3 sm:mt-0' : ''
               ]"
-              @click="handleButtonClick(button.type)"
               :autofocus="
                 button.type === 'submit' || button.type === 'simpleClose' || button.type === 'close'
               "
+              @click="handleButtonClick(button.type)"
             >
               {{ button.label }}
             </button>

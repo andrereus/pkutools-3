@@ -44,8 +44,8 @@ const formTitle = computed(() => {
 })
 
 const graph = computed(() => {
-  let newLabValues = labValues.value
-  let chartLabValues = newLabValues
+  const newLabValues = labValues.value
+  const chartLabValues = newLabValues
     .map((obj) => {
       return { x: obj.date, y: obj.phe }
     })
@@ -61,10 +61,10 @@ const graph = computed(() => {
 })
 
 const chartOptions = computed(() => {
-  let en = enChart
-  let de = deChart
-  let fr = frChart
-  let es = esChart
+  const en = enChart
+  const de = deChart
+  const fr = frChart
+  const es = esChart
   return {
     chart: {
       locales: [en, de, fr, es],
@@ -193,7 +193,7 @@ const escapeCSV = (value) => {
 }
 
 const exportLabValues = () => {
-  let r = confirm(t('blood-values.export') + '?')
+  const r = confirm(t('blood-values.export') + '?')
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
     csvContent += 'Date,Phe,Tyrosine\n'
@@ -247,15 +247,15 @@ const triggerDownload = (csvContent) => {
         :options="chartOptions"
         :series="graph"
         class="-mb-2"
-      ></apexchart>
+      />
       <BloodValuesCard />
       <!-- TODO: Add sort feature -->
       <DataTable :headers="tableHeaders" class="mb-8">
         <tr
           v-for="(item, index) in sortedLabValues"
           :key="index"
-          @click="editItem(item)"
           class="cursor-pointer"
+          @click="editItem(item)"
         >
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
             {{ getlocalDate(item.date) }}
@@ -283,20 +283,20 @@ const triggerDownload = (csvContent) => {
         @delete="deleteItem"
         @close="close"
       >
-        <DateInput id-name="date" :label="$t('blood-values.date')" v-model="editedItem.date" />
+        <DateInput v-model="editedItem.date" id-name="date" :label="$t('blood-values.date')" />
 
         <NumberInput
+          v-model.number="editedItem.phe"
           id-name="phe"
           :label="$t('blood-values.phe') + (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')"
-          v-model.number="editedItem.phe"
         />
 
         <NumberInput
+          v-model.number="editedItem.tyrosine"
           id-name="tyrosine"
           :label="
             $t('blood-values.tyrosine') + (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
           "
-          v-model.number="editedItem.tyrosine"
         />
 
         <p class="text-sm mt-4">{{ $t('blood-values.unit-info') }}</p>

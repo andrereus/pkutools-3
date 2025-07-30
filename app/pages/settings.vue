@@ -62,7 +62,7 @@ const saveLicense = () => {
 }
 
 const resetDiary = () => {
-  let r = confirm(t('settings.reset-diary') + '?')
+  const r = confirm(t('settings.reset-diary') + '?')
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/pheDiary`))
@@ -71,7 +71,7 @@ const resetDiary = () => {
 }
 
 const resetLabValues = () => {
-  let r = confirm(t('settings.reset-blood-values') + '?')
+  const r = confirm(t('settings.reset-blood-values') + '?')
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/labValues`))
@@ -80,7 +80,7 @@ const resetLabValues = () => {
 }
 
 const resetOwnFood = () => {
-  let r = confirm(t('settings.reset-own-food') + '?')
+  const r = confirm(t('settings.reset-own-food') + '?')
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/ownFood`))
@@ -89,7 +89,7 @@ const resetOwnFood = () => {
 }
 
 const deleteAccount = () => {
-  let r = confirm(t('settings.delete-account') + '?')
+  const r = confirm(t('settings.delete-account') + '?')
   if (r === true) {
     const db = getDatabase()
     const auth = getAuth()
@@ -137,9 +137,9 @@ onMounted(() => {
     </header>
 
     <SelectMenu
+      v-model="selectedTheme"
       id-name="theme-select"
       :label="$t('settings.theme')"
-      v-model="selectedTheme"
       @change="handleThemeChange"
     >
       <option v-for="option in themeOptions" :key="option.value" :value="option.value">
@@ -161,21 +161,21 @@ onMounted(() => {
 
     <div v-if="userIsAuthenticated">
       <NumberInput
+        v-model.number="settings.maxPhe"
         id-name="max-phe"
         :label="$t('settings.max-phe')"
-        v-model.number="settings.maxPhe"
       />
 
       <NumberInput
+        v-model.number="settings.maxKcal"
         id-name="max-kcal"
         :label="$t('settings.max-kcal')"
-        v-model.number="settings.maxKcal"
       />
 
       <SelectMenu
+        v-model="settings.labUnit"
         id-name="unit"
         :label="$t('blood-values.unit')"
-        v-model="settings.labUnit"
         class="mb-6"
       >
         <option v-for="option in unitOptions" :key="option.value" :value="option.value">
@@ -190,9 +190,9 @@ onMounted(() => {
 
       <PageHeader :title="$t('settings.license-heading')" class="mt-6" />
       <TextInput
+        v-model="settings.license"
         id-name="license"
         :label="$t('settings.license-key')"
-        v-model="settings.license"
         class="mb-6"
       />
       <PrimaryButton :text="$t('settings.check-license')" @click="saveLicense" />

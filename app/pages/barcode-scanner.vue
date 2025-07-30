@@ -175,7 +175,7 @@ const save = () => {
       <PageHeader :title="$t('app.scanner')" />
     </header>
 
-    <PrimaryButton :text="$t('barcode-scanner.scan-barcode')" @click="openDialog" class="mt-2" />
+    <PrimaryButton :text="$t('barcode-scanner.scan-barcode')" class="mt-2" @click="openDialog" />
 
     <SimpleDialog ref="dialog" :title="$t('barcode-scanner.scan-barcode')" @close="cancel">
       <p v-if="loaded === false">{{ $t('barcode-scanner.please-wait') }}</p>
@@ -191,7 +191,7 @@ const save = () => {
         @camera-on="onReady"
         @detect="onDetect"
         @error="onError"
-      ></QrcodeStream>
+      />
     </SimpleDialog>
 
     <div v-if="result">
@@ -219,16 +219,16 @@ const save = () => {
           {{ $t('common.kcal-per-100g') }}
         </p>
 
-        <SelectMenu id-name="factor" :label="$t('common.food-type')" v-model="select">
+        <SelectMenu v-model="select" id-name="factor" :label="$t('common.food-type')">
           <option v-for="option in type" :key="option.value" :value="option.value">
             {{ option.title }}
           </option>
         </SelectMenu>
 
         <NumberInput
+          v-model.number="weight"
           id-name="weight"
           :label="$t('common.consumed-weight')"
-          v-model.number="weight"
           class="mb-6"
         />
 

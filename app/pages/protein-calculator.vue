@@ -113,13 +113,13 @@ const save = () => {
     </div>
 
     <TextInput
+      v-if="userIsAuthenticated"
+      v-model="name"
       id-name="food"
       :label="$t('common.food-name')"
-      v-model="name"
-      v-if="userIsAuthenticated"
     />
 
-    <SelectMenu id-name="factor" :label="$t('common.food-type')" v-model="select">
+    <SelectMenu v-model="select" id-name="factor" :label="$t('common.food-type')">
       <option v-for="option in type" :key="option.value" :value="option.value">
         {{ option.title }}
       </option>
@@ -127,20 +127,20 @@ const save = () => {
 
     <div class="flex gap-4">
       <NumberInput
+        v-model.number="protein"
         id-name="protein"
         :label="$t('common.protein-per-100g')"
-        v-model.number="protein"
         class="flex-1"
       />
       <NumberInput
+        v-model.number="kcalReference"
         id-name="kcalRef"
         :label="$t('common.kcal-per-100g')"
-        v-model.number="kcalReference"
         class="flex-1"
         :placeholder="$t('common.optional')"
       />
     </div>
-    <NumberInput id-name="weight" :label="$t('common.consumed-weight')" v-model.number="weight" />
+    <NumberInput v-model.number="weight" id-name="weight" :label="$t('common.consumed-weight')" />
 
     <div class="flex gap-4 my-6">
       <span class="flex-1 ml-1 text-lg">≈ {{ calculatePhe() }} mg Phe</span>
