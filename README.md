@@ -60,12 +60,9 @@ Locally preview production build:
 npm run preview
 ```
 
-## Notes
+## Modules not used yet
 
-### Modules not used yet
-
-- nuxt-headlessui is not Nuxt 4 compatible yet
-- @nuxtjs/tailwindcss doesn't fully support Nuxt 4 yet
+@nuxtjs/tailwindcss doesn't fully support Nuxt 4 yet
 
 ## Contributing
 
