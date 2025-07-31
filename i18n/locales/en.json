@@ -15,7 +15,9 @@
     "total": "total",
     "left": "left",
     "start": "Start page",
-    "limited": "Trial version (limited entries)",
+    "diary-limited": "Trial version (14 days)",
+    "blood-values-limited": "Trial version (30 entries)",
+    "own-food-limited": "Trial version (50 entries)",
     "unlimited": "Premium (unlimited entries)",
     "limit": "Entries limit reached. Support with a subscription for unlimited entries. See settings for more."
   },

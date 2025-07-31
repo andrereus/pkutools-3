@@ -400,7 +400,7 @@ watch(userIsAuthenticated, (newVal) => {
       <p v-if="!license" class="mt-3 text-sm">
         <NuxtLink :to="$localePath('settings')">
           <LucideBadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
-          {{ $t('app.limited') }}
+          {{ $t('app.diary-limited') }}
         </NuxtLink>
       </p>
       <p v-if="license" class="mt-3 text-sm">

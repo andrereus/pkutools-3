@@ -15,7 +15,9 @@
     "total": "total",
     "left": "restante",
     "start": "Página de inicio",
-    "limited": "Versión de prueba (entradas limitadas)",
+    "diary-limited": "Versión de prueba (14 días)",
+    "blood-values-limited": "Versión de prueba (30 entradas)",
+    "own-food-limited": "Versión de prueba (50 entradas)",
     "unlimited": "Premium (entradas ilimitadas)",
     "limit": "Límite de entradas alcanzado. Soporte con una suscripción para entradas ilimitadas. Consulte la configuración para obtener más información."
   },
