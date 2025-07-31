@@ -1,6 +1,14 @@
 <script setup>
 const { t } = useI18n()
 
+const props = defineProps({
+  align: {
+    type: String,
+    default: 'center',
+    validator: (v) => ['center', 'left'].includes(v)
+  }
+})
+
 const tiers = computed(() => [
   {
     name: t('settings.tier-basic'),
@@ -27,36 +35,25 @@ const tiers = computed(() => [
       t('settings.tier-unlimited-feature-6')
     ],
     featured: true
-  },
-  {
-    name: t('settings.tier-lifetime'),
-    id: 'tier-lifetime',
-    price: '€60',
-    description: t('settings.tier-lifetime-desc'),
-    features: [
-      t('settings.tier-unlimited-feature-1'),
-      t('settings.tier-unlimited-feature-2'),
-      t('settings.tier-unlimited-feature-3'),
-      t('settings.tier-unlimited-feature-5'),
-      t('settings.tier-unlimited-feature-6')
-    ],
-    featured: true
   }
 ])
 </script>
 
 <template>
   <div
-    class="mx-auto my-6 grid max-w-lg grid-cols-1 items-center gap-y-6 sm:gap-y-0 lg:max-w-5xl lg:grid-cols-3"
+    :class="[
+      props.align === 'center' ? 'mx-auto' : '',
+      'my-6 grid max-w-lg grid-cols-1 items-center gap-y-6 sm:gap-y-0 lg:max-w-3xl lg:grid-cols-2'
+    ]"
   >
     <div
       v-for="(tier, tierIdx) in tiers"
       :key="tier.id"
       :class="[
         tier.featured ? 'relative' : 'sm:mx-8 lg:mx-0',
-        tierIdx <= 1
+        tierIdx < 1
           ? 'rounded-t-xl sm:rounded-b-none lg:rounded-tr-none lg:rounded-bl-xl'
-          : 'sm:rounded-t-none lg:rounded-tr-xl lg:rounded-bl-none',
+          : 'lg:rounded-t-xl',
         'rounded-xl p-8 ring-1 ring-gray-200 dark:ring-gray-800'
       ]"
     >
@@ -72,9 +69,6 @@ const tiers = computed(() => [
         }}</span>
         <span v-if="tier.id === 'tier-unlimited'" class="text-gray-500 text-base">{{
           $t('settings.per-month')
-        }}</span>
-        <span v-if="tier.id === 'tier-lifetime'" class="text-gray-500 text-base">{{
-          $t('settings.one-time')
         }}</span>
       </p>
       <p :class="[tier.featured ? '' : '', 'text-gray-500 mt-4 text-base/7']">
@@ -93,15 +87,8 @@ const tiers = computed(() => [
         v-if="tier.id === 'tier-unlimited'"
         href="https://buymeacoffee.com/andrereus/membership"
         target="_blank"
-        class="bg-black/5 dark:bg-white/15 text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-sky-500 mt-6 block rounded-md px-3.5 py-1 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
+        class="bg-sky-500 text-white shadow-xs hover:bg-sky-400 focus-visible:outline-sky-500 mt-6 block rounded-md px-3.5 py-1 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
         >{{ $t('settings.subscribe') }}</a
-      >
-      <a
-        v-if="tier.id === 'tier-lifetime'"
-        href="https://buymeacoffee.com/andrereus/membership"
-        target="_blank"
-        class="bg-black/5 dark:bg-white/15 text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-sky-500 mt-6 block rounded-md px-3.5 py-1 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
-        >{{ $t('settings.buy') }}</a
       >
     </div>
   </div>
