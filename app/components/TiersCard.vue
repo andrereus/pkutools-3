@@ -85,7 +85,7 @@ const tiers = computed(() => [
       </ul>
       <a
         v-if="tier.id === 'tier-unlimited'"
-        href="https://buymeacoffee.com/andrereus/membership"
+        href="https://ko-fi.com/andrereus/tiers"
         target="_blank"
         class="bg-sky-500 text-white shadow-xs hover:bg-sky-400 focus-visible:outline-sky-500 mt-6 block rounded-md px-3.5 py-1 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
         >{{ $t('settings.subscribe') }}</a
