@@ -218,7 +218,7 @@ const save = () => {
     }
   } else {
     if (
-      pheDiary.value.length >= 30 &&
+      pheDiary.value.length >= 14 &&
       settings.value.license !== config.public.pkutoolsLicenseKey
     ) {
       alert(t('app.limit'))

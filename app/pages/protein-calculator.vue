@@ -73,7 +73,7 @@ const save = () => {
     })
   } else {
     if (
-      store.pheDiary.length >= 50 &&
+      store.pheDiary.length >= 14 &&
       store.settings.license !== config.public.pkutoolsLicenseKey
     ) {
       alert(t('app.limit'))
