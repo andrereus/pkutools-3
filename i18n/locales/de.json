@@ -160,9 +160,7 @@
     "tier-basic-feature-2": "30 Blutwert-Einträge",
     "tier-basic-feature-3": "50 eigene Lebensmittel",
     "per-month": "/monat",
-    "one-time": "/Einmalig",
-    "subscribe": "Abonnieren",
-    "buy": "Abonnieren"
+    "subscribe": "Abonnieren"
   },
   "sign-in": {
     "title": "Anmelden mit E-Mail",

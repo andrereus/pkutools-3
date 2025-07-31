@@ -160,9 +160,7 @@
     "tier-basic-feature-2": "30 blood value entries",
     "tier-basic-feature-3": "50 own foods",
     "per-month": "/month",
-    "one-time": "/One-time",
-    "subscribe": "Join",
-    "buy": "Join"
+    "subscribe": "Join"
   },
   "sign-in": {
     "title": "Sign in with Email",

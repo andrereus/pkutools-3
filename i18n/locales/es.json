@@ -160,9 +160,7 @@
     "tier-basic-feature-2": "30 entradas de valor sanguíneo",
     "tier-basic-feature-3": "50 alimentos propios",
     "per-month": "/mes",
-    "one-time": "/Una vez",
-    "subscribe": "Unirme",
-    "buy": "Unirme"
+    "subscribe": "Unirme"
   },
   "sign-in": {
     "title": "Iniciar sesión con correo electrónico",

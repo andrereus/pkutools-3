@@ -160,9 +160,7 @@
     "tier-basic-feature-2": "30 entrées de valeur sanguine",
     "tier-basic-feature-3": "50 aliments personnalisés",
     "per-month": "/mois",
-    "one-time": "/Une fois",
-    "subscribe": "Rejoindre",
-    "buy": "Rejoindre"
+    "subscribe": "Rejoindre"
   },
   "sign-in": {
     "title": "Se connecter avec un e-mail",
