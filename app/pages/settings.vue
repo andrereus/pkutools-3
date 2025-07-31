@@ -185,7 +185,7 @@ onMounted(() => {
 
       <PrimaryButton :text="$t('common.save')" @click="save" />
 
-      <PageHeader title="PKU Tools Unlimited" class="mt-6" />
+      <PageHeader title="PKU Tools Premium" class="mt-6" />
       <TiersCard />
 
       <PageHeader :title="$t('settings.license-heading')" class="mt-6" />
