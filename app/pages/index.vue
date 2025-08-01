@@ -208,13 +208,14 @@ watch(userIsAuthenticated, (newVal) => {
           {{ $t('home.about-description') }}
         </p>
         <div class="mt-6 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <a href="https://www.buymeacoffee.com/andrereus" target="_blank">
-            <img
-              src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=andrereus&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"
-              alt="Buy Me A Coffee"
-              class="w-40"
-            />
-          </a>
+          <a href="https://ko-fi.com/M4M0GIVPI" target="_blank"
+            ><img
+              height="36"
+              style="border: 0px; height: 36px"
+              src="https://storage.ko-fi.com/cdn/kofi5.png?v=6"
+              border="0"
+              alt="Buy Me a Coffee at ko-fi.com"
+          /></a>
         </div>
       </div>
     </div>
