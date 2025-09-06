@@ -1,6 +1,6 @@
 # PKU Tools
 
-PKU Tools is a nutrition app for low-phenylalanine diets aimed at people with PKU. It combines a calculator, pencil, paper and nutritional table.
+PKU Tools is a nutrition app for low-phenylalanine diets intended for people with PKU. It combines a calculator, pencil, paper and nutritional table.
 
 ## Features
 

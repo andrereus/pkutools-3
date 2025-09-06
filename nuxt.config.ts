@@ -8,7 +8,11 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0, viewport-fit=cover' },
-        { name: 'description', content: 'Tools and apps for PKU.' },
+        {
+          name: 'description',
+          content:
+            'Nutrition app for low-phenylalanine diets. This app is intended for people with PKU.'
+        },
         { name: 'theme-color', content: '#3498db' },
         { name: 'google', content: 'notranslate' }
       ],
@@ -111,7 +115,14 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
-  modules: ['@nuxt/eslint', '@pinia/nuxt', '@nuxtjs/i18n', 'nuxt-lucide-icons', 'nuxt-headlessui'],
+  modules: [
+    '@nuxt/eslint',
+    '@pinia/nuxt',
+    '@nuxtjs/i18n',
+    'nuxt-lucide-icons',
+    'nuxt-headlessui',
+    '@nuxtjs/seo'
+  ],
   vite: {
     plugins: [tailwindcss()]
   },
@@ -135,5 +146,11 @@ export default defineNuxtConfig({
       { code: 'es', name: 'Español', file: 'es.json' },
       { code: 'fr', name: 'Français', file: 'fr.json' }
     ]
+  },
+  site: {
+    url: 'https://pkutools.com',
+    name: 'PKU Tools',
+    description:
+      'Nutrition app for low-phenylalanine diets. This app is intended for people with PKU.'
   }
 })
