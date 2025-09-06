@@ -69,6 +69,11 @@ const save = () => {
   }
   navigateTo(localePath('diary'))
 }
+
+useSeoMeta({
+  title: () => t('phe-calculator.title'),
+  description: () => t('features.calculator-description')
+})
 </script>
 
 <template>

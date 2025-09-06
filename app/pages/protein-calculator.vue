@@ -88,6 +88,11 @@ const save = () => {
   }
   navigateTo(localePath('diary'))
 }
+
+useSeoMeta({
+  title: () => t('protein-calculator.title'),
+  description: () => t('features.calculator-description')
+})
 </script>
 
 <template>

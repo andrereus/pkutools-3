@@ -2,8 +2,14 @@
 import { useStore } from '../../stores/index'
 
 const store = useStore()
+const { t } = useI18n()
 
 const userIsAuthenticated = computed(() => store.user !== null)
+
+useSeoMeta({
+  title: () => t('assistant.title'),
+  description: () => t('features.assistant-description')
+})
 </script>
 
 <template>

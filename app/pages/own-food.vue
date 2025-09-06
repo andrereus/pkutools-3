@@ -183,6 +183,11 @@ const setIcon = (item, close) => {
   editedItem.value.icon = item.svg
   close()
 }
+
+useSeoMeta({
+  title: () => t('own-food.title'),
+  description: () => t('features.own-food-description')
+})
 </script>
 
 <template>

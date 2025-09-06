@@ -167,6 +167,11 @@ const save = () => {
   }
   navigateTo(localePath('diary'))
 }
+
+useSeoMeta({
+  title: () => t('barcode-scanner.title'),
+  description: () => t('features.scanner-description')
+})
 </script>
 
 <template>

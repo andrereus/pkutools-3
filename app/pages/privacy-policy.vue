@@ -1,7 +1,13 @@
 <script setup>
+const { t } = useI18n()
+
 const part1 = ref('mail')
 const part2 = ref('pkutools')
 const part3 = ref('com')
+
+useSeoMeta({
+  title: () => t('privacy-policy.title')
+})
 </script>
 
 <template>

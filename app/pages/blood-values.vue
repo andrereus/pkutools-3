@@ -217,6 +217,11 @@ const triggerDownload = (csvContent) => {
   link.click()
   document.body.removeChild(link)
 }
+
+useSeoMeta({
+  title: () => t('blood-values.title'),
+  description: () => t('features.blood-values-description')
+})
 </script>
 
 <template>

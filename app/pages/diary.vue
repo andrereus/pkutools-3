@@ -213,6 +213,11 @@ watch(userIsAuthenticated, (newVal) => {
     navigateTo(localePath('index'))
   }
 })
+
+useSeoMeta({
+  title: () => t('diary.title'),
+  description: () => t('features.diary-description')
+})
 </script>
 
 <template>

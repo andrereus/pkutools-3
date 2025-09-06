@@ -53,6 +53,10 @@ const resetPassword = async () => {
     console.error(error)
   }
 }
+
+useSeoMeta({
+  title: () => t('sign-in.tab-title')
+})
 </script>
 
 <template>

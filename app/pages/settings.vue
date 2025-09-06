@@ -128,6 +128,10 @@ const handleThemeChange = () => {
 onMounted(() => {
   selectedTheme.value = localStorage.getItem('theme') || 'system'
 })
+
+useSeoMeta({
+  title: () => t('settings.title')
+})
 </script>
 
 <template>

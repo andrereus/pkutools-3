@@ -121,6 +121,11 @@ const searchFood = async () => {
   advancedFood.value = results.map((result) => result.item)
   loading.value = false
 }
+
+useSeoMeta({
+  title: () => t('food-search.title'),
+  description: () => t('features.search-description')
+})
 </script>
 
 <template>

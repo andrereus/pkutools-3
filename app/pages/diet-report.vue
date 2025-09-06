@@ -405,6 +405,11 @@ const updateData = (timeline) => {
       break
   }
 }
+
+useSeoMeta({
+  title: () => t('diet-report.title'),
+  description: () => t('features.diary-description')
+})
 </script>
 
 <template>
