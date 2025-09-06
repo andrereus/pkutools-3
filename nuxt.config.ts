@@ -13,7 +13,8 @@ export default defineNuxtConfig({
           content:
             'Nutrition app for low-phenylalanine diets. This app is intended for people with PKU.'
         },
-        { name: 'theme-color', content: '#3498db' }
+        { name: 'theme-color', content: '#3498db' },
+        { name: 'google', content: 'notranslate' }
       ],
       link: [
         { rel: 'manifest', href: '/manifest.webmanifest' },
@@ -101,7 +102,8 @@ export default defineNuxtConfig({
         { src: '//cdn.headwayapp.co/widget.js', async: true }
       ],
       htmlAttrs: {
-        class: 'h-full'
+        translate: 'no',
+        class: 'h-full notranslate'
       },
       bodyAttrs: {
         class: 'h-full bg-gray-50 dark:bg-gray-950'
