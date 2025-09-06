@@ -102,7 +102,6 @@ export default defineNuxtConfig({
         { src: '//cdn.headwayapp.co/widget.js', async: true }
       ],
       htmlAttrs: {
-        lang: 'en',
         translate: 'no',
         class: 'h-full notranslate'
       },
@@ -139,13 +138,14 @@ export default defineNuxtConfig({
     }
   },
   i18n: {
-    defaultLocale: 'en',
+    baseUrl: 'https://pkutools.com',
     locales: [
-      { code: 'de', name: 'Deutsch', file: 'de.json' },
-      { code: 'en', name: 'English', file: 'en.json' },
-      { code: 'es', name: 'Español', file: 'es.json' },
-      { code: 'fr', name: 'Français', file: 'fr.json' }
-    ]
+      { code: 'de', name: 'Deutsch', file: 'de.json', language: 'de-DE' },
+      { code: 'en', name: 'English', file: 'en.json', language: 'en-US' },
+      { code: 'es', name: 'Español', file: 'es.json', language: 'es-ES' },
+      { code: 'fr', name: 'Français', file: 'fr.json', language: 'fr-FR' }
+    ],
+    defaultLocale: 'en'
   },
   site: {
     url: 'https://pkutools.com',
