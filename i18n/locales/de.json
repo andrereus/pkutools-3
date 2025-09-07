@@ -46,6 +46,7 @@
   },
   "home": {
     "title": "Start",
+    "description": "Nährwert-App für phenylalaninarme Diät. Diese App richtet sich an Menschen mit PKU. Sie kombiniert Taschenrechner, Bleistift, Papier und Nährwerttabelle.",
     "signin": "Überall anmelden",
     "signin-desc": "Einfach auf jedem Gerät anmelden. Daten synchronisieren in Echtzeit.",
     "install": "Überall installieren",
@@ -55,15 +56,18 @@
   },
   "food-search": {
     "title": "Lebensmittelsuche",
+    "description": "Durchsuche eine Lebensmitteldatenbank.",
     "search": "Lebensmittel suchen",
     "search-info": "Verfeinere deine Suche mit mehreren Wörtern, z.B. \"äpfel roh\" oder \"kartoffeln gekocht\". Quelle: fdc.nal.usda.gov"
   },
   "phe-calculator": {
     "title": "Phe Rechner",
+    "description": "Berechne die Phe-Menge für ein bestimmtes Gewicht oder rechne Eiweiß in Phe um.",
     "tab-title": "Phe"
   },
   "protein-calculator": {
     "title": "Eiweiß Rechner",
+    "description": "Berechne die Phe-Menge für ein bestimmtes Gewicht oder rechne Eiweiß in Phe um.",
     "tab-title": "Eiweiß",
     "other": "Allgemein",
     "meat": "Fleisch",
@@ -72,6 +76,7 @@
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",
+    "description": "Scanne Barcodes von Produkten.",
     "scan-barcode": "Barcode scannen",
     "please-wait": "Bitte warten ...",
     "info": "Phe wird aus Eiweiß berechnet. Quelle: openfoodfacts.org",
@@ -89,12 +94,14 @@
   },
   "own-food": {
     "title": "Eigene Lebensmittel",
+    "description": "Hinterlege eigene Lebensmittel zum schnellen Hinzufügen.",
     "search-info": "Eigene Lebensmittel sind auch in der Suche verfügbar.",
     "export-filename": "PKU Tools - Eigene Lebensmittel",
     "choose-icon": "Icon auswählen"
   },
   "diary": {
     "title": "Tagebuch",
+    "description": "Halte Protokoll über dein Essen und verfolge deine Phe-Toleranz.",
     "tab-title": "Tagebuch",
     "info": "Verwende die Tools in der Navigationsleiste um Lebensmittel hinzuzufügen.",
     "data-warning": "Achtung: Phe pro 100g fehlt.",
@@ -104,6 +111,7 @@
   },
   "diet-report": {
     "title": "Diätbericht",
+    "description": "Halte Protokoll über dein Essen und verfolge deine Phe-Toleranz.",
     "tab-title": "Diätbericht",
     "date": "Datum",
     "phe": "Gesamt Phe (in mg)",
@@ -114,6 +122,7 @@
   },
   "blood-values": {
     "title": "Blutwerte",
+    "description": "Verfolge Blutwerte in einem Diagramm.",
     "tab-title": "Blutwerte",
     "date": "Datum",
     "phe": "Phenylalanin",
@@ -163,8 +172,8 @@
     "subscribe": "Abonnieren"
   },
   "sign-in": {
-    "title": "Anmelden mit E-Mail",
-    "tab-title": "Anmelden",
+    "title": "Anmelden",
+    "signin-with-email": "Anmelden mit E-Mail",
     "signedin": "Du bist angemeldet.",
     "name": "Name",
     "email": "E-Mail",
@@ -230,6 +239,7 @@
   },
   "assistant": {
     "title": "Assistent",
+    "description": "Erhalte eine Übersicht, Empfehlungen und Motivation.",
     "info": "Assistent kann Fehler machen.",
     "satiety-tip": "Aktuell",
     "satiety-tip-high": "Erwäge Lebensmittel mit weniger Phe für die Sättigung. Deine Phe-Aufnahme ({phePercentage}%) ist höher als deine Kalorienaufnahme ({kcalPercentage}%).",

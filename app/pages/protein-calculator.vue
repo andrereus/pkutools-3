@@ -91,7 +91,7 @@ const save = () => {
 
 useSeoMeta({
   title: () => t('protein-calculator.title'),
-  description: () => t('features.calculator-description')
+  description: () => t('protein-calculator.description')
 })
 </script>
 

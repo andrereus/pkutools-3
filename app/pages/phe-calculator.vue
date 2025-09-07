@@ -72,7 +72,7 @@ const save = () => {
 
 useSeoMeta({
   title: () => t('phe-calculator.title'),
-  description: () => t('features.calculator-description')
+  description: () => t('phe-calculator.description')
 })
 </script>
 

@@ -46,6 +46,7 @@
   },
   "home": {
     "title": "Inicio",
+    "description": "Aplicación nutricional para dietas bajas en fenilalanina. Esta aplicación está dirigida a personas con fenilcetonuria. Combina calculadora, lápiz, papel y tabla nutricional.",
     "signin": "Inicia sesión en cualquier lugar",
     "signin-desc": "Inicia sesión fácilmente en cualquier dispositivo. Los datos se sincronizan en tiempo real.",
     "install": "Instala en cualquier lugar",
@@ -55,15 +56,18 @@
   },
   "food-search": {
     "title": "Búsqueda de alimentos",
+    "description": "Busca en una base de datos de alimentos.",
     "search": "Buscar alimentos",
     "search-info": "Afine su búsqueda con varias palabras, por ejemplo \"manzanas crudas\" o \"patatas cocidas\". Fuente: fdc.nal.usda.gov"
   },
   "phe-calculator": {
     "title": "Calculadora de Phe",
+    "description": "Calcula la cantidad de Phe para un peso específico o convierte proteína en Phe.",
     "tab-title": "Phe"
   },
   "protein-calculator": {
     "title": "Calculadora de proteínas",
+    "description": "Calcula la cantidad de Phe para un peso específico o convierte proteína en Phe.",
     "tab-title": "Proteínas",
     "other": "General",
     "meat": "Carne",
@@ -72,6 +76,7 @@
   },
   "barcode-scanner": {
     "title": "Escáner de código de barras",
+    "description": "Escanea los códigos de barras de los productos.",
     "scan-barcode": "Escanear código de barras",
     "please-wait": "Por favor, espera...",
     "info": "Phe se calcula a partir de proteínas. Fuente: openfoodfacts.org",
@@ -89,12 +94,14 @@
   },
   "own-food": {
     "title": "Alimentos propios",
+    "description": "Guarda tus propios alimentos para añadir rápidamente.",
     "search-info": "La comida propia también está disponible en la búsqueda.",
     "export-filename": "PKU Tools - Alimento propio",
     "choose-icon": "Seleccionar icono"
   },
   "diary": {
     "title": "Diario",
+    "description": "Lleva un registro de tu comida y controla tu tolerancia a la Phe.",
     "tab-title": "Diario",
     "info": "Utilice las herramientas de la barra de navegación para añadir alimentos.",
     "data-warning": "Atención: Falta Phe por 100g.",
@@ -104,6 +111,7 @@
   },
   "diet-report": {
     "title": "Informe de dieta",
+    "description": "Lleva un registro de tu comida y controla tu tolerancia a la Phe.",
     "tab-title": "Informe de dieta",
     "date": "Fecha",
     "phe": "Total de Phe (en mg)",
@@ -114,6 +122,7 @@
   },
   "blood-values": {
     "title": "Valores de sangre",
+    "description": "Rastrear los valores de sangre en un diagrama.",
     "tab-title": "Valores de sangre",
     "date": "Fecha",
     "phe": "Fenilalanina",
@@ -163,8 +172,8 @@
     "subscribe": "Unirme"
   },
   "sign-in": {
-    "title": "Iniciar sesión con correo electrónico",
-    "tab-title": "Iniciar sesión",
+    "title": "Iniciar sesión",
+    "signin-with-email": "Iniciar sesión con correo electrónico",
     "signedin": "Has iniciado sesión.",
     "name": "Nombre",
     "email": "Correo electrónico",
@@ -230,6 +239,7 @@
   },
   "assistant": {
     "title": "Asistente",
+    "description": "Obtenga una visión general, recomendaciones y motivación.",
     "info": "Asistente puede cometer errores.",
     "satiety-tip": "Actualmente",
     "satiety-tip-high": "Considera alimentos con menos Phe para la saciedad. Tu ingesta de Phe ({phePercentage}%) es mayor que tu ingesta calórica ({kcalPercentage}%).",

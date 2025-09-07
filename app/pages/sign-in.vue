@@ -55,7 +55,7 @@ const resetPassword = async () => {
 }
 
 useSeoMeta({
-  title: () => t('sign-in.tab-title')
+  title: () => t('sign-in.title')
 })
 </script>
 
@@ -106,7 +106,7 @@ useSeoMeta({
       </div>
 
       <h2 class="text-lg text-gray-900 dark:text-gray-300 mb-6">
-        {{ $t('sign-in.title') }}
+        {{ $t('sign-in.signin-with-email') }}
       </h2>
 
       <HeadlessTabGroup>

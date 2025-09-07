@@ -89,7 +89,7 @@ watch(userIsAuthenticated, (newVal) => {
 
 useSeoMeta({
   title: () => t('home.title'),
-  description: () => t('app.description')
+  description: () => t('home.description')
 })
 </script>
 
@@ -173,7 +173,7 @@ useSeoMeta({
             :to="$localePath('sign-in')"
             class="rounded-sm bg-sky-500 px-2 py-1 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
           >
-            {{ $t('sign-in.title') }}
+            {{ $t('sign-in.signin-with-email') }}
           </NuxtLink>
         </div>
       </div>

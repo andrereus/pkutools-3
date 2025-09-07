@@ -46,6 +46,7 @@
   },
   "home": {
     "title": "Accueil",
+    "description": "Application nutritionnelle pour régime pauvre en phénylalanine. Cette application s'adresse aux personnes atteintes de PKU. Elle combine calculatrice, crayon, papier et tableau des valeurs nutritives.",
     "signin": "Connectez-vous partout",
     "signin-desc": "Connectez-vous facilement sur n'importe quel appareil. Les données se synchronisent en temps réel.",
     "install": "Installez partout",
@@ -55,15 +56,18 @@
   },
   "food-search": {
     "title": "Recherche alimentaire",
+    "description": "Recherchez dans une base de données d'aliments.",
     "search": "Chercher des aliments",
     "search-info": "Affine ta recherche avec plusieurs mots, par exemple \"pommes crues\" ou \"pommes de terre cuites\". Source: fdc.nal.usda.gov"
   },
   "phe-calculator": {
     "title": "Calculateur de Phe",
+    "description": "Calculez la quantité de Phe pour un poids spécifique ou convertissez des protéines en Phe.",
     "tab-title": "Phe"
   },
   "protein-calculator": {
     "title": "Calculateur de protéines",
+    "description": "Calculez la quantité de Phe pour un poids spécifique ou convertissez des protéines en Phe.",
     "tab-title": "Protéines",
     "other": "Généralités",
     "meat": "Viande",
@@ -72,6 +76,7 @@
   },
   "barcode-scanner": {
     "title": "Scanner de code-barres",
+    "description": "Scanne les codes-barres des produits.",
     "scan-barcode": "Scanner le code-barres",
     "please-wait": "Veuillez patienter...",
     "info": "Le Phe est calculé à partir des protéines. Source: openfoodfacts.org",
@@ -89,12 +94,14 @@
   },
   "own-food": {
     "title": "Aliments personnels",
+    "description": "Enregistrez vos propres aliments pour un ajout rapide.",
     "search-info": "Les propres aliments sont également disponibles dans la recherche.",
     "export-filename": "PKU Tools - Aliments personnels",
     "choose-icon": "Sélectionner une icône"
   },
   "diary": {
     "title": "Journal",
+    "description": "Suivez vos aliments et surveillez votre tolérance à la Phe.",
     "tab-title": "Journal",
     "info": "Utilise les outils de la barre de navigation pour ajouter des aliments.",
     "data-warning": "Attention : Phe pour 100g manque.",
@@ -104,6 +111,7 @@
   },
   "diet-report": {
     "title": "Rapport de régime",
+    "description": "Suivez vos aliments et surveillez votre tolérance à la Phe.",
     "tab-title": "Rapport de régime",
     "date": "Date",
     "phe": "Phe total (en mg)",
@@ -114,6 +122,7 @@
   },
   "blood-values": {
     "title": "Valeurs sanguines",
+    "description": "Suivez les valeurs sanguines dans un diagramme.",
     "tab-title": "Valeurs sanguines",
     "date": "Date",
     "phe": "Phénylalanine",
@@ -163,8 +172,8 @@
     "subscribe": "Rejoindre"
   },
   "sign-in": {
-    "title": "Se connecter avec un e-mail",
-    "tab-title": "Se connecter",
+    "title": "Se connecter",
+    "signin-with-email": "Se connecter avec un e-mail",
     "signedin": "Vous êtes connecté.",
     "name": "Nom",
     "email": "E-mail",
@@ -230,6 +239,7 @@
   },
   "assistant": {
     "title": "Assistant",
+    "description": "Obtenir un aperçu, des recommandations et une motivation.",
     "info": "Assistant peut faire des erreurs.",
     "satiety-tip": "Actuellement",
     "satiety-tip-high": "Envisagez des aliments contenant moins de Phe pour la satiété. Votre apport en Phe ({phePercentage}%) est supérieur à votre apport calorique ({kcalPercentage}%).",

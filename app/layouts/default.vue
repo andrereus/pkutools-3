@@ -96,7 +96,7 @@ const footerNavigation = computed(() => {
       { name: 'blood-values.title', route: 'blood-values' }
     ],
     account: [
-      { name: 'sign-in.tab-title', route: 'sign-in' },
+      { name: 'sign-in.title', route: 'sign-in' },
       { name: 'own-food.title', route: 'own-food' },
       { name: 'settings.title', route: 'settings' }
     ],
@@ -399,7 +399,7 @@ const handleCookieConsent = (consent) => {
                         <LucideMail
                           class="mr-3 h-5 w-5 text-gray-700 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
                           aria-hidden="true"
-                        />{{ $t('sign-in.title') }}
+                        />{{ $t('sign-in.signin-with-email') }}
                       </a>
                     </HeadlessMenuItem>
                     <HeadlessMenuItem v-if="userIsAuthenticated" v-slot="{ active, close }">

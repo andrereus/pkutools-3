@@ -170,7 +170,7 @@ const save = () => {
 
 useSeoMeta({
   title: () => t('barcode-scanner.title'),
-  description: () => t('features.scanner-description')
+  description: () => t('barcode-scanner.description')
 })
 </script>
 

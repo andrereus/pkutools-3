@@ -124,7 +124,7 @@ const searchFood = async () => {
 
 useSeoMeta({
   title: () => t('food-search.title'),
-  description: () => t('features.search-description')
+  description: () => t('food-search.description')
 })
 </script>
 

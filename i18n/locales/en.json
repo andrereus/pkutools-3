@@ -46,6 +46,7 @@
   },
   "home": {
     "title": "Home",
+    "description": "Nutrition app for low-phenylalanine diets. This app is intended for people with PKU. It combines a calculator, pencil, paper and nutritional table.",
     "signin": "Sign in everywhere",
     "signin-desc": "Easily sign in on any device. Data syncs in real time.",
     "install": "Install everywhere",
@@ -55,15 +56,18 @@
   },
   "food-search": {
     "title": "Food Search",
+    "description": "Search a food database.",
     "search": "Search for food",
     "search-info": "Refine your search with several words, e.g. \"apples raw\" or \"potatoes cooked\". Source: fdc.nal.usda.gov"
   },
   "phe-calculator": {
     "title": "Phe Calculator",
+    "description": "Calculate the amount of Phe for a specific weight or convert protein to Phe.",
     "tab-title": "Phe"
   },
   "protein-calculator": {
     "title": "Protein Calculator",
+    "description": "Calculate the amount of Phe for a specific weight or convert protein to Phe.",
     "tab-title": "Protein",
     "other": "General",
     "meat": "Meat",
@@ -72,6 +76,7 @@
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",
+    "description": "Scan barcodes from products.",
     "scan-barcode": "Scan barcode",
     "please-wait": "Please wait ...",
     "info": "Phe gets calculated from protein. Source: openfoodfacts.org",
@@ -89,12 +94,14 @@
   },
   "own-food": {
     "title": "Own Food",
+    "description": "Save your own foods for quick addition.",
     "search-info": "Own food is also available in the search.",
     "export-filename": "PKU Tools - Own Food",
     "choose-icon": "Select icon"
   },
   "diary": {
     "title": "Diary",
+    "description": "Keep track of your food and monitor your Phe tolerance.",
     "tab-title": "Diary",
     "info": "Use the tools in the navigation bar to add food.",
     "data-warning": "Attention: Phe per 100g is missing.",
@@ -104,6 +111,7 @@
   },
   "diet-report": {
     "title": "Diet Report",
+    "description": "Keep track of your food and monitor your Phe tolerance.",
     "tab-title": "Diet Report",
     "date": "Date",
     "phe": "Total Phe (in mg)",
@@ -114,6 +122,7 @@
   },
   "blood-values": {
     "title": "Blood Values",
+    "description": "Track blood values in a diagram.",
     "tab-title": "Blood Values",
     "date": "Date",
     "phe": "Phenylalanine",
@@ -163,8 +172,8 @@
     "subscribe": "Join"
   },
   "sign-in": {
-    "title": "Sign in with Email",
-    "tab-title": "Sign in",
+    "title": "Sign in",
+    "signin-with-email": "Sign in with Email",
     "signedin": "You are signed in.",
     "name": "Name",
     "email": "Email",
@@ -230,6 +239,7 @@
   },
   "assistant": {
     "title": "Assistant",
+    "description": "Get an overview, recommendations and motivation.",
     "info": "Assistant can make mistakes.",
     "satiety-tip": "Currently",
     "satiety-tip-high": "Consider foods with less Phe for satiety. Your Phe intake ({phePercentage}%) is higher than your calorie intake ({kcalPercentage}%).",
