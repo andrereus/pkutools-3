@@ -140,10 +140,10 @@ export default defineNuxtConfig({
   i18n: {
     baseUrl: 'https://pkutools.com',
     locales: [
-      { code: 'de', name: 'Deutsch', file: 'de.json', language: 'de-DE' },
-      { code: 'en', name: 'English', file: 'en.json', language: 'en-US' },
-      { code: 'es', name: 'Español', file: 'es.json', language: 'es-ES' },
-      { code: 'fr', name: 'Français', file: 'fr.json', language: 'fr-FR' }
+      { code: 'de', name: 'Deutsch', file: 'de.json', language: 'de' },
+      { code: 'en', name: 'English', file: 'en.json', language: 'en' },
+      { code: 'es', name: 'Español', file: 'es.json', language: 'es' },
+      { code: 'fr', name: 'Français', file: 'fr.json', language: 'fr' }
     ],
     defaultLocale: 'en'
   },
