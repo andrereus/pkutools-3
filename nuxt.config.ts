@@ -1,4 +1,5 @@
 import tailwindcss from '@tailwindcss/vite'
+import { defineOrganization } from 'nuxt-schema-org/schema'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -152,5 +153,11 @@ export default defineNuxtConfig({
     name: 'PKU Tools',
     description:
       'Nutrition app for low-phenylalanine diets. This app is intended for people with PKU.'
+  },
+  schemaOrg: {
+    identity: defineOrganization({
+      name: 'PKU Tools',
+      logo: '/logo-512.png'
+    })
   }
 })
