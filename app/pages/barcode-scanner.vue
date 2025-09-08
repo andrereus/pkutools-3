@@ -172,6 +172,12 @@ useSeoMeta({
   title: () => t('barcode-scanner.title'),
   description: () => t('barcode-scanner.description')
 })
+
+defineOgImageComponent('NuxtSeo', {
+  title: () => t('barcode-scanner.title') + ' - PKU Tools',
+  description: () => t('barcode-scanner.description'),
+  theme: '#3498db'
+})
 </script>
 
 <template>

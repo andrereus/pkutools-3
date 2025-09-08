@@ -10,6 +10,12 @@ useSeoMeta({
   title: () => t('assistant.title'),
   description: () => t('assistant.description')
 })
+
+defineOgImageComponent('NuxtSeo', {
+  title: () => t('assistant.title') + ' - PKU Tools',
+  description: () => t('assistant.description'),
+  theme: '#3498db'
+})
 </script>
 
 <template>

@@ -8,6 +8,11 @@ const part3 = ref('com')
 useSeoMeta({
   title: () => t('disclaimer.title')
 })
+
+defineOgImageComponent('NuxtSeo', {
+  title: () => t('disclaimer.title') + ' - PKU Tools',
+  theme: '#3498db'
+})
 </script>
 
 <template>

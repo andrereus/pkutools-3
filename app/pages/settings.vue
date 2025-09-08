@@ -132,6 +132,11 @@ onMounted(() => {
 useSeoMeta({
   title: () => t('settings.title')
 })
+
+defineOgImageComponent('NuxtSeo', {
+  title: () => t('settings.title') + ' - PKU Tools',
+  theme: '#3498db'
+})
 </script>
 
 <template>

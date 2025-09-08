@@ -188,6 +188,12 @@ useSeoMeta({
   title: () => t('own-food.title'),
   description: () => t('own-food.description')
 })
+
+defineOgImageComponent('NuxtSeo', {
+  title: () => t('own-food.title') + ' - PKU Tools',
+  description: () => t('own-food.description'),
+  theme: '#3498db'
+})
 </script>
 
 <template>

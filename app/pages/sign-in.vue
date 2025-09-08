@@ -57,6 +57,11 @@ const resetPassword = async () => {
 useSeoMeta({
   title: () => t('sign-in.title')
 })
+
+defineOgImageComponent('NuxtSeo', {
+  title: () => t('sign-in.title') + ' - PKU Tools',
+  theme: '#3498db'
+})
 </script>
 
 <template>

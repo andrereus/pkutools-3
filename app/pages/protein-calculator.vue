@@ -93,6 +93,12 @@ useSeoMeta({
   title: () => t('protein-calculator.title'),
   description: () => t('protein-calculator.description')
 })
+
+defineOgImageComponent('NuxtSeo', {
+  title: () => t('protein-calculator.title') + ' - PKU Tools',
+  description: () => t('protein-calculator.description'),
+  theme: '#3498db'
+})
 </script>
 
 <template>

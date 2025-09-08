@@ -410,6 +410,12 @@ useSeoMeta({
   title: () => t('diet-report.title'),
   description: () => t('diet-report.description')
 })
+
+defineOgImageComponent('NuxtSeo', {
+  title: () => t('diet-report.title') + ' - PKU Tools',
+  description: () => t('diet-report.description'),
+  theme: '#3498db'
+})
 </script>
 
 <template>
@@ -460,14 +466,16 @@ useSeoMeta({
           </button>
         </div>
 
-        <apexchart
-          ref="chartRef"
-          type="area"
-          height="250"
-          :options="chartOptions"
-          :series="graph"
-          class="-mb-2"
-        />
+        <ClientOnly>
+          <apexchart
+            ref="chartRef"
+            type="area"
+            height="250"
+            :options="chartOptions"
+            :series="graph"
+            class="-mb-2"
+          />
+        </ClientOnly>
       </div>
 
       <DietReportCard />

@@ -222,6 +222,12 @@ useSeoMeta({
   title: () => t('blood-values.title'),
   description: () => t('blood-values.description')
 })
+
+defineOgImageComponent('NuxtSeo', {
+  title: () => t('blood-values.title') + ' - PKU Tools',
+  description: () => t('blood-values.description'),
+  theme: '#3498db'
+})
 </script>
 
 <template>
@@ -245,15 +251,19 @@ useSeoMeta({
     <div v-if="userIsAuthenticated">
       <p v-if="labValues.length < 2" class="mb-6">{{ $t('blood-values.chart-info') }}</p>
 
-      <apexchart
-        v-if="labValues.length >= 2"
-        type="area"
-        height="250"
-        :options="chartOptions"
-        :series="graph"
-        class="-mb-2"
-      />
+      <ClientOnly>
+        <apexchart
+          v-if="labValues.length >= 2"
+          type="area"
+          height="250"
+          :options="chartOptions"
+          :series="graph"
+          class="-mb-2"
+        />
+      </ClientOnly>
+
       <BloodValuesCard />
+
       <!-- TODO: Add sort feature -->
       <DataTable :headers="tableHeaders" class="mb-8">
         <tr

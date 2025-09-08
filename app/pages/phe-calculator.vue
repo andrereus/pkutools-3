@@ -74,6 +74,12 @@ useSeoMeta({
   title: () => t('phe-calculator.title'),
   description: () => t('phe-calculator.description')
 })
+
+defineOgImageComponent('NuxtSeo', {
+  title: () => t('phe-calculator.title') + ' - PKU Tools',
+  description: () => t('phe-calculator.description'),
+  theme: '#3498db'
+})
 </script>
 
 <template>
