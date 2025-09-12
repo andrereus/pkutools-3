@@ -115,7 +115,7 @@ defineOgImageComponent('NuxtSeo', {
 <template>
   <div>
     <header>
-      <PageHeader :title="$t('app.calculator')" />
+      <PageHeader :title="$t('protein-calculator.title')" />
     </header>
 
     <div class="block mb-6">

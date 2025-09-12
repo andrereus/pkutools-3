@@ -148,7 +148,7 @@ defineOgImageComponent('NuxtSeo', {
 <template>
   <div>
     <header>
-      <PageHeader :title="$t('app.search')" />
+      <PageHeader :title="$t('food-search.title')" />
     </header>
 
     <div>

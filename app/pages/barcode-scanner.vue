@@ -194,7 +194,7 @@ defineOgImageComponent('NuxtSeo', {
 <template>
   <div>
     <header>
-      <PageHeader :title="$t('app.scanner')" />
+      <PageHeader :title="$t('barcode-scanner.title')" />
     </header>
 
     <PrimaryButton :text="$t('barcode-scanner.scan-barcode')" class="mt-2" @click="openDialog" />
