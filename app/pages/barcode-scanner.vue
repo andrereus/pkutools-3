@@ -25,10 +25,10 @@ const userIsAuthenticated = computed(() => store.user !== null)
 const user = computed(() => store.user)
 
 const type = computed(() => [
-  { title: t('protein-calculator.other'), value: 'other' },
-  { title: t('protein-calculator.meat'), value: 'meat' },
-  { title: t('protein-calculator.vegetable'), value: 'vegetable' },
-  { title: t('protein-calculator.fruit'), value: 'fruit' }
+  { title: t('phe-calculator.other'), value: 'other' },
+  { title: t('phe-calculator.meat'), value: 'meat' },
+  { title: t('phe-calculator.vegetable'), value: 'vegetable' },
+  { title: t('phe-calculator.fruit'), value: 'fruit' }
 ])
 
 const factor = computed(() => {
@@ -264,7 +264,7 @@ defineOgImageComponent('NuxtSeo', {
 
       <div v-if="!result.product.nutriments.proteins_100g" class="mb-6">
         <p>{{ $t('barcode-scanner.no-protein') }}</p>
-        <NuxtLink :to="$localePath('protein-calculator')" class="text-sky-500">
+        <NuxtLink :to="$localePath('phe-calculator')" class="text-sky-500">
           {{ $t('barcode-scanner.protein-link') }} <span aria-hidden="true">→</span>
         </NuxtLink>
       </div>

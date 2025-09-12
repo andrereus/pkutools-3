@@ -63,16 +63,13 @@
   "phe-calculator": {
     "title": "Phe Rechner",
     "description": "Berechne die Phe-Menge für ein bestimmtes Gewicht oder rechne Eiweiß in Phe um.",
-    "tab-title": "Phe"
-  },
-  "protein-calculator": {
-    "title": "Eiweiß Rechner",
-    "description": "Berechne die Phe-Menge für ein bestimmtes Gewicht oder rechne Eiweiß in Phe um.",
-    "tab-title": "Eiweiß",
-    "other": "Allgemein",
-    "meat": "Fleisch",
-    "vegetable": "Gemüse",
-    "fruit": "Obst"
+    "tab-title": "Phe",
+    "mode": "Modus",
+    "phe": "Phenylalanin",
+    "other": "Eiweiß (allgemein)",
+    "meat": "Eiweiß von Fleisch",
+    "vegetable": "Eiweiß von Gemüse",
+    "fruit": "Eiweiß von Obst"
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",

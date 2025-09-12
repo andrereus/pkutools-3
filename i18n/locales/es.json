@@ -63,16 +63,13 @@
   "phe-calculator": {
     "title": "Calculadora de Phe",
     "description": "Calcula la cantidad de Phe para un peso específico o convierte proteína en Phe.",
-    "tab-title": "Phe"
-  },
-  "protein-calculator": {
-    "title": "Calculadora de proteínas",
-    "description": "Calcula la cantidad de Phe para un peso específico o convierte proteína en Phe.",
-    "tab-title": "Proteínas",
-    "other": "General",
-    "meat": "Carne",
-    "vegetable": "Verduras",
-    "fruit": "Fruta"
+    "tab-title": "Phe",
+    "mode": "Modo",
+    "phe": "Fenilalanina",
+    "other": "Proteína (general)",
+    "meat": "Proteína de carne",
+    "vegetable": "Proteína de verduras",
+    "fruit": "Proteína de fruta"
   },
   "barcode-scanner": {
     "title": "Escáner de código de barras",

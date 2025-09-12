@@ -63,16 +63,13 @@
   "phe-calculator": {
     "title": "Phe Calculator",
     "description": "Calculate the amount of Phe for a specific weight or convert protein to Phe.",
-    "tab-title": "Phe"
-  },
-  "protein-calculator": {
-    "title": "Protein Calculator",
-    "description": "Calculate the amount of Phe for a specific weight or convert protein to Phe.",
-    "tab-title": "Protein",
-    "other": "General",
-    "meat": "Meat",
-    "vegetable": "Vegetables",
-    "fruit": "Fruit"
+    "tab-title": "Phe",
+    "mode": "Mode",
+    "phe": "Phenylalanine",
+    "other": "Protein (general)",
+    "meat": "Protein from meat",
+    "vegetable": "Protein from vegetables",
+    "fruit": "Protein from fruit"
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",

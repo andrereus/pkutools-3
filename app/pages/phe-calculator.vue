@@ -10,17 +10,46 @@ const localePath = useLocalePath()
 
 // Reactive state
 const phe = ref(null)
+const protein = ref(null)
 const weight = ref(null)
 const name = ref('')
 const kcalReference = ref(null)
+const select = ref('phe')
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
 const user = computed(() => store.user)
 
+const type = computed(() => [
+  { title: t('phe-calculator.phe'), value: 'phe' },
+  { title: t('phe-calculator.other'), value: 'other' },
+  { title: t('phe-calculator.meat'), value: 'meat' },
+  { title: t('phe-calculator.vegetable'), value: 'vegetable' },
+  { title: t('phe-calculator.fruit'), value: 'fruit' }
+])
+
+const factor = computed(() => {
+  if (select.value === 'fruit') {
+    return 27
+  } else if (select.value === 'vegetable') {
+    return 35
+  } else if (select.value === 'meat') {
+    return 46
+  } else if (select.value === 'other') {
+    return 50
+  } else {
+    return null
+  }
+})
+
 // Methods
 const calculatePhe = () => {
-  return Math.round((weight.value * phe.value) / 100)
+  if (select.value === 'phe') {
+    return Math.round((weight.value * phe.value) / 100) || 0
+  } else {
+    // Proteinmodus
+    return Math.round((weight.value * (protein.value * factor.value)) / 100) || 0
+  }
 }
 
 const calculateKcal = () => {
@@ -29,13 +58,25 @@ const calculateKcal = () => {
 
 const save = () => {
   const db = getDatabase()
-  const logEntry = {
-    name: name.value,
-    pheReference: phe.value,
-    kcalReference: Number(kcalReference.value) || 0,
-    weight: Number(weight.value),
-    phe: calculatePhe(),
-    kcal: calculateKcal()
+  let logEntry
+  if (select.value === 'phe') {
+    logEntry = {
+      name: name.value,
+      pheReference: phe.value,
+      kcalReference: Number(kcalReference.value) || 0,
+      weight: Number(weight.value),
+      phe: calculatePhe(),
+      kcal: calculateKcal()
+    }
+  } else {
+    logEntry = {
+      name: name.value,
+      pheReference: Math.round(protein.value * factor.value),
+      kcalReference: Number(kcalReference.value) || 0,
+      weight: Number(weight.value),
+      phe: calculatePhe(),
+      kcal: calculateKcal()
+    }
   }
 
   // Find today's entry or create new one
@@ -99,22 +140,6 @@ defineOgImageComponent('NuxtSeo', {
       <PageHeader :title="$t('phe-calculator.title')" />
     </header>
 
-    <div class="block mb-6">
-      <nav class="flex space-x-2" aria-label="Tabs">
-        <NuxtLink
-          :to="$localePath('phe-calculator')"
-          class="bg-black/5 dark:bg-white/15 text-gray-700 rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300"
-          aria-current="page"
-          >{{ $t('phe-calculator.tab-title') }}</NuxtLink
-        >
-        <NuxtLink
-          :to="$localePath('protein-calculator')"
-          class="text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300"
-          >{{ $t('protein-calculator.tab-title') }}</NuxtLink
-        >
-      </nav>
-    </div>
-
     <TextInput
       v-if="userIsAuthenticated"
       v-model="name"
@@ -122,11 +147,25 @@ defineOgImageComponent('NuxtSeo', {
       :label="$t('common.food-name')"
     />
 
+    <SelectMenu v-model="select" id-name="factor" :label="$t('phe-calculator.mode')">
+      <option v-for="option in type" :key="option.value" :value="option.value">
+        {{ option.title }}
+      </option>
+    </SelectMenu>
+
     <div class="flex gap-4">
       <NumberInput
+        v-if="select === 'phe'"
         v-model.number="phe"
         id-name="phe"
         :label="$t('common.phe-per-100g')"
+        class="flex-1"
+      />
+      <NumberInput
+        v-else
+        v-model.number="protein"
+        id-name="protein"
+        :label="$t('common.protein-per-100g')"
         class="flex-1"
       />
       <NumberInput
@@ -140,7 +179,10 @@ defineOgImageComponent('NuxtSeo', {
     <NumberInput v-model.number="weight" id-name="weight" :label="$t('common.consumed-weight')" />
 
     <div class="flex gap-4 my-6">
-      <span class="flex-1 ml-1 text-lg">= {{ calculatePhe() }} mg Phe</span>
+      <span class="flex-1 ml-1 text-lg">
+        <template v-if="select === 'phe'">= {{ calculatePhe() }} mg Phe</template>
+        <template v-else>≈ {{ calculatePhe() }} mg Phe</template>
+      </span>
       <span class="flex-1 ml-1 text-lg">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
     </div>
 

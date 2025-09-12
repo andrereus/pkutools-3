@@ -7,7 +7,6 @@ import {
   LucideHouse,
   LucideSearch,
   LucideCalculator,
-  LucideSquareDivide,
   LucideScanBarcode,
   LucideApple,
   LucideBook,
@@ -40,7 +39,6 @@ const navigation = computed(() => {
     { name: 'food-search.title', icon: 'LucideSearch', route: 'food-search' },
     { name: 'barcode-scanner.title', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
     { name: 'phe-calculator.title', icon: 'LucideCalculator', route: 'phe-calculator' },
-    { name: 'protein-calculator.title', icon: 'LucideSquareDivide', route: 'protein-calculator' },
     { name: 'assistant.title', icon: 'LucideBot', route: 'assistant' },
     { name: 'diary.title', icon: 'LucideCalendar', route: 'diary' },
     { name: 'diet-report.title', icon: 'LucideBook', route: 'diet-report' },
@@ -87,7 +85,6 @@ const footerNavigation = computed(() => {
       { name: 'food-search.title', route: 'food-search' },
       { name: 'barcode-scanner.title', route: 'barcode-scanner' },
       { name: 'phe-calculator.title', route: 'phe-calculator' },
-      { name: 'protein-calculator.title', route: 'protein-calculator' },
       { name: 'assistant.title', route: 'assistant' }
     ],
     features: [
@@ -114,14 +111,6 @@ const isTabActive = computed(() => (item) => {
   // Home-Tab aktiv für index und diary
   const homeRoutes = [localePath('index'), localePath('diary')]
   if (homeRoutes.includes(route.fullPath) && homeRoutes.includes(localePath(item.route))) {
-    return true
-  }
-  // Calculator-Tab aktiv für phe-calculator und protein-calculator
-  const calculatorRoutes = [localePath('phe-calculator'), localePath('protein-calculator')]
-  if (
-    calculatorRoutes.includes(route.fullPath) &&
-    calculatorRoutes.includes(localePath(item.route))
-  ) {
     return true
   }
   // Standard: exakte Übereinstimmung
@@ -171,7 +160,6 @@ const iconMap = {
   LucideHouse,
   LucideSearch,
   LucideCalculator,
-  LucideSquareDivide,
   LucideScanBarcode,
   LucideApple,
   LucideBook,
