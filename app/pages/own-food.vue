@@ -188,7 +188,7 @@ definePageMeta({
   i18n: {
     paths: {
       en: '/own-food',
-      de: '/eigene-lebenmittel',
+      de: '/eigene-lebensmittel',
       es: '/alimentos-propios',
       fr: '/aliments-personnels'
     }

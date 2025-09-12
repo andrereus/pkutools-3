@@ -93,7 +93,7 @@ definePageMeta({
   i18n: {
     paths: {
       en: '/protein-calculator',
-      de: '/eiweiß-rechner',
+      de: '/eiweiss-rechner',
       es: '/calculadora-proteinas',
       fr: '/calculateur-proteines'
     }

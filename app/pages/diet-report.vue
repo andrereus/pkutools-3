@@ -410,7 +410,7 @@ definePageMeta({
   i18n: {
     paths: {
       en: '/diet-report',
-      de: '/diätbericht',
+      de: '/diaetbericht',
       es: '/informe-dieta',
       fr: '/rapport-regime'
     }
