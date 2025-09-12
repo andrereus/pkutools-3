@@ -146,7 +146,8 @@ export default defineNuxtConfig({
       { code: 'es', name: 'Español', file: 'es.json', language: 'es' },
       { code: 'fr', name: 'Français', file: 'fr.json', language: 'fr' }
     ],
-    defaultLocale: 'en'
+    defaultLocale: 'en',
+    customRoutes: 'meta'
   },
   site: {
     url: 'https://pkutools.com',

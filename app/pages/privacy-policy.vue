@@ -5,6 +5,17 @@ const part1 = ref('mail')
 const part2 = ref('pkutools')
 const part3 = ref('com')
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/privacy-policy',
+      de: '/datenschutz',
+      es: '/politica-privacidad',
+      fr: '/politique-confidentialite'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('privacy-policy.title')
 })

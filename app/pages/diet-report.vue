@@ -406,6 +406,17 @@ const updateData = (timeline) => {
   }
 }
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/diet-report',
+      de: '/diätbericht',
+      es: '/informe-dieta',
+      fr: '/rapport-regime'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('diet-report.title'),
   description: () => t('diet-report.description')

@@ -122,6 +122,17 @@ const searchFood = async () => {
   loading.value = false
 }
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/food-search',
+      de: '/lebensmittelsuche',
+      es: '/busqueda-de-alimentos',
+      fr: '/recherche-alimentaire'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('food-search.title'),
   description: () => t('food-search.description')

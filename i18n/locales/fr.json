@@ -61,12 +61,12 @@
     "search-info": "Affine ta recherche avec plusieurs mots, par exemple \"pommes crues\" ou \"pommes de terre cuites\". Source: fdc.nal.usda.gov"
   },
   "phe-calculator": {
-    "title": "Calculateur de Phe",
+    "title": "Calculateur Phe",
     "description": "Calculez la quantité de Phe pour un poids spécifique ou convertissez des protéines en Phe.",
     "tab-title": "Phe"
   },
   "protein-calculator": {
-    "title": "Calculateur de protéines",
+    "title": "Calculateur protéines",
     "description": "Calculez la quantité de Phe pour un poids spécifique ou convertissez des protéines en Phe.",
     "tab-title": "Protéines",
     "other": "Généralités",
@@ -172,7 +172,7 @@
     "subscribe": "Rejoindre"
   },
   "sign-in": {
-    "title": "Se connecter",
+    "title": "Connexion",
     "signin-with-email": "Se connecter avec un e-mail",
     "signedin": "Vous êtes connecté.",
     "name": "Nom",
@@ -216,20 +216,20 @@
   "features": {
     "search-name": "Recherche alimentaire",
     "search-description": "Recherchez dans une base de données d'aliments.",
-    "scanner-name": "Scanner de Code-Barres",
-    "scanner-description": "Scanne les codes-barres des produits.",
+    "scanner-name": "Scanner de code-barres",
+    "scanner-description": "Scannez les codes-barres des produits.",
     "calculator-name": "Calculateur Phe",
     "calculator-description": "Calculez la quantité de Phe pour un poids spécifique ou convertissez des protéines en Phe.",
-    "own-food-name": "Aliments Personnalisés",
+    "own-food-name": "Aliments personnels",
     "own-food-description": "Enregistrez vos propres aliments pour un ajout rapide.",
-    "diary-name": "Rapport de journal et de régime",
+    "diary-name": "Journal et rapport de régime",
     "diary-description": "Suivez vos aliments et surveillez votre tolérance à la Phe.",
     "blood-values-name": "Valeurs sanguines",
     "blood-values-description": "Suivez les valeurs sanguines dans un diagramme.",
-    "suggestions-name": "Suggestions en 1 clic",
-    "suggestions-description": "Ajoute des suggestions au protocole en un seul clic.",
+    "suggestions-name": "Suggestions 1-clic",
+    "suggestions-description": "Ajoutez des suggestions au journal en un seul clic.",
     "assistant-name": "Assistant",
-    "assistant-description": "Obtenir un aperçu, des recommandations et une motivation."
+    "assistant-description": "Obtenez un aperçu, des recommandations et de la motivation."
   },
   "footer": {
     "tools": "Outils",

@@ -6,6 +6,17 @@ const { t } = useI18n()
 
 const userIsAuthenticated = computed(() => store.user !== null)
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/assistant',
+      de: '/assistent',
+      es: '/asistente',
+      fr: '/assistant'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('assistant.title'),
   description: () => t('assistant.description')

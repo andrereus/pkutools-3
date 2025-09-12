@@ -129,6 +129,17 @@ onMounted(() => {
   selectedTheme.value = localStorage.getItem('theme') || 'system'
 })
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/settings',
+      de: '/einstellungen',
+      es: '/configuracion',
+      fr: '/parametres'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('settings.title')
 })

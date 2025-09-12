@@ -214,6 +214,17 @@ watch(userIsAuthenticated, (newVal) => {
   }
 })
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/diary',
+      de: '/tagebuch',
+      es: '/diario',
+      fr: '/journal'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('diary.title'),
   description: () => t('diary.description')

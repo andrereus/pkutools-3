@@ -5,6 +5,17 @@ const part1 = ref('mail')
 const part2 = ref('pkutools')
 const part3 = ref('com')
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/disclaimer',
+      de: '/disclaimer',
+      es: '/descargo-responsabilidad',
+      fr: '/avertissement'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('disclaimer.title')
 })

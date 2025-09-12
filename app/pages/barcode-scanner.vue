@@ -168,6 +168,17 @@ const save = () => {
   navigateTo(localePath('diary'))
 }
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/barcode-scanner',
+      de: '/barcode-scanner',
+      es: '/escaner-codigo-barras',
+      fr: '/scanner-code-barres'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('barcode-scanner.title'),
   description: () => t('barcode-scanner.description')

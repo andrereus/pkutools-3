@@ -54,6 +54,17 @@ const resetPassword = async () => {
   }
 }
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/sign-in',
+      de: '/anmelden',
+      es: '/iniciar-sesion',
+      fr: '/connexion'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('sign-in.title')
 })

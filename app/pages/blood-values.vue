@@ -218,6 +218,17 @@ const triggerDownload = (csvContent) => {
   document.body.removeChild(link)
 }
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/blood-values',
+      de: '/blutwerte',
+      es: '/valores-sangre',
+      fr: '/valeurs-sanguines'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('blood-values.title'),
   description: () => t('blood-values.description')

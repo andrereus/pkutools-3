@@ -184,6 +184,17 @@ const setIcon = (item, close) => {
   close()
 }
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/own-food',
+      de: '/eigene-lebenmittel',
+      es: '/alimentos-propios',
+      fr: '/aliments-personnels'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('own-food.title'),
   description: () => t('own-food.description')

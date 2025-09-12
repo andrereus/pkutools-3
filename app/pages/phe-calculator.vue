@@ -70,6 +70,17 @@ const save = () => {
   navigateTo(localePath('diary'))
 }
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/phe-calculator',
+      de: '/phe-rechner',
+      es: '/calculadora-phe',
+      fr: '/calculateur-phe'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('phe-calculator.title'),
   description: () => t('phe-calculator.description')

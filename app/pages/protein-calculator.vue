@@ -89,6 +89,17 @@ const save = () => {
   navigateTo(localePath('diary'))
 }
 
+definePageMeta({
+  i18n: {
+    paths: {
+      en: '/protein-calculator',
+      de: '/eiweiß-rechner',
+      es: '/calculadora-proteinas',
+      fr: '/calculateur-proteines'
+    }
+  }
+})
+
 useSeoMeta({
   title: () => t('protein-calculator.title'),
   description: () => t('protein-calculator.description')
