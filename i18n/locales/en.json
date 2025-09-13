@@ -64,7 +64,7 @@
     "title": "Phe Calculator",
     "description": "Calculate the amount of Phe for a specific weight or convert protein to Phe.",
     "tab-title": "Phe",
-    "mode": "Mode",
+    "mode": "Input mode",
     "phe": "Phenylalanine",
     "other": "Protein (general)",
     "meat": "Protein from meat",

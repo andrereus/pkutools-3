@@ -64,7 +64,7 @@
     "title": "Calculadora de Phe",
     "description": "Calcula la cantidad de Phe para un peso específico o convierte proteína en Phe.",
     "tab-title": "Phe",
-    "mode": "Modo",
+    "mode": "Modo de entrada",
     "phe": "Fenilalanina",
     "other": "Proteína (general)",
     "meat": "Proteína de carne",

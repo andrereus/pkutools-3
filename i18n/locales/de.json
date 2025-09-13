@@ -64,7 +64,7 @@
     "title": "Phe Rechner",
     "description": "Berechne die Phe-Menge für ein bestimmtes Gewicht oder rechne Eiweiß in Phe um.",
     "tab-title": "Phe",
-    "mode": "Modus",
+    "mode": "Eingabemodus",
     "phe": "Phenylalanin",
     "other": "Eiweiß (allgemein)",
     "meat": "Eiweiß von Fleisch",
