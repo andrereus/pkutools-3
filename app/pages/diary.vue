@@ -398,7 +398,12 @@ defineOgImageComponent('NuxtSeo', {
         </div>
       </ModalDialog>
 
-      <PrimaryButton :text="$t('common.add')" @click="$refs.dialog2.openDialog()" />
+      <NuxtLink
+        :to="$localePath('phe-calculator')"
+        class="rounded-sm bg-sky-500 px-2 py-1 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 mr-3 mb-3"
+      >
+        {{ $t('common.add') }}
+      </NuxtLink>
 
       <span v-if="lastAdded.length !== 0" class="mt-3">
         <SecondaryButton

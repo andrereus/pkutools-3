@@ -147,6 +147,30 @@ defineOgImageComponent('NuxtSeo', {
 
 <template>
   <div>
+    <div v-if="userIsAuthenticated" class="block mb-6">
+      <nav class="flex flex-wrap gap-1" aria-label="Tabs">
+        <NuxtLink
+          :to="$localePath('phe-calculator')"
+          class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300"
+        >
+          <LucideCalculator class="h-5 w-5" /> {{ $t('app.calculator') }}
+        </NuxtLink>
+        <NuxtLink
+          :to="$localePath('food-search')"
+          class="inline-flex items-center gap-2 bg-black/5 dark:bg-white/15 text-gray-700 rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300"
+          aria-current="page"
+        >
+          <LucideSearch class="h-5 w-5" /> {{ $t('app.search') }}
+        </NuxtLink>
+        <NuxtLink
+          :to="$localePath('barcode-scanner')"
+          class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300"
+        >
+          <LucideScanBarcode class="h-5 w-5" /> {{ $t('app.scanner') }}
+        </NuxtLink>
+      </nav>
+    </div>
+
     <header>
       <PageHeader :title="$t('food-search.title')" />
     </header>

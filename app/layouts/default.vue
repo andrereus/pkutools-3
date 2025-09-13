@@ -11,13 +11,15 @@ import {
   LucideApple,
   LucideBook,
   LucideMail,
+  LucideLogIn,
   LucideLogOut,
   LucideSettings,
   LucideLifeBuoy,
   LucideInfo,
   LucideCalendar,
   LucideChartLine,
-  LucideBot
+  LucideBot,
+  LucidePlus
 } from 'lucide-vue-next'
 
 const store = useStore()
@@ -36,9 +38,9 @@ const user = computed(() => store.user)
 const navigation = computed(() => {
   return [
     { name: 'app.start', icon: 'LucideHouse', route: 'index' },
+    { name: 'phe-calculator.title', icon: 'LucideCalculator', route: 'phe-calculator' },
     { name: 'food-search.title', icon: 'LucideSearch', route: 'food-search' },
     { name: 'barcode-scanner.title', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
-    { name: 'phe-calculator.title', icon: 'LucideCalculator', route: 'phe-calculator' },
     { name: 'diary.title', icon: 'LucideCalendar', route: 'diary' },
     { name: 'diet-report.title', icon: 'LucideBook', route: 'diet-report' },
     { name: 'blood-values.title', icon: 'LucideChartLine', route: 'blood-values' },
@@ -50,22 +52,18 @@ const tabNavigation = computed(() => {
   if (userIsAuthenticated.value) {
     return [
       { name: 'home.title', icon: 'LucideHouse', route: 'diary' },
-      { name: 'app.search', icon: 'LucideSearch', route: 'food-search' },
-      { name: 'app.scanner', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
-      { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' },
       { name: 'diet-report.tab-title', icon: 'LucideBook', route: 'diet-report' },
+      { name: 'common.add', icon: 'LucidePlus', route: 'phe-calculator' },
       { name: 'blood-values.tab-title', icon: 'LucideChartLine', route: 'blood-values' },
       { name: 'assistant.title', icon: 'LucideBot', route: 'assistant' }
     ]
   } else {
     return [
       { name: 'home.title', icon: 'LucideHouse', route: 'index' },
+      { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' },
       { name: 'app.search', icon: 'LucideSearch', route: 'food-search' },
       { name: 'app.scanner', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
-      { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' },
-      { name: 'diet-report.tab-title', icon: 'LucideBook', route: 'diet-report' },
-      { name: 'blood-values.tab-title', icon: 'LucideChartLine', route: 'blood-values' },
-      { name: 'assistant.title', icon: 'LucideBot', route: 'assistant' }
+      { name: 'sign-in.title', icon: 'LucideLogIn', route: 'sign-in' }
     ]
   }
 })
@@ -84,9 +82,9 @@ const userNavigation = computed(() => {
 const footerNavigation = computed(() => {
   return {
     tools: [
+      { name: 'phe-calculator.title', route: 'phe-calculator' },
       { name: 'food-search.title', route: 'food-search' },
-      { name: 'barcode-scanner.title', route: 'barcode-scanner' },
-      { name: 'phe-calculator.title', route: 'phe-calculator' }
+      { name: 'barcode-scanner.title', route: 'barcode-scanner' }
     ],
     features: [
       { name: 'diary.title', route: 'diary' },
@@ -114,6 +112,17 @@ const isTabActive = computed(() => (item) => {
   const homeRoutes = [localePath('index'), localePath('diary')]
   if (homeRoutes.includes(route.fullPath) && homeRoutes.includes(localePath(item.route))) {
     return true
+  }
+  // Hinzufügen-Tab aktiv für food-search, barcode-scanner und phe-calculator NUR wenn der Nutzer angemeldet ist
+  if (userIsAuthenticated.value) {
+    const addTabRoutes = [
+      localePath('food-search'),
+      localePath('barcode-scanner'),
+      localePath('phe-calculator')
+    ]
+    if (addTabRoutes.includes(route.fullPath) && addTabRoutes.includes(localePath(item.route))) {
+      return true
+    }
   }
   // Standard: exakte Übereinstimmung
   return route.fullPath === localePath(item.route)
@@ -166,13 +175,15 @@ const iconMap = {
   LucideApple,
   LucideBook,
   LucideMail,
+  LucideLogIn,
   LucideLogOut,
   LucideSettings,
   LucideLifeBuoy,
   LucideInfo,
   LucideCalendar,
   LucideChartLine,
-  LucideBot
+  LucideBot,
+  LucidePlus
 }
 
 const handleCookieConsent = (consent) => {
@@ -466,24 +477,29 @@ const handleCookieConsent = (consent) => {
           </div>
         </div>
         <div class="border-b dark:border-gray-700" />
-        <nav
-          class="flex py-2 justify-around sm:justify-center sm:space-x-12 lg:justify-start lg:space-x-4"
-          aria-label="Global"
-        >
+        <nav class="flex py-2 w-full space-x-1 md:space-x-2" aria-label="Global">
           <NuxtLink
             v-for="item in tabNavigation"
             :key="item.name"
             :to="$localePath(item.route)"
             :class="[
+              'flex-1 flex justify-center',
               isTabActive(item)
-                ? 'bg-gray-100 dark:bg-gray-700'
-                : 'hover:bg-gray-50 hover:text-gray-600 dark:hover:bg-gray-700',
-              'group inline-flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300'
+                ? item.icon === 'LucidePlus'
+                  ? 'group inline-flex items-center px-2 py-1 text-sm font-medium border border-sky-500 rounded-md bg-sky-50 dark:bg-sky-900 text-sky-600 dark:text-sky-300 transition'
+                  : 'group inline-flex items-center px-3 py-2 text-sm font-medium bg-gray-100 dark:bg-gray-700 rounded-md text-gray-600 dark:text-gray-300'
+                : item.icon === 'LucidePlus'
+                  ? 'group inline-flex items-center px-2 py-1 text-sm font-medium border border-sky-500 rounded-md bg-transparent text-sky-600 dark:text-sky-300 transition hover:bg-sky-50 dark:hover:bg-sky-900'
+                  : 'group inline-flex items-center px-3 py-2 text-sm font-medium hover:bg-gray-50 hover:text-gray-600 dark:hover:bg-gray-700 rounded-md text-gray-600 dark:text-gray-300'
             ]"
           >
             <component
               :is="iconMap[item.icon]"
-              class="md:mr-3 h-5 w-5 text-gray-700 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
+              :class="[
+                item.icon === 'LucidePlus'
+                  ? 'md:mr-3 text-sky-600 dark:text-sky-300 h-6 w-6'
+                  : 'md:mr-3 h-5 w-5 text-gray-700 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
+              ]"
               aria-hidden="true"
             />
             <span class="hidden lg:inline-block">{{ $t(item.name) }}</span>

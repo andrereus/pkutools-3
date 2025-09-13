@@ -18,6 +18,12 @@ const localePath = useLocalePath()
 // Features data
 const features = [
   {
+    name: 'features.calculator-name',
+    description: 'features.calculator-description',
+    icon: LucideCalculator,
+    route: 'phe-calculator'
+  },
+  {
     name: 'features.search-name',
     description: 'features.search-description',
     icon: LucideSearch,
@@ -28,12 +34,6 @@ const features = [
     description: 'features.scanner-description',
     icon: LucideScanBarcode,
     route: 'barcode-scanner'
-  },
-  {
-    name: 'features.calculator-name',
-    description: 'features.calculator-description',
-    icon: LucideCalculator,
-    route: 'phe-calculator'
   },
   {
     name: 'features.diary-name',
