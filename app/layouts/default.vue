@@ -39,10 +39,10 @@ const navigation = computed(() => {
     { name: 'food-search.title', icon: 'LucideSearch', route: 'food-search' },
     { name: 'barcode-scanner.title', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
     { name: 'phe-calculator.title', icon: 'LucideCalculator', route: 'phe-calculator' },
-    { name: 'assistant.title', icon: 'LucideBot', route: 'assistant' },
     { name: 'diary.title', icon: 'LucideCalendar', route: 'diary' },
     { name: 'diet-report.title', icon: 'LucideBook', route: 'diet-report' },
-    { name: 'blood-values.title', icon: 'LucideChartLine', route: 'blood-values' }
+    { name: 'blood-values.title', icon: 'LucideChartLine', route: 'blood-values' },
+    { name: 'assistant.title', icon: 'LucideBot', route: 'assistant' }
   ]
 })
 
@@ -54,7 +54,8 @@ const tabNavigation = computed(() => {
       { name: 'app.scanner', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
       { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' },
       { name: 'diet-report.tab-title', icon: 'LucideBook', route: 'diet-report' },
-      { name: 'blood-values.tab-title', icon: 'LucideChartLine', route: 'blood-values' }
+      { name: 'blood-values.tab-title', icon: 'LucideChartLine', route: 'blood-values' },
+      { name: 'assistant.title', icon: 'LucideBot', route: 'assistant' }
     ]
   } else {
     return [
@@ -63,7 +64,8 @@ const tabNavigation = computed(() => {
       { name: 'app.scanner', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
       { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' },
       { name: 'diet-report.tab-title', icon: 'LucideBook', route: 'diet-report' },
-      { name: 'blood-values.tab-title', icon: 'LucideChartLine', route: 'blood-values' }
+      { name: 'blood-values.tab-title', icon: 'LucideChartLine', route: 'blood-values' },
+      { name: 'assistant.title', icon: 'LucideBot', route: 'assistant' }
     ]
   }
 })
@@ -84,13 +86,13 @@ const footerNavigation = computed(() => {
     tools: [
       { name: 'food-search.title', route: 'food-search' },
       { name: 'barcode-scanner.title', route: 'barcode-scanner' },
-      { name: 'phe-calculator.title', route: 'phe-calculator' },
-      { name: 'assistant.title', route: 'assistant' }
+      { name: 'phe-calculator.title', route: 'phe-calculator' }
     ],
     features: [
       { name: 'diary.title', route: 'diary' },
       { name: 'diet-report.title', route: 'diet-report' },
-      { name: 'blood-values.title', route: 'blood-values' }
+      { name: 'blood-values.title', route: 'blood-values' },
+      { name: 'assistant.title', route: 'assistant' }
     ],
     account: [
       { name: 'sign-in.title', route: 'sign-in' },

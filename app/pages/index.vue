@@ -36,12 +36,6 @@ const features = [
     route: 'phe-calculator'
   },
   {
-    name: 'features.assistant-name',
-    description: 'features.assistant-description',
-    icon: LucideBot,
-    route: 'assistant'
-  },
-  {
     name: 'features.diary-name',
     description: 'features.diary-description',
     icon: LucideCalendar,
@@ -52,6 +46,12 @@ const features = [
     description: 'features.blood-values-description',
     icon: LucideChartLine,
     route: 'blood-values'
+  },
+  {
+    name: 'features.assistant-name',
+    description: 'features.assistant-description',
+    icon: LucideBot,
+    route: 'assistant'
   },
   {
     name: 'features.suggestions-name',

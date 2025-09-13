@@ -54,7 +54,6 @@ defineOgImageComponent('NuxtSeo', {
         <TodaysTipCard />
         <DietReportCard />
         <BloodValuesCard />
-        <p class="mt-2">{{ $t('assistant.info') }}</p>
       </div>
     </div>
   </div>
