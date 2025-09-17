@@ -58,7 +58,7 @@
     "title": "Food Search",
     "description": "Search a food database.",
     "search": "Search for food",
-    "search-info": "Refine your search with several words, e.g. \"apples raw\" or \"potatoes cooked\". Source: fdc.nal.usda.gov"
+    "search-info": "Refine your search with several words, e.g. \"apples raw\" or \"potatoes cooked\". Use the Barcode Scanner for products. Source: fdc.nal.usda.gov"
   },
   "phe-calculator": {
     "title": "Phe Calculator",

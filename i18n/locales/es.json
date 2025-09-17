@@ -58,7 +58,7 @@
     "title": "Búsqueda de alimentos",
     "description": "Busca en una base de datos de alimentos.",
     "search": "Buscar alimentos",
-    "search-info": "Afine su búsqueda con varias palabras, por ejemplo \"manzanas crudas\" o \"patatas cocidas\". Fuente: fdc.nal.usda.gov"
+    "search-info": "Afine su búsqueda con varias palabras, por ejemplo \"manzanas crudas\" o \"patatas cocidas\". Utiliza el escáner de códigos de barras para los productos. Fuente: fdc.nal.usda.gov"
   },
   "phe-calculator": {
     "title": "Calculadora de Phe",

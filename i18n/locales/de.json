@@ -58,7 +58,7 @@
     "title": "Lebensmittelsuche",
     "description": "Durchsuche eine Lebensmitteldatenbank.",
     "search": "Lebensmittel suchen",
-    "search-info": "Verfeinere deine Suche mit mehreren Wörtern, z.B. \"äpfel roh\" oder \"kartoffeln gekocht\". Quelle: fdc.nal.usda.gov"
+    "search-info": "Verfeinere deine Suche mit mehreren Wörtern, z.B. \"äpfel roh\" oder \"kartoffeln gekocht\". Verwende für Produkte den Barcode Scanner. Quelle: fdc.nal.usda.gov"
   },
   "phe-calculator": {
     "title": "Phe Rechner",

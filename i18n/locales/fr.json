@@ -58,7 +58,7 @@
     "title": "Recherche alimentaire",
     "description": "Recherchez dans une base de données d'aliments.",
     "search": "Chercher des aliments",
-    "search-info": "Affine ta recherche avec plusieurs mots, par exemple \"pommes crues\" ou \"pommes de terre cuites\". Source: fdc.nal.usda.gov"
+    "search-info": "Affine ta recherche avec plusieurs mots, par exemple \"pommes crues\" ou \"pommes de terre cuites\". Utilise le scanner de codes-barres pour les produits. Source: fdc.nal.usda.gov"
   },
   "phe-calculator": {
     "title": "Calculateur Phe",
