@@ -211,7 +211,7 @@ defineOgImageComponent('NuxtSeo', {
       </div>
     </div>
 
-    <TiersCard class="pt-2" />
+    <!-- <TiersCard class="pt-2" /> -->
 
     <div class="pt-8 sm:pt-12 pb-8 sm:pb-12 px-6 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-2xl text-center">

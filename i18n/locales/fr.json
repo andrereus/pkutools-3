@@ -260,7 +260,8 @@
     "start-tracking": "Commencez à suivre votre nutrition quotidiennement pour créer une série et obtenir des aperçus personnalisés!",
     "diet-report": "Rapport de régime",
     "phe-stats-average": "Au cours des 14 derniers jours (hors aujourd'hui), votre apport moyen en Phe était de {average} mg.",
-    "phe-stats-deviation": "L'écart moyen par rapport à l'optimum est de {deviation}%."
+    "phe-stats-deviation": "L'écart moyen par rapport à l'optimum est de {deviation}%.",
+    "deactivated": "Désactivé temporairement."
   },
   "badges": {
     "streak-title": "Série Active",

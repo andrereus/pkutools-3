@@ -260,7 +260,8 @@
     "start-tracking": "¡Comienza a registrar tu nutrición diariamente para construir una racha y obtener información personalizada!",
     "diet-report": "Informe de dieta",
     "phe-stats-average": "En los últimos 14 días (sin contar hoy), tu ingesta promedio de Phe fue de {average} mg.",
-    "phe-stats-deviation": "La desviación promedio del óptimo es de {deviation}%."
+    "phe-stats-deviation": "La desviación promedio del óptimo es de {deviation}%.",
+    "deactivated": "Desactivado temporalmente."
   },
   "badges": {
     "streak-title": "Racha Activa",

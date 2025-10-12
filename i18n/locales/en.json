@@ -260,7 +260,8 @@
     "start-tracking": "Start tracking your nutrition daily to build a streak and get personalized insights!",
     "diet-report": "Diet Report",
     "phe-stats-average": "In the last 14 days (excluding today), your average Phe intake was {average} mg.",
-    "phe-stats-deviation": "The average deviation from optimum is {deviation}%."
+    "phe-stats-deviation": "The average deviation from optimum is {deviation}%.",
+    "deactivated": "Temporarily deactivated."
   },
   "badges": {
     "streak-title": "Active Streak",

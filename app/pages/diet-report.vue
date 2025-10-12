@@ -489,7 +489,7 @@ defineOgImageComponent('NuxtSeo', {
         </ClientOnly>
       </div>
 
-      <DietReportCard />
+      <!-- <DietReportCard /> -->
 
       <!-- TODO: Add sort feature -->
       <DataTable :headers="tableHeaders" class="mb-8">

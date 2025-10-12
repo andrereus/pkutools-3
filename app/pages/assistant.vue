@@ -49,11 +49,12 @@ defineOgImageComponent('NuxtSeo', {
 
     <div v-if="userIsAuthenticated">
       <div class="space-y-6">
-        <MotivationCard />
+        <p>{{ $t('assistant.deactivated') }}</p>
+        <!-- <MotivationCard />
         <CurrentTipCard />
         <TodaysTipCard />
         <DietReportCard />
-        <BloodValuesCard />
+        <BloodValuesCard /> -->
       </div>
     </div>
   </div>

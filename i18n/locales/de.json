@@ -260,7 +260,8 @@
     "start-tracking": "Beginne deine Ernährung täglich zu protokollieren, um eine Serie aufzubauen und personalisierte Einblicke zu erhalten!",
     "diet-report": "Diätbericht",
     "phe-stats-average": "In den letzten 14 Tagen (ohne heute) lag deine durchschnittliche Phe-Aufnahme bei {average} mg.",
-    "phe-stats-deviation": "Die durchschnittliche Abweichung vom Optimum beträgt {deviation}%."
+    "phe-stats-deviation": "Die durchschnittliche Abweichung vom Optimum beträgt {deviation}%.",
+    "deactivated": "Vorübergehend deaktiviert."
   },
   "badges": {
     "streak-title": "Aktive Serie",

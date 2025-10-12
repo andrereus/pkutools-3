@@ -273,7 +273,7 @@ defineOgImageComponent('NuxtSeo', {
         />
       </ClientOnly>
 
-      <BloodValuesCard />
+      <!-- <BloodValuesCard /> -->
 
       <!-- TODO: Add sort feature -->
       <DataTable :headers="tableHeaders" class="mb-8">

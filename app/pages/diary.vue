@@ -313,7 +313,7 @@ defineOgImageComponent('NuxtSeo', {
         </div>
       </div>
 
-      <TodaysTipCard v-if="isToday" />
+      <!-- <TodaysTipCard v-if="isToday" /> -->
 
       <DataTable :headers="tableHeaders" class="mb-6">
         <tr
