@@ -166,17 +166,17 @@ onMounted(() => {
   showCookieBanner.value = !localStorage.getItem('cookie_consent')
 })
 
-// Global onboarding check - watch for route changes
+// Simple onboarding check - only when settings change
 watch(
-  () => useRoute().path,
-  (newPath) => {
-    if (store.user && store.settings.healthDataConsentDate === null) {
-      // User has no consent date, redirect to getting started
+  () => store.settings.healthDataConsentDate,
+  (consentDate) => {
+    if (store.user && consentDate !== undefined && !consentDate) {
+      const currentPath = useRoute().path
       if (
-        !newPath.includes('getting-started') &&
-        !newPath.includes('erste-schritte') &&
-        !newPath.includes('primeros-pasos') &&
-        !newPath.includes('premiers-pas')
+        !currentPath.includes('getting-started') &&
+        !currentPath.includes('erste-schritte') &&
+        !currentPath.includes('primeros-pasos') &&
+        !currentPath.includes('premiers-pas')
       ) {
         navigateTo(useLocalePath()('getting-started'))
       }
