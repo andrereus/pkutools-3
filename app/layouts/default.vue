@@ -166,6 +166,24 @@ onMounted(() => {
   showCookieBanner.value = !localStorage.getItem('cookie_consent')
 })
 
+// Global onboarding check - watch for route changes
+watch(
+  () => useRoute().path,
+  (newPath) => {
+    if (store.user && store.settings.healthDataConsentDate === null) {
+      // User has no consent date, redirect to getting started
+      if (
+        !newPath.includes('getting-started') &&
+        !newPath.includes('erste-schritte') &&
+        !newPath.includes('primeros-pasos') &&
+        !newPath.includes('premiers-pas')
+      ) {
+        navigateTo(useLocalePath()('getting-started'))
+      }
+    }
+  }
+)
+
 // Add an icon map to reference the actual icon components
 const iconMap = {
   LucideHouse,

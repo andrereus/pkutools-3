@@ -20,13 +20,6 @@ const formatConsentDate = (dateString) => {
   return ''
 }
 
-// Check if onboarding is needed
-onMounted(() => {
-  if (store.user && !store.settings.healthDataConsentDate) {
-    navigateTo(localePath('getting-started'))
-  }
-})
-
 // Reactive state
 const selectedTheme = ref('system')
 

@@ -8,13 +8,6 @@ const { t } = useI18n()
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
 
-// Check if onboarding is needed
-onMounted(() => {
-  if (store.user && !store.settings.healthDataConsentDate) {
-    navigateTo(localePath('getting-started'))
-  }
-})
-
 // Reactive state
 const phe = ref(null)
 const protein = ref(null)

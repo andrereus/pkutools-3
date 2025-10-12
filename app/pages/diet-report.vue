@@ -15,13 +15,6 @@ const dialog2 = ref(null)
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
 
-// Check if onboarding is needed
-onMounted(() => {
-  if (store.user && !store.settings.healthDataConsentDate) {
-    navigateTo(localePath('getting-started'))
-  }
-})
-
 // Reactive state
 const editedIndex = ref(-1)
 const editedKey = ref(null)

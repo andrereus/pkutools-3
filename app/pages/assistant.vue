@@ -5,13 +5,6 @@ const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
 
-// Check if onboarding is needed
-onMounted(() => {
-  if (store.user && !store.settings.healthDataConsentDate) {
-    navigateTo(localePath('getting-started'))
-  }
-})
-
 const userIsAuthenticated = computed(() => store.user !== null)
 
 const signInGoogle = async () => {
