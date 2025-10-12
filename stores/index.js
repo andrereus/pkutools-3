@@ -214,7 +214,7 @@ export const useStore = defineStore('main', {
             }
           : {
               healthDataConsent: false,
-              healthDataConsentDate: null,
+              healthDataConsentDate: consentDate,
               healthDataConsentHistory: newHealthHistory
             }
 
@@ -228,7 +228,7 @@ export const useStore = defineStore('main', {
 
         // Update local state
         this.settings.healthDataConsent = healthDataConsent
-        this.settings.healthDataConsentDate = healthDataConsent ? consentDate : null
+        this.settings.healthDataConsentDate = consentDate
         this.settings.healthDataConsentHistory = newHealthHistory
 
         if (emailConsent) {

@@ -13,7 +13,7 @@ const localePath = useLocalePath()
 
 // Check if onboarding is needed
 onMounted(() => {
-  if (store.user && store.settings.healthDataConsent === undefined) {
+  if (store.user && !store.settings.healthDataConsentDate) {
     navigateTo(localePath('getting-started'))
   }
 })
@@ -55,7 +55,7 @@ const signInGoogle = async () => {
   try {
     await store.signInGoogle()
     // Check if user has given health data consent
-    if (store.settings.healthDataConsent === true) {
+    if (store.settings.healthDataConsentDate) {
       navigateTo(localePath('diary'))
     } else {
       navigateTo(localePath('getting-started'))

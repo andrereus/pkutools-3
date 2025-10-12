@@ -19,13 +19,19 @@ const handleConsentGiven = async () => {
   }
 }
 
-const handleConsentDeclined = () => {
-  // For existing users who decline, redirect to settings
-  // For new users, redirect to home page
-  if (store.user) {
-    navigateTo(localePath('settings'))
+const handleConsentDeclined = async () => {
+  // Save the declined consent to prevent showing getting started again
+  const success = await store.updateHealthDataConsent(false, emailConsent.value)
+  if (success) {
+    // For existing users who decline, redirect to settings
+    // For new users, redirect to home page
+    if (store.user) {
+      navigateTo(localePath('settings'))
+    } else {
+      navigateTo(localePath('index'))
+    }
   } else {
-    navigateTo(localePath('index'))
+    alert(t('health-consent.error-saving'))
   }
 }
 

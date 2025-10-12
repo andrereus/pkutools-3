@@ -10,7 +10,7 @@ const localePath = useLocalePath()
 
 // Check if onboarding is needed
 onMounted(() => {
-  if (store.user && store.settings.healthDataConsent === undefined) {
+  if (store.user && !store.settings.healthDataConsentDate) {
     navigateTo(localePath('getting-started'))
   }
 })

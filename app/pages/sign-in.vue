@@ -18,7 +18,7 @@ const signInGoogle = async () => {
   try {
     await store.signInGoogle()
     // Check if user has given health data consent
-    if (store.settings.healthDataConsent === true) {
+    if (store.settings.healthDataConsentDate) {
       navigateTo(localePath('diary'))
     } else {
       navigateTo(localePath('getting-started'))
@@ -44,7 +44,7 @@ const signInEmailPassword = async () => {
   try {
     await store.signInWithEmail(email.value, password.value)
     // Check if user has given health data consent
-    if (store.settings.healthDataConsent === true) {
+    if (store.settings.healthDataConsentDate) {
       navigateTo(localePath('diary'))
     } else {
       navigateTo(localePath('getting-started'))
