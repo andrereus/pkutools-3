@@ -132,6 +132,7 @@
   },
   "settings": {
     "title": "Paramètres",
+    "app-settings": "Paramètres de l'application",
     "max-phe": "Tolérance de Phe par jour",
     "max-kcal": "Kcal par jour",
     "saved": "Enregistré",
@@ -273,5 +274,42 @@
     "message": "Nous utilisons des cookies pour les fonctions essentielles et pour améliorer l'application. Accepter les cookies ?",
     "accept": "Accepter",
     "decline": "Refuser"
+  },
+  "health-consent": {
+    "title": "Consentement pour le Traitement des Données de Santé",
+    "subtitle": "Cette application stocke des données de santé. Veuillez donner votre consentement pour le traitement des données afin d'utiliser l'application.",
+    "what-data": "Quelles données sont stockées ?",
+    "data-summary": "Journal nutritionnel, valeurs sanguines, aliments personnalisés et paramètres personnels (tolérance Phe, besoins caloriques).",
+    "privacy": "Confidentialité et Sécurité",
+    "privacy-summary": "Vos données sont stockées en toute sécurité et ne sont pas partagées avec des tiers. Vous pouvez supprimer vos données à tout moment.",
+    "consent-text": "Je consens au stockage et au traitement de mes données de santé et j'ai lu la politique de confidentialité.",
+    "email-consent-text": "Je souhaite recevoir des e-mails sur les mises à jour de l'application et les nouvelles importantes (optionnel).",
+    "accept": "Consentir et continuer",
+    "decline": "Refuser",
+    "privacy-policy-link": "Lire la politique de confidentialité",
+    "error-saving": "Erreur lors de la sauvegarde du consentement. Veuillez réessayer.",
+    "no-consent": "Vous devez donner votre consentement pour le stockage des données de santé pour utiliser cette fonction. Veuillez aller dans les paramètres.",
+    "consent-given": "Le consentement pour le stockage des données de santé a été donné.",
+    "consent-revoked": "Le consentement pour le stockage des données de santé a été révoqué.",
+    "revoke-confirm": "Voulez-vous vraiment révoquer le consentement pour le stockage des données de santé ? Cela empêchera l'utilisation de la plupart des fonctions de l'application.",
+    "error-revoking": "Erreur lors de la révocation du consentement. Veuillez réessayer.",
+    "consent-date": "Consentement donné le",
+    "no-consent-status": "Aucun consentement donné pour le stockage des données de santé",
+    "revoke": "Révoquer le consentement",
+    "no-consent-explanation": "Sans consentement, vous ne pouvez pas stocker de données de santé ou utiliser la plupart des fonctions de l'application.",
+    "email-consent-title": "Notifications par E-mail",
+    "email-consent-subtitle": "Recevez des e-mails sur les mises à jour de l'application et les nouvelles importantes.",
+    "email-consent-given": "Notifications par e-mail activées",
+    "email-consent-not-given": "Notifications par e-mail désactivées",
+    "email-consent-date": "Consentement e-mail donné le",
+    "email-consent-accept": "Activer les notifications par e-mail",
+    "email-consent-revoke": "Désactiver les notifications par e-mail",
+    "email-consent-updated": "Le consentement e-mail a été mis à jour.",
+    "error-updating-email": "Erreur lors de la mise à jour du consentement e-mail. Veuillez réessayer.",
+    "reopen-onboarding": "Rouvrir les premiers pas"
+  },
+  "getting-started": {
+    "title": "Premiers Pas",
+    "subtitle": "Bienvenue dans PKU Tools ! Ici vous pouvez configurer l'application et donner votre consentement pour le traitement des données."
   }
 }

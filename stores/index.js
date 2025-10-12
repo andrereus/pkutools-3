@@ -9,12 +9,18 @@ import {
   sendPasswordResetEmail,
   updateProfile
 } from 'firebase/auth'
-import { getDatabase, ref, onValue } from 'firebase/database'
+import { getDatabase, ref, onValue, update as dbUpdate } from 'firebase/database'
+import { defineStore } from 'pinia'
+import { formatISO } from 'date-fns'
 
 const defaultSettings = {
   maxPhe: null,
   labUnit: 'mgdl',
-  license: null
+  license: null,
+  healthDataConsent: false,
+  healthDataConsentDate: null,
+  emailConsent: false,
+  emailConsentDate: null
 }
 
 export const useStore = defineStore('main', {
@@ -72,6 +78,7 @@ export const useStore = defineStore('main', {
         email: user.email,
         photoUrl: user.photoURL
       }
+      // Don't check onboarding here - it will be checked in initRef
     },
     checkAuthState() {
       const auth = getAuth()
@@ -148,9 +155,69 @@ export const useStore = defineStore('main', {
         }
       })
       this.unsubscribeFunctions = {}
+    },
+    async updateHealthDataConsent(healthDataConsent, emailConsent = false) {
+      if (!this.user) return false
+      const db = getDatabase()
+      const consentDate = formatISO(new Date(), { representation: 'date' })
+      try {
+        const updateData = healthDataConsent
+          ? {
+              healthDataConsent: true,
+              healthDataConsentDate: consentDate
+            }
+          : {
+              healthDataConsent: false,
+              healthDataConsentDate: null
+            }
+
+        if (emailConsent) {
+          updateData.emailConsent = true
+          updateData.emailConsentDate = consentDate
+        }
+
+        await dbUpdate(ref(db, `${this.user.id}/settings`), updateData)
+
+        this.settings.healthDataConsent = healthDataConsent
+        this.settings.healthDataConsentDate = healthDataConsent ? consentDate : null
+
+        if (emailConsent) {
+          this.settings.emailConsent = true
+          this.settings.emailConsentDate = consentDate
+        }
+
+        return true
+      } catch (error) {
+        console.error('Error updating health data consent:', error)
+        return false
+      }
+    },
+    async updateEmailConsent(emailConsent) {
+      if (!this.user) return false
+
+      const db = getDatabase()
+      const consentDate = formatISO(new Date(), { representation: 'date' })
+
+      try {
+        const updateData = emailConsent
+          ? {
+              emailConsent: true,
+              emailConsentDate: consentDate
+            }
+          : {
+              emailConsent: false,
+              emailConsentDate: null
+            }
+
+        await dbUpdate(ref(db, `${this.user.id}/settings`), updateData)
+
+        this.settings.emailConsent = emailConsent
+        this.settings.emailConsentDate = emailConsent ? consentDate : null
+        return true
+      } catch (error) {
+        console.error('Error updating email consent:', error)
+        return false
+      }
     }
-  },
-  getters: {
-    getUser: (state) => state.user
   }
 })

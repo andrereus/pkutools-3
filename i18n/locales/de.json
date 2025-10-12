@@ -132,6 +132,7 @@
   },
   "settings": {
     "title": "Einstellungen",
+    "app-settings": "App-Einstellungen",
     "max-phe": "Phe-Toleranz pro Tag",
     "max-kcal": "Kcal pro Tag",
     "saved": "Gespeichert",
@@ -273,5 +274,42 @@
     "message": "Wir verwenden Cookies für grundlegende Funktionen und zur Verbesserung der App. Cookies akzeptieren?",
     "accept": "Akzeptieren",
     "decline": "Ablehnen"
+  },
+  "health-consent": {
+    "title": "Zustimmung zur Speicherung von Gesundheitsdaten",
+    "subtitle": "Diese App speichert Gesundheitsdaten. Bitte stimmen Sie der Verarbeitung zu, um die App nutzen zu können.",
+    "what-data": "Welche Daten werden gespeichert?",
+    "data-summary": "Ernährungstagebuch, Blutwerte, eigene Lebensmittel und persönliche Einstellungen (Phe-Toleranz, Kalorienbedarf).",
+    "privacy": "Datenschutz und Sicherheit",
+    "privacy-summary": "Ihre Daten werden sicher gespeichert und nicht an Dritte weitergegeben. Sie können Ihre Daten jederzeit löschen.",
+    "consent-text": "Ich stimme der Speicherung und Verarbeitung meiner Gesundheitsdaten zu und habe die Datenschutzerklärung gelesen.",
+    "email-consent-text": "Ich möchte E-Mails über App-Updates und wichtige Neuigkeiten erhalten (optional).",
+    "accept": "Zustimmen und fortfahren",
+    "decline": "Ablehnen",
+    "privacy-policy-link": "Datenschutzerklärung lesen",
+    "error-saving": "Fehler beim Speichern der Zustimmung. Bitte versuchen Sie es erneut.",
+    "no-consent": "Sie müssen der Speicherung von Gesundheitsdaten zustimmen, um diese Funktion nutzen zu können. Bitte gehen Sie zu den Einstellungen.",
+    "consent-given": "Zustimmung zur Speicherung von Gesundheitsdaten wurde erteilt.",
+    "consent-revoked": "Zustimmung zur Speicherung von Gesundheitsdaten wurde widerrufen.",
+    "revoke-confirm": "Möchten Sie die Zustimmung zur Speicherung von Gesundheitsdaten wirklich widerrufen? Dies verhindert die Nutzung der meisten App-Funktionen.",
+    "error-revoking": "Fehler beim Widerrufen der Zustimmung. Bitte versuchen Sie es erneut.",
+    "consent-date": "Zustimmung erteilt am",
+    "no-consent-status": "Keine Zustimmung zur Speicherung von Gesundheitsdaten erteilt",
+    "revoke": "Zustimmung widerrufen",
+    "no-consent-explanation": "Ohne Zustimmung können Sie keine Gesundheitsdaten speichern oder die meisten App-Funktionen nutzen.",
+    "email-consent-title": "E-Mail-Benachrichtigungen",
+    "email-consent-subtitle": "Erhalten Sie E-Mails über App-Updates und wichtige Neuigkeiten.",
+    "email-consent-given": "E-Mail-Benachrichtigungen aktiviert",
+    "email-consent-not-given": "E-Mail-Benachrichtigungen deaktiviert",
+    "email-consent-date": "E-Mail-Zustimmung erteilt am",
+    "email-consent-accept": "E-Mail-Benachrichtigungen aktivieren",
+    "email-consent-revoke": "E-Mail-Benachrichtigungen deaktivieren",
+    "email-consent-updated": "E-Mail-Zustimmung wurde aktualisiert.",
+    "error-updating-email": "Fehler beim Aktualisieren der E-Mail-Zustimmung. Bitte versuchen Sie es erneut.",
+    "reopen-onboarding": "Erste Schritte erneut anzeigen"
+  },
+  "getting-started": {
+    "title": "Erste Schritte",
+    "subtitle": "Willkommen bei PKU Tools! Hier können Sie die App einrichten und der Datenverarbeitung zustimmen."
   }
 }

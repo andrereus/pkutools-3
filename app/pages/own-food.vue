@@ -11,6 +11,13 @@ const dialog2 = ref(null)
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
 
+// Check if onboarding is needed
+onMounted(() => {
+  if (store.user && store.settings.healthDataConsent === undefined) {
+    navigateTo(localePath('getting-started'))
+  }
+})
+
 // Reactive state
 const editedIndex = ref(-1)
 const editedKey = ref(null)
@@ -47,6 +54,12 @@ const formTitle = computed(() => {
 const signInGoogle = async () => {
   try {
     await store.signInGoogle()
+    // Check if user has given health data consent
+    if (store.settings.healthDataConsent === true) {
+      navigateTo(localePath('diary'))
+    } else {
+      navigateTo(localePath('getting-started'))
+    }
   } catch (error) {
     alert(t('app.auth-error'))
     console.error(error)
@@ -73,6 +86,11 @@ const closeModal = () => {
 }
 
 const save = () => {
+  if (!store.user || store.settings.healthDataConsent !== true) {
+    alert(t('health-consent.no-consent'))
+    return
+  }
+
   const db = getDatabase()
   if (editedIndex.value > -1) {
     update(dbRef(db, `${user.value.id}/ownFood/${editedKey.value}`), {
@@ -113,6 +131,11 @@ const calculateKcal = () => {
 }
 
 const add = () => {
+  if (!store.user || store.settings.healthDataConsent !== true) {
+    alert(t('health-consent.no-consent'))
+    return
+  }
+
   const db = getDatabase()
   const logEntry = {
     name: editedItem.value.name,

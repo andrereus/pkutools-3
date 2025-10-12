@@ -13,6 +13,14 @@ const { t, locale: i18nLocale } = useI18n()
 const dialog = ref(null)
 const dialog2 = ref(null)
 const config = useRuntimeConfig()
+const localePath = useLocalePath()
+
+// Check if onboarding is needed
+onMounted(() => {
+  if (store.user && store.settings.healthDataConsent === undefined) {
+    navigateTo(localePath('getting-started'))
+  }
+})
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -170,6 +178,12 @@ const sortedPheDiary = computed(() => {
 const signInGoogle = async () => {
   try {
     await store.signInGoogle()
+    // Check if user has given health data consent
+    if (store.settings.healthDataConsent === true) {
+      navigateTo(localePath('diary'))
+    } else {
+      navigateTo(localePath('getting-started'))
+    }
   } catch (error) {
     alert(t('app.auth-error'))
     console.error(error)
@@ -200,6 +214,11 @@ const close = () => {
 }
 
 const save = () => {
+  if (!store.user || store.settings.healthDataConsent !== true) {
+    alert(t('health-consent.no-consent'))
+    return
+  }
+
   const db = getDatabase()
   if (editedIndex.value > -1) {
     if (editedItem.value.log) {
@@ -282,6 +301,11 @@ const closeLogEdit = () => {
 }
 
 const saveLogEdit = () => {
+  if (!store.user || store.settings.healthDataConsent !== true) {
+    alert(t('health-consent.no-consent'))
+    return
+  }
+
   const updatedItem = {
     name: editedLogItem.value.name,
     emoji: editedLogItem.value.emoji || null,

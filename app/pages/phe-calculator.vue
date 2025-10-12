@@ -8,6 +8,13 @@ const { t } = useI18n()
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
 
+// Check if onboarding is needed
+onMounted(() => {
+  if (store.user && store.settings.healthDataConsent === undefined) {
+    navigateTo(localePath('getting-started'))
+  }
+})
+
 // Reactive state
 const phe = ref(null)
 const protein = ref(null)
@@ -57,6 +64,11 @@ const calculateKcal = () => {
 }
 
 const save = () => {
+  if (!store.user || store.settings.healthDataConsent !== true) {
+    alert(t('health-consent.no-consent'))
+    return
+  }
+
   const db = getDatabase()
   let logEntry
   if (select.value === 'phe') {

@@ -10,6 +10,13 @@ const dialog = ref(null)
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
 
+// Check if onboarding is needed
+onMounted(() => {
+  if (store.user && store.settings.healthDataConsent === undefined) {
+    navigateTo(localePath('getting-started'))
+  }
+})
+
 // Reactive state
 const loaded = ref(false)
 const open = ref(false)
@@ -127,6 +134,11 @@ const calculateKcal = () => {
 }
 
 const save = () => {
+  if (!store.user || store.settings.healthDataConsent !== true) {
+    alert(t('health-consent.no-consent'))
+    return
+  }
+
   const db = getDatabase()
   const logEntry = {
     name: result.value.product.product_name,

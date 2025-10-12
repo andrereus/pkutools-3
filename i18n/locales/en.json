@@ -132,6 +132,7 @@
   },
   "settings": {
     "title": "Settings",
+    "app-settings": "App Settings",
     "max-phe": "Phe tolerance per day",
     "max-kcal": "Kcal per day",
     "saved": "Saved",
@@ -273,5 +274,42 @@
     "message": "We use cookies for essential functions and to improve the app. Accept cookies?",
     "accept": "Accept",
     "decline": "Decline"
+  },
+  "health-consent": {
+    "title": "Health Data Processing Consent",
+    "subtitle": "This app stores health data. Please consent to data processing to use the app.",
+    "what-data": "What data is stored?",
+    "data-summary": "Nutrition diary, blood values, custom foods, and personal settings (Phe tolerance, calorie needs).",
+    "privacy": "Privacy and Security",
+    "privacy-summary": "Your data is stored securely and not shared with third parties. You can delete your data at any time.",
+    "consent-text": "I consent to the storage and processing of my health data and have read the privacy policy.",
+    "email-consent-text": "I want to receive emails about app updates and important news (optional).",
+    "accept": "Consent and continue",
+    "decline": "Decline",
+    "privacy-policy-link": "Read privacy policy",
+    "error-saving": "Error saving consent. Please try again.",
+    "no-consent": "You must consent to health data storage to use this feature. Please go to settings.",
+    "consent-given": "Consent for health data storage has been given.",
+    "consent-revoked": "Consent for health data storage has been revoked.",
+    "revoke-confirm": "Do you really want to revoke consent for health data storage? This will prevent the use of most app features.",
+    "error-revoking": "Error revoking consent. Please try again.",
+    "consent-date": "Consent given on",
+    "no-consent-status": "No consent for health data storage given",
+    "revoke": "Revoke consent",
+    "no-consent-explanation": "Without consent, you cannot store health data or use most app features.",
+    "email-consent-title": "Email Notifications",
+    "email-consent-subtitle": "Receive emails about app updates and important news.",
+    "email-consent-given": "Email notifications enabled",
+    "email-consent-not-given": "Email notifications disabled",
+    "email-consent-date": "Email consent given on",
+    "email-consent-accept": "Enable email notifications",
+    "email-consent-revoke": "Disable email notifications",
+    "email-consent-updated": "Email consent has been updated.",
+    "error-updating-email": "Error updating email consent. Please try again.",
+    "reopen-onboarding": "Reopen getting started"
+  },
+  "getting-started": {
+    "title": "Getting Started",
+    "subtitle": "Welcome to PKU Tools! Here you can set up the app and consent to data processing."
   }
 }

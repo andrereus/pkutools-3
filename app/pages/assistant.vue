@@ -3,8 +3,31 @@ import { useStore } from '../../stores/index'
 
 const store = useStore()
 const { t } = useI18n()
+const localePath = useLocalePath()
+
+// Check if onboarding is needed
+onMounted(() => {
+  if (store.user && store.settings.healthDataConsent === undefined) {
+    navigateTo(localePath('getting-started'))
+  }
+})
 
 const userIsAuthenticated = computed(() => store.user !== null)
+
+const signInGoogle = async () => {
+  try {
+    await store.signInGoogle()
+    // Check if user has given health data consent
+    if (store.settings.healthDataConsent === true) {
+      navigateTo(localePath('diary'))
+    } else {
+      navigateTo(localePath('getting-started'))
+    }
+  } catch (error) {
+    alert(t('app.auth-error'))
+    console.error(error)
+  }
+}
 
 definePageMeta({
   i18n: {
@@ -36,7 +59,7 @@ defineOgImageComponent('NuxtSeo', {
     </header>
 
     <div v-if="!userIsAuthenticated">
-      <SecondaryButton :text="$t('app.signin-google')" @click="store.signInGoogle" />
+      <SecondaryButton :text="$t('app.signin-google')" @click="signInGoogle" />
       <br />
       <NuxtLink
         type="button"

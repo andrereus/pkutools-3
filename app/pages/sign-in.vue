@@ -17,7 +17,12 @@ const userIsAuthenticated = computed(() => store.user !== null)
 const signInGoogle = async () => {
   try {
     await store.signInGoogle()
-    navigateTo(localePath('diary'))
+    // Check if user has given health data consent
+    if (store.settings.healthDataConsent === true) {
+      navigateTo(localePath('diary'))
+    } else {
+      navigateTo(localePath('getting-started'))
+    }
   } catch (error) {
     alert(t('app.auth-error'))
     console.error(error)
@@ -27,7 +32,8 @@ const signInGoogle = async () => {
 const registerEmailPassword = async () => {
   try {
     await store.registerWithEmail(email.value, password.value, name.value)
-    navigateTo(localePath('diary'))
+    // New users always need to give consent
+    navigateTo(localePath('getting-started'))
   } catch (error) {
     alert(t('sign-in.error'))
     console.error(error)
@@ -37,7 +43,12 @@ const registerEmailPassword = async () => {
 const signInEmailPassword = async () => {
   try {
     await store.signInWithEmail(email.value, password.value)
-    navigateTo(localePath('diary'))
+    // Check if user has given health data consent
+    if (store.settings.healthDataConsent === true) {
+      navigateTo(localePath('diary'))
+    } else {
+      navigateTo(localePath('getting-started'))
+    }
   } catch (error) {
     alert(t('sign-in.error'))
     console.error(error)
