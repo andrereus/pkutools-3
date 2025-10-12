@@ -206,7 +206,7 @@ defineOgImageComponent('NuxtSeo', {
       <PrimaryButton :text="$t('common.save')" @click="save" />
 
       <PageHeader title="PKU Tools Premium" class="mt-6" />
-      <!-- <TiersCard align="left" /> -->
+      <TiersCard align="left" />
 
       <PageHeader :title="$t('settings.license-heading')" class="mt-6" />
       <TextInput
