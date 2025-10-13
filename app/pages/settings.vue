@@ -289,6 +289,51 @@ defineOgImageComponent('NuxtSeo', {
         </div>
       </div>
 
+      <!-- Email Notifications Section -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+      >
+        <PageHeader :title="$t('health-consent.email-consent-title')" class="mb-4" />
+        <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+          {{ $t('health-consent.email-consent-subtitle') }}
+        </p>
+        <div
+          v-if="settings.emailConsent"
+          class="rounded-lg bg-green-50 p-4 dark:bg-green-900/20 mb-4"
+        >
+          <div class="flex items-center">
+            <LucideCheckCircle class="h-5 w-5 text-green-600 dark:text-green-400 mr-2" />
+            <span class="text-sm font-medium text-green-800 dark:text-green-200">
+              {{ $t('health-consent.email-consent-given') }}
+            </span>
+          </div>
+          <p class="mt-2 text-xs text-green-700 dark:text-green-300">
+            {{ $t('health-consent.email-consent-date') }}:
+            {{ formatConsentDate(settings.emailConsentDate) }}
+          </p>
+        </div>
+        <div v-else class="rounded-lg bg-gray-50 p-4 dark:bg-gray-900/20 mb-4">
+          <div class="flex items-center">
+            <LucideMail class="h-5 w-5 text-gray-600 dark:text-gray-400 mr-2" />
+            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">
+              {{ $t('health-consent.email-consent-not-given') }}
+            </span>
+          </div>
+        </div>
+        <div class="flex space-x-3">
+          <PrimaryButton
+            v-if="!settings.emailConsent"
+            :text="$t('health-consent.email-consent-accept')"
+            @click="updateEmailConsent(true)"
+          />
+          <SecondaryButton
+            v-if="settings.emailConsent"
+            :text="$t('health-consent.email-consent-revoke')"
+            @click="updateEmailConsent(false)"
+          />
+        </div>
+      </div>
+
       <!-- App Settings Section -->
       <div
         class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
@@ -349,51 +394,6 @@ defineOgImageComponent('NuxtSeo', {
           class="mb-6"
         />
         <PrimaryButton :text="$t('settings.check-license')" @click="saveLicense" />
-      </div>
-
-      <!-- Email Notifications Section -->
-      <div
-        class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
-      >
-        <PageHeader :title="$t('health-consent.email-consent-title')" class="mb-4" />
-        <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-          {{ $t('health-consent.email-consent-subtitle') }}
-        </p>
-        <div
-          v-if="settings.emailConsent"
-          class="rounded-lg bg-green-50 p-4 dark:bg-green-900/20 mb-4"
-        >
-          <div class="flex items-center">
-            <LucideCheckCircle class="h-5 w-5 text-green-600 dark:text-green-400 mr-2" />
-            <span class="text-sm font-medium text-green-800 dark:text-green-200">
-              {{ $t('health-consent.email-consent-given') }}
-            </span>
-          </div>
-          <p class="mt-2 text-xs text-green-700 dark:text-green-300">
-            {{ $t('health-consent.email-consent-date') }}:
-            {{ formatConsentDate(settings.emailConsentDate) }}
-          </p>
-        </div>
-        <div v-else class="rounded-lg bg-gray-50 p-4 dark:bg-gray-900/20 mb-4">
-          <div class="flex items-center">
-            <LucideMail class="h-5 w-5 text-gray-600 dark:text-gray-400 mr-2" />
-            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">
-              {{ $t('health-consent.email-consent-not-given') }}
-            </span>
-          </div>
-        </div>
-        <div class="flex space-x-3">
-          <PrimaryButton
-            v-if="!settings.emailConsent"
-            :text="$t('health-consent.email-consent-accept')"
-            @click="updateEmailConsent(true)"
-          />
-          <SecondaryButton
-            v-if="settings.emailConsent"
-            :text="$t('health-consent.email-consent-revoke')"
-            @click="updateEmailConsent(false)"
-          />
-        </div>
       </div>
 
       <!-- Account Management Section -->
