@@ -262,7 +262,7 @@
     "diet-report": "Rapport de régime",
     "phe-stats-average": "Au cours des 14 derniers jours (hors aujourd'hui), votre apport moyen en Phe était de {average} mg.",
     "phe-stats-deviation": "L'écart moyen par rapport à l'optimum est de {deviation}%.",
-    "deactivated": "Désactivé temporairement."
+    "deactivated": "Plus de fonctionnalités temporairement désactivées."
   },
   "badges": {
     "streak-title": "Série Active",
