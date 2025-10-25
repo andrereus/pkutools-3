@@ -262,7 +262,8 @@
     "diet-report": "Diet Report",
     "phe-stats-average": "In the last 14 days (excluding today), your average Phe intake was {average} mg.",
     "phe-stats-deviation": "The average deviation from optimum is {deviation}%.",
-    "deactivated": "More features temporarily deactivated."
+    "deactivated": "Currently unavailable",
+    "deactivated-explanation": "Recommendations have been deactivated while we search for a better implementation."
   },
   "badges": {
     "streak-title": "Active Streak",

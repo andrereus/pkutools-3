@@ -262,7 +262,8 @@
     "diet-report": "Diätbericht",
     "phe-stats-average": "In den letzten 14 Tagen (ohne heute) lag deine durchschnittliche Phe-Aufnahme bei {average} mg.",
     "phe-stats-deviation": "Die durchschnittliche Abweichung vom Optimum beträgt {deviation}%.",
-    "deactivated": "Weitere Funktionen vorübergehend deaktiviert."
+    "deactivated": "Derzeit nicht verfügbar",
+    "deactivated-explanation": "Empfehlungen wurden deaktiviert, während wir nach einer besseren Umsetzung suchen."
   },
   "badges": {
     "streak-title": "Aktive Serie",

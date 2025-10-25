@@ -65,9 +65,25 @@ defineOgImageComponent('NuxtSeo', {
 
     <div v-if="userIsAuthenticated">
       <div class="space-y-6">
-        <MotivationCard />
-        <p>{{ $t('assistant.deactivated') }}</p>
-        <!-- <CurrentTipCard />
+        <div
+          class="rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 p-4"
+        >
+          <div class="flex items-start">
+            <LucideAlertTriangle
+              class="h-5 w-5 text-yellow-600 dark:text-yellow-400 mt-0.5 mr-3 flex-shrink-0"
+            />
+            <div>
+              <h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-1">
+                {{ $t('assistant.deactivated') }}
+              </h3>
+              <p class="text-sm text-yellow-700 dark:text-yellow-300">
+                {{ $t('assistant.deactivated-explanation') }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- <MotivationCard />
+        <CurrentTipCard />
         <TodaysTipCard />
         <DietReportCard />
         <BloodValuesCard /> -->
