@@ -263,7 +263,7 @@
     "phe-stats-average": "In the last 14 days (excluding today), your average Phe intake was {average} mg.",
     "phe-stats-deviation": "The average deviation from optimum is {deviation}%.",
     "deactivated": "Currently unavailable",
-    "deactivated-explanation": "Recommendations have been deactivated."
+    "deactivated-explanation": "Recommendations have been deactivated. Looking for a better solution."
   },
   "badges": {
     "streak-title": "Active Streak",
