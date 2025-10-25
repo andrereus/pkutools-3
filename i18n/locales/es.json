@@ -263,7 +263,7 @@
     "phe-stats-average": "En los últimos 14 días (sin contar hoy), tu ingesta promedio de Phe fue de {average} mg.",
     "phe-stats-deviation": "La desviación promedio del óptimo es de {deviation}%.",
     "deactivated": "Actualmente no disponible",
-    "deactivated-explanation": "Las recomendaciones han sido desactivadas mientras buscamos una mejor implementación."
+    "deactivated-explanation": "Las recomendaciones han sido desactivadas."
   },
   "badges": {
     "streak-title": "Racha Activa",
