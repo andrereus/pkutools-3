@@ -263,7 +263,7 @@
     "phe-stats-average": "In den letzten 14 Tagen (ohne heute) lag deine durchschnittliche Phe-Aufnahme bei {average} mg.",
     "phe-stats-deviation": "Die durchschnittliche Abweichung vom Optimum beträgt {deviation}%.",
     "deactivated": "Derzeit nicht verfügbar",
-    "deactivated-explanation": "Empfehlungen wurden deaktiviert. Es wird nach einer besseren Lösung gesucht."
+    "deactivated-explanation": "Der Assistent ist vorübergehend deaktiviert."
   },
   "badges": {
     "streak-title": "Aktive Serie",
