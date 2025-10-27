@@ -128,12 +128,6 @@ const sortedLabValues = computed(() => {
 const signInGoogle = async () => {
   try {
     await store.signInGoogle()
-    // Check if user has given health data consent
-    if (store.settings.healthDataConsentDate) {
-      navigateTo(localePath('diary'))
-    } else {
-      navigateTo(localePath('getting-started'))
-    }
   } catch (error) {
     alert(t('app.auth-error'))
     console.error(error)

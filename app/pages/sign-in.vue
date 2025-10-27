@@ -17,12 +17,8 @@ const userIsAuthenticated = computed(() => store.user !== null)
 const signInGoogle = async () => {
   try {
     await store.signInGoogle()
-    // Check if user has given health data consent
-    if (store.settings.healthDataConsentDate) {
-      navigateTo(localePath('diary'))
-    } else {
-      navigateTo(localePath('getting-started'))
-    }
+    // TODO: Find better way to handle post-sign-in navigation for this page
+    navigateTo(localePath('getting-started'))
   } catch (error) {
     alert(t('app.auth-error'))
     console.error(error)
@@ -43,12 +39,8 @@ const registerEmailPassword = async () => {
 const signInEmailPassword = async () => {
   try {
     await store.signInWithEmail(email.value, password.value)
-    // Check if user has given health data consent
-    if (store.settings.healthDataConsentDate) {
-      navigateTo(localePath('diary'))
-    } else {
-      navigateTo(localePath('getting-started'))
-    }
+    // TODO: Find better way to handle post-sign-in navigation for this page
+    navigateTo(localePath('getting-started'))
   } catch (error) {
     alert(t('sign-in.error'))
     console.error(error)
