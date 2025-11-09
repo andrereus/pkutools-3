@@ -109,24 +109,24 @@ PKU Tools has undergone significant refactoring over its versions:
 ```
 pkutools-3/
 ├── app/
-│   ├── assets/          # Static assets
+│   ├── assets/         # Static assets
 │   │   ├── css/        # Global styles
 │   │   ├── data/       # Food icons mapping
 │   │   └── images/     # Images and icons
-│   ├── components/      # Reusable Vue components
-│   ├── layouts/         # Layout components
-│   ├── pages/           # Route pages (file-based routing)
-│   └── plugins/          # Nuxt plugins (Firebase, ApexCharts)
+│   ├── components/     # Reusable Vue components
+│   ├── layouts/        # Layout components
+│   ├── pages/          # Route pages (file-based routing)
+│   └── plugins/        # Nuxt plugins (Firebase, ApexCharts)
 ├── i18n/
-│   └── locales/         # Translation files (en, de, es, fr)
+│   └── locales/        # Translation files (en, de, es, fr)
 ├── public/
-│   ├── data/            # Static food database (JSON/CSV)
-│   ├── images/          # Public images and food icons
-│   └── videos/          # Demo videos
-├── stores/               # Pinia stores
-├── nuxt.config.ts        # Nuxt configuration
-├── package.json          # Dependencies and scripts
-└── tsconfig.json         # TypeScript configuration
+│   ├── data/           # Static food database (JSON/CSV)
+│   ├── images/         # Public images and food icons
+│   └── videos/         # Demo videos
+├── stores/             # Pinia stores
+├── nuxt.config.ts      # Nuxt configuration
+├── package.json        # Dependencies and scripts
+└── tsconfig.json       # TypeScript configuration
 ```
 
 ## Setup
@@ -138,12 +138,7 @@ pkutools-3/
 
 ### Installation
 
-1. Clone the repository:
-
-```bash
-git clone https://github.com/andrereus/pkutools-3
-cd pkutools-3
-```
+1. Clone the repository
 
 2. Install Firebase CLI globally:
 
