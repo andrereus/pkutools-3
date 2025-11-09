@@ -157,7 +157,7 @@ npm install -g firebase-tools
 npm install
 ```
 
-**Note**: For local development with emulators, Firebase environment variables are not required. The app will work with emulators even if the `.env` file is missing or contains placeholder values. The `.env` file is only required for production deployment or when connecting to a real Firebase project.
+**Note**: For local development with emulators, Firebase environment variables are not required. The app should work with emulators even if the `.env` file is missing or contains placeholder values. The `.env` file is only required for production deployment or when connecting to a real Firebase project.
 
 ### Contributing
 
@@ -170,7 +170,7 @@ If you want to contribute to the project:
 5. Commit and push to your fork
 6. Open a Pull Request from your fork to the main repository
 
-**Important**: When you open a pull request, you will be required to sign a Contributor License Agreement (CLA) through CLA Assistant.
+**Important**: When you open a pull request, you will be required to sign a Contributor License Agreement (CLA) through CLA Assistant. This is a one-time process that ensures your contributions can be used in the project.
 
 ## Development
 
@@ -204,6 +204,7 @@ The app will be available at `http://localhost:3000`.
 
 - `npm run dev` - Start development server with hot-reload
 - `npm run build` - Build for production
+- `npm run emulators` - Start Firebase emulators
 - `npm run emulators:data` - Start Firebase emulators with data persistence
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix ESLint errors automatically
@@ -232,14 +233,14 @@ For production deployment, you need:
 1. A Firebase project with Realtime Database enabled
 2. Authentication enabled with Google and Email/Password providers
 3. Database rules configured (see `database.rules.json`)
-4. Environment variables set in your deployment platform (see the environment variables section in your deployment platform's documentation)
+4. Environment variables configured (see Deployment section)
 
 ### Deployment
 
 The app can be deployed to various platforms. For Vercel:
 
 1. Connect your repository to Vercel
-2. Add environment variables in the Vercel dashboard
+2. Add environment variables in the Vercel dashboard (create `.env` from `.env.example` for local reference)
 3. Deploy (automatic on push to main branch)
 
 ## Architecture
