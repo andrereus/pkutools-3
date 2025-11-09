@@ -196,6 +196,7 @@ The app will be available at `http://localhost:3000`.
 ## Code Style & Guidelines
 
 - **Code Style**: ESLint is configured for Vue 3 and Nuxt best practices, Prettier handles code formatting, and TypeScript is used for type safety (though most files are `.vue` or `.js`)
+- **Editor Setup**: It's recommended to set up ESLint and Prettier in your editor for automatic formatting and linting
 - **Best Practices**: Follow existing code style and component patterns
 - **Internationalization**: Add translations for new strings in all locale files
 - **Testing**: Test on multiple devices and browsers (including PWA installation on mobile)
