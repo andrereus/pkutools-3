@@ -1,7 +1,5 @@
 # PKU Tools
 
-> **Note**: This README is a work in progress and may be updated with additional information.
-
 PKU Tools is a comprehensive Progressive Web App (PWA) designed to help people with Phenylketonuria (PKU) manage their low-phenylalanine diet. It combines a calculator, food diary, nutritional database, and tracking tools into a single, easy-to-use application.
 
 ## About PKU
@@ -30,13 +28,13 @@ Phenylketonuria (PKU) is a genetic condition that requires individuals to follow
   - Quick-add suggestions based on recently used foods (recency-weighted algorithm)
   - Edit and delete entries
 
+- **📖 Diet Report**: Generate comprehensive reports on dietary patterns and compliance.
+
 - **📈 Blood Values**: Track and visualize lab results:
   - Record Phe and tyrosine blood values
   - Interactive charts with ApexCharts
   - Export data as CSV, SVG, or PNG
   - Multilingual chart labels
-
-- **📖 Diet Report**: Generate comprehensive reports on dietary patterns and compliance.
 
 - **🍎 Own Foods**: Create and manage custom food entries with:
   - Custom Phe and calorie values
@@ -137,54 +135,68 @@ pkutools-3/
 
 - Node.js 18+ (or compatible runtime)
 - npm, pnpm, yarn, or bun
-- Firebase project with Realtime Database enabled
 
 ### Installation
 
 1. Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/andrereus/pkutools-3
 cd pkutools-3
 ```
 
-2. Install dependencies:
+2. Install Firebase CLI globally:
+
+```bash
+npm install -g firebase-tools
+```
+
+3. Install dependencies:
 
 ```bash
 npm install
 ```
 
-3. Create a `.env` file in the root directory. Copy `.env.example` and fill in your Firebase configuration values.
+**Note**: For local development with emulators, Firebase environment variables are not required. The app will work with emulators even if the `.env` file is missing or contains placeholder values. The `.env` file is only required for production deployment or when connecting to a real Firebase project.
 
-4. Configure Firebase:
-   - Enable Authentication with Google and Email/Password providers
-   - Create a Realtime Database
-   - Set up database rules (see Firebase Security Rules below)
+### Contributing
 
-**Note**: For local development, you can optionally set up a local Firebase emulator. This was available in Version 2 but hasn't been configured yet for the Nuxt 4 migration. It can be set up if needed for local development without affecting the production database.
+If you want to contribute to the project:
 
-### Firebase Security Rules
+1. Fork the repository on GitHub
+2. Set up your local environment following the installation steps above
+3. Create a feature branch and make your changes
+4. Ensure code is properly formatted and linted
+5. Commit and push to your fork
+6. Open a Pull Request from your fork to the main repository
 
-Security rules for Realtime Database:
-
-```json
-{
-  "rules": {
-    "$uid": {
-      ".read": "$uid === auth.uid",
-      ".write": "$uid === auth.uid"
-    }
-  }
-}
-```
+**Important**: When you open a pull request, you will be required to sign a Contributor License Agreement (CLA) through CLA Assistant.
 
 ## Development
 
+### Firebase Emulators
+
+For local development, you can use Firebase emulators to test without affecting your production database. No Firebase project configuration or environment variables are needed for local development with emulators.
+
+Start Firebase emulator with data persistence:
+
+```bash
+npm run emulators:data
+```
+
+**Important**: Always use Ctrl+C before closing the terminal to ensure data is exported. If you close the terminal without using Ctrl+C, your emulator data will be lost.
+
+The emulator UI will be available at `http://localhost:4000`.
+
 ### Start Development Server
+
+Start the development server (in a separate terminal):
 
 ```bash
 npm run dev
 ```
+
+The app will automatically connect to the Firebase emulators when running in development mode. You'll see "Connected to Firebase emulators" in the browser console.
 
 The app will be available at `http://localhost:3000`.
 
@@ -192,18 +204,18 @@ The app will be available at `http://localhost:3000`.
 
 - `npm run dev` - Start development server with hot-reload
 - `npm run build` - Build for production
-- `npm run generate` - Generate static site
-- `npm run preview` - Preview production build locally
+- `npm run emulators:data` - Start Firebase emulators with data persistence
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix ESLint errors automatically
 - `npm run format:check` - Check code formatting
 - `npm run format` - Format code with Prettier
 
-### Code Style
+## Code Style & Guidelines
 
-- ESLint is configured for Vue 3 and Nuxt best practices
-- Prettier handles code formatting
-- TypeScript is used for type safety (though most files are `.vue` or `.js`)
+- **Code Style**: ESLint is configured for Vue 3 and Nuxt best practices, Prettier handles code formatting, and TypeScript is used for type safety (though most files are `.vue` or `.js`)
+- **Best Practices**: Follow existing code style and component patterns
+- **Internationalization**: Add translations for new strings in all locale files
+- **Testing**: Test on multiple devices and browsers (including PWA installation on mobile)
 
 ## Production
 
@@ -213,30 +225,21 @@ The app will be available at `http://localhost:3000`.
 npm run build
 ```
 
-### Static Generation
+### Firebase Configuration for Production
 
-For static site generation:
+For production deployment, you need:
 
-```bash
-npm run generate
-```
-
-Output will be in `.output/public/`.
-
-### Preview Production Build
-
-To preview the production build locally:
-
-```bash
-npm run preview
-```
+1. A Firebase project with Realtime Database enabled
+2. Authentication enabled with Google and Email/Password providers
+3. Database rules configured (see `database.rules.json`)
+4. Environment variables set in your deployment platform (see the environment variables section in your deployment platform's documentation)
 
 ### Deployment
 
-The app can be deployed to various platforms. For Vercel deployment:
+The app can be deployed to various platforms. For Vercel:
 
 1. Connect your repository to Vercel
-2. Add environment variables in Vercel dashboard
+2. Add environment variables in the Vercel dashboard
 3. Deploy (automatic on push to main branch)
 
 ## Architecture
@@ -305,23 +308,7 @@ The app uses a freemium model with a free tier (limited diary entries) and an op
 
 ## Contributing
 
-Contributions are welcome! Please follow these guidelines:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Ensure code is properly formatted and linted (recommended: set up ESLint and Prettier in your editor)
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-**Important**: When you open a pull request, you will be required to sign a Contributor License Agreement (CLA) through CLA Assistant. This is a one-time process that ensures your contributions can be used in the project.
-
-### Development Notes
-
-- Follow existing code style and component patterns
-- Add translations for new strings in all locale files
-- Test on multiple devices and browsers (including PWA installation on mobile)
+Contributions are welcome! See the [Contributing](#contributing) subsection under Setup for getting started. Please also review the [Code Style & Guidelines](#code-style--guidelines) section.
 
 ## License
 

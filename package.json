@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format:check": "prettier . --check",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "emulators": "firebase emulators:start",
+    "emulators:data": "firebase emulators:start --import=./emulator-data --export-on-exit=./emulator-data"
   },
   "dependencies": {
     "@nuxtjs/i18n": "^10.1.1",
