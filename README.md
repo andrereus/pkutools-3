@@ -193,14 +193,29 @@ The app will be available at `http://localhost:3000`.
 - `npm run format:check` - Check code formatting
 - `npm run format` - Format code with Prettier
 
-## Code Style & Guidelines
+## Quality Assurance
+
+### Code Quality
 
 - **Code Style**: ESLint is configured for Vue 3 and Nuxt best practices, Prettier handles code formatting, and TypeScript is used for type safety (though most files are `.vue` or `.js`)
 - **Editor Setup**: It's recommended to set up ESLint and Prettier in your editor for automatic formatting and linting
 - **Best Practices**: Follow existing code style and component patterns
-- **Internationalization**: Add translations for new strings in all locale files
+
+### Testing & Internationalization
+
 - **Testing**: Test on multiple devices and browsers (including PWA installation on mobile)
-- **Dependency Management**: Dependency updates, migration to new versions and other checks are mainly handled by the maintainer (`npm outdated`, `npm update --save`, `npm audit`).
+- **Internationalization**: Add translations for new strings in all locale files
+
+### Monitoring & Analytics
+
+- **Analytics & UX**: PostHog (respects cookie consent) and Umami (privacy analytics)
+- **Bug Detection**: PostHog (Sentry may be added again in the future)
+- **Performance, Accessibility & SEO**: PostHog, Lighthouse and Google Search Console
+
+### Dependency Management
+
+- Dependabot notifies about dependencies
+- Dependency updates, migration to new versions and other checks are mainly handled by the maintainer (`npm outdated`, `npm update --save`, `npm audit`)
 
 ## Production
 
@@ -298,7 +313,7 @@ Contributions are welcome! If you want to contribute to the project:
 1. Fork the repository on GitHub
 2. Set up your local environment following the [Setup](#setup) instructions
 3. Review the [Development](#development) section for running the app locally
-4. Review the [Code Style & Guidelines](#code-style--guidelines) section
+4. Review the [Quality Assurance](#quality-assurance) section
 5. Create a feature branch and make your changes
 6. Commit and push to your fork
 7. Open a Pull Request from your fork to the main repository
