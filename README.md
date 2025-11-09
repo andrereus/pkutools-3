@@ -305,7 +305,27 @@ The app uses a freemium model with a free tier (limited diary entries) and an op
 
 ## Contributing
 
-> **Note**: Contribution guidelines and terms are currently a work in progress.
+Contributions are welcome! Please follow these guidelines:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Ensure code is properly formatted and linted (recommended: set up ESLint and Prettier in your editor)
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+**Important**: When you open a pull request, you will be required to sign a Contributor License Agreement (CLA) through CLA Assistant. This is a one-time process that ensures your contributions can be used in the project.
+
+### Development Notes
+
+- Follow existing code style and component patterns
+- Add translations for new strings in all locale files
+- Test on multiple devices and browsers (including PWA installation on mobile)
+
+## License
+
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**. See the [LICENSE.txt](LICENSE.txt) file for the full license text.
 
 ## Dependency Notes
 
