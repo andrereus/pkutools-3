@@ -200,6 +200,7 @@ The app will be available at `http://localhost:3000`.
 - **Best Practices**: Follow existing code style and component patterns
 - **Internationalization**: Add translations for new strings in all locale files
 - **Testing**: Test on multiple devices and browsers (including PWA installation on mobile)
+- **Dependency Management**: Dependency updates, migration to new versions and other checks are mainly handled by the maintainer (`npm outdated`, `npm update --save`, `npm audit`).
 
 ## Production
 
