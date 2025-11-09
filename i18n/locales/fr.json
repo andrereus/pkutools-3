@@ -203,7 +203,8 @@
   "imprint": {
     "title": "Mentions légales",
     "email": "Email",
-    "sources": "Sources: USDA, FoodData Central (fdc.nal.usda.gov) & openfoodfacts.org"
+    "sources": "Sources: USDA, FoodData Central (fdc.nal.usda.gov) & openfoodfacts.org",
+    "open-source": "Cette application est open source et disponible sur"
   },
   "disclaimer": {
     "title": "Avertissement"

@@ -44,6 +44,18 @@ defineOgImageComponent('NuxtSeo', {
     <p>{{ $t("imprint.email") }}: {{ part1 }}@<span class="hidden">null</span>{{ part2 }}.{{ part3 }}</p>
     <br />
     <p>{{ $t('imprint.sources') }}</p>
+    <br />
+    <p>
+      {{ $t('imprint.open-source') }}:
+      <a
+        href="https://github.com/andrereus/pkutools-3"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 underline"
+      >
+        GitHub
+      </a>
+    </p>
   </div>
 </template>
 
