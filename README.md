@@ -154,19 +154,6 @@ npm install
 
 **Note**: For local development with emulators, Firebase environment variables are not required. The app should work with emulators even if the `.env` file is missing or contains placeholder values. The `.env` file is only required for production deployment or when connecting to a real Firebase project.
 
-### Contributing
-
-If you want to contribute to the project:
-
-1. Fork the repository on GitHub
-2. Set up your local environment following the installation steps above
-3. Create a feature branch and make your changes
-4. Ensure code is properly formatted and linted
-5. Commit and push to your fork
-6. Open a Pull Request from your fork to the main repository
-
-**Important**: When you open a pull request, you will be required to sign a Contributor License Agreement (CLA) through CLA Assistant. This is a one-time process that ensures your contributions can be used in the project.
-
 ## Development
 
 ### Firebase Emulators
@@ -304,7 +291,17 @@ The app uses a freemium model with a free tier (limited diary entries) and an op
 
 ## Contributing
 
-Contributions are welcome! See the [Contributing](#contributing) subsection under Setup for getting started. Please also review the [Code Style & Guidelines](#code-style--guidelines) section.
+Contributions are welcome! If you want to contribute to the project:
+
+1. Fork the repository on GitHub
+2. Set up your local environment following the [Setup](#setup) instructions
+3. Review the [Development](#development) section for running the app locally
+4. Review the [Code Style & Guidelines](#code-style--guidelines) section
+5. Create a feature branch and make your changes
+6. Commit and push to your fork
+7. Open a Pull Request from your fork to the main repository
+
+**Important**: When you open a pull request, you will be required to sign a Contributor License Agreement (CLA) through CLA Assistant. This is a one-time process that ensures your contributions can be used in the project.
 
 ## License
 
