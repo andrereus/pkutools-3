@@ -66,6 +66,8 @@ Phenylketonuria (PKU) is a genetic condition that requires individuals to follow
 - **Charts**: [ApexCharts](https://apexcharts.com/) with `vue3-apexcharts`
 - **Date Handling**: [date-fns](https://date-fns.org/)
 
+**Note**: `@nuxtjs/tailwindcss` doesn't fully support Nuxt 4 yet, so Tailwind is configured via Vite plugin instead.
+
 ### State Management & Data
 
 - **State Management**: [Pinia](https://pinia.vuejs.org/)
@@ -279,7 +281,9 @@ User's custom foods are stored in Firebase and merged with the static database d
 
 **Database Creation Process**: The food database was created using a complex AI workflow that combines two USDA database exports (phenylalanine values and calorie values). The AI workflow was necessary to match appropriate icons to food items. Translations were added using Google Docs. The process involves Python transformations to combine the USDA data sources and convert CSV to JSON format. Previously, the database was created using various Python transformations, which have since been replaced by the current AI workflow approach.
 
-## Internationalization
+## Additional Information
+
+### Internationalization
 
 The app supports 4 languages with localized:
 
@@ -288,21 +292,21 @@ The app supports 4 languages with localized:
 - Date formatting (via date-fns locales)
 - Chart labels (via ApexCharts locales)
 
-## PWA Features
+### PWA Features
 
 - **Web Manifest**: Enables app installation on mobile and desktop devices
 - **TWA Support**: Available as a Trusted Web Activity on Google Play Store
 - **Safe Area Insets**: Support for notched devices
 - **Responsive Design**: Mobile-first approach
 
-## Privacy & Compliance
+### Privacy & Compliance
 
 - **Health Data Consent**: Required before saving diary entries (GDPR compliance)
 - **Cookie Consent**: User choice for analytics tracking
 - **Consent History**: Tracks consent changes over time
 - **Data Storage**: All user data stored in Firebase (user-specific paths)
 
-## License System
+### License System
 
 The app uses a freemium model with a free tier (limited diary entries) and an optional license key for unlimited access.
 
@@ -323,10 +327,6 @@ Contributions are welcome! If you want to contribute to the project:
 ## License
 
 This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**. See the [LICENSE.txt](LICENSE.txt) file for the full license text.
-
-## Dependency Notes
-
-- `@nuxtjs/tailwindcss` doesn't fully support Nuxt 4 yet, so Tailwind is configured via Vite plugin instead
 
 ## Support
 
