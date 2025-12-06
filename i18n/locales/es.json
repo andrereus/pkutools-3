@@ -59,7 +59,9 @@
     "title": "Búsqueda de alimentos",
     "description": "Busca en una base de datos de alimentos.",
     "search": "Buscar alimentos",
-    "search-info": "Afine su búsqueda con varias palabras, por ejemplo \"manzanas crudas\" o \"patatas cocidas\". Utiliza el escáner de códigos de barras para los productos. Fuente: fdc.nal.usda.gov"
+    "search-info": "Afine su búsqueda con varias palabras, por ejemplo \"manzanas crudas\" o \"patatas cocidas\". Utiliza el escáner de códigos de barras para los productos. Fuente: fdc.nal.usda.gov",
+    "own-food": "Propio",
+    "own-food-indicator": "Este es tu propio alimento"
   },
   "phe-calculator": {
     "title": "Calculadora de Phe",
@@ -93,7 +95,6 @@
   "own-food": {
     "title": "Alimentos propios",
     "description": "Guarda tus propios alimentos para añadir rápidamente.",
-    "search-info": "La comida propia también está disponible en la búsqueda.",
     "export-filename": "PKU Tools - Alimento propio",
     "choose-icon": "Seleccionar icono"
   },
@@ -101,7 +102,6 @@
     "title": "Diario",
     "description": "Lleva un registro de tu comida y controla tu tolerancia a la Phe.",
     "tab-title": "Diario",
-    "info": "Utilice las herramientas de la barra de navegación para añadir alimentos.",
     "data-warning": "Atención: Falta Phe por 100g.",
     "more": "Más",
     "set-phe": "Establecer tolerancia Phe",

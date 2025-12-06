@@ -256,8 +256,6 @@ defineOgImageComponent('NuxtSeo', {
     </div>
 
     <div v-if="userIsAuthenticated">
-      <p class="mb-6">{{ $t('own-food.search-info') }}</p>
-
       <div class="w-full mb-6">
         <label for="search" class="sr-only">{{ $t('food-search.search') }}</label>
         <div class="relative">
@@ -284,22 +282,24 @@ defineOgImageComponent('NuxtSeo', {
           @click="addItem(item)"
         >
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
-            <img
-              v-if="item.icon !== undefined && item.icon !== ''"
-              :src="'/images/food-icons/' + item.icon + '.svg'"
-              onerror="this.src='/images/food-icons/organic-food.svg'"
-              width="25"
-              class="food-icon"
-              alt="Food Icon"
-            />
-            <img
-              v-if="item.icon === undefined || item.icon === ''"
-              :src="'/images/food-icons/organic-food.svg'"
-              width="25"
-              class="food-icon"
-              alt="Food Icon"
-            />
-            {{ item.name }}
+            <span class="flex items-center gap-1">
+              <img
+                v-if="item.icon !== undefined && item.icon !== ''"
+                :src="'/images/food-icons/' + item.icon + '.svg'"
+                onerror="this.src='/images/food-icons/organic-food.svg'"
+                width="25"
+                class="food-icon"
+                alt="Food Icon"
+              />
+              <img
+                v-if="item.icon === undefined || item.icon === ''"
+                :src="'/images/food-icons/organic-food.svg'"
+                width="25"
+                class="food-icon"
+                alt="Food Icon"
+              />
+              {{ item.name }}
+            </span>
           </td>
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
             {{ item.phe }}

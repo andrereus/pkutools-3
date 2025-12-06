@@ -328,27 +328,30 @@ defineOgImageComponent('NuxtSeo', {
           @click="editItem(item, index)"
         >
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
-            <img
-              v-if="item.icon !== undefined && item.icon !== ''"
-              :src="'/images/food-icons/' + item.icon + '.svg'"
-              onerror="this.src='/images/food-icons/organic-food.svg'"
-              width="25"
-              class="food-icon"
-              alt="Food Icon"
-            />
-            <img
-              v-if="(item.icon === undefined || item.icon === '') && item.emoji === undefined"
-              :src="'/images/food-icons/organic-food.svg'"
-              width="25"
-              class="food-icon"
-              alt="Food Icon"
-            />
-            {{
-              (item.icon === undefined || item.icon === '') && item.emoji !== undefined
-                ? item.emoji
-                : null
-            }}
-            {{ item.name }}
+            <span class="flex items-center gap-1">
+              <img
+                v-if="item.icon !== undefined && item.icon !== ''"
+                :src="'/images/food-icons/' + item.icon + '.svg'"
+                onerror="this.src='/images/food-icons/organic-food.svg'"
+                width="25"
+                class="food-icon"
+                alt="Food Icon"
+              />
+              <img
+                v-if="(item.icon === undefined || item.icon === '') && item.emoji === undefined"
+                :src="'/images/food-icons/organic-food.svg'"
+                width="25"
+                class="food-icon"
+                alt="Food Icon"
+              />
+              <span
+                v-if="(item.icon === undefined || item.icon === '') && item.emoji !== undefined"
+                class="ml-0.5 mr-1"
+              >
+                {{ item.emoji }}
+              </span>
+              {{ item.name }}
+            </span>
           </td>
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
             {{ item.weight }}
@@ -424,10 +427,6 @@ defineOgImageComponent('NuxtSeo', {
           @click="showMoreItems"
         />
       </span>
-
-      <p v-if="lastAdded.length === 0" class="mt-3">
-        {{ $t('diary.info') }}
-      </p>
 
       <p v-if="!license" class="mt-3 text-sm">
         <NuxtLink :to="$localePath('settings')">

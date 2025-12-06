@@ -59,7 +59,9 @@
     "title": "Recherche alimentaire",
     "description": "Recherchez dans une base de données d'aliments.",
     "search": "Chercher des aliments",
-    "search-info": "Affine ta recherche avec plusieurs mots, par exemple \"pommes crues\" ou \"pommes de terre cuites\". Utilise le scanner de codes-barres pour les produits. Source: fdc.nal.usda.gov"
+    "search-info": "Affine ta recherche avec plusieurs mots, par exemple \"pommes crues\" ou \"pommes de terre cuites\". Utilise le scanner de codes-barres pour les produits. Source: fdc.nal.usda.gov",
+    "own-food": "Propre",
+    "own-food-indicator": "C'est ton propre aliment"
   },
   "phe-calculator": {
     "title": "Calculateur Phe",
@@ -93,7 +95,6 @@
   "own-food": {
     "title": "Aliments personnels",
     "description": "Enregistrez vos propres aliments pour un ajout rapide.",
-    "search-info": "Les propres aliments sont également disponibles dans la recherche.",
     "export-filename": "PKU Tools - Aliments personnels",
     "choose-icon": "Sélectionner une icône"
   },
@@ -101,7 +102,6 @@
     "title": "Journal",
     "description": "Suivez vos aliments et surveillez votre tolérance à la Phe.",
     "tab-title": "Journal",
-    "info": "Utilise les outils de la barre de navigation pour ajouter des aliments.",
     "data-warning": "Attention : Phe pour 100g manque.",
     "more": "Plus",
     "set-phe": "Régler la tolérance Phe",

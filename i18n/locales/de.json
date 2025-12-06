@@ -59,7 +59,9 @@
     "title": "Lebensmittelsuche",
     "description": "Durchsuche eine Lebensmitteldatenbank.",
     "search": "Lebensmittel suchen",
-    "search-info": "Verfeinere deine Suche mit mehreren Wörtern, z.B. \"äpfel roh\" oder \"kartoffeln gekocht\". Verwende für Produkte den Barcode Scanner. Quelle: fdc.nal.usda.gov"
+    "search-info": "Verfeinere deine Suche mit mehreren Wörtern, z.B. \"äpfel roh\" oder \"kartoffeln gekocht\". Verwende für Produkte den Barcode Scanner. Quelle: fdc.nal.usda.gov",
+    "own-food": "Eigenes",
+    "own-food-indicator": "Dies ist dein eigenes Lebensmittel"
   },
   "phe-calculator": {
     "title": "Phe Rechner",
@@ -93,7 +95,6 @@
   "own-food": {
     "title": "Eigene Lebensmittel",
     "description": "Hinterlege eigene Lebensmittel zum schnellen Hinzufügen.",
-    "search-info": "Eigene Lebensmittel sind auch in der Suche verfügbar.",
     "export-filename": "PKU Tools - Eigene Lebensmittel",
     "choose-icon": "Icon auswählen"
   },
@@ -101,7 +102,6 @@
     "title": "Tagebuch",
     "description": "Halte Protokoll über dein Essen und verfolge deine Phe-Toleranz.",
     "tab-title": "Tagebuch",
-    "info": "Verwende die Tools in der Navigationsleiste um Lebensmittel hinzuzufügen.",
     "data-warning": "Achtung: Phe pro 100g fehlt.",
     "more": "Mehr",
     "set-phe": "Phe-Toleranz einstellen",

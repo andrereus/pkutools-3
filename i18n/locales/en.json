@@ -59,7 +59,9 @@
     "title": "Food Search",
     "description": "Search a food database.",
     "search": "Search for food",
-    "search-info": "Refine your search with several words, e.g. \"apples raw\" or \"potatoes cooked\". Use the Barcode Scanner for products. Source: fdc.nal.usda.gov"
+    "search-info": "Refine your search with several words, e.g. \"apples raw\" or \"potatoes cooked\". Use the Barcode Scanner for products. Source: fdc.nal.usda.gov",
+    "own-food": "Own",
+    "own-food-indicator": "This is your own food"
   },
   "phe-calculator": {
     "title": "Phe Calculator",
@@ -93,7 +95,6 @@
   "own-food": {
     "title": "Own Food",
     "description": "Save your own foods for quick addition.",
-    "search-info": "Own food is also available in the search.",
     "export-filename": "PKU Tools - Own Food",
     "choose-icon": "Select icon"
   },
@@ -101,7 +102,6 @@
     "title": "Diary",
     "description": "Keep track of your food and monitor your Phe tolerance.",
     "tab-title": "Diary",
-    "info": "Use the tools in the navigation bar to add food.",
     "data-warning": "Attention: Phe per 100g is missing.",
     "more": "More",
     "set-phe": "Set Phe tolerance",

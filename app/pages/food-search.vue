@@ -16,6 +16,8 @@ const phe = ref(null)
 const weight = ref(100)
 const name = ref('')
 const emoji = ref('🌱')
+const icon = ref(null)
+const isOwnFood = ref(false)
 const advancedFood = ref(null)
 const loading = ref(false)
 const kcalReference = ref(null)
@@ -35,7 +37,9 @@ const tableHeaders = computed(() => [
 // Methods
 const loadItem = (item) => {
   name.value = item.name
-  emoji.value = item.emoji
+  emoji.value = item.emoji || null
+  icon.value = item.icon !== undefined ? item.icon : null
+  isOwnFood.value = item.isOwnFood || false
   phe.value = item.phe
   weight.value = 100
   kcalReference.value = item.kcal
@@ -61,6 +65,7 @@ const save = () => {
   const logEntry = {
     name: name.value,
     emoji: emoji.value || null,
+    icon: icon.value || null,
     pheReference: phe.value,
     kcalReference: Number(kcalReference.value) || 0,
     weight: Number(weight.value),
@@ -111,9 +116,18 @@ const searchFood = async () => {
       name: item[locale.value] || item.en, // fallback to English if translation missing
       emoji: item.emoji,
       phe: Math.round(item.phe * 1000),
-      kcal: item.kcal
+      kcal: item.kcal,
+      isOwnFood: false
     }))
-    .concat(ownFood.value)
+    .concat(
+      ownFood.value.map((item) => ({
+        name: item.name,
+        icon: item.icon,
+        phe: item.phe,
+        kcal: item.kcal,
+        isOwnFood: true
+      }))
+    )
 
   const fuse = new Fuse(food, {
     keys: ['name', 'phe'],
@@ -209,8 +223,39 @@ defineOgImageComponent('NuxtSeo', {
           @click="loadItem(item)"
         >
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
-            {{ item.emoji }}
-            {{ item.name }}
+            <span class="flex items-center gap-1">
+              <img
+                v-if="item.icon !== undefined && item.icon !== ''"
+                :src="'/images/food-icons/' + item.icon + '.svg'"
+                onerror="this.src='/images/food-icons/organic-food.svg'"
+                width="25"
+                class="food-icon"
+                alt="Food Icon"
+              />
+              <img
+                v-if="(item.icon === undefined || item.icon === '') && item.emoji === undefined"
+                :src="'/images/food-icons/organic-food.svg'"
+                width="25"
+                class="food-icon"
+                alt="Food Icon"
+              />
+              <span
+                v-if="(item.icon === undefined || item.icon === '') && item.emoji !== undefined"
+                class="ml-0.5 mr-1"
+              >
+                {{ item.emoji }}
+              </span>
+              {{ item.name }}
+              <!-- Own food indicator badge -->
+              <span
+                v-if="item.isOwnFood"
+                class="inline-flex items-center rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
+                :title="$t('food-search.own-food-indicator')"
+              >
+                <LucideUser class="h-3 w-3 mr-1" />
+                {{ $t('food-search.own-food') }}
+              </span>
+            </span>
           </td>
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
             {{ item.phe }}
@@ -247,3 +292,10 @@ defineOgImageComponent('NuxtSeo', {
     </div>
   </div>
 </template>
+
+<style scoped>
+.food-icon {
+  vertical-align: middle;
+  display: inline-block;
+}
+</style>
