@@ -2,6 +2,7 @@
 import { useStore } from '../../stores/index'
 import { getDatabase, ref as dbRef, push, remove, update } from 'firebase/database'
 import foodIcons from '~/assets/data/food-icons-map.json'
+import Fuse from 'fuse.js'
 import { format } from 'date-fns'
 
 const store = useStore()
@@ -12,6 +13,7 @@ const config = useRuntimeConfig()
 const localePath = useLocalePath()
 
 // Reactive state
+const search = ref('')
 const editedIndex = ref(-1)
 const editedKey = ref(null)
 const weight = ref(100)
@@ -42,6 +44,23 @@ const tableHeaders = computed(() => [
 
 const formTitle = computed(() => {
   return editedIndex.value === -1 ? t('common.add') : t('common.edit')
+})
+
+const filteredOwnFood = computed(() => {
+  if (!search.value.trim()) {
+    return ownFood.value
+  }
+
+  const fuse = new Fuse(ownFood.value, {
+    keys: ['name', 'phe'],
+    threshold: 0.2,
+    minMatchCharLength: 2,
+    ignoreLocation: true,
+    useExtendedSearch: true
+  })
+
+  const results = fuse.search(search.value.trim())
+  return results.map((result) => result.item)
 })
 
 // Methods
@@ -239,9 +258,27 @@ defineOgImageComponent('NuxtSeo', {
     <div v-if="userIsAuthenticated">
       <p class="mb-6">{{ $t('own-food.search-info') }}</p>
 
+      <div class="w-full mb-6">
+        <label for="search" class="sr-only">{{ $t('food-search.search') }}</label>
+        <div class="relative">
+          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+            <LucideSearch class="h-5 w-5 text-gray-400" aria-hidden="true" />
+          </div>
+          <input
+            id="search"
+            v-model="search"
+            type="search"
+            name="search"
+            :placeholder="$t('food-search.search')"
+            autocomplete="off"
+            class="block w-full rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+          />
+        </div>
+      </div>
+
       <DataTable :headers="tableHeaders" class="mb-8">
         <tr
-          v-for="(item, index) in ownFood"
+          v-for="(item, index) in filteredOwnFood"
           :key="index"
           class="cursor-pointer"
           @click="addItem(item)"
