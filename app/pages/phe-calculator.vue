@@ -15,6 +15,7 @@ const weight = ref(null)
 const name = ref('')
 const kcalReference = ref(null)
 const select = ref('phe')
+const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
@@ -84,16 +85,15 @@ const save = () => {
     }
   }
 
-  // Find today's entry or create new one
-  const today = new Date()
-  const formattedDate = format(today, 'yyyy-MM-dd')
-  const todayEntry = store.pheDiary.find((entry) => entry.date === formattedDate)
+  // Find entry for selected date or create new one
+  const formattedDate = selectedDate.value
+  const dateEntry = store.pheDiary.find((entry) => entry.date === formattedDate)
 
-  if (todayEntry) {
-    const updatedLog = [...(todayEntry.log || []), logEntry]
+  if (dateEntry) {
+    const updatedLog = [...(dateEntry.log || []), logEntry]
     const totalPhe = updatedLog.reduce((sum, item) => sum + (item.phe || 0), 0)
     const totalKcal = updatedLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
-    update(dbRef(db, `${user.value.id}/pheDiary/${todayEntry['.key']}`), {
+    update(dbRef(db, `${user.value.id}/pheDiary/${dateEntry['.key']}`), {
       log: updatedLog,
       phe: totalPhe,
       kcal: totalKcal
@@ -169,12 +169,11 @@ defineOgImageComponent('NuxtSeo', {
       <PageHeader :title="$t('phe-calculator.title')" />
     </header>
 
-    <TextInput
-      v-if="userIsAuthenticated"
-      v-model="name"
-      id-name="food"
-      :label="$t('common.food-name')"
-    />
+    <div v-if="userIsAuthenticated" class="flex gap-4">
+      <TextInput v-model="name" id-name="food" :label="$t('common.food-name')" class="flex-1" />
+
+      <DateInput v-model="selectedDate" id-name="date" :label="$t('common.date')" class="flex-1" />
+    </div>
 
     <SelectMenu v-model="select" id-name="factor" :label="$t('phe-calculator.mode')">
       <option v-for="option in type" :key="option.value" :value="option.value">

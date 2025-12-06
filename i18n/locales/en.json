@@ -42,7 +42,8 @@
     "kcal": "Kcal",
     "kcal-per-100g": "Kcal per 100g",
     "total-kcal": "Total kcal",
-    "optional": "Optional"
+    "optional": "Optional",
+    "date": "Date"
   },
   "home": {
     "title": "Home",
