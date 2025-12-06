@@ -15,6 +15,7 @@ const localePath = useLocalePath()
 const editedIndex = ref(-1)
 const editedKey = ref(null)
 const weight = ref(100)
+const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 
 const defaultItem = {
   name: '',
@@ -106,6 +107,7 @@ const addItem = (item) => {
   editedIndex.value = ownFood.value.indexOf(item)
   editedKey.value = item['.key']
   editedItem.value = { ...item }
+  selectedDate.value = format(new Date(), 'yyyy-MM-dd')
   dialog2.value.openDialog()
 }
 
@@ -134,15 +136,14 @@ const add = () => {
     kcal: calculateKcal()
   }
 
-  const today = new Date()
-  const formattedDate = format(today, 'yyyy-MM-dd')
-  const todayEntry = store.pheDiary.find((entry) => entry.date === formattedDate)
+  const formattedDate = selectedDate.value
+  const dateEntry = store.pheDiary.find((entry) => entry.date === formattedDate)
 
-  if (todayEntry) {
-    const updatedLog = [...(todayEntry.log || []), logEntry]
+  if (dateEntry) {
+    const updatedLog = [...(dateEntry.log || []), logEntry]
     const totalPhe = updatedLog.reduce((sum, item) => sum + (item.phe || 0), 0)
     const totalKcal = updatedLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
-    update(dbRef(db, `${user.value.id}/pheDiary/${todayEntry['.key']}`), {
+    update(dbRef(db, `${user.value.id}/pheDiary/${dateEntry['.key']}`), {
       log: updatedLog,
       phe: totalPhe,
       kcal: totalKcal
@@ -376,6 +377,12 @@ defineOgImageComponent('NuxtSeo', {
         @edit="editItem"
         @close="closeModal"
       >
+        <DateInput
+          v-if="userIsAuthenticated"
+          v-model="selectedDate"
+          id-name="date"
+          :label="$t('common.date')"
+        />
         <NumberInput v-model.number="weight" id-name="weight" :label="$t('common.weight-in-g')" />
         <div class="flex gap-4 mt-4">
           <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>

@@ -19,6 +19,7 @@ const error = ref('')
 const result = ref(null)
 const weight = ref(100)
 const select = ref('other')
+const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
@@ -142,15 +143,14 @@ const save = () => {
     kcal: calculateKcal()
   }
 
-  const today = new Date()
-  const formattedDate = format(today, 'yyyy-MM-dd')
-  const todayEntry = store.pheDiary.find((entry) => entry.date === formattedDate)
+  const formattedDate = selectedDate.value
+  const dateEntry = store.pheDiary.find((entry) => entry.date === formattedDate)
 
-  if (todayEntry) {
-    const updatedLog = [...(todayEntry.log || []), logEntry]
+  if (dateEntry) {
+    const updatedLog = [...(dateEntry.log || []), logEntry]
     const totalPhe = updatedLog.reduce((sum, item) => sum + (item.phe || 0), 0)
     const totalKcal = updatedLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
-    update(dbRef(db, `${user.value.id}/pheDiary/${todayEntry['.key']}`), {
+    update(dbRef(db, `${user.value.id}/pheDiary/${dateEntry['.key']}`), {
       log: updatedLog,
       phe: totalPhe,
       kcal: totalKcal
@@ -275,6 +275,14 @@ defineOgImageComponent('NuxtSeo', {
             {{ option.title }}
           </option>
         </SelectMenu>
+
+        <DateInput
+          v-if="userIsAuthenticated"
+          v-model="selectedDate"
+          id-name="date"
+          :label="$t('common.date')"
+          class="mb-6"
+        />
 
         <NumberInput
           v-model.number="weight"

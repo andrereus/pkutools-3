@@ -19,6 +19,7 @@ const emoji = ref('🌱')
 const advancedFood = ref(null)
 const loading = ref(false)
 const kcalReference = ref(null)
+const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
@@ -38,6 +39,7 @@ const loadItem = (item) => {
   phe.value = item.phe
   weight.value = 100
   kcalReference.value = item.kcal
+  selectedDate.value = format(new Date(), 'yyyy-MM-dd')
   dialog.value.openDialog()
 }
 
@@ -66,15 +68,14 @@ const save = () => {
     kcal: calculateKcal()
   }
 
-  const today = new Date()
-  const formattedDate = format(today, 'yyyy-MM-dd')
-  const todayEntry = store.pheDiary.find((entry) => entry.date === formattedDate)
+  const formattedDate = selectedDate.value
+  const dateEntry = store.pheDiary.find((entry) => entry.date === formattedDate)
 
-  if (todayEntry) {
-    const updatedLog = [...(todayEntry.log || []), logEntry]
+  if (dateEntry) {
+    const updatedLog = [...(dateEntry.log || []), logEntry]
     const totalPhe = updatedLog.reduce((sum, item) => sum + (item.phe || 0), 0)
     const totalKcal = updatedLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
-    update(dbRef(db, `${user.value.id}/pheDiary/${todayEntry['.key']}`), {
+    update(dbRef(db, `${user.value.id}/pheDiary/${dateEntry['.key']}`), {
       log: updatedLog,
       phe: totalPhe,
       kcal: totalKcal
@@ -231,6 +232,12 @@ defineOgImageComponent('NuxtSeo', {
         ]"
         @submit="save"
       >
+        <DateInput
+          v-if="userIsAuthenticated"
+          v-model="selectedDate"
+          id-name="date"
+          :label="$t('common.date')"
+        />
         <NumberInput v-model.number="weight" id-name="weight" :label="$t('common.weight-in-g')" />
         <div class="flex gap-4 my-6">
           <span class="flex-1">= {{ calculatePhe() }} mg Phe</span>
