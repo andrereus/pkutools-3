@@ -270,19 +270,18 @@ defineOgImageComponent('NuxtSeo', {
           {{ $t('common.kcal-per-100g') }}
         </p>
 
-        <SelectMenu v-model="select" id-name="factor" :label="$t('common.food-type')">
-          <option v-for="option in type" :key="option.value" :value="option.value">
-            {{ option.title }}
-          </option>
-        </SelectMenu>
-
         <DateInput
           v-if="userIsAuthenticated"
           v-model="selectedDate"
           id-name="date"
           :label="$t('common.date')"
-          class="mb-6"
         />
+
+        <SelectMenu v-model="select" id-name="factor" :label="$t('common.food-type')">
+          <option v-for="option in type" :key="option.value" :value="option.value">
+            {{ option.title }}
+          </option>
+        </SelectMenu>
 
         <NumberInput
           v-model.number="weight"
