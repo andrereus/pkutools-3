@@ -24,6 +24,21 @@ watch(
   }
 )
 
+// Watch for when Firebase data loads and redirect if consent already given
+watch(
+  () => [store.user, store.settings?.healthDataConsent, store.settings?.healthDataConsentDate],
+  ([user, healthDataConsent, healthDataConsentDate]) => {
+    // Only redirect if:
+    // 1. User is authenticated
+    // 2. Settings data has loaded (healthDataConsentDate is defined, not undefined)
+    // 3. Consent has been given (healthDataConsent is true)
+    if (user && healthDataConsentDate !== undefined && healthDataConsent === true) {
+      navigateTo(localePath('diary'))
+    }
+  },
+  { immediate: true }
+)
+
 const handleConsentGiven = async () => {
   if (consentGiven.value) {
     const success = await store.updateHealthDataConsent(true, emailConsent.value)
