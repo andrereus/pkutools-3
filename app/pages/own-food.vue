@@ -111,7 +111,7 @@ const closeModal = () => {
 
 const save = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    notifications.warning(t('health-consent.no-consent'))
+    notifications.error(t('health-consent.no-consent'))
     return
   }
 
@@ -125,7 +125,7 @@ const save = () => {
     })
   } else {
     if (ownFood.value.length >= 50 && settings.value.license !== config.public.pkutoolsLicenseKey) {
-      notifications.warning(t('app.limit'))
+      notifications.error(t('app.limit'))
     } else {
       push(dbRef(db, `${user.value.id}/ownFood`), {
         name: editedItem.value.name,
@@ -157,7 +157,7 @@ const calculateKcal = () => {
 
 const add = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    notifications.warning(t('health-consent.no-consent'))
+    notifications.error(t('health-consent.no-consent'))
     return
   }
 

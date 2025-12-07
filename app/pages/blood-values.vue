@@ -172,7 +172,7 @@ const close = () => {
 
 const save = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    notifications.warning(t('health-consent.no-consent'))
+    notifications.error(t('health-consent.no-consent'))
     return
   }
 
@@ -188,7 +188,7 @@ const save = () => {
       labValues.value.length >= 30 &&
       settings.value.license !== config.public.pkutoolsLicenseKey
     ) {
-      notifications.warning(t('app.limit'))
+      notifications.error(t('app.limit'))
     } else {
       push(dbRef(db, `${user.value.id}/labValues`), {
         date: editedItem.value.date,

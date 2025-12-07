@@ -60,7 +60,7 @@ const calculateKcal = () => {
 
 const save = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    notifications.warning(t('health-consent.no-consent'))
+    notifications.error(t('health-consent.no-consent'))
     return
   }
 
@@ -104,7 +104,7 @@ const save = () => {
       store.pheDiary.length >= 14 &&
       store.settings.license !== config.public.pkutoolsLicenseKey
     ) {
-      notifications.warning(t('app.limit'))
+      notifications.error(t('app.limit'))
     } else {
       push(dbRef(db, `${user.value.id}/pheDiary`), {
         date: formattedDate,

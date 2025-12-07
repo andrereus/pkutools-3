@@ -52,7 +52,7 @@ const signInGoogle = async () => {
 
 const save = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    notifications.warning(t('health-consent.no-consent'))
+    notifications.error(t('health-consent.no-consent'))
     return
   }
 

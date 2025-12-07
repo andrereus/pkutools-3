@@ -213,7 +213,7 @@ const close = () => {
 
 const save = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    notifications.warning(t('health-consent.no-consent'))
+    notifications.error(t('health-consent.no-consent'))
     return
   }
 
@@ -238,7 +238,7 @@ const save = () => {
       pheDiary.value.length >= 14 &&
       settings.value.license !== config.public.pkutoolsLicenseKey
     ) {
-      notifications.warning(t('app.limit'))
+      notifications.error(t('app.limit'))
     } else {
       push(dbRef(db, `${user.value.id}/pheDiary`), {
         date: editedItem.value.date,
@@ -300,7 +300,7 @@ const closeLogEdit = () => {
 
 const saveLogEdit = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    notifications.warning(t('health-consent.no-consent'))
+    notifications.error(t('health-consent.no-consent'))
     return
   }
 
