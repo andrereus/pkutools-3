@@ -14,6 +14,7 @@ const dialog = ref(null)
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
 const notifications = useNotifications()
+const confirm = useConfirm()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -214,8 +215,14 @@ const escapeCSV = (value) => {
   return `"${value.toString().replace(/"/g, '""')}"`
 }
 
-const exportLabValues = () => {
-  const r = confirm(t('blood-values.export') + '?')
+const exportLabValues = async () => {
+  const r = await confirm.confirm({
+    title: t('blood-values.export'),
+    message: t('common.export-description'),
+    confirmLabel: t('common.export'),
+    cancelLabel: t('common.cancel'),
+    variant: 'default'
+  })
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
     csvContent += 'Date,Phe,Tyrosine\n'

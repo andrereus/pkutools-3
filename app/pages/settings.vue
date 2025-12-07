@@ -11,6 +11,7 @@ const config = useRuntimeConfig()
 const localePath = useLocalePath()
 const i18nLocale = useI18n().locale
 const notifications = useNotifications()
+const confirm = useConfirm()
 
 // Date formatting function
 const formatConsentDate = (dateString) => {
@@ -79,8 +80,13 @@ const saveLicense = () => {
   })
 }
 
-const resetDiary = () => {
-  const r = confirm(t('settings.reset-diary') + '?')
+const resetDiary = async () => {
+  const r = await confirm.confirm({
+    title: t('settings.reset-diary'),
+    message: t('settings.reset-diary-description'),
+    confirmLabel: t('common.delete'),
+    cancelLabel: t('common.cancel')
+  })
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/pheDiary`))
@@ -88,8 +94,13 @@ const resetDiary = () => {
   }
 }
 
-const resetLabValues = () => {
-  const r = confirm(t('settings.reset-blood-values') + '?')
+const resetLabValues = async () => {
+  const r = await confirm.confirm({
+    title: t('settings.reset-blood-values'),
+    message: t('settings.reset-blood-values-description'),
+    confirmLabel: t('common.delete'),
+    cancelLabel: t('common.cancel')
+  })
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/labValues`))
@@ -97,8 +108,13 @@ const resetLabValues = () => {
   }
 }
 
-const resetOwnFood = () => {
-  const r = confirm(t('settings.reset-own-food') + '?')
+const resetOwnFood = async () => {
+  const r = await confirm.confirm({
+    title: t('settings.reset-own-food'),
+    message: t('settings.reset-own-food-description'),
+    confirmLabel: t('common.delete'),
+    cancelLabel: t('common.cancel')
+  })
   if (r === true) {
     const db = getDatabase()
     remove(dbRef(db, `${user.value.id}/ownFood`))
@@ -106,8 +122,13 @@ const resetOwnFood = () => {
   }
 }
 
-const deleteAccount = () => {
-  const r = confirm(t('settings.delete-account') + '?')
+const deleteAccount = async () => {
+  const r = await confirm.confirm({
+    title: t('settings.delete-account'),
+    message: t('settings.delete-account-description'),
+    confirmLabel: t('common.delete'),
+    cancelLabel: t('common.cancel')
+  })
   if (r === true) {
     const db = getDatabase()
     const auth = getAuth()
@@ -135,7 +156,12 @@ const giveHealthDataConsent = async () => {
 }
 
 const revokeHealthDataConsent = async () => {
-  const r = confirm(t('health-consent.revoke-confirm') + '?')
+  const r = await confirm.confirm({
+    title: t('health-consent.revoke'),
+    message: t('health-consent.revoke-confirm'),
+    confirmLabel: t('health-consent.revoke'),
+    cancelLabel: t('common.cancel')
+  })
   if (r === true) {
     const success = await store.updateHealthDataConsent(false)
     if (success) {

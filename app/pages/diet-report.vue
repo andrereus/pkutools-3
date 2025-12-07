@@ -15,6 +15,7 @@ const dialog2 = ref(null)
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
 const notifications = useNotifications()
+const confirm = useConfirm()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -342,8 +343,14 @@ const escapeCSV = (value) => {
   return `"${value.toString().replace(/"/g, '""')}"`
 }
 
-const exportAllFoodItems = () => {
-  const r = confirm(t('diet-report.export-food') + '?')
+const exportAllFoodItems = async () => {
+  const r = await confirm.confirm({
+    title: t('diet-report.export-food'),
+    message: t('diet-report.export-food-description'),
+    confirmLabel: t('common.export'),
+    cancelLabel: t('common.cancel'),
+    variant: 'default'
+  })
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
     csvContent += 'Date,Name,Weight,Phe,Kcal\n'
@@ -368,8 +375,14 @@ const exportAllFoodItems = () => {
   }
 }
 
-const exportDailyPheTotals = () => {
-  const r = confirm(t('diet-report.export-days') + '?')
+const exportDailyPheTotals = async () => {
+  const r = await confirm.confirm({
+    title: t('diet-report.export-days'),
+    message: t('diet-report.export-days-description'),
+    confirmLabel: t('common.export'),
+    cancelLabel: t('common.cancel'),
+    variant: 'default'
+  })
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
     csvContent += 'Date,Total Phe,Total Kcal\n'

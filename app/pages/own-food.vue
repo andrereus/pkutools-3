@@ -12,6 +12,7 @@ const dialog2 = ref(null)
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
 const notifications = useNotifications()
+const confirm = useConfirm()
 
 // Reactive state
 const search = ref('')
@@ -201,8 +202,14 @@ const escapeCSV = (value) => {
   return `"${value.toString().replace(/"/g, '""')}"`
 }
 
-const exportOwnFood = () => {
-  const r = confirm(t('common.export') + '?')
+const exportOwnFood = async () => {
+  const r = await confirm.confirm({
+    title: t('common.export'),
+    message: t('common.export-description'),
+    confirmLabel: t('common.export'),
+    cancelLabel: t('common.cancel'),
+    variant: 'default'
+  })
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
     csvContent += 'Name,Phe per 100g,Kcal per 100g\n'

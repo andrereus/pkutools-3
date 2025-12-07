@@ -29,6 +29,7 @@ const localePath = useLocalePath()
 
 // Notifications - make it available globally via provide/inject pattern
 const notifications = useNotifications()
+const confirm = useConfirm()
 
 // Reactive state
 const showCookieBanner = ref(false)
@@ -645,6 +646,19 @@ const handleCookieConsent = (consent) => {
       :undo-label="notifications.notification.value.undoLabel"
       @close="notifications.close"
       @undo="notifications.close"
+    />
+
+    <!-- Global confirm dialog -->
+    <ConfirmDialog
+      v-if="confirm.confirmState.value"
+      :show="confirm.showConfirm.value"
+      :title="confirm.confirmState.value.title"
+      :message="confirm.confirmState.value.message"
+      :confirm-label="confirm.confirmState.value.confirmLabel"
+      :cancel-label="confirm.confirmState.value.cancelLabel"
+      :variant="confirm.confirmState.value.variant || 'destructive'"
+      @confirm="confirm.handleConfirm"
+      @cancel="confirm.handleCancel"
     />
   </div>
 </template>
