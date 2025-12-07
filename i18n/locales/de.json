@@ -43,7 +43,8 @@
     "kcal-per-100g": "Kcal pro 100g",
     "total-kcal": "Gesamt kcal",
     "optional": "Optional",
-    "date": "Datum"
+    "date": "Datum",
+    "undo": "Rückgängig"
   },
   "home": {
     "title": "Start",
@@ -96,7 +97,8 @@
     "title": "Eigene Lebensmittel",
     "description": "Hinterlege eigene Lebensmittel zum schnellen Hinzufügen.",
     "export-filename": "PKU Tools - Eigene Lebensmittel",
-    "choose-icon": "Icon auswählen"
+    "choose-icon": "Icon auswählen",
+    "item-deleted": "Lebensmittel gelöscht"
   },
   "diary": {
     "title": "Tagebuch",
@@ -105,7 +107,9 @@
     "data-warning": "Achtung: Phe pro 100g fehlt.",
     "more": "Mehr",
     "set-phe": "Phe-Toleranz einstellen",
-    "set-kcal": "Kalorienbedarf einstellen"
+    "set-kcal": "Kalorienbedarf einstellen",
+    "item-deleted": "Eintrag gelöscht",
+    "entry-deleted": "Eintrag gelöscht"
   },
   "diet-report": {
     "title": "Diätbericht",
@@ -129,7 +133,8 @@
     "export-filename": "PKU Tools - Blutwerte",
     "chart-info": "Das Diagramm wird nach dem zweiten Eintrag angezeigt.",
     "unit": "Einheit für Blutwerte",
-    "unit-info": "Einheit änderbar in den Einstellungen."
+    "unit-info": "Einheit änderbar in den Einstellungen.",
+    "item-deleted": "Blutwert gelöscht"
   },
   "settings": {
     "title": "Einstellungen",

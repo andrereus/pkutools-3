@@ -43,7 +43,8 @@
     "kcal-per-100g": "Kcal por 100g",
     "total-kcal": "Kcal totales",
     "optional": "Opcional",
-    "date": "Fecha"
+    "date": "Fecha",
+    "undo": "Deshacer"
   },
   "home": {
     "title": "Inicio",
@@ -96,7 +97,8 @@
     "title": "Alimentos propios",
     "description": "Guarda tus propios alimentos para añadir rápidamente.",
     "export-filename": "PKU Tools - Alimento propio",
-    "choose-icon": "Seleccionar icono"
+    "choose-icon": "Seleccionar icono",
+    "item-deleted": "Alimento eliminado"
   },
   "diary": {
     "title": "Diario",
@@ -105,7 +107,9 @@
     "data-warning": "Atención: Falta Phe por 100g.",
     "more": "Más",
     "set-phe": "Establecer tolerancia Phe",
-    "set-kcal": "Fijar las necesidades calóricas"
+    "set-kcal": "Fijar las necesidades calóricas",
+    "item-deleted": "Elemento eliminado",
+    "entry-deleted": "Entrada eliminada"
   },
   "diet-report": {
     "title": "Informe de dieta",
@@ -129,7 +133,8 @@
     "export-filename": "PKU Tools - Valores de sangre",
     "chart-info": "El diagrama se muestra después de la segunda entrada.",
     "unit": "Unidad para valores de sangre",
-    "unit-info": "La unidad puede cambiarse en los ajustes."
+    "unit-info": "La unidad puede cambiarse en los ajustes.",
+    "item-deleted": "Valor de sangre eliminado"
   },
   "settings": {
     "title": "Configuración",

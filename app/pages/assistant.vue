@@ -3,6 +3,7 @@ import { useStore } from '../../stores/index'
 
 const store = useStore()
 const { t } = useI18n()
+const notifications = useNotifications()
 
 const userIsAuthenticated = computed(() => store.user !== null)
 
@@ -10,7 +11,7 @@ const signInGoogle = async () => {
   try {
     await store.signInGoogle()
   } catch (error) {
-    alert(t('app.auth-error'))
+    notifications.error(t('app.auth-error'))
     console.error(error)
   }
 }

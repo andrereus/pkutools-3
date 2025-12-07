@@ -13,6 +13,7 @@ const { t, locale: i18nLocale } = useI18n()
 const dialog = ref(null)
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
+const notifications = useNotifications()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -129,7 +130,7 @@ const signInGoogle = async () => {
   try {
     await store.signInGoogle()
   } catch (error) {
-    alert(t('app.auth-error'))
+    notifications.error(t('app.auth-error'))
     console.error(error)
   }
 }
@@ -143,7 +144,22 @@ const editItem = (item) => {
 
 const deleteItem = () => {
   const db = getDatabase()
+  const deletedItem = JSON.parse(
+    JSON.stringify(labValues.value.find((item) => item['.key'] === editedKey.value))
+  )
   remove(dbRef(db, `${user.value.id}/labValues/${editedKey.value}`))
+
+  // Show notification with undo
+  notifications.success(t('blood-values.item-deleted'), {
+    undoAction: () => {
+      push(dbRef(db, `${user.value.id}/labValues`), {
+        date: deletedItem.date,
+        phe: deletedItem.phe,
+        tyrosine: deletedItem.tyrosine
+      })
+    },
+    undoLabel: t('common.undo')
+  })
   close()
 }
 
@@ -156,7 +172,7 @@ const close = () => {
 
 const save = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    alert(t('health-consent.no-consent'))
+    notifications.warning(t('health-consent.no-consent'))
     return
   }
 
@@ -172,7 +188,7 @@ const save = () => {
       labValues.value.length >= 30 &&
       settings.value.license !== config.public.pkutoolsLicenseKey
     ) {
-      alert(t('app.limit'))
+      notifications.warning(t('app.limit'))
     } else {
       push(dbRef(db, `${user.value.id}/labValues`), {
         date: editedItem.value.date,

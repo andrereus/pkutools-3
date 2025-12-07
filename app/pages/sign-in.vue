@@ -4,6 +4,7 @@ import { useStore } from '../../stores/index'
 const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
+const notifications = useNotifications()
 
 // Reactive state
 const name = ref(null)
@@ -20,7 +21,7 @@ const signInGoogle = async () => {
     // TODO: Find better way to handle post-sign-in navigation for this page
     navigateTo(localePath('getting-started'))
   } catch (error) {
-    alert(t('app.auth-error'))
+    notifications.error(t('app.auth-error'))
     console.error(error)
   }
 }
@@ -31,7 +32,7 @@ const registerEmailPassword = async () => {
     // New users always need to give consent
     navigateTo(localePath('getting-started'))
   } catch (error) {
-    alert(t('sign-in.error'))
+    notifications.error(t('sign-in.error'))
     console.error(error)
   }
 }
@@ -42,7 +43,7 @@ const signInEmailPassword = async () => {
     // TODO: Find better way to handle post-sign-in navigation for this page
     navigateTo(localePath('getting-started'))
   } catch (error) {
-    alert(t('sign-in.error'))
+    notifications.error(t('sign-in.error'))
     console.error(error)
   }
 }
@@ -50,9 +51,9 @@ const signInEmailPassword = async () => {
 const resetPassword = async () => {
   try {
     await store.resetPassword(email.value)
-    alert(t('sign-in.password-sent'))
+    notifications.success(t('sign-in.password-sent'))
   } catch (error) {
-    alert(t('sign-in.error'))
+    notifications.error(t('sign-in.error'))
     console.error(error)
   }
 }

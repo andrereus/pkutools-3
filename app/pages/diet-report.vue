@@ -14,6 +14,7 @@ const dialog = ref(null)
 const dialog2 = ref(null)
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
+const notifications = useNotifications()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -172,7 +173,7 @@ const signInGoogle = async () => {
   try {
     await store.signInGoogle()
   } catch (error) {
-    alert(t('app.auth-error'))
+    notifications.error(t('app.auth-error'))
     console.error(error)
   }
 }
@@ -185,12 +186,22 @@ const editItem = (item) => {
 }
 
 const deleteItem = () => {
-  const r = confirm(t('common.delete') + '?')
-  if (r === true) {
-    const db = getDatabase()
-    remove(dbRef(db, `${user.value.id}/pheDiary/${editedKey.value}`))
-    close()
-  }
+  const db = getDatabase()
+  const deletedItem = JSON.parse(
+    JSON.stringify(pheDiary.value.find((item) => item['.key'] === editedKey.value))
+  )
+  remove(dbRef(db, `${user.value.id}/pheDiary/${editedKey.value}`))
+
+  // Show notification with undo
+  notifications.success(t('diary.entry-deleted'), {
+    undoAction: () => {
+      // Extract only the data fields, excluding .key (Firebase will create a new key)
+      const { '.key': _, ...restoredData } = deletedItem
+      push(dbRef(db, `${user.value.id}/pheDiary`), restoredData)
+    },
+    undoLabel: t('common.undo')
+  })
+  close()
 }
 
 const close = () => {
@@ -202,7 +213,7 @@ const close = () => {
 
 const save = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    alert(t('health-consent.no-consent'))
+    notifications.warning(t('health-consent.no-consent'))
     return
   }
 
@@ -227,7 +238,7 @@ const save = () => {
       pheDiary.value.length >= 14 &&
       settings.value.license !== config.public.pkutoolsLicenseKey
     ) {
-      alert(t('app.limit'))
+      notifications.warning(t('app.limit'))
     } else {
       push(dbRef(db, `${user.value.id}/pheDiary`), {
         date: editedItem.value.date,
@@ -289,7 +300,7 @@ const closeLogEdit = () => {
 
 const saveLogEdit = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    alert(t('health-consent.no-consent'))
+    notifications.warning(t('health-consent.no-consent'))
     return
   }
 

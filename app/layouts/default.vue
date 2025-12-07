@@ -27,6 +27,9 @@ const { t, locale, locales, setLocale } = useI18n()
 const route = useRoute()
 const localePath = useLocalePath()
 
+// Notifications - make it available globally via provide/inject pattern
+const notifications = useNotifications()
+
 // Reactive state
 const showCookieBanner = ref(false)
 
@@ -133,7 +136,7 @@ const signInGoogle = async () => {
   try {
     await store.signInGoogle()
   } catch (error) {
-    alert(t('app.auth-error'))
+    notifications.error(t('app.auth-error'))
     console.error(error)
   }
 }
@@ -631,6 +634,18 @@ const handleCookieConsent = (consent) => {
         </button>
       </div>
     </div>
+
+    <!-- Global notification -->
+    <Notification
+      v-if="notifications.notification.value"
+      :show="notifications.showNotification.value"
+      :message="notifications.notification.value.message"
+      :type="notifications.notification.value.type"
+      :undo-action="notifications.notification.value.undoAction"
+      :undo-label="notifications.notification.value.undoLabel"
+      @close="notifications.close"
+      @undo="notifications.close"
+    />
   </div>
 </template>
 

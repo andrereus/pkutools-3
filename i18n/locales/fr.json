@@ -43,7 +43,8 @@
     "kcal-per-100g": "Kcal par 100g",
     "total-kcal": "Total kcal",
     "optional": "En option",
-    "date": "Date"
+    "date": "Date",
+    "undo": "Annuler"
   },
   "home": {
     "title": "Accueil",
@@ -96,7 +97,8 @@
     "title": "Aliments personnels",
     "description": "Enregistrez vos propres aliments pour un ajout rapide.",
     "export-filename": "PKU Tools - Aliments personnels",
-    "choose-icon": "Sélectionner une icône"
+    "choose-icon": "Sélectionner une icône",
+    "item-deleted": "Aliment supprimé"
   },
   "diary": {
     "title": "Journal",
@@ -105,7 +107,9 @@
     "data-warning": "Attention : Phe pour 100g manque.",
     "more": "Plus",
     "set-phe": "Régler la tolérance Phe",
-    "set-kcal": "Régler les besoins en calories"
+    "set-kcal": "Régler les besoins en calories",
+    "item-deleted": "Élément supprimé",
+    "entry-deleted": "Entrée supprimée"
   },
   "diet-report": {
     "title": "Rapport de régime",
@@ -129,7 +133,8 @@
     "export-filename": "PKU Tools - Valeurs sanguines",
     "chart-info": "Le diagramme s'affiche après la deuxième entrée.",
     "unit": "Unité pour les valeurs sanguines",
-    "unit-info": "Unité modifiable dans les paramètres."
+    "unit-info": "Unité modifiable dans les paramètres.",
+    "item-deleted": "Valeur sanguine supprimée"
   },
   "settings": {
     "title": "Paramètres",

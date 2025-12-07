@@ -14,6 +14,7 @@ import {
 const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
+const notifications = useNotifications()
 
 // Features data
 const features = [
@@ -75,7 +76,7 @@ const signInGoogle = async () => {
   try {
     await store.signInGoogle()
   } catch (error) {
-    alert(t('app.auth-error'))
+    notifications.error(t('app.auth-error'))
     console.error(error)
   }
 }

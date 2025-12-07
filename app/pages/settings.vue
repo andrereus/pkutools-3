@@ -10,6 +10,7 @@ const { t } = useI18n()
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
 const i18nLocale = useI18n().locale
+const notifications = useNotifications()
 
 // Date formatting function
 const formatConsentDate = (dateString) => {
@@ -44,14 +45,14 @@ const signInGoogle = async () => {
   try {
     await store.signInGoogle()
   } catch (error) {
-    alert(t('app.auth-error'))
+    notifications.error(t('app.auth-error'))
     console.error(error)
   }
 }
 
 const save = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    alert(t('health-consent.no-consent'))
+    notifications.warning(t('health-consent.no-consent'))
     return
   }
 
@@ -61,7 +62,7 @@ const save = () => {
     maxKcal: settings.value.maxKcal || 0,
     labUnit: settings.value.labUnit
   }).then(() => {
-    alert(t('settings.saved'))
+    notifications.success(t('settings.saved'))
   })
 }
 
@@ -71,9 +72,9 @@ const saveLicense = () => {
     license: settings.value.license || ''
   }).then(() => {
     if (settings.value.license === config.public.pkutoolsLicenseKey) {
-      alert(t('settings.license-active') + ' 🎉')
+      notifications.success(t('settings.license-active') + ' 🎉')
     } else {
-      alert(t('settings.license-inactive'))
+      notifications.info(t('settings.license-inactive'))
     }
   })
 }
@@ -118,7 +119,7 @@ const deleteAccount = () => {
         navigateTo(localePath('index'))
       })
       .catch((error) => {
-        alert(t('settings.delete-account-error'))
+        notifications.error(t('settings.delete-account-error'))
         console.error(error)
       })
   }
@@ -127,9 +128,9 @@ const deleteAccount = () => {
 const giveHealthDataConsent = async () => {
   const success = await store.updateHealthDataConsent(true)
   if (success) {
-    alert(t('health-consent.consent-given'))
+    notifications.success(t('health-consent.consent-given'))
   } else {
-    alert(t('health-consent.error-saving'))
+    notifications.error(t('health-consent.error-saving'))
   }
 }
 
@@ -138,9 +139,9 @@ const revokeHealthDataConsent = async () => {
   if (r === true) {
     const success = await store.updateHealthDataConsent(false)
     if (success) {
-      alert(t('health-consent.consent-revoked'))
+      notifications.success(t('health-consent.consent-revoked'))
     } else {
-      alert(t('health-consent.error-revoking'))
+      notifications.error(t('health-consent.error-revoking'))
     }
   }
 }
@@ -148,9 +149,9 @@ const revokeHealthDataConsent = async () => {
 const updateEmailConsent = async (emailConsent) => {
   const success = await store.updateEmailConsent(emailConsent)
   if (success) {
-    alert(t('health-consent.email-consent-updated'))
+    notifications.success(t('health-consent.email-consent-updated'))
   } else {
-    alert(t('health-consent.error-updating-email'))
+    notifications.error(t('health-consent.error-updating-email'))
   }
 }
 

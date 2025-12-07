@@ -4,6 +4,7 @@ import { useStore } from '../../stores/index'
 const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
+const notifications = useNotifications()
 
 const consentGiven = ref(false)
 const emailConsent = ref(false)
@@ -14,7 +15,7 @@ const handleConsentGiven = async () => {
     if (success) {
       navigateTo(localePath('diary'))
     } else {
-      alert(t('health-consent.error-saving'))
+      notifications.error(t('health-consent.error-saving'))
     }
   }
 }
@@ -31,7 +32,7 @@ const handleConsentDeclined = async () => {
       navigateTo(localePath('index'))
     }
   } else {
-    alert(t('health-consent.error-saving'))
+    notifications.error(t('health-consent.error-saving'))
   }
 }
 

@@ -11,6 +11,7 @@ const dialog = ref(null)
 const dialog2 = ref(null)
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
+const notifications = useNotifications()
 
 // Reactive state
 const search = ref('')
@@ -68,7 +69,7 @@ const signInGoogle = async () => {
   try {
     await store.signInGoogle()
   } catch (error) {
-    alert(t('app.auth-error'))
+    notifications.error(t('app.auth-error'))
     console.error(error)
   }
 }
@@ -80,7 +81,23 @@ const editItem = () => {
 
 const deleteItem = () => {
   const db = getDatabase()
+  const deletedItem = JSON.parse(
+    JSON.stringify(ownFood.value.find((item) => item['.key'] === editedKey.value))
+  )
   remove(dbRef(db, `${user.value.id}/ownFood/${editedKey.value}`))
+
+  // Show notification with undo
+  notifications.success(t('own-food.item-deleted'), {
+    undoAction: () => {
+      push(dbRef(db, `${user.value.id}/ownFood`), {
+        name: deletedItem.name,
+        icon: deletedItem.icon,
+        phe: deletedItem.phe,
+        kcal: deletedItem.kcal
+      })
+    },
+    undoLabel: t('common.undo')
+  })
   closeModal()
 }
 
@@ -94,7 +111,7 @@ const closeModal = () => {
 
 const save = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    alert(t('health-consent.no-consent'))
+    notifications.warning(t('health-consent.no-consent'))
     return
   }
 
@@ -108,7 +125,7 @@ const save = () => {
     })
   } else {
     if (ownFood.value.length >= 50 && settings.value.license !== config.public.pkutoolsLicenseKey) {
-      alert(t('app.limit'))
+      notifications.warning(t('app.limit'))
     } else {
       push(dbRef(db, `${user.value.id}/ownFood`), {
         name: editedItem.value.name,
@@ -140,7 +157,7 @@ const calculateKcal = () => {
 
 const add = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    alert(t('health-consent.no-consent'))
+    notifications.warning(t('health-consent.no-consent'))
     return
   }
 

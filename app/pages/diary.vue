@@ -8,6 +8,7 @@ const { t } = useI18n()
 const dialog2 = ref(null)
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
+const notifications = useNotifications()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -101,7 +102,7 @@ const signInGoogle = async () => {
   try {
     await store.signInGoogle()
   } catch (error) {
-    alert(t('app.auth-error'))
+    notifications.error(t('app.auth-error'))
     console.error(error)
   }
 }
@@ -131,6 +132,7 @@ const addLastAdded = (item) => {
 
 const deleteItem = () => {
   const db = getDatabase()
+  const deletedItem = selectedDayLog.value[editedIndex.value]
   const updatedLog = selectedDayLog.value.filter((_, index) => index !== editedIndex.value)
   const totalPhe = updatedLog.reduce((sum, item) => sum + (item.phe || 0), 0)
   const totalKcal = updatedLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
@@ -139,6 +141,22 @@ const deleteItem = () => {
     log: updatedLog,
     phe: totalPhe,
     kcal: totalKcal
+  })
+
+  // Show notification with undo
+  notifications.success(t('diary.item-deleted'), {
+    undoAction: () => {
+      const restoredLog = [...updatedLog]
+      restoredLog.splice(editedIndex.value, 0, deletedItem)
+      const restoredPhe = restoredLog.reduce((sum, item) => sum + (item.phe || 0), 0)
+      const restoredKcal = restoredLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
+      update(dbRef(db, `${user.value.id}/pheDiary/${selectedDiaryEntry.value['.key']}`), {
+        log: restoredLog,
+        phe: restoredPhe,
+        kcal: restoredKcal
+      })
+    },
+    undoLabel: t('common.undo')
   })
   close()
 }
@@ -152,7 +170,7 @@ const close = () => {
 
 const save = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    alert(t('health-consent.no-consent'))
+    notifications.warning(t('health-consent.no-consent'))
     return
   }
 
@@ -189,7 +207,7 @@ const save = () => {
       pheDiary.value.length >= 14 &&
       settings.value.license !== config.public.pkutoolsLicenseKey
     ) {
-      alert(t('app.limit'))
+      notifications.warning(t('app.limit'))
     } else {
       push(dbRef(db, `${user.value.id}/pheDiary`), {
         date: date.value,

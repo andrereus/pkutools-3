@@ -9,6 +9,7 @@ const { t, locale } = useI18n()
 const dialog = ref(null)
 const config = useRuntimeConfig()
 const localePath = useLocalePath()
+const notifications = useNotifications()
 
 // Reactive state
 const search = ref('')
@@ -57,7 +58,7 @@ const calculateKcal = () => {
 
 const save = () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
-    alert(t('health-consent.no-consent'))
+    notifications.warning(t('health-consent.no-consent'))
     return
   }
 
@@ -90,7 +91,7 @@ const save = () => {
       store.pheDiary.length >= 14 &&
       store.settings.license !== config.public.pkutoolsLicenseKey
     ) {
-      alert(t('app.limit'))
+      notifications.warning(t('app.limit'))
     } else {
       push(dbRef(db, `${user.value.id}/pheDiary`), {
         date: formattedDate,
