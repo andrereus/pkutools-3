@@ -8,8 +8,16 @@ export interface NotificationOptions {
 // Singleton state for notifications
 const notification = ref<NotificationOptions | null>(null)
 const showNotification = ref(false)
+let cleanupTimeout: ReturnType<typeof setTimeout> | null = null
 
 const notify = (options: NotificationOptions) => {
+  // Cancel any pending cleanup timeout from a previous notification closing
+  if (cleanupTimeout) {
+    clearTimeout(cleanupTimeout)
+    cleanupTimeout = null
+  }
+
+  // Update notification content - the component's watch will detect the change and reset the timer
   notification.value = {
     type: 'info',
     ...options
@@ -20,8 +28,9 @@ const notify = (options: NotificationOptions) => {
 const close = () => {
   showNotification.value = false
   // Clear notification after animation
-  setTimeout(() => {
+  cleanupTimeout = setTimeout(() => {
     notification.value = null
+    cleanupTimeout = null
   }, 300)
 }
 

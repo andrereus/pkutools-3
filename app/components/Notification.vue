@@ -47,17 +47,18 @@ const handleUndo = () => {
 }
 
 // Auto-dismiss after 5 seconds for all notifications
+// Watch show, message, and type to reset timer when a new notification appears
 watch(
-  () => props.show,
-  (newVal) => {
-    // Clear any existing timeout
+  () => [props.show, props.message, props.type],
+  ([newShow]) => {
+    // Always clear any existing timeout first
     if (dismissTimeout) {
       clearTimeout(dismissTimeout)
       dismissTimeout = null
     }
 
     // Set new timeout if notification is shown
-    if (newVal) {
+    if (newShow) {
       dismissTimeout = setTimeout(() => {
         handleClose()
       }, 5000)
@@ -75,17 +76,21 @@ onUnmounted(() => {
 
 // Type-specific styling
 const typeStyles = {
-  info: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white',
-  success: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white',
-  error: 'bg-red-50 dark:bg-red-900/20 text-red-900 dark:text-red-300',
-  warning: 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-900 dark:text-yellow-300'
+  info: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-l-4 border-indigo-500',
+  success: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-l-4 border-sky-500',
+  error: 'bg-red-50 dark:bg-red-900/20 text-red-900 dark:text-red-300 border-l-4 border-red-500',
+  warning:
+    'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-900 dark:text-yellow-300 border-l-4 border-yellow-500'
 }
 
 const buttonStyles = {
-  info: 'text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300',
-  success: 'text-green-600 hover:text-green-500 dark:text-green-400 dark:hover:text-green-300',
-  error: 'text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300',
-  warning: 'text-yellow-600 hover:text-yellow-500 dark:text-yellow-400 dark:hover:text-yellow-300'
+  info: 'bg-white dark:bg-gray-800 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300',
+  success:
+    'bg-white dark:bg-gray-800 text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300',
+  error:
+    'bg-red-50 dark:bg-red-900/20 text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300',
+  warning:
+    'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 hover:text-yellow-500 dark:text-yellow-400 dark:hover:text-yellow-300'
 }
 </script>
 
@@ -109,19 +114,21 @@ const buttonStyles = {
           <div
             v-if="show"
             :class="[
-              'pointer-events-auto w-full max-w-sm rounded-lg shadow-lg outline-1 outline-black/5 dark:-outline-offset-1 dark:outline-white/10',
+              'pointer-events-auto w-full max-w-sm rounded-lg shadow-xl ring-1 ring-black/5 dark:ring-white/10',
               typeStyles[type]
             ]"
           >
             <div class="p-4">
               <div class="flex items-center">
-                <div class="flex w-0 flex-1 justify-between">
-                  <p class="w-0 flex-1 text-sm font-medium">{{ message }}</p>
+                <div class="flex w-0 flex-1 justify-between items-center">
+                  <p class="w-0 flex-1 text-sm font-medium text-gray-900 dark:text-white">
+                    {{ message }}
+                  </p>
                   <button
                     v-if="undoAction"
                     type="button"
                     :class="[
-                      'ml-3 shrink-0 rounded-md bg-transparent text-sm font-medium focus:outline-2 focus:outline-offset-2',
+                      'ml-3 shrink-0 rounded-md text-sm font-medium focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500 whitespace-nowrap cursor-pointer',
                       buttonStyles[type]
                     ]"
                     @click="handleUndo"
@@ -132,7 +139,7 @@ const buttonStyles = {
                 <div class="ml-4 flex shrink-0">
                   <button
                     type="button"
-                    class="inline-flex rounded-md text-gray-400 hover:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:hover:text-white dark:focus:outline-indigo-500"
+                    class="inline-flex rounded-md text-gray-400 hover:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:hover:text-white dark:focus:outline-indigo-500 cursor-pointer"
                     @click="handleClose"
                   >
                     <span class="sr-only">Close</span>
