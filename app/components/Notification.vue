@@ -78,9 +78,8 @@ onUnmounted(() => {
 const typeStyles = {
   info: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-l-4 border-indigo-500',
   success: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-l-4 border-sky-500',
-  error: 'bg-red-50 dark:bg-red-900/20 text-red-900 dark:text-red-300 border-l-4 border-red-500',
-  warning:
-    'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-900 dark:text-yellow-300 border-l-4 border-yellow-500'
+  error: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-l-4 border-red-500',
+  warning: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-l-4 border-yellow-500'
 }
 
 const buttonStyles = {
@@ -88,9 +87,9 @@ const buttonStyles = {
   success:
     'bg-white dark:bg-gray-800 text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300',
   error:
-    'bg-red-50 dark:bg-red-900/20 text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300',
+    'bg-white dark:bg-gray-800 text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300',
   warning:
-    'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 hover:text-yellow-500 dark:text-yellow-400 dark:hover:text-yellow-300'
+    'bg-white dark:bg-gray-800 text-yellow-600 hover:text-yellow-500 dark:text-yellow-400 dark:hover:text-yellow-300'
 }
 </script>
 
