@@ -54,7 +54,12 @@ const nutritionBalance = computed(() => {
           }}
         </template>
         <template v-else>
-          {{ $t('assistant.satiety-tip-good') }}
+          {{
+            $t('assistant.satiety-tip-text', {
+              phePercentage: Math.round(nutritionBalance.phePercentage),
+              kcalPercentage: Math.round(nutritionBalance.kcalPercentage)
+            })
+          }}
         </template>
       </p>
     </div>

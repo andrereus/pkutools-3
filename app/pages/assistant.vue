@@ -3,7 +3,6 @@ import { useStore } from '../../stores/index'
 
 const store = useStore()
 const { t } = useI18n()
-const localePath = useLocalePath()
 
 const userIsAuthenticated = computed(() => store.user !== null)
 
@@ -59,28 +58,11 @@ defineOgImageComponent('NuxtSeo', {
 
     <div v-if="userIsAuthenticated">
       <div class="space-y-6">
-        <div
-          class="rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4"
-        >
-          <div class="flex items-start">
-            <LucideInfo
-              class="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3 flex-shrink-0"
-            />
-            <div>
-              <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200 mb-1">
-                {{ $t('assistant.deactivated') }}
-              </h3>
-              <p class="text-sm text-blue-700 dark:text-blue-300">
-                {{ $t('assistant.deactivated-explanation') }}
-              </p>
-            </div>
-          </div>
-        </div>
-        <!-- <MotivationCard />
+        <MotivationCard />
         <CurrentTipCard />
         <TodaysTipCard />
         <DietReportCard />
-        <BloodValuesCard /> -->
+        <BloodValuesCard />
       </div>
     </div>
   </div>

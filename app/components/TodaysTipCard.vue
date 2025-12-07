@@ -24,15 +24,12 @@ const yesterdayEntry = computed(() => {
         {{ $t('assistant.previous-day') }}
       </div>
       <p>
-        <template v-if="yesterdayEntry.phe < settings.maxPhe * 0.8">
-          {{ $t('assistant.previous-day-low') }}
-        </template>
-        <template v-else-if="yesterdayEntry.phe > settings.maxPhe * 1.1">
-          {{ $t('assistant.previous-day-high') }}
-        </template>
-        <template v-else>
-          {{ $t('assistant.previous-day-good') }}
-        </template>
+        {{
+          $t('assistant.previous-day-text', {
+            phe: Math.round(yesterdayEntry.phe),
+            percentage: Math.round((yesterdayEntry.phe / settings.maxPhe) * 100)
+          })
+        }}
       </p>
     </div>
   </div>

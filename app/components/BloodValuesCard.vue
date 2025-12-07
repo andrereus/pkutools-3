@@ -24,58 +24,20 @@ const recentLabValues = computed(() => {
         {{ $t('assistant.blood-values') }}
       </div>
       <p>
-        <!-- Phe Analysis -->
-        <template v-if="recentLabValues.phe > 10">
-          {{
-            $t('assistant.blood-values-high', {
-              phe: recentLabValues.phe,
-              unit: settings?.labUnit === 'mgdl' ? 'mg/dL' : 'µmol/L'
-            })
-          }}
-        </template>
-        <template v-else-if="recentLabValues.phe < 2">
-          {{
-            $t('assistant.blood-values-low', {
-              phe: recentLabValues.phe,
-              unit: settings?.labUnit === 'mgdl' ? 'mg/dL' : 'µmol/L'
-            })
-          }}
-        </template>
-        <template v-else>
-          {{
-            $t('assistant.blood-values-good', {
-              phe: recentLabValues.phe,
-              unit: settings?.labUnit === 'mgdl' ? 'mg/dL' : 'µmol/L'
-            })
-          }}
-        </template>
+        {{
+          $t('assistant.blood-values-phe', {
+            phe: recentLabValues.phe,
+            unit: settings?.labUnit === 'mgdl' ? 'mg/dL' : 'µmol/L'
+          })
+        }}
       </p>
       <p>
-        <!-- Tyrosine Analysis -->
-        <template v-if="recentLabValues.tyrosine < 0.41">
-          {{
-            $t('assistant.blood-values-tyrosine-low', {
-              tyrosine: recentLabValues.tyrosine,
-              unit: settings?.labUnit === 'mgdl' ? 'mg/dL' : 'µmol/L'
-            })
-          }}
-        </template>
-        <template v-else-if="recentLabValues.tyrosine > 3.73">
-          {{
-            $t('assistant.blood-values-tyrosine-high', {
-              tyrosine: recentLabValues.tyrosine,
-              unit: settings?.labUnit === 'mgdl' ? 'mg/dL' : 'µmol/L'
-            })
-          }}
-        </template>
-        <template v-else>
-          {{
-            $t('assistant.blood-values-tyrosine-good', {
-              tyrosine: recentLabValues.tyrosine,
-              unit: settings?.labUnit === 'mgdl' ? 'mg/dL' : 'µmol/L'
-            })
-          }}
-        </template>
+        {{
+          $t('assistant.blood-values-tyrosine', {
+            tyrosine: recentLabValues.tyrosine,
+            unit: settings?.labUnit === 'mgdl' ? 'mg/dL' : 'µmol/L'
+          })
+        }}
       </p>
     </div>
   </div>

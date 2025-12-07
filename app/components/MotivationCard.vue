@@ -1,6 +1,13 @@
 <script setup>
 import { useStore } from '../../stores/index'
 import { format, subDays } from 'date-fns'
+import {
+  LucideAward,
+  LucideFlame,
+  LucideStar,
+  LucideTrophy,
+  LucideCrown
+} from 'lucide-vue-next'
 
 const store = useStore()
 const { t } = useI18n()
@@ -37,34 +44,47 @@ const streak = computed(() => {
   return currentStreak
 })
 
-// Calculate recent activity
-const recentActivity = computed(() => {
-  const last14Days = getDiaryEntriesForDays(14, true)
-  return {
-    count: last14Days.length,
-    total: 14,
-    achieved: last14Days.length >= 10
-  }
-})
-
 // Badges configuration
 const badges = computed(() => [
   {
-    id: 'streak',
-    title: t('badges.streak-title'),
-    description: t('badges.streak-description', { days: streak.value }),
-    earned: streak.value >= 5,
-    progress: Math.min(Math.round((streak.value / 5) * 100), 100)
+    id: 'streak-3',
+    title: t('badges.streak-3-title'),
+    description: t('badges.streak-3-description'),
+    earned: streak.value >= 3,
+    icon: LucideFlame,
+    earnedColor: 'text-orange-600 dark:text-orange-400',
+    earnedBg: 'bg-orange-100 dark:bg-orange-900/30',
+    earnedBorder: 'border-orange-300 dark:border-orange-800'
   },
   {
-    id: 'history',
-    title: t('badges.history-title'),
-    description: t('badges.history-description', {
-      days: recentActivity.value.count,
-      total: recentActivity.value.total
-    }),
-    earned: recentActivity.value.achieved,
-    progress: Math.min(Math.round((recentActivity.value.count / 10) * 100), 100)
+    id: 'streak-5',
+    title: t('badges.streak-5-title'),
+    description: t('badges.streak-5-description'),
+    earned: streak.value >= 5,
+    icon: LucideStar,
+    earnedColor: 'text-yellow-600 dark:text-yellow-400',
+    earnedBg: 'bg-yellow-100 dark:bg-yellow-900/30',
+    earnedBorder: 'border-yellow-300 dark:border-yellow-800'
+  },
+  {
+    id: 'streak-7',
+    title: t('badges.streak-7-title'),
+    description: t('badges.streak-7-description'),
+    earned: streak.value >= 7,
+    icon: LucideAward,
+    earnedColor: 'text-blue-600 dark:text-blue-400',
+    earnedBg: 'bg-blue-100 dark:bg-blue-900/30',
+    earnedBorder: 'border-blue-300 dark:border-blue-800'
+  },
+  {
+    id: 'streak-14',
+    title: t('badges.streak-14-title'),
+    description: t('badges.streak-14-description'),
+    earned: streak.value >= 14,
+    icon: LucideCrown,
+    earnedColor: 'text-purple-600 dark:text-purple-400',
+    earnedBg: 'bg-purple-100 dark:bg-purple-900/30',
+    earnedBorder: 'border-purple-300 dark:border-purple-800'
   }
 ])
 </script>
@@ -80,63 +100,46 @@ const badges = computed(() => [
         <div>
           <p v-if="streak > 0">
             {{ $t('assistant.streak', { streak }) }}
-            {{ streak >= 7 ? $t('assistant.week') : $t('assistant.keep-going') }}
           </p>
           <p v-else>
             {{ $t('assistant.start-tracking') }}
           </p>
         </div>
-        <!-- Streak Badge -->
-        <div class="flex items-center gap-4">
+        <!-- Badges -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div
-            class="p-2 rounded-full"
+            v-for="badge in badges"
+            :key="badge.id"
+            class="flex items-center gap-3 p-3 rounded-lg transition-all duration-200"
             :class="
-              badges[0].earned
-                ? 'bg-sky-100 text-sky-600 dark:bg-sky-900 dark:text-sky-300'
-                : 'bg-gray-100 text-gray-400 dark:bg-gray-800'
+              badge.earned
+                ? `${badge.earnedBg} border-2 ${badge.earnedBorder} shadow-sm`
+                : 'bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 opacity-60'
             "
           >
-            <LucideActivity class="h-5 w-5" />
-          </div>
-          <div class="flex-1">
-            <div class="flex justify-between items-center">
-              <h4 class="text-sm font-medium">{{ badges[0].title }}</h4>
-              <span class="text-xs text-gray-500">{{ badges[0].progress }}%</span>
+            <div
+              class="p-2.5 rounded-full flex-shrink-0 transition-all duration-200"
+              :class="
+                badge.earned
+                  ? `${badge.earnedBg} ${badge.earnedColor} scale-110`
+                  : 'bg-gray-100 text-gray-400 dark:bg-gray-700'
+              "
+            >
+              <component :is="badge.icon" class="h-5 w-5" />
             </div>
-            <p class="text-sm text-gray-500">{{ badges[0].description }}</p>
-            <div class="mt-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-              <div
-                class="h-1.5 rounded-full"
-                :class="badges[0].earned ? 'bg-sky-500' : 'bg-gray-400'"
-                :style="{ width: `${badges[0].progress}%` }"
-              />
-            </div>
-          </div>
-        </div>
-        <!-- History Badge -->
-        <div class="flex items-center gap-4">
-          <div
-            class="p-2 rounded-full"
-            :class="
-              badges[1].earned
-                ? 'bg-sky-100 text-sky-600 dark:bg-sky-900 dark:text-sky-300'
-                : 'bg-gray-100 text-gray-400 dark:bg-gray-800'
-            "
-          >
-            <LucideBicepsFlexed class="h-5 w-5" />
-          </div>
-          <div class="flex-1">
-            <div class="flex justify-between items-center">
-              <h4 class="text-sm font-medium">{{ badges[1].title }}</h4>
-              <span class="text-xs text-gray-500">{{ badges[1].progress }}%</span>
-            </div>
-            <p class="text-sm text-gray-500">{{ badges[1].description }}</p>
-            <div class="mt-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-              <div
-                class="h-1.5 rounded-full"
-                :class="badges[1].earned ? 'bg-sky-500' : 'bg-gray-400'"
-                :style="{ width: `${badges[1].progress}%` }"
-              />
+            <div class="flex-1 min-w-0">
+              <h4
+                class="text-sm font-semibold transition-colors"
+                :class="badge.earned ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400'"
+              >
+                {{ badge.title }}
+              </h4>
+              <p
+                class="text-xs mt-0.5 transition-colors"
+                :class="badge.earned ? 'text-gray-600 dark:text-gray-300' : 'text-gray-500 dark:text-gray-400'"
+              >
+                {{ badge.description }}
+              </p>
             </div>
           </div>
         </div>
