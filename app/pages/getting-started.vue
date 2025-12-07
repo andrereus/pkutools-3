@@ -6,8 +6,23 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
 
-const consentGiven = ref(false)
-const emailConsent = ref(false)
+const consentGiven = ref(store.settings?.healthDataConsent ?? false)
+const emailConsent = ref(store.settings?.emailConsent ?? false)
+
+// Watch for store updates to keep checkboxes in sync
+watch(
+  () => store.settings?.healthDataConsent,
+  (newValue) => {
+    consentGiven.value = newValue ?? false
+  }
+)
+
+watch(
+  () => store.settings?.emailConsent,
+  (newValue) => {
+    emailConsent.value = newValue ?? false
+  }
+)
 
 const handleConsentGiven = async () => {
   if (consentGiven.value) {
