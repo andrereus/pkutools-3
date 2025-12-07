@@ -46,10 +46,28 @@ const handleUndo = () => {
   emit('close')
 }
 
-// Auto-dismiss after 5 seconds for all notifications
-// Watch show, message, and type to reset timer when a new notification appears
+// Calculate dismiss duration based on notification type and whether it has undo
+const getDismissDuration = () => {
+  // Notifications with undo need more time for user to decide
+  if (props.undoAction) {
+    return 7000 // 7 seconds
+  }
+
+  // Type-specific durations
+  const durations = {
+    success: 4000, // 4 seconds - quick confirmation
+    error: 7000, // 7 seconds - needs time to read
+    warning: 5000, // 5 seconds - moderate importance
+    info: 4000 // 4 seconds - quick info
+  }
+
+  return durations[props.type] || 5000
+}
+
+// Auto-dismiss with type-specific durations
+// Watch show, message, type, and undoAction to reset timer when a new notification appears
 watch(
-  () => [props.show, props.message, props.type],
+  () => [props.show, props.message, props.type, props.undoAction],
   ([newShow]) => {
     // Always clear any existing timeout first
     if (dismissTimeout) {
@@ -59,9 +77,10 @@ watch(
 
     // Set new timeout if notification is shown
     if (newShow) {
+      const duration = getDismissDuration()
       dismissTimeout = setTimeout(() => {
         handleClose()
-      }, 5000)
+      }, duration)
     }
   },
   { immediate: true }
