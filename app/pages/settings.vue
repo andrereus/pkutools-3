@@ -182,7 +182,7 @@ const updateEmailConsent = async (emailConsent) => {
 }
 
 const reopenOnboarding = () => {
-  navigateTo(localePath('getting-started'))
+  navigateTo(localePath('getting-started') + '?revisit=true')
 }
 
 const handleThemeChange = () => {

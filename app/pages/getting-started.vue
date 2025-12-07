@@ -5,6 +5,7 @@ const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
+const route = useRoute()
 
 const consentGiven = ref(store.settings?.healthDataConsent ?? false)
 const emailConsent = ref(store.settings?.emailConsent ?? false)
@@ -25,14 +26,21 @@ watch(
 )
 
 // Watch for when Firebase data loads and redirect if consent already given
+// Skip redirect if user is intentionally revisiting the page (revisit query param)
 watch(
-  () => [store.user, store.settings?.healthDataConsent, store.settings?.healthDataConsentDate],
-  ([user, healthDataConsent, healthDataConsentDate]) => {
+  () => [
+    store.user,
+    store.settings?.healthDataConsent,
+    store.settings?.healthDataConsentDate,
+    route.query.revisit
+  ],
+  ([user, healthDataConsent, healthDataConsentDate, revisit]) => {
     // Only redirect if:
     // 1. User is authenticated
     // 2. Settings data has loaded (healthDataConsentDate is defined, not undefined)
     // 3. Consent has been given (healthDataConsent is true)
-    if (user && healthDataConsentDate !== undefined && healthDataConsent === true) {
+    // 4. User is NOT intentionally revisiting (no revisit query param)
+    if (user && healthDataConsentDate !== undefined && healthDataConsent === true && !revisit) {
       navigateTo(localePath('diary'))
     }
   },

@@ -444,13 +444,13 @@ defineOgImageComponent('NuxtSeo', {
         />
       </span>
 
-      <p v-if="!license" class="mt-3 text-sm">
+      <p v-if="!license" class="mt-6 text-sm">
         <NuxtLink :to="$localePath('settings')">
           <LucideBadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
           {{ $t('app.diary-limited') }}
         </NuxtLink>
       </p>
-      <p v-if="license" class="mt-3 text-sm">
+      <p v-if="license" class="mt-6 text-sm">
         <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
         {{ $t('app.unlimited') }}
       </p>
