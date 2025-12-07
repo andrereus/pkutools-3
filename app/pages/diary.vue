@@ -318,8 +318,6 @@ defineOgImageComponent('NuxtSeo', {
         </div>
       </div>
 
-      <!-- <TodaysTipCard v-if="isToday" /> -->
-
       <DataTable :headers="tableHeaders" class="mb-6">
         <tr
           v-for="(item, index) in selectedDayLog"

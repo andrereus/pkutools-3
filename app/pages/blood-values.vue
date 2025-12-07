@@ -279,9 +279,6 @@ defineOgImageComponent('NuxtSeo', {
         />
       </ClientOnly>
 
-      <!-- <BloodValuesCard /> -->
-
-      <!-- TODO: Add sort feature -->
       <DataTable :headers="tableHeaders" class="mb-8">
         <tr
           v-for="(item, index) in sortedLabValues"
