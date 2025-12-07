@@ -210,7 +210,7 @@ defineOgImageComponent('NuxtSeo', {
 
     <div v-if="!userIsAuthenticated">
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
       >
         <SecondaryButton :text="$t('app.signin-google')" @click="signInGoogle" />
         <br />
@@ -227,7 +227,7 @@ defineOgImageComponent('NuxtSeo', {
     <div v-if="userIsAuthenticated">
       <!-- Getting Started Section -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
       >
         <PageHeader :title="$t('getting-started.title')" class="mb-4" />
         <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
@@ -238,7 +238,7 @@ defineOgImageComponent('NuxtSeo', {
 
       <!-- Health Data Consent Section -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
       >
         <PageHeader :title="$t('health-consent.title')" class="mb-4" />
         <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
@@ -286,7 +286,7 @@ defineOgImageComponent('NuxtSeo', {
 
       <!-- Email Notifications Section -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
       >
         <PageHeader :title="$t('health-consent.email-consent-title')" class="mb-4" />
         <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
@@ -331,7 +331,7 @@ defineOgImageComponent('NuxtSeo', {
 
       <!-- App Settings Section -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
       >
         <PageHeader :title="$t('settings.app-settings')" class="mb-4" />
         <NumberInput
@@ -376,7 +376,7 @@ defineOgImageComponent('NuxtSeo', {
 
       <!-- Premium & License Section -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
       >
         <PageHeader title="PKU Tools Premium" class="mb-4" />
         <TiersCard align="left" class="mb-6" />
@@ -393,7 +393,7 @@ defineOgImageComponent('NuxtSeo', {
 
       <!-- Account Management Section -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
       >
         <PageHeader :title="$t('settings.change-password')" class="mb-4" />
         <p class="text-sm text-gray-600 dark:text-gray-400">
@@ -403,7 +403,7 @@ defineOgImageComponent('NuxtSeo', {
 
       <!-- Data Management Section -->
       <div
-        class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
       >
         <PageHeader :title="$t('settings.reset-heading')" class="mb-4" />
         <div class="space-y-3">

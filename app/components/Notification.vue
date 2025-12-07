@@ -114,7 +114,7 @@ const buttonStyles = {
           <div
             v-if="show"
             :class="[
-              'pointer-events-auto w-full max-w-sm rounded-lg shadow-xl ring-1 ring-black/5 dark:ring-white/10',
+              'pointer-events-auto w-full max-w-sm rounded-lg shadow-lg ring-1 ring-black/10 dark:ring-white/20',
               typeStyles[type]
             ]"
           >
@@ -128,7 +128,7 @@ const buttonStyles = {
                     v-if="undoAction"
                     type="button"
                     :class="[
-                      'ml-3 shrink-0 rounded-md text-sm font-medium focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500 whitespace-nowrap cursor-pointer',
+                      'ml-3 shrink-0 rounded-md text-sm font-medium focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500 cursor-pointer',
                       buttonStyles[type]
                     ]"
                     @click="handleUndo"
