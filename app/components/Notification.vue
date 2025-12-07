@@ -114,7 +114,7 @@ const buttonStyles = {
           <div
             v-if="show"
             :class="[
-              'pointer-events-auto w-full max-w-sm rounded-lg shadow-lg ring-1 ring-black/10 dark:ring-white/20',
+              'pointer-events-auto w-full max-w-sm rounded-lg shadow-xl ring-1 ring-black/10 dark:ring-white/20',
               typeStyles[type]
             ]"
           >
