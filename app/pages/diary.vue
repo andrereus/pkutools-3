@@ -15,6 +15,7 @@ const editedIndex = ref(-1)
 const editedKey = ref(null)
 const date = ref(format(new Date(), 'yyyy-MM-dd'))
 const visibleItems = ref(5)
+const ensuredOnboarding = ref(false)
 
 const defaultItem = {
   name: '',
@@ -236,6 +237,23 @@ watch(userIsAuthenticated, (newVal) => {
     navigateTo(localePath('index'))
   }
 })
+
+// For legacy users: if consent was already set but onboarding flag is missing, set it
+watch(
+  () => [store.settings?.healthDataConsent, store.settings?.gettingStartedCompleted, store.user],
+  async ([healthConsent, onboardingCompleted, user]) => {
+    if (
+      user &&
+      healthConsent === true &&
+      onboardingCompleted !== true &&
+      !ensuredOnboarding.value
+    ) {
+      ensuredOnboarding.value = true
+      await store.markGettingStartedCompleted()
+    }
+  },
+  { immediate: true }
+)
 
 definePageMeta({
   i18n: {

@@ -181,8 +181,13 @@ const updateEmailConsent = async (emailConsent) => {
   }
 }
 
-const reopenOnboarding = () => {
-  navigateTo(localePath('getting-started') + '?revisit=true')
+const reopenOnboarding = async () => {
+  const reset = await store.resetGettingStartedCompleted()
+  if (!reset) {
+    notifications.error(t('health-consent.error-saving'))
+    return
+  }
+  navigateTo(localePath('getting-started'))
 }
 
 const handleThemeChange = () => {

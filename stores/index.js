@@ -22,7 +22,8 @@ const defaultSettings = {
   healthDataConsentHistory: [],
   emailConsent: false,
   emailConsentDate: null,
-  emailConsentHistory: []
+  emailConsentHistory: [],
+  gettingStartedCompleted: false
 }
 
 export const useStore = defineStore('main', {
@@ -240,6 +241,34 @@ export const useStore = defineStore('main', {
         return true
       } catch (error) {
         console.error('Error updating health data consent:', error)
+        return false
+      }
+    },
+    async markGettingStartedCompleted() {
+      if (!this.user) return false
+      const db = getDatabase()
+      try {
+        await dbUpdate(ref(db, `${this.user.id}/settings`), {
+          gettingStartedCompleted: true
+        })
+        this.settings.gettingStartedCompleted = true
+        return true
+      } catch (error) {
+        console.error('Error updating getting started state:', error)
+        return false
+      }
+    },
+    async resetGettingStartedCompleted() {
+      if (!this.user) return false
+      const db = getDatabase()
+      try {
+        await dbUpdate(ref(db, `${this.user.id}/settings`), {
+          gettingStartedCompleted: false
+        })
+        this.settings.gettingStartedCompleted = false
+        return true
+      } catch (error) {
+        console.error('Error resetting getting started state:', error)
         return false
       }
     },

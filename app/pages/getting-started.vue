@@ -5,7 +5,6 @@ const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
-const route = useRoute()
 
 const consentGiven = ref(store.settings?.healthDataConsent ?? false)
 const emailConsent = ref(store.settings?.emailConsent ?? false)
@@ -25,43 +24,46 @@ watch(
   }
 )
 
-// Watch for when Firebase data loads and redirect if consent already given
-// Skip redirect if user is intentionally revisiting the page (revisit query param)
+// Watch for when Firebase data loads and redirect if onboarding was finished
 watch(
-  () => [
-    store.user,
-    store.settings?.healthDataConsent,
-    store.settings?.healthDataConsentDate,
-    route.query.revisit
-  ],
-  ([user, healthDataConsent, healthDataConsentDate, revisit]) => {
+  () => [store.user, store.settings?.gettingStartedCompleted],
+  ([user, gettingStartedCompleted]) => {
     // Only redirect if:
     // 1. User is authenticated
-    // 2. Settings data has loaded (healthDataConsentDate is defined, not undefined)
-    // 3. Consent has been given (healthDataConsent is true)
-    // 4. User is NOT intentionally revisiting (no revisit query param)
-    if (user && healthDataConsentDate !== undefined && healthDataConsent === true && !revisit) {
+    // 2. Onboarding has been completed
+    if (user && gettingStartedCompleted === true) {
       navigateTo(localePath('diary'))
     }
   },
   { immediate: true }
 )
 
+// If user signs out while on this page, send them home
+watch(userIsAuthenticated, (newVal) => {
+  if (!newVal) {
+    navigateTo(localePath('index'))
+  }
+})
+
 const handleConsentGiven = async () => {
-  if (consentGiven.value) {
-    const success = await store.updateHealthDataConsent(true, emailConsent.value)
-    if (success) {
-      navigateTo(localePath('diary'))
-    } else {
-      notifications.error(t('health-consent.error-saving'))
-    }
+  if (!consentGiven.value) return
+
+  const success = await store.updateHealthDataConsent(true, emailConsent.value)
+  const completionSaved = await store.markGettingStartedCompleted()
+
+  if (success && completionSaved) {
+    navigateTo(localePath('diary'))
+  } else {
+    notifications.error(t('health-consent.error-saving'))
   }
 }
 
 const handleConsentDeclined = async () => {
-  // Save the declined consent to prevent showing getting started again
+  // Save the declined consent separately from onboarding completion
   const success = await store.updateHealthDataConsent(false, emailConsent.value)
-  if (success) {
+  const completionSaved = await store.markGettingStartedCompleted()
+
+  if (success && completionSaved) {
     // For existing users who decline, redirect to settings
     // For new users, redirect to home page
     if (store.user) {
@@ -160,15 +162,15 @@ defineOgImageComponent('NuxtSeo', {
 
       <div class="flex flex-col space-y-3 sm:flex-row sm:space-x-3 sm:space-y-0">
         <button
-          @click="handleConsentDeclined"
           class="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+          @click="handleConsentDeclined"
         >
           {{ $t('health-consent.decline') }}
         </button>
         <button
-          @click="handleConsentGiven"
-          :disabled="!consentGiven"
           class="flex-1 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:bg-gray-400"
+          :disabled="!consentGiven"
+          @click="handleConsentGiven"
         >
           {{ $t('health-consent.accept') }}
         </button>
