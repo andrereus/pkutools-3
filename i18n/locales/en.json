@@ -84,7 +84,7 @@
     "estimate-error-firebase": "Service not available. Please refresh the page and try again.",
     "estimate-error-premium": "This feature is only available to Premium users during Beta.",
     "estimate-error-daily-limit": "Daily limit of {limit} estimates reached. Please try again tomorrow.",
-    "estimate-info": "The \"Estimate values\" button is a Beta feature (Premium only). Estimated values may be incorrect. Limited to {limit} estimates per day."
+    "estimate-info": "The \"Estimate values\" button is a Beta feature (Premium only). Estimated values can be incorrect. Limited to {limit} estimates per day."
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",
