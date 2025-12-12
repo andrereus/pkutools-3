@@ -426,11 +426,8 @@ defineOgImageComponent('NuxtSeo', {
 
     <PrimaryButton v-if="userIsAuthenticated" :text="$t('common.add')" @click="save" />
 
-    <div v-if="userIsAuthenticated" class="mt-3 text-sm text-gray-600 dark:text-gray-400">
-      <p>
-        <LucideInfo class="h-4 w-4 inline-block mr-1" aria-hidden="true" />
-        {{ $t('phe-calculator.estimate-info', { limit: DAILY_ESTIMATE_LIMIT }) }}
-      </p>
-    </div>
+    <p v-if="userIsAuthenticated" class="mt-4 text-gray-600 dark:text-gray-400 italic">
+      {{ $t('phe-calculator.estimate-info', { limit: DAILY_ESTIMATE_LIMIT }) }}
+    </p>
   </div>
 </template>

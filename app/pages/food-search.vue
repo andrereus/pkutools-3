@@ -267,7 +267,9 @@ defineOgImageComponent('NuxtSeo', {
         </tr>
       </DataTable>
 
-      <p class="mt-8">{{ $t('food-search.search-info') }}</p>
+      <p class="mt-6 text-gray-600 dark:text-gray-400 italic">
+        {{ $t('food-search.search-info') }}
+      </p>
 
       <ModalDialog
         ref="dialog"

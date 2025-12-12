@@ -307,8 +307,6 @@ defineOgImageComponent('NuxtSeo', {
       </div>
     </div>
 
-    <p class="mt-2">
-      {{ $t('barcode-scanner.info') }}
-    </p>
+    <p class="mt-4 text-gray-600 dark:text-gray-400 italic">{{ $t('barcode-scanner.info') }}</p>
   </div>
 </template>
