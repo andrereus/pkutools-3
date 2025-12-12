@@ -79,7 +79,7 @@
     "estimating": "Estimating...",
     "estimate-success": "Food values estimated successfully",
     "estimate-error": "Failed to estimate food values. Please try again.",
-    "estimate-error-quota": "Service temporarily unavailable due to high demand. Please try again in a few minutes.",
+    "estimate-error-quota": "Service temporarily unavailable due to high demand. Please try again tomorrow.",
     "estimate-error-no-name": "Please enter a food name first",
     "estimate-error-firebase": "Service not available. Please refresh the page and try again.",
     "estimate-error-premium": "This feature is only available to Premium users during Beta.",

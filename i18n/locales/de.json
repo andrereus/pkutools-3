@@ -79,7 +79,7 @@
     "estimating": "Wird geschätzt...",
     "estimate-success": "Nährwerte erfolgreich geschätzt",
     "estimate-error": "Schätzung der Nährwerte fehlgeschlagen. Bitte versuchen Sie es erneut.",
-    "estimate-error-quota": "Service vorübergehend nicht verfügbar aufgrund hoher Nachfrage. Bitte versuchen Sie es in ein paar Minuten erneut.",
+    "estimate-error-quota": "Service vorübergehend nicht verfügbar aufgrund hoher Nachfrage. Bitte versuchen Sie es morgen erneut.",
     "estimate-error-no-name": "Bitte geben Sie zuerst einen Lebensmittelnamen ein",
     "estimate-error-firebase": "Service nicht verfügbar. Bitte aktualisieren Sie die Seite und versuchen Sie es erneut.",
     "estimate-error-premium": "Diese Funktion ist während der Beta-Phase nur für Premium-Nutzer verfügbar.",

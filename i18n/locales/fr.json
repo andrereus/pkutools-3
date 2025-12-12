@@ -79,7 +79,7 @@
     "estimating": "Estimation en cours...",
     "estimate-success": "Valeurs nutritionnelles estimées avec succès",
     "estimate-error": "Échec de l'estimation des valeurs nutritionnelles. Veuillez réessayer.",
-    "estimate-error-quota": "Service temporairement indisponible en raison de la forte demande. Veuillez réessayer dans quelques minutes.",
+    "estimate-error-quota": "Service temporairement indisponible en raison de la forte demande. Veuillez réessayer demain.",
     "estimate-error-no-name": "Veuillez d'abord saisir un nom d'aliment",
     "estimate-error-firebase": "Service non disponible. Veuillez actualiser la page et réessayer.",
     "estimate-error-premium": "Cette fonctionnalité n'est disponible que pour les utilisateurs Premium pendant la version Beta.",
