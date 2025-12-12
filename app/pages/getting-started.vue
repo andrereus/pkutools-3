@@ -9,6 +9,9 @@ const notifications = useNotifications()
 const consentGiven = ref(store.settings?.healthDataConsent ?? false)
 const emailConsent = ref(store.settings?.emailConsent ?? false)
 
+// Computed properties
+const userIsAuthenticated = computed(() => store.user !== null)
+
 // Watch for store updates to keep checkboxes in sync
 watch(
   () => store.settings?.healthDataConsent,
