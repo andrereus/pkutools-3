@@ -22,7 +22,7 @@ const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isEstimating = ref(false)
 
 // Constants
-const DAILY_ESTIMATE_LIMIT = 20
+const DAILY_ESTIMATE_LIMIT = 5
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
@@ -118,7 +118,7 @@ const estimateFoodValues = async () => {
     .replace(/"/g, '\\"') // Escape quotes to prevent breaking out of string
     .replace(/\n/g, ' ') // Replace newlines with spaces
     .replace(/\r/g, '') // Remove carriage returns
-    .replace(/[\x00-\x1F\x7F]/g, '') // Remove control characters
+    .replace(/\t/g, ' ') // Replace tabs with spaces
     .trim() // Trim again after replacements
 
   // Check daily limit (before making API call)
@@ -209,12 +209,27 @@ Important:
     }
 
     // Only increment count after successful API call and validation
-    await incrementDailyLimit()
+    await incrementDailyLimit() // Increment daily count
 
     notifications.success(t('phe-calculator.estimate-success'))
   } catch (error) {
     console.error('Error estimating food values:', error)
-    notifications.error(t('phe-calculator.estimate-error'))
+
+    // Check for quota/rate limit errors
+    const errorMessage = error?.message || error?.error?.message || ''
+    const errorType = error?.type || error?.error?.type || ''
+
+    if (
+      errorType === 'RESOURCE_EXHAUSTED' ||
+      errorMessage.includes('quota') ||
+      errorMessage.includes('Quota exceeded') ||
+      errorMessage.includes('rate limit')
+    ) {
+      // Don't increment count for quota errors - the API call didn't succeed
+      notifications.error(t('phe-calculator.estimate-error-quota'))
+    } else {
+      notifications.error(t('phe-calculator.estimate-error'))
+    }
   } finally {
     isEstimating.value = false
   }

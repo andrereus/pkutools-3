@@ -79,8 +79,9 @@
     "estimating": "Estimando...",
     "estimate-success": "Valores nutricionales estimados con éxito",
     "estimate-error": "Error al estimar los valores nutricionales. Por favor, inténtelo de nuevo.",
+    "estimate-error-quota": "Servicio temporalmente no disponible debido a la alta demanda. Por favor, inténtelo de nuevo en unos minutos.",
     "estimate-error-no-name": "Por favor, introduzca primero un nombre de alimento",
-    "estimate-error-firebase": "Firebase no inicializado. Por favor, actualice la página.",
+    "estimate-error-firebase": "Servicio no disponible. Por favor, actualice la página e inténtelo de nuevo.",
     "estimate-error-premium": "Esta función solo está disponible para usuarios Premium durante la versión Beta.",
     "estimate-error-daily-limit": "Se alcanzó el límite diario de {limit} estimaciones. Por favor, inténtelo de nuevo mañana.",
     "estimate-info": "El botón \"Estimar valores\" es una función Beta (solo Premium). Los valores estimados pueden ser incorrectos. Limitado a {limit} estimaciones por día."
