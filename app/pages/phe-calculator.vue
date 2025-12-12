@@ -354,11 +354,13 @@ defineOgImageComponent('NuxtSeo', {
         :label="$t('common.food-name')"
         class="flex-1 [&>div:last-child]:mb-0"
       />
-      <div v-if="isPremium" class="flex items-center mt-7 h-9">
+      <div class="flex items-center mt-7 h-9">
         <button
           type="button"
           class="rounded-sm bg-sky-500 px-2 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-full flex items-center"
-          :disabled="isEstimating || !name || name.trim() === '' || remainingEstimates === 0"
+          :disabled="
+            !isPremium || isEstimating || !name || name.trim() === '' || remainingEstimates === 0
+          "
           @click="estimateFoodValues"
         >
           <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
@@ -424,10 +426,7 @@ defineOgImageComponent('NuxtSeo', {
 
     <PrimaryButton v-if="userIsAuthenticated" :text="$t('common.add')" @click="save" />
 
-    <div
-      v-if="userIsAuthenticated && isPremium"
-      class="mt-3 text-sm text-gray-600 dark:text-gray-400"
-    >
+    <div v-if="userIsAuthenticated" class="mt-3 text-sm text-gray-600 dark:text-gray-400">
       <p>
         <LucideInfo class="h-4 w-4 inline-block mr-1" aria-hidden="true" />
         {{ $t('phe-calculator.estimate-info', { limit: DAILY_ESTIMATE_LIMIT }) }}
