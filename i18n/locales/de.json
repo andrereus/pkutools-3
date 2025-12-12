@@ -74,7 +74,16 @@
     "other": "Eiweiß (allgemein)",
     "meat": "Eiweiß von Fleisch",
     "vegetable": "Eiweiß von Gemüse",
-    "fruit": "Eiweiß von Obst"
+    "fruit": "Eiweiß von Obst",
+    "estimate": "Werte schätzen",
+    "estimating": "Wird geschätzt...",
+    "estimate-success": "Nährwerte erfolgreich geschätzt",
+    "estimate-error": "Schätzung der Nährwerte fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "estimate-error-no-name": "Bitte geben Sie zuerst einen Lebensmittelnamen ein",
+    "estimate-error-firebase": "Firebase nicht initialisiert. Bitte aktualisieren Sie die Seite.",
+    "estimate-error-premium": "Diese Funktion ist während der Beta-Phase nur für Premium-Nutzer verfügbar.",
+    "estimate-error-daily-limit": "Tageslimit von {limit} Schätzungen erreicht. Bitte versuchen Sie es morgen erneut.",
+    "estimate-info": "Der Button \"Werte schätzen\" ist eine Beta-Funktion (nur Premium). Geschätzte Werte können falsch sein. Begrenzt auf {limit} Schätzungen pro Tag."
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",

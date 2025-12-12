@@ -74,7 +74,16 @@
     "other": "Protéines (général)",
     "meat": "Protéines de la viande",
     "vegetable": "Protéines des légumes",
-    "fruit": "Protéines des fruits"
+    "fruit": "Protéines des fruits",
+    "estimate": "Estimer les valeurs",
+    "estimating": "Estimation en cours...",
+    "estimate-success": "Valeurs nutritionnelles estimées avec succès",
+    "estimate-error": "Échec de l'estimation des valeurs nutritionnelles. Veuillez réessayer.",
+    "estimate-error-no-name": "Veuillez d'abord saisir un nom d'aliment",
+    "estimate-error-firebase": "Firebase non initialisé. Veuillez actualiser la page.",
+    "estimate-error-premium": "Cette fonctionnalité n'est disponible que pour les utilisateurs Premium pendant la version Beta.",
+    "estimate-error-daily-limit": "Limite quotidienne de {limit} estimations atteinte. Veuillez réessayer demain.",
+    "estimate-info": "Le bouton \"Estimer les valeurs\" est une fonctionnalité Beta (Premium uniquement). Les valeurs estimées peuvent être incorrectes. Limité à {limit} estimations par jour."
   },
   "barcode-scanner": {
     "title": "Scanner de code-barres",

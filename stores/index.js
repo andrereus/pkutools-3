@@ -23,7 +23,9 @@ const defaultSettings = {
   emailConsent: false,
   emailConsentDate: null,
   emailConsentHistory: [],
-  gettingStartedCompleted: false
+  gettingStartedCompleted: false,
+  estimationCount: 0,
+  estimationDate: null
 }
 
 export const useStore = defineStore('main', {

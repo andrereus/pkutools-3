@@ -1,6 +1,8 @@
 <script setup>
 import { useStore } from '../../stores/index'
 import { getDatabase, ref as dbRef, push, update } from 'firebase/database'
+import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai'
+import { getApp } from 'firebase/app'
 import { format } from 'date-fns'
 
 const store = useStore()
@@ -17,10 +19,22 @@ const name = ref('')
 const kcalReference = ref(null)
 const select = ref('phe')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
+const isEstimating = ref(false)
+
+// Constants
+const DAILY_ESTIMATE_LIMIT = 20
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
 const user = computed(() => store.user)
+const isPremium = computed(() => store.settings.license === config.public.pkutoolsLicenseKey)
+const settings = computed(() => store.settings)
+const remainingEstimates = computed(() => {
+  const today = format(new Date(), 'yyyy-MM-dd')
+  const estimateDate = settings.value.estimationDate
+  const currentCount = estimateDate === today ? settings.value.estimationCount || 0 : 0
+  return Math.max(0, DAILY_ESTIMATE_LIMIT - currentCount)
+})
 
 const type = computed(() => [
   { title: t('phe-calculator.phe'), value: 'phe' },
@@ -56,6 +70,154 @@ const calculatePhe = () => {
 
 const calculateKcal = () => {
   return Math.round((weight.value * kcalReference.value) / 100) || 0
+}
+
+// Check daily estimate count (without incrementing)
+const checkDailyLimit = () => {
+  const today = format(new Date(), 'yyyy-MM-dd')
+  const estimateDate = settings.value.estimationDate
+  const currentCount = estimateDate === today ? settings.value.estimationCount || 0 : 0
+
+  if (currentCount >= DAILY_ESTIMATE_LIMIT) {
+    return { allowed: false, remaining: 0 }
+  }
+
+  return { allowed: true, remaining: DAILY_ESTIMATE_LIMIT - currentCount }
+}
+
+// Increment daily estimate count (only after successful API call)
+const incrementDailyLimit = async () => {
+  const db = getDatabase()
+  const today = format(new Date(), 'yyyy-MM-dd')
+  const estimateDate = settings.value.estimationDate
+  const currentCount = estimateDate === today ? settings.value.estimationCount || 0 : 0
+
+  // Update count and date in Firebase
+  await update(dbRef(db, `${user.value.id}/settings`), {
+    estimationCount: currentCount + 1,
+    estimationDate: today
+  })
+}
+
+const estimateFoodValues = async () => {
+  // Check premium access
+  if (!isPremium.value) {
+    notifications.error(t('phe-calculator.estimate-error-premium'))
+    return
+  }
+
+  if (!name.value || name.value.trim() === '') {
+    notifications.error(t('phe-calculator.estimate-error-no-name'))
+    return
+  }
+
+  // Sanitize input to prevent prompt injection
+  const sanitizedName = name.value
+    .trim()
+    .slice(0, 200) // Limit length
+    .replace(/"/g, '\\"') // Escape quotes to prevent breaking out of string
+    .replace(/\n/g, ' ') // Replace newlines with spaces
+    .replace(/\r/g, '') // Remove carriage returns
+    .replace(/[\x00-\x1F\x7F]/g, '') // Remove control characters
+    .trim() // Trim again after replacements
+
+  // Check daily limit (before making API call)
+  const limitCheck = checkDailyLimit()
+  if (!limitCheck.allowed) {
+    notifications.error(
+      t('phe-calculator.estimate-error-daily-limit', { limit: DAILY_ESTIMATE_LIMIT })
+    )
+    return
+  }
+
+  let firebaseApp
+  try {
+    firebaseApp = getApp()
+  } catch {
+    notifications.error(t('phe-calculator.estimate-error-firebase'))
+    return
+  }
+
+  isEstimating.value = true
+
+  try {
+    // Initialize the Gemini Developer API backend service
+    const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() })
+
+    // Create a GenerativeModel instance with structured output support
+    const model = getGenerativeModel(ai, {
+      model: 'gemini-2.5-flash',
+      generationConfig: {
+        responseMimeType: 'application/json'
+      }
+    })
+
+    // Create a prompt that requests structured JSON output
+    const prompt = `Estimate the nutritional values for the following food: "${sanitizedName}"
+
+Please provide a JSON response with the following structure:
+{
+  "phePer100g": <number in mg per 100g>,
+  "kcalPer100g": <number in kcal per 100g>,
+  "proteinPer100g": <number in g per 100g>
+}
+
+Important:
+- phePer100g should be the phenylalanine content in milligrams per 100 grams
+- kcalPer100g should be the caloric content in kilocalories per 100 grams
+- proteinPer100g should be the protein content in grams per 100 grams
+- If you cannot determine a value, use null for that field
+- Provide realistic estimates based on typical nutritional databases
+- For processed foods, provide values for the prepared/cooked state unless specified otherwise`
+
+    const result = await model.generateContent(prompt)
+    const response = result.response
+    const text = response.text()
+
+    // Parse the JSON response
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response')
+    }
+
+    const foodData = JSON.parse(jsonMatch[0])
+
+    // Update the form fields with estimated values
+    // Check if values are valid numbers before using them
+    if (
+      foodData.phePer100g !== null &&
+      foodData.phePer100g !== undefined &&
+      !isNaN(Number(foodData.phePer100g))
+    ) {
+      phe.value = Math.round(Number(foodData.phePer100g))
+      select.value = 'phe'
+    } else if (
+      foodData.proteinPer100g !== null &&
+      foodData.proteinPer100g !== undefined &&
+      !isNaN(Number(foodData.proteinPer100g))
+    ) {
+      protein.value = Math.round(Number(foodData.proteinPer100g) * 10) / 10 // Round to 1 decimal
+      select.value = 'other'
+    }
+
+    if (
+      foodData.kcalPer100g !== null &&
+      foodData.kcalPer100g !== undefined &&
+      !isNaN(Number(foodData.kcalPer100g))
+    ) {
+      kcalReference.value = Math.round(Number(foodData.kcalPer100g))
+    }
+
+    // Only increment count after successful API call and validation
+    await incrementDailyLimit()
+
+    notifications.success(t('phe-calculator.estimate-success'))
+  } catch (error) {
+    console.error('Error estimating food values:', error)
+    notifications.error(t('phe-calculator.estimate-error'))
+  } finally {
+    isEstimating.value = false
+  }
 }
 
 const save = () => {
@@ -171,12 +333,42 @@ defineOgImageComponent('NuxtSeo', {
     </header>
 
     <div v-if="userIsAuthenticated" class="flex gap-4">
-      <TextInput v-model="name" id-name="food" :label="$t('common.food-name')" class="flex-1" />
+      <TextInput
+        v-model="name"
+        id-name="food"
+        :label="$t('common.food-name')"
+        class="flex-1 [&>div:last-child]:mb-0"
+      />
+      <div v-if="isPremium" class="flex items-center mt-7 h-9">
+        <button
+          type="button"
+          class="rounded-sm bg-sky-500 px-2 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-full flex items-center"
+          :disabled="isEstimating || !name || name.trim() === '' || remainingEstimates === 0"
+          @click="estimateFoodValues"
+        >
+          <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
+          <span v-else>{{ $t('phe-calculator.estimate') }}</span>
+        </button>
+      </div>
+    </div>
 
+    <div v-if="userIsAuthenticated" class="flex gap-4 mt-4">
+      <div class="flex-1">
+        <SelectMenu v-model="select" id-name="factor" :label="$t('phe-calculator.mode')">
+          <option v-for="option in type" :key="option.value" :value="option.value">
+            {{ option.title }}
+          </option>
+        </SelectMenu>
+      </div>
       <DateInput v-model="selectedDate" id-name="date" :label="$t('common.date')" class="flex-1" />
     </div>
 
-    <SelectMenu v-model="select" id-name="factor" :label="$t('phe-calculator.mode')">
+    <SelectMenu
+      v-if="!userIsAuthenticated"
+      v-model="select"
+      id-name="factor"
+      :label="$t('phe-calculator.mode')"
+    >
       <option v-for="option in type" :key="option.value" :value="option.value">
         {{ option.title }}
       </option>
@@ -216,5 +408,15 @@ defineOgImageComponent('NuxtSeo', {
     </div>
 
     <PrimaryButton v-if="userIsAuthenticated" :text="$t('common.add')" @click="save" />
+
+    <div
+      v-if="userIsAuthenticated && isPremium"
+      class="mt-3 text-sm text-gray-600 dark:text-gray-400"
+    >
+      <p>
+        <LucideInfo class="h-4 w-4 inline-block mr-1" aria-hidden="true" />
+        {{ $t('phe-calculator.estimate-info', { limit: DAILY_ESTIMATE_LIMIT }) }}
+      </p>
+    </div>
   </div>
 </template>
