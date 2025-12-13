@@ -159,13 +159,15 @@ Please provide a JSON response with the following structure:
 {
   "phePer100g": <number in mg per 100g>,
   "kcalPer100g": <number in kcal per 100g>,
-  "proteinPer100g": <number in g per 100g>
+  "proteinPer100g": <number in g per 100g>,
+  "servingSizeGrams": <number in grams for a typical serving size>
 }
 
 Important:
 - phePer100g should be the phenylalanine content in milligrams per 100 grams
 - kcalPer100g should be the caloric content in kilocalories per 100 grams
 - proteinPer100g should be the protein content in grams per 100 grams
+- servingSizeGrams should be a typical serving size in grams
 - If you cannot determine a value, use null for that field
 - Provide realistic estimates based on typical nutritional databases
 - For processed foods, provide values for the prepared/cooked state unless specified otherwise`
@@ -206,6 +208,15 @@ Important:
       !isNaN(Number(foodData.kcalPer100g))
     ) {
       kcalReference.value = Math.round(Number(foodData.kcalPer100g))
+    }
+
+    if (
+      foodData.servingSizeGrams !== null &&
+      foodData.servingSizeGrams !== undefined &&
+      !isNaN(Number(foodData.servingSizeGrams)) &&
+      Number(foodData.servingSizeGrams) > 0
+    ) {
+      weight.value = Math.round(Number(foodData.servingSizeGrams))
     }
 
     // Only increment count after successful API call and validation
