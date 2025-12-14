@@ -22,7 +22,7 @@ const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isEstimating = ref(false)
 
 // Constants
-const DAILY_ESTIMATE_LIMIT = 5
+const DAILY_ESTIMATE_LIMIT = 20
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
