@@ -13,9 +13,7 @@
     "format:check": "prettier . --check",
     "format": "prettier . --write",
     "emulators": "firebase emulators:start",
-    "emulators:data": "firebase emulators:start --import=./emulator-data --export-on-exit=./emulator-data",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
+    "emulators:data": "firebase emulators:start --import=./emulator-data --export-on-exit=./emulator-data"
   },
   "dependencies": {
     "@nuxtjs/i18n": "^10.2.1",
@@ -36,16 +34,12 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.12.1",
-    "@nuxt/test-utils": "^3.21.0",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.18",
-    "@vue/test-utils": "^2.4.6",
     "eslint": "^9.39.2",
-    "happy-dom": "^20.0.11",
     "prettier": "3.6.2",
     "tailwindcss": "^4.1.11",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "typescript": "^5.9.3"
   }
 }

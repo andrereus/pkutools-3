@@ -121,8 +121,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     'nuxt-lucide-icons',
     'nuxt-headlessui',
-    '@nuxtjs/seo',
-    '@nuxt/test-utils/module'
+    '@nuxtjs/seo'
   ],
   vite: {
     plugins: [tailwindcss()]
