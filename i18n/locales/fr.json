@@ -82,9 +82,12 @@
     "estimate-error-quota": "Service temporairement indisponible en raison de la forte demande. Veuillez réessayer demain.",
     "estimate-error-no-name": "Veuillez d'abord saisir un nom d'aliment",
     "estimate-error-firebase": "Service non disponible. Veuillez actualiser la page et réessayer.",
-    "estimate-error-premium": "Cette fonctionnalité n'est disponible que pour les utilisateurs Premium pendant la version Beta.",
+    "estimate-error-premium": "Cette fonctionnalité nécessite un abonnement.",
     "estimate-error-daily-limit": "Limite quotidienne de {limit} estimations atteinte. Veuillez réessayer demain.",
-    "estimate-info": "Le bouton \"Estimer les valeurs\" est une fonctionnalité Beta (Premium uniquement). Les valeurs estimées peuvent être incorrectes. Limité à {limit} estimations par jour."
+    "estimate-info": "Fonctionnalité Beta. Les valeurs estimées peuvent être inexactes ou incorrectes. Limité à {limit} par jour. Plus avec Premium.",
+    "estimate-info-premium": "Fonctionnalité Beta. Les valeurs estimées peuvent être inexactes ou incorrectes. Limité à {limit} par jour.",
+    "use-pro-model": "Utiliser le meilleur modèle d'IA (utilise davantage le compteur d'estimations)",
+    "use-pro-model-info": "Avec cette option, chaque estimation utilise davantage de votre budget quotidien."
   },
   "barcode-scanner": {
     "title": "Scanner de code-barres",

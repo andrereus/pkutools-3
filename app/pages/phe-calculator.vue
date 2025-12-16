@@ -22,18 +22,64 @@ const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isEstimating = ref(false)
 
 // Constants
-const DAILY_ESTIMATE_LIMIT = 20
+// Base estimate "credits" per day for premium users.
+// Non-premium users get a lower effective limit via computed config.
+const BASE_DAILY_ESTIMATE_LIMIT = 20
+const FREE_USER_DAILY_ESTIMATE_LIMIT = 2
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
 const user = computed(() => store.user)
 const isPremium = computed(() => store.settings.license === config.public.pkutoolsLicenseKey)
 const settings = computed(() => store.settings)
+// Premium users can choose to use Gemini 2.5 Pro (higher quality, higher cost per estimate)
+// or stick with Gemini 2.5 Flash (more estimates). This is a simple per-session toggle.
+const useProEstimatesSetting = ref(false)
+
+// Configuration for the AI model, cost per estimate and daily limit
+// estimationCount is treated as "credits used" per day.
+const estimateConfig = computed(() => {
+  // Free users: always flash model, 2 estimates/day
+  if (!isPremium.value) {
+    return {
+      model: 'gemini-2.5-flash',
+      dailyLimitCredits: FREE_USER_DAILY_ESTIMATE_LIMIT,
+      costPerEstimate: 1
+    }
+  }
+
+  // Premium users: toggle between more estimates with flash or better quality with pro
+  if (useProEstimatesSetting.value) {
+    // Pro: uses more credits per estimate so effective estimates/day = 2
+    return {
+      model: 'gemini-2.5-pro',
+      dailyLimitCredits: BASE_DAILY_ESTIMATE_LIMIT,
+      costPerEstimate: 10
+    }
+  }
+
+  // Premium + flash: full 20 estimates/day
+  return {
+    model: 'gemini-2.5-flash',
+    dailyLimitCredits: BASE_DAILY_ESTIMATE_LIMIT,
+    costPerEstimate: 1
+  }
+})
+
+// Human-readable daily limit in "number of estimates"
+const humanDailyEstimateLimit = computed(() => {
+  const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
+  return Math.floor(dailyLimitCredits / costPerEstimate)
+})
+
+// Remaining number of full estimates the user can make today
 const remainingEstimates = computed(() => {
   const today = format(new Date(), 'yyyy-MM-dd')
   const estimateDate = settings.value.estimationDate
   const currentCount = estimateDate === today ? settings.value.estimationCount || 0 : 0
-  return Math.max(0, DAILY_ESTIMATE_LIMIT - currentCount)
+  const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
+  const remainingCredits = Math.max(0, dailyLimitCredits - currentCount)
+  return Math.floor(remainingCredits / costPerEstimate)
 })
 
 const type = computed(() => [
@@ -77,12 +123,18 @@ const checkDailyLimit = () => {
   const today = format(new Date(), 'yyyy-MM-dd')
   const estimateDate = settings.value.estimationDate
   const currentCount = estimateDate === today ? settings.value.estimationCount || 0 : 0
+  const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
 
-  if (currentCount >= DAILY_ESTIMATE_LIMIT) {
+  // Projected credits after one more estimate
+  const projectedCredits = currentCount + costPerEstimate
+
+  if (projectedCredits > dailyLimitCredits) {
     return { allowed: false, remaining: 0 }
   }
 
-  return { allowed: true, remaining: DAILY_ESTIMATE_LIMIT - currentCount }
+  const remainingCredits = dailyLimitCredits - currentCount
+  const remainingEstimates = Math.floor(remainingCredits / costPerEstimate)
+  return { allowed: true, remaining: remainingEstimates }
 }
 
 // Increment daily estimate count (only after successful API call)
@@ -91,21 +143,16 @@ const incrementDailyLimit = async () => {
   const today = format(new Date(), 'yyyy-MM-dd')
   const estimateDate = settings.value.estimationDate
   const currentCount = estimateDate === today ? settings.value.estimationCount || 0 : 0
+  const { costPerEstimate } = estimateConfig.value
 
   // Update count and date in Firebase
   await update(dbRef(db, `${user.value.id}/settings`), {
-    estimationCount: currentCount + 1,
+    estimationCount: currentCount + costPerEstimate,
     estimationDate: today
   })
 }
 
 const estimateFoodValues = async () => {
-  // Check premium access
-  if (!isPremium.value) {
-    notifications.error(t('phe-calculator.estimate-error-premium'))
-    return
-  }
-
   if (!name.value || name.value.trim() === '') {
     notifications.error(t('phe-calculator.estimate-error-no-name'))
     return
@@ -125,7 +172,7 @@ const estimateFoodValues = async () => {
   const limitCheck = checkDailyLimit()
   if (!limitCheck.allowed) {
     notifications.error(
-      t('phe-calculator.estimate-error-daily-limit', { limit: DAILY_ESTIMATE_LIMIT })
+      t('phe-calculator.estimate-error-daily-limit', { limit: humanDailyEstimateLimit.value })
     )
     return
   }
@@ -145,8 +192,9 @@ const estimateFoodValues = async () => {
     const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() })
 
     // Create a GenerativeModel instance with structured output support
+    const { model: modelName } = estimateConfig.value
     const model = getGenerativeModel(ai, {
-      model: 'gemini-2.5-flash',
+      model: modelName,
       generationConfig: {
         responseMimeType: 'application/json'
       }
@@ -369,15 +417,36 @@ defineOgImageComponent('NuxtSeo', {
         <button
           type="button"
           class="rounded-sm bg-sky-500 px-2 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-full flex items-center"
-          :disabled="
-            !isPremium || isEstimating || !name || name.trim() === '' || remainingEstimates === 0
-          "
+          :disabled="isEstimating || !name || name.trim() === '' || remainingEstimates === 0"
           @click="estimateFoodValues"
         >
           <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
           <span v-else>{{ $t('phe-calculator.estimate') }}</span>
         </button>
       </div>
+    </div>
+
+    <div v-if="userIsAuthenticated" class="mt-1 text-xs text-gray-600 dark:text-gray-400">
+      {{
+        $t(isPremium ? 'phe-calculator.estimate-info-premium' : 'phe-calculator.estimate-info', {
+          limit: humanDailyEstimateLimit
+        })
+      }}
+    </div>
+
+    <div
+      v-if="userIsAuthenticated && isPremium"
+      class="mt-2 text-xs text-gray-600 dark:text-gray-400 max-w-xl"
+    >
+      <label class="inline-flex items-start gap-2 cursor-pointer select-none">
+        <input
+          id="use-pro-estimates"
+          v-model="useProEstimatesSetting"
+          type="checkbox"
+          class="mt-0.5 h-3.5 w-3.5 rounded border-gray-300 text-sky-600 focus:ring-sky-500"
+        />
+        <span>{{ $t('phe-calculator.use-pro-model') }}</span>
+      </label>
     </div>
 
     <div v-if="userIsAuthenticated" class="flex gap-4 mt-4">
@@ -436,9 +505,5 @@ defineOgImageComponent('NuxtSeo', {
     </div>
 
     <PrimaryButton v-if="userIsAuthenticated" :text="$t('common.add')" @click="save" />
-
-    <p v-if="userIsAuthenticated" class="mt-4 text-gray-600 dark:text-gray-400 italic">
-      {{ $t('phe-calculator.estimate-info', { limit: DAILY_ESTIMATE_LIMIT }) }}
-    </p>
   </div>
 </template>

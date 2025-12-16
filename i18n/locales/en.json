@@ -82,9 +82,12 @@
     "estimate-error-quota": "Service temporarily unavailable due to high demand. Please try again tomorrow.",
     "estimate-error-no-name": "Please enter a food name first",
     "estimate-error-firebase": "Service not available. Please refresh the page and try again.",
-    "estimate-error-premium": "This feature is only available to Premium users during Beta.",
+    "estimate-error-premium": "This feature requires a subscription.",
     "estimate-error-daily-limit": "Daily limit of {limit} estimates reached. Please try again tomorrow.",
-    "estimate-info": "The \"Estimate values\" button is a Beta feature (Premium only). Estimated values can be incorrect. Limited to {limit} estimates per day."
+    "estimate-info": "Beta feature. Estimated values can be inaccurate or wrong. Limited to {limit} per day. More with Premium.",
+    "estimate-info-premium": "Beta feature. Estimated values can be inaccurate or wrong. Limited to {limit} per day.",
+    "use-pro-model": "Use best AI model (uses up more of the estimation count)",
+    "use-pro-model-info": "With this option, each estimate uses more of your daily budget."
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",
