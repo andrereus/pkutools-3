@@ -245,6 +245,8 @@
     "scanner-description": "Scan barcodes from products.",
     "calculator-name": "Phe Calculator",
     "calculator-description": "Calculate the amount of Phe for a specific weight or convert protein to Phe.",
+    "estimation-name": "Estimation feature (Beta)",
+    "estimation-description": "Estimate Phe and calorie values with AI when no values are available.",
     "own-food-name": "Own Foods",
     "own-food-description": "Save your own foods for quick addition.",
     "diary-name": "Diary and Diet Report",

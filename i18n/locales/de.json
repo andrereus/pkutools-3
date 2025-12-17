@@ -245,6 +245,8 @@
     "scanner-description": "Scanne Barcodes von Produkten.",
     "calculator-name": "Phe Rechner",
     "calculator-description": "Berechne die Phe-Menge für ein bestimmtes Gewicht oder rechne Eiweiß in Phe um.",
+    "estimation-name": "Schätzfunktion (Beta)",
+    "estimation-description": "Schätze Phe- und Kalorienwerte mit KI, wenn keine Nährwerte vorhanden sind.",
     "own-food-name": "Eigene Lebensmittel",
     "own-food-description": "Hinterlege eigene Lebensmittel zum schnellen Hinzufügen.",
     "diary-name": "Tagebuch und Diätbericht",

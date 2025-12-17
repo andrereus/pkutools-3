@@ -245,6 +245,8 @@
     "scanner-description": "Scannez les codes-barres des produits.",
     "calculator-name": "Calculateur Phe",
     "calculator-description": "Calculez la quantité de Phe pour un poids spécifique ou convertissez des protéines en Phe.",
+    "estimation-name": "Fonction d'estimation (Beta)",
+    "estimation-description": "Estime les valeurs de Phe et de calories avec l'IA lorsqu'aucune donnée n'est disponible.",
     "own-food-name": "Aliments personnels",
     "own-food-description": "Enregistrez vos propres aliments pour un ajout rapide.",
     "diary-name": "Journal et rapport de régime",

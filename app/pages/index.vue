@@ -37,6 +37,12 @@ const features = [
     route: 'barcode-scanner'
   },
   {
+    name: 'features.estimation-name',
+    description: 'features.estimation-description',
+    icon: LucideSparkles,
+    route: 'phe-calculator'
+  },
+  {
     name: 'features.diary-name',
     description: 'features.diary-description',
     icon: LucideCalendar,
