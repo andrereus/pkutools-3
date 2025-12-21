@@ -137,13 +137,19 @@ const deleteItem = async () => {
     return
   }
 
-  // Store deleted item for undo
+  // Capture values before closing (needed for API call and undo)
+  const entryKey = selectedDiaryEntry.value['.key']
+  const logIndex = editedIndex.value
+  const entryDate = selectedDiaryEntry.value.date
   const deletedItem = JSON.parse(JSON.stringify(selectedDayLog.value[editedIndex.value]))
+
+  // Close dialog immediately for instant feedback
+  close()
 
   try {
     await deleteDiaryLogItem({
-      entryKey: selectedDiaryEntry.value['.key'],
-      logIndex: editedIndex.value
+      entryKey: entryKey,
+      logIndex: logIndex
     })
 
     notifications.success(t('diary.item-deleted'), {
@@ -151,7 +157,7 @@ const deleteItem = async () => {
         try {
           // Restore the item by adding it back via save API
           await saveDiaryEntry({
-            date: selectedDiaryEntry.value.date,
+            date: entryDate,
             ...deletedItem
           })
         } catch (error) {
@@ -161,7 +167,6 @@ const deleteItem = async () => {
       },
       undoLabel: t('common.undo')
     })
-    close()
   } catch (error) {
     // Error handling is done in useSave composable
     console.error('Delete error:', error)

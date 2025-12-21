@@ -79,14 +79,18 @@ const editItem = () => {
 }
 
 const deleteItem = async () => {
-  // Store deleted item for undo
+  // Capture values before closing (needed for API call and undo)
+  const entryKey = editedKey.value
   const deletedItem = JSON.parse(
-    JSON.stringify(ownFood.value.find((item) => item['.key'] === editedKey.value))
+    JSON.stringify(ownFood.value.find((item) => item['.key'] === entryKey))
   )
+
+  // Close modal immediately for instant feedback
+  closeModal()
 
   try {
     await deleteOwnFood({
-      entryKey: editedKey.value
+      entryKey: entryKey
     })
 
     notifications.success(t('own-food.item-deleted'), {
@@ -106,7 +110,6 @@ const deleteItem = async () => {
       },
       undoLabel: t('common.undo')
     })
-    closeModal()
   } catch (error) {
     // Error handling is done in useSave composable
     console.error('Delete error:', error)

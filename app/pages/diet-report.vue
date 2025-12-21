@@ -194,14 +194,18 @@ const editItem = (item) => {
 }
 
 const deleteItem = async () => {
-  // Store deleted item for undo
+  // Capture values before closing (needed for API call and undo)
+  const entryKey = editedKey.value
   const deletedItem = JSON.parse(
-    JSON.stringify(pheDiary.value.find((item) => item['.key'] === editedKey.value))
+    JSON.stringify(pheDiary.value.find((item) => item['.key'] === entryKey))
   )
+
+  // Close dialog immediately for instant feedback
+  close()
 
   try {
     await deleteDiaryEntry({
-      entryKey: editedKey.value
+      entryKey: entryKey
     })
 
     notifications.success(t('diary.entry-deleted'), {
@@ -233,7 +237,6 @@ const deleteItem = async () => {
       },
       undoLabel: t('common.undo')
     })
-    close()
   } catch (error) {
     // Error handling is done in useSave composable
     console.error('Delete error:', error)
