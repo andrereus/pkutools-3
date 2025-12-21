@@ -194,17 +194,24 @@ const save = async () => {
     return
   }
 
+  // Capture state before closing (needed to determine if editing or adding)
+  const isEditing = editedIndex.value > -1
+  const entryKey = editedKey.value
+  const entryDate = editedItem.value.date
+  const entryPhe = editedItem.value.phe ? Number(editedItem.value.phe) : null
+  const entryTyrosine = editedItem.value.tyrosine ? Number(editedItem.value.tyrosine) : null
+
   // Close dialog immediately for instant feedback
   close()
 
-  if (editedIndex.value > -1) {
+  if (isEditing && entryKey) {
     // Update existing entry - use update API (validates server-side with Zod)
     try {
       await updateLabValue({
-        entryKey: editedKey.value,
-        date: editedItem.value.date,
-        phe: editedItem.value.phe ? Number(editedItem.value.phe) : null,
-        tyrosine: editedItem.value.tyrosine ? Number(editedItem.value.tyrosine) : null
+        entryKey: entryKey,
+        date: entryDate,
+        phe: entryPhe,
+        tyrosine: entryTyrosine
       })
       notifications.success(t('common.saved'))
     } catch (error) {
@@ -215,9 +222,9 @@ const save = async () => {
     // Add new entry - use save API
     try {
       await saveLabValue({
-        date: editedItem.value.date,
-        phe: editedItem.value.phe ? Number(editedItem.value.phe) : null,
-        tyrosine: editedItem.value.tyrosine ? Number(editedItem.value.tyrosine) : null
+        date: entryDate,
+        phe: entryPhe,
+        tyrosine: entryTyrosine
       })
       notifications.success(t('common.saved'))
     } catch (error) {

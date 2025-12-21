@@ -133,18 +133,26 @@ const save = async () => {
     return
   }
 
+  // Capture state before closing (needed to determine if editing or adding)
+  const isEditing = editedIndex.value > -1
+  const entryKey = editedKey.value
+  const entryName = editedItem.value.name
+  const entryIcon = editedItem.value.icon || null
+  const entryPhe = Number(editedItem.value.phe)
+  const entryKcal = Number(editedItem.value.kcal) || 0
+
   // Close modal immediately for instant feedback
   closeModal()
 
-  if (editedIndex.value > -1) {
+  if (isEditing && entryKey) {
     // Update existing entry - use update API (validates server-side with Zod)
     try {
       await updateOwnFood({
-        entryKey: editedKey.value,
-        name: editedItem.value.name,
-        icon: editedItem.value.icon || null,
-        phe: Number(editedItem.value.phe),
-        kcal: Number(editedItem.value.kcal) || 0
+        entryKey: entryKey,
+        name: entryName,
+        icon: entryIcon,
+        phe: entryPhe,
+        kcal: entryKcal
       })
       notifications.success(t('common.saved'))
     } catch (error) {
@@ -155,10 +163,10 @@ const save = async () => {
     // Add new entry - use save API
     try {
       await saveOwnFood({
-        name: editedItem.value.name,
-        icon: editedItem.value.icon || null,
-        phe: Number(editedItem.value.phe),
-        kcal: Number(editedItem.value.kcal) || 0
+        name: entryName,
+        icon: entryIcon,
+        phe: entryPhe,
+        kcal: entryKcal
       })
       notifications.success(t('common.saved'))
     } catch (error) {

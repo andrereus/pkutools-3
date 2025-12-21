@@ -181,6 +181,12 @@ const save = async () => {
     return
   }
 
+  // Capture state before closing (needed to determine if editing or adding)
+  const isEditing = selectedDiaryEntry.value && editedIndex.value > -1
+  const entryKey = selectedDiaryEntry.value?.['.key']
+  const logIndex = editedIndex.value
+  const entryDate = date.value
+
   const newLogEntry = {
     name: editedItem.value.name,
     emoji: editedItem.value.emoji || null,
@@ -196,18 +202,18 @@ const save = async () => {
   close()
 
   try {
-    if (selectedDiaryEntry.value && editedIndex.value > -1) {
+    if (isEditing && entryKey && logIndex > -1) {
       // Update existing item - use update API (validates server-side with Zod)
       await updateDiaryEntry({
-        entryKey: selectedDiaryEntry.value['.key'],
-        logIndex: editedIndex.value,
+        entryKey: entryKey,
+        logIndex: logIndex,
         entry: newLogEntry
       })
       notifications.success(t('common.saved'))
     } else {
       // Add new item - use save API (validates server-side with Zod)
       await saveDiaryEntry({
-        date: date.value,
+        date: entryDate,
         ...newLogEntry
       })
       notifications.success(t('common.saved'))
