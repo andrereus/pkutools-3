@@ -1,14 +1,14 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { getDatabase, ref as dbRef, push, update } from 'firebase/database'
 import { format, parseISO, subDays, addDays } from 'date-fns'
 
 const store = useStore()
 const { t } = useI18n()
 const dialog2 = ref(null)
-const config = useRuntimeConfig()
 const localePath = useLocalePath()
 const notifications = useNotifications()
+const { isPremium } = useLicense()
+const { saveDiaryEntry, updateDiaryEntry, deleteDiaryLogItem, updateGettingStarted } = useSave()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -32,11 +32,12 @@ const editedItem = ref({ ...defaultItem })
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
-const user = computed(() => store.user)
 const pheDiary = computed(() => store.pheDiary)
 const settings = computed(() => store.settings)
 
-const license = computed(() => settings.value.license === config.public.pkutoolsLicenseKey)
+// License check is now done via useLicense composable
+// Keep this for backward compatibility but use isPremium from composable
+const license = computed(() => isPremium.value)
 
 const tableHeaders = computed(() => [
   { key: 'food', title: t('common.food') },
@@ -96,7 +97,7 @@ const lastAdded = computed(() => {
   return sortedItems
 })
 
-const isToday = computed(() => date.value === format(new Date(), 'yyyy-MM-dd'))
+// Note: isToday was removed as it's not used
 
 // Methods
 const signInGoogle = async () => {
@@ -131,35 +132,40 @@ const addLastAdded = (item) => {
   dialog2.value.openDialog()
 }
 
-const deleteItem = () => {
-  const db = getDatabase()
-  const deletedItem = selectedDayLog.value[editedIndex.value]
-  const updatedLog = selectedDayLog.value.filter((_, index) => index !== editedIndex.value)
-  const totalPhe = updatedLog.reduce((sum, item) => sum + (item.phe || 0), 0)
-  const totalKcal = updatedLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
+const deleteItem = async () => {
+  if (!selectedDiaryEntry.value || editedIndex.value < 0) {
+    return
+  }
 
-  update(dbRef(db, `${user.value.id}/pheDiary/${selectedDiaryEntry.value['.key']}`), {
-    log: updatedLog,
-    phe: totalPhe,
-    kcal: totalKcal
-  })
+  // Store deleted item for undo
+  const deletedItem = JSON.parse(JSON.stringify(selectedDayLog.value[editedIndex.value]))
 
-  // Show notification with undo
-  notifications.success(t('diary.item-deleted'), {
-    undoAction: () => {
-      const restoredLog = [...updatedLog]
-      restoredLog.splice(editedIndex.value, 0, deletedItem)
-      const restoredPhe = restoredLog.reduce((sum, item) => sum + (item.phe || 0), 0)
-      const restoredKcal = restoredLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
-      update(dbRef(db, `${user.value.id}/pheDiary/${selectedDiaryEntry.value['.key']}`), {
-        log: restoredLog,
-        phe: restoredPhe,
-        kcal: restoredKcal
-      })
-    },
-    undoLabel: t('common.undo')
-  })
-  close()
+  try {
+    await deleteDiaryLogItem({
+      entryKey: selectedDiaryEntry.value['.key'],
+      logIndex: editedIndex.value
+    })
+
+    notifications.success(t('diary.item-deleted'), {
+      undoAction: async () => {
+        try {
+          // Restore the item by adding it back via save API
+          await saveDiaryEntry({
+            date: selectedDiaryEntry.value.date,
+            ...deletedItem
+          })
+        } catch (error) {
+          console.error('Undo error:', error)
+          notifications.error('Failed to restore item. Please add it manually.')
+        }
+      },
+      undoLabel: t('common.undo')
+    })
+    close()
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Delete error:', error)
+  }
 }
 
 const close = () => {
@@ -169,56 +175,45 @@ const close = () => {
   editedKey.value = null
 }
 
-const save = () => {
+const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
   }
 
-  const db = getDatabase()
   const newLogEntry = {
     name: editedItem.value.name,
     emoji: editedItem.value.emoji || null,
     icon: editedItem.value.icon || null,
-    pheReference: Number(editedItem.value.pheReference) || 0,
-    kcalReference: Number(editedItem.value.kcalReference) || 0,
+    pheReference: Number(editedItem.value.pheReference) || null,
+    kcalReference: Number(editedItem.value.kcalReference) || null,
     weight: Number(editedItem.value.weight),
     phe: calculatePhe(),
     kcal: calculateKcal()
   }
 
-  if (selectedDiaryEntry.value) {
-    const updatedLog = [...selectedDayLog.value]
-    if (editedIndex.value > -1) {
-      // Update existing item
-      updatedLog[editedIndex.value] = newLogEntry
-    } else {
-      // Add new item
-      updatedLog.push(newLogEntry)
-    }
-    const totalPhe = updatedLog.reduce((sum, item) => sum + (item.phe || 0), 0)
-    const totalKcal = updatedLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
-    update(dbRef(db, `${user.value.id}/pheDiary/${selectedDiaryEntry.value['.key']}`), {
-      log: updatedLog,
-      phe: totalPhe,
-      kcal: totalKcal
-    })
-  } else {
-    if (
-      pheDiary.value.length >= 14 &&
-      settings.value.license !== config.public.pkutoolsLicenseKey
-    ) {
-      notifications.error(t('app.limit'))
-    } else {
-      push(dbRef(db, `${user.value.id}/pheDiary`), {
-        date: date.value,
-        phe: calculatePhe(),
-        kcal: calculateKcal(),
-        log: [newLogEntry]
+  try {
+    if (selectedDiaryEntry.value && editedIndex.value > -1) {
+      // Update existing item - use update API (validates server-side with Zod)
+      await updateDiaryEntry({
+        entryKey: selectedDiaryEntry.value['.key'],
+        logIndex: editedIndex.value,
+        entry: newLogEntry
       })
+      notifications.success(t('common.saved'))
+    } else {
+      // Add new item - use save API (validates server-side with Zod)
+      await saveDiaryEntry({
+        date: date.value,
+        ...newLogEntry
+      })
+      notifications.success(t('common.saved'))
     }
+    close()
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Save error:', error)
   }
-  close()
 }
 
 const prevDay = () => {
@@ -249,7 +244,11 @@ watch(
       !ensuredOnboarding.value
     ) {
       ensuredOnboarding.value = true
-      await store.markGettingStartedCompleted()
+      try {
+        await updateGettingStarted(true)
+      } catch (error) {
+        console.error('Update getting started error:', error)
+      }
     }
   },
   { immediate: true }
@@ -364,7 +363,7 @@ defineOgImageComponent('NuxtSeo', {
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
             <span class="flex items-center gap-1">
               <img
-                v-if="item.icon !== undefined && item.icon !== ''"
+                v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
                 :src="'/images/food-icons/' + item.icon + '.svg'"
                 onerror="this.src='/images/food-icons/organic-food.svg'"
                 width="25"
@@ -372,14 +371,21 @@ defineOgImageComponent('NuxtSeo', {
                 alt="Food Icon"
               />
               <img
-                v-if="(item.icon === undefined || item.icon === '') && item.emoji === undefined"
+                v-if="
+                  (item.icon === undefined || item.icon === null || item.icon === '') &&
+                  (item.emoji === undefined || item.emoji === null)
+                "
                 :src="'/images/food-icons/organic-food.svg'"
                 width="25"
                 class="food-icon"
                 alt="Food Icon"
               />
               <span
-                v-if="(item.icon === undefined || item.icon === '') && item.emoji !== undefined"
+                v-if="
+                  (item.icon === undefined || item.icon === null || item.icon === '') &&
+                  item.emoji !== undefined &&
+                  item.emoji !== null
+                "
                 class="ml-0.5 mr-1"
               >
                 {{ item.emoji }}

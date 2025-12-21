@@ -1,15 +1,14 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { getDatabase, ref as dbRef, push, update } from 'firebase/database'
 import Fuse from 'fuse.js'
 import { format } from 'date-fns'
 
 const store = useStore()
 const { t, locale } = useI18n()
 const dialog = ref(null)
-const config = useRuntimeConfig()
 const localePath = useLocalePath()
 const notifications = useNotifications()
+const { saveDiaryEntry } = useSave()
 
 // Reactive state
 const search = ref('')
@@ -26,7 +25,6 @@ const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
-const user = computed(() => store.user)
 const ownFood = computed(() => store.ownFood)
 
 const tableHeaders = computed(() => [
@@ -56,13 +54,12 @@ const calculateKcal = () => {
   return Math.round((weight.value * kcalReference.value) / 100) || 0
 }
 
-const save = () => {
+const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
   }
 
-  const db = getDatabase()
   const logEntry = {
     name: name.value,
     emoji: emoji.value || null,
@@ -74,32 +71,16 @@ const save = () => {
     kcal: calculateKcal()
   }
 
-  const formattedDate = selectedDate.value
-  const dateEntry = store.pheDiary.find((entry) => entry.date === formattedDate)
-
-  if (dateEntry) {
-    const updatedLog = [...(dateEntry.log || []), logEntry]
-    const totalPhe = updatedLog.reduce((sum, item) => sum + (item.phe || 0), 0)
-    const totalKcal = updatedLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
-    update(dbRef(db, `${user.value.id}/pheDiary/${dateEntry['.key']}`), {
-      log: updatedLog,
-      phe: totalPhe,
-      kcal: totalKcal
+  // Use server API for all writes - validates with Zod
+  try {
+    await saveDiaryEntry({
+      date: selectedDate.value,
+      ...logEntry
     })
-  } else {
-    if (
-      store.pheDiary.length >= 14 &&
-      store.settings.license !== config.public.pkutoolsLicenseKey
-    ) {
-      notifications.error(t('app.limit'))
-    } else {
-      push(dbRef(db, `${user.value.id}/pheDiary`), {
-        date: formattedDate,
-        phe: calculatePhe(),
-        kcal: calculateKcal(),
-        log: [logEntry]
-      })
-    }
+    notifications.success(t('common.saved'))
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Save error:', error)
   }
   dialog.value.closeDialog()
   navigateTo(localePath('diary'))
@@ -226,7 +207,7 @@ defineOgImageComponent('NuxtSeo', {
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
             <span class="flex items-center gap-1">
               <img
-                v-if="item.icon !== undefined && item.icon !== ''"
+                v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
                 :src="'/images/food-icons/' + item.icon + '.svg'"
                 onerror="this.src='/images/food-icons/organic-food.svg'"
                 width="25"
@@ -234,14 +215,21 @@ defineOgImageComponent('NuxtSeo', {
                 alt="Food Icon"
               />
               <img
-                v-if="(item.icon === undefined || item.icon === '') && item.emoji === undefined"
+                v-if="
+                  (item.icon === undefined || item.icon === null || item.icon === '') &&
+                  (item.emoji === undefined || item.emoji === null)
+                "
                 :src="'/images/food-icons/organic-food.svg'"
                 width="25"
                 class="food-icon"
                 alt="Food Icon"
               />
               <span
-                v-if="(item.icon === undefined || item.icon === '') && item.emoji !== undefined"
+                v-if="
+                  (item.icon === undefined || item.icon === null || item.icon === '') &&
+                  item.emoji !== undefined &&
+                  item.emoji !== null
+                "
                 class="ml-0.5 mr-1"
               >
                 {{ item.emoji }}

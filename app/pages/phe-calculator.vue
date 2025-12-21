@@ -1,15 +1,16 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { getDatabase, ref as dbRef, push, update } from 'firebase/database'
 import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai'
 import { getApp } from 'firebase/app'
+import { getAuth } from 'firebase/auth'
 import { format } from 'date-fns'
 
 const store = useStore()
 const { t } = useI18n()
-const config = useRuntimeConfig()
 const localePath = useLocalePath()
 const notifications = useNotifications()
+const { isPremium } = useLicense()
+const { saveDiaryEntry } = useSave()
 
 // Reactive state
 const phe = ref(null)
@@ -29,8 +30,6 @@ const FREE_USER_DAILY_ESTIMATE_LIMIT = 2
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
-const user = computed(() => store.user)
-const isPremium = computed(() => store.settings.license === config.public.pkutoolsLicenseKey)
 const settings = computed(() => store.settings)
 // Premium users can choose to use Gemini 2.5 Pro (higher quality, higher cost per estimate)
 // or stick with Gemini 2.5 Flash (more estimates). This is a simple per-session toggle.
@@ -118,39 +117,8 @@ const calculateKcal = () => {
   return Math.round((weight.value * kcalReference.value) / 100) || 0
 }
 
-// Check daily estimate count (without incrementing)
-const checkDailyLimit = () => {
-  const today = format(new Date(), 'yyyy-MM-dd')
-  const estimateDate = settings.value.estimationDate
-  const currentCount = estimateDate === today ? settings.value.estimationCount || 0 : 0
-  const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
-
-  // Projected credits after one more estimate
-  const projectedCredits = currentCount + costPerEstimate
-
-  if (projectedCredits > dailyLimitCredits) {
-    return { allowed: false, remaining: 0 }
-  }
-
-  const remainingCredits = dailyLimitCredits - currentCount
-  const remainingEstimates = Math.floor(remainingCredits / costPerEstimate)
-  return { allowed: true, remaining: remainingEstimates }
-}
-
-// Increment daily estimate count (only after successful API call)
-const incrementDailyLimit = async () => {
-  const db = getDatabase()
-  const today = format(new Date(), 'yyyy-MM-dd')
-  const estimateDate = settings.value.estimationDate
-  const currentCount = estimateDate === today ? settings.value.estimationCount || 0 : 0
-  const { costPerEstimate } = estimateConfig.value
-
-  // Update count and date in Firebase
-  await update(dbRef(db, `${user.value.id}/settings`), {
-    estimationCount: currentCount + costPerEstimate,
-    estimationDate: today
-  })
-}
+// Note: checkDailyLimit and incrementDailyLimit are now handled server-side via /api/gemini/check
+// These functions are kept for backward compatibility but are no longer used
 
 const estimateFoodValues = async () => {
   if (!name.value || name.value.trim() === '') {
@@ -168,12 +136,45 @@ const estimateFoodValues = async () => {
     .replace(/\t/g, ' ') // Replace tabs with spaces
     .trim() // Trim again after replacements
 
-  // Check daily limit (before making API call)
-  const limitCheck = checkDailyLimit()
-  if (!limitCheck.allowed) {
-    notifications.error(
-      t('phe-calculator.estimate-error-daily-limit', { limit: humanDailyEstimateLimit.value })
-    )
+  // Check permission via server API (checks license-based limits)
+  try {
+    const auth = getAuth()
+    const currentUser = auth.currentUser
+    if (!currentUser) {
+      notifications.error(t('phe-calculator.estimate-error-firebase'))
+      return
+    }
+
+    const token = await currentUser.getIdToken()
+    const { model: modelName } = estimateConfig.value
+
+    const response = await $fetch('/api/gemini/check', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: {
+        model: modelName
+      }
+    })
+    const checkResponse = { allowed: response.allowed, remaining: response.remaining }
+
+    if (!checkResponse.allowed) {
+      notifications.error(
+        t('phe-calculator.estimate-error-daily-limit', { limit: checkResponse.remaining })
+      )
+      return
+    }
+  } catch (error) {
+    console.error('Gemini check error:', error)
+    const err = error || {}
+    if (err.statusCode === 401) {
+      notifications.error('Authentication failed. Please sign in again.')
+    } else if (err.statusCode === 403) {
+      notifications.error(t('phe-calculator.estimate-error-daily-limit', { limit: 0 }))
+    } else {
+      notifications.error('Failed to check estimate limits. Please try again.')
+    }
     return
   }
 
@@ -267,8 +268,8 @@ Important:
       weight.value = Math.round(Number(foodData.servingSizeGrams))
     }
 
-    // Only increment count after successful API call and validation
-    await incrementDailyLimit() // Increment daily count
+    // Count was already incremented by the server in /api/gemini/check
+    // No need to increment here
 
     notifications.success(t('phe-calculator.estimate-success'))
   } catch (error) {
@@ -294,13 +295,12 @@ Important:
   }
 }
 
-const save = () => {
+const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
   }
 
-  const db = getDatabase()
   let logEntry
   if (select.value === 'phe') {
     logEntry = {
@@ -322,35 +322,18 @@ const save = () => {
     }
   }
 
-  // Find entry for selected date or create new one
-  const formattedDate = selectedDate.value
-  const dateEntry = store.pheDiary.find((entry) => entry.date === formattedDate)
-
-  if (dateEntry) {
-    const updatedLog = [...(dateEntry.log || []), logEntry]
-    const totalPhe = updatedLog.reduce((sum, item) => sum + (item.phe || 0), 0)
-    const totalKcal = updatedLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
-    update(dbRef(db, `${user.value.id}/pheDiary/${dateEntry['.key']}`), {
-      log: updatedLog,
-      phe: totalPhe,
-      kcal: totalKcal
+  // Use server API for all writes - validates with Zod
+  try {
+    await saveDiaryEntry({
+      date: selectedDate.value,
+      ...logEntry
     })
-  } else {
-    if (
-      store.pheDiary.length >= 14 &&
-      store.settings.license !== config.public.pkutoolsLicenseKey
-    ) {
-      notifications.error(t('app.limit'))
-    } else {
-      push(dbRef(db, `${user.value.id}/pheDiary`), {
-        date: formattedDate,
-        phe: calculatePhe(),
-        kcal: calculateKcal(),
-        log: [logEntry]
-      })
-    }
+    notifications.success(t('common.saved'))
+    navigateTo(localePath('diary'))
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Save error:', error)
   }
-  navigateTo(localePath('diary'))
 }
 
 definePageMeta({

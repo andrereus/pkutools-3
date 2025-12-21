@@ -5,6 +5,7 @@ const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
+const { updateConsent, updateGettingStarted } = useSave()
 
 const consentGiven = ref(store.settings?.healthDataConsent ?? false)
 const emailConsent = ref(store.settings?.emailConsent ?? false)
@@ -51,22 +52,29 @@ watch(userIsAuthenticated, (newVal) => {
 const handleConsentGiven = async () => {
   if (!consentGiven.value) return
 
-  const success = await store.updateHealthDataConsent(true, emailConsent.value)
-  const completionSaved = await store.markGettingStartedCompleted()
-
-  if (success && completionSaved) {
+  try {
+    await updateConsent({
+      healthDataConsent: true,
+      emailConsent: emailConsent.value
+    })
+    await updateGettingStarted(true)
     navigateTo(localePath('diary'))
-  } else {
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Update consent error:', error)
     notifications.error(t('health-consent.error-saving'))
   }
 }
 
 const handleConsentDeclined = async () => {
-  // Save the declined consent separately from onboarding completion
-  const success = await store.updateHealthDataConsent(false, emailConsent.value)
-  const completionSaved = await store.markGettingStartedCompleted()
+  try {
+    // Save the declined consent separately from onboarding completion
+    await updateConsent({
+      healthDataConsent: false,
+      emailConsent: emailConsent.value
+    })
+    await updateGettingStarted(true)
 
-  if (success && completionSaved) {
     // For existing users who decline, redirect to settings
     // For new users, redirect to home page
     if (store.user) {
@@ -74,7 +82,9 @@ const handleConsentDeclined = async () => {
     } else {
       navigateTo(localePath('index'))
     }
-  } else {
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Update consent error:', error)
     notifications.error(t('health-consent.error-saving'))
   }
 }

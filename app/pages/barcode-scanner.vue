@@ -1,15 +1,14 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { getDatabase, ref as dbRef, push, update } from 'firebase/database'
 import { QrcodeStream } from 'vue-qrcode-reader'
 import { format } from 'date-fns'
 
 const store = useStore()
 const { t } = useI18n()
 const dialog = ref(null)
-const config = useRuntimeConfig()
 const localePath = useLocalePath()
 const notifications = useNotifications()
+const { saveDiaryEntry } = useSave()
 
 // Reactive state
 const loaded = ref(false)
@@ -24,7 +23,6 @@ const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
-const user = computed(() => store.user)
 
 const type = computed(() => [
   { title: t('phe-calculator.other'), value: 'other' },
@@ -128,15 +126,16 @@ const calculateKcal = () => {
   return Math.round((weight.value * result.value.product.nutriments['energy-kcal_100g']) / 100) || 0
 }
 
-const save = () => {
+const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
   }
 
-  const db = getDatabase()
   const logEntry = {
     name: result.value.product.product_name,
+    emoji: null,
+    icon: null,
     pheReference: Math.round(result.value.product.nutriments.proteins_100g * factor.value),
     kcalReference: result.value.product.nutriments['energy-kcal_100g'] || 0,
     weight: Number(weight.value),
@@ -144,34 +143,18 @@ const save = () => {
     kcal: calculateKcal()
   }
 
-  const formattedDate = selectedDate.value
-  const dateEntry = store.pheDiary.find((entry) => entry.date === formattedDate)
-
-  if (dateEntry) {
-    const updatedLog = [...(dateEntry.log || []), logEntry]
-    const totalPhe = updatedLog.reduce((sum, item) => sum + (item.phe || 0), 0)
-    const totalKcal = updatedLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
-    update(dbRef(db, `${user.value.id}/pheDiary/${dateEntry['.key']}`), {
-      log: updatedLog,
-      phe: totalPhe,
-      kcal: totalKcal
+  // Use server API for all writes - validates with Zod
+  try {
+    await saveDiaryEntry({
+      date: selectedDate.value,
+      ...logEntry
     })
-  } else {
-    if (
-      store.pheDiary.length >= 14 &&
-      store.settings.license !== config.public.pkutoolsLicenseKey
-    ) {
-      notifications.error(t('app.limit'))
-    } else {
-      push(dbRef(db, `${user.value.id}/pheDiary`), {
-        date: formattedDate,
-        phe: calculatePhe(),
-        kcal: calculateKcal(),
-        log: [logEntry]
-      })
-    }
+    notifications.success(t('common.saved'))
+    navigateTo(localePath('diary'))
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Save error:', error)
   }
-  navigateTo(localePath('diary'))
 }
 
 definePageMeta({

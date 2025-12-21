@@ -5,6 +5,7 @@ const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
+const { handleError } = useErrorHandler()
 
 // Reactive state
 const name = ref(null)
@@ -21,8 +22,7 @@ const signInGoogle = async () => {
     // TODO: Find better way to handle post-sign-in navigation for this page
     navigateTo(localePath('getting-started'))
   } catch (error) {
-    notifications.error(t('app.auth-error'))
-    console.error(error)
+    handleError(error, 'Google sign in')
   }
 }
 
@@ -32,8 +32,7 @@ const registerEmailPassword = async () => {
     // New users always need to give consent
     navigateTo(localePath('getting-started'))
   } catch (error) {
-    notifications.error(t('sign-in.error'))
-    console.error(error)
+    handleError(error, 'email registration')
   }
 }
 
@@ -43,8 +42,7 @@ const signInEmailPassword = async () => {
     // TODO: Find better way to handle post-sign-in navigation for this page
     navigateTo(localePath('getting-started'))
   } catch (error) {
-    notifications.error(t('sign-in.error'))
-    console.error(error)
+    handleError(error, 'email sign in')
   }
 }
 
@@ -53,8 +51,7 @@ const resetPassword = async () => {
     await store.resetPassword(email.value)
     notifications.success(t('sign-in.password-sent'))
   } catch (error) {
-    notifications.error(t('sign-in.error'))
-    console.error(error)
+    handleError(error, 'password reset')
   }
 }
 

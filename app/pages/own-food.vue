@@ -1,6 +1,5 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { getDatabase, ref as dbRef, push, remove, update } from 'firebase/database'
 import foodIcons from '~/assets/data/food-icons-map.json'
 import Fuse from 'fuse.js'
 import { format } from 'date-fns'
@@ -9,10 +8,11 @@ const store = useStore()
 const { t } = useI18n()
 const dialog = ref(null)
 const dialog2 = ref(null)
-const config = useRuntimeConfig()
 const localePath = useLocalePath()
 const notifications = useNotifications()
 const confirm = useConfirm()
+const { isPremium } = useLicense()
+const { saveOwnFood, saveDiaryEntry, updateOwnFood, deleteOwnFood } = useSave()
 
 // Reactive state
 const search = ref('')
@@ -32,11 +32,9 @@ const editedItem = ref({ ...defaultItem })
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
-const user = computed(() => store.user)
 const ownFood = computed(() => store.ownFood)
-const settings = computed(() => store.settings)
 
-const license = computed(() => settings.value.license === config.public.pkutoolsLicenseKey)
+const license = computed(() => isPremium.value)
 
 const tableHeaders = computed(() => [
   { key: 'food', title: t('common.food') },
@@ -80,26 +78,39 @@ const editItem = () => {
   dialog.value.openDialog()
 }
 
-const deleteItem = () => {
-  const db = getDatabase()
+const deleteItem = async () => {
+  // Store deleted item for undo
   const deletedItem = JSON.parse(
     JSON.stringify(ownFood.value.find((item) => item['.key'] === editedKey.value))
   )
-  remove(dbRef(db, `${user.value.id}/ownFood/${editedKey.value}`))
 
-  // Show notification with undo
-  notifications.success(t('own-food.item-deleted'), {
-    undoAction: () => {
-      push(dbRef(db, `${user.value.id}/ownFood`), {
-        name: deletedItem.name,
-        icon: deletedItem.icon,
-        phe: deletedItem.phe,
-        kcal: deletedItem.kcal
-      })
-    },
-    undoLabel: t('common.undo')
-  })
-  closeModal()
+  try {
+    await deleteOwnFood({
+      entryKey: editedKey.value
+    })
+
+    notifications.success(t('own-food.item-deleted'), {
+      undoAction: async () => {
+        try {
+          // Restore the item by adding it back via save API
+          await saveOwnFood({
+            name: deletedItem.name,
+            icon: deletedItem.icon || null,
+            phe: deletedItem.phe,
+            kcal: deletedItem.kcal
+          })
+        } catch (error) {
+          console.error('Undo error:', error)
+          notifications.error('Failed to restore item. Please add it manually.')
+        }
+      },
+      undoLabel: t('common.undo')
+    })
+    closeModal()
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Delete error:', error)
+  }
 }
 
 const closeModal = () => {
@@ -110,30 +121,46 @@ const closeModal = () => {
   editedKey.value = null
 }
 
-const save = () => {
+const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
   }
 
-  const db = getDatabase()
   if (editedIndex.value > -1) {
-    update(dbRef(db, `${user.value.id}/ownFood/${editedKey.value}`), {
-      name: editedItem.value.name,
-      icon: editedItem.value.icon || null,
-      phe: Number(editedItem.value.phe),
-      kcal: Number(editedItem.value.kcal) || 0
-    })
-  } else {
-    if (ownFood.value.length >= 50 && settings.value.license !== config.public.pkutoolsLicenseKey) {
-      notifications.error(t('app.limit'))
-    } else {
-      push(dbRef(db, `${user.value.id}/ownFood`), {
+    // Update existing entry - use update API (validates server-side with Zod)
+    try {
+      await updateOwnFood({
+        entryKey: editedKey.value,
         name: editedItem.value.name,
         icon: editedItem.value.icon || null,
         phe: Number(editedItem.value.phe),
         kcal: Number(editedItem.value.kcal) || 0
       })
+      notifications.success(t('common.saved'))
+    } catch (error) {
+      // Error handling is done in useSave composable
+      console.error('Update error:', error)
+    }
+  } else {
+    // Add new entry - use save API
+    try {
+      // Check limit for free users (server will also check, but we can show error earlier)
+      if (ownFood.value.length >= 50 && !isPremium.value) {
+        notifications.error(t('app.limit'))
+        return
+      }
+
+      await saveOwnFood({
+        name: editedItem.value.name,
+        icon: editedItem.value.icon || null,
+        phe: Number(editedItem.value.phe),
+        kcal: Number(editedItem.value.kcal) || 0
+      })
+      notifications.success(t('common.saved'))
+    } catch (error) {
+      // Error handling is done in useSave composable
+      console.error('Save error:', error)
     }
   }
   closeModal()
@@ -156,16 +183,16 @@ const calculateKcal = () => {
   return Math.round((weight.value * editedItem.value.kcal) / 100) || 0
 }
 
-const add = () => {
+const add = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
   }
 
-  const db = getDatabase()
   const logEntry = {
     name: editedItem.value.name,
     icon: editedItem.value.icon || null,
+    emoji: null,
     pheReference: editedItem.value.phe,
     kcalReference: editedItem.value.kcal || 0,
     weight: Number(weight.value),
@@ -173,28 +200,19 @@ const add = () => {
     kcal: calculateKcal()
   }
 
-  const formattedDate = selectedDate.value
-  const dateEntry = store.pheDiary.find((entry) => entry.date === formattedDate)
-
-  if (dateEntry) {
-    const updatedLog = [...(dateEntry.log || []), logEntry]
-    const totalPhe = updatedLog.reduce((sum, item) => sum + (item.phe || 0), 0)
-    const totalKcal = updatedLog.reduce((sum, item) => sum + (item.kcal || 0), 0)
-    update(dbRef(db, `${user.value.id}/pheDiary/${dateEntry['.key']}`), {
-      log: updatedLog,
-      phe: totalPhe,
-      kcal: totalKcal
+  // Use server API for all writes - validates with Zod
+  try {
+    await saveDiaryEntry({
+      date: selectedDate.value,
+      ...logEntry
     })
-  } else {
-    push(dbRef(db, `${user.value.id}/pheDiary`), {
-      date: formattedDate,
-      phe: calculatePhe(),
-      kcal: calculateKcal(),
-      log: [logEntry]
-    })
+    notifications.success(t('common.saved'))
+    dialog2.value.closeDialog()
+    navigateTo(localePath('diary'))
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Save error:', error)
   }
-  dialog2.value.closeDialog()
-  navigateTo(localePath('diary'))
 }
 
 const escapeCSV = (value) => {
@@ -308,7 +326,7 @@ defineOgImageComponent('NuxtSeo', {
           <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
             <span class="flex items-center gap-1">
               <img
-                v-if="item.icon !== undefined && item.icon !== ''"
+                v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
                 :src="'/images/food-icons/' + item.icon + '.svg'"
                 onerror="this.src='/images/food-icons/organic-food.svg'"
                 width="25"
@@ -316,7 +334,7 @@ defineOgImageComponent('NuxtSeo', {
                 alt="Food Icon"
               />
               <img
-                v-if="item.icon === undefined || item.icon === ''"
+                v-if="item.icon === undefined || item.icon === null || item.icon === ''"
                 :src="'/images/food-icons/organic-food.svg'"
                 width="25"
                 class="food-icon"

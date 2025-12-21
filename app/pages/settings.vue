@@ -1,17 +1,21 @@
 <script setup>
 import { format, parseISO } from 'date-fns'
 import { enUS, de, fr, es } from 'date-fns/locale'
-import { getDatabase, ref as dbRef, remove, update } from 'firebase/database'
-import { getAuth } from 'firebase/auth'
 import { useStore } from '../../stores/index'
 
 const store = useStore()
 const { t } = useI18n()
-const config = useRuntimeConfig()
 const localePath = useLocalePath()
 const i18nLocale = useI18n().locale
 const notifications = useNotifications()
 const confirm = useConfirm()
+const {
+  updateSettings,
+  resetData,
+  deleteAccount: deleteAccountApi,
+  updateConsent,
+  updateGettingStarted
+} = useSave()
 
 // Date formatting function
 const formatConsentDate = (dateString) => {
@@ -27,7 +31,6 @@ const selectedTheme = ref('system')
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
-const user = computed(() => store.user)
 const settings = computed(() => store.settings)
 
 const themeOptions = computed(() => [
@@ -42,42 +45,64 @@ const unitOptions = computed(() => [
 ])
 
 // Methods
+const { handleError } = useErrorHandler()
+
 const signInGoogle = async () => {
   try {
     await store.signInGoogle()
   } catch (error) {
-    notifications.error(t('app.auth-error'))
-    console.error(error)
+    handleError(error, 'sign in')
   }
 }
 
-const save = () => {
+const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
   }
 
-  const db = getDatabase()
-  update(dbRef(db, `${user.value.id}/settings`), {
-    maxPhe: settings.value.maxPhe || 0,
-    maxKcal: settings.value.maxKcal || 0,
-    labUnit: settings.value.labUnit
-  }).then(() => {
+  try {
+    await updateSettings({
+      maxPhe: settings.value.maxPhe || 0,
+      maxKcal: settings.value.maxKcal || 0,
+      labUnit: settings.value.labUnit
+    })
     notifications.success(t('settings.saved'))
-  })
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Save settings error:', error)
+  }
 }
 
-const saveLicense = () => {
-  const db = getDatabase()
-  update(dbRef(db, `${user.value.id}/settings`), {
-    license: settings.value.license || ''
-  }).then(() => {
-    if (settings.value.license === config.public.pkutoolsLicenseKey) {
+const saveLicense = async () => {
+  try {
+    // First validate the license via server API
+    const { validateLicense, clearCache } = useLicense()
+
+    // Clear cache before validating to ensure fresh validation
+    clearCache()
+
+    const validation = await validateLicense(settings.value.license || '')
+
+    // Then save to Firebase via server API
+    await updateSettings({
+      license: settings.value.license || ''
+    })
+
+    if (validation.valid) {
       notifications.success(t('settings.license-active') + ' 🎉')
     } else {
       notifications.info(t('settings.license-inactive'))
+      // Clear cache for invalid licenses to ensure UI reflects invalid state
+      clearCache()
     }
-  })
+  } catch (error) {
+    // Error handling is done in useLicense composable
+    console.error('License save error:', error)
+    // Clear cache on error to ensure UI doesn't show stale premium status
+    const { clearCache } = useLicense()
+    clearCache()
+  }
 }
 
 const resetDiary = async () => {
@@ -88,9 +113,13 @@ const resetDiary = async () => {
     cancelLabel: t('common.cancel')
   })
   if (r === true) {
-    const db = getDatabase()
-    remove(dbRef(db, `${user.value.id}/pheDiary`))
-    navigateTo(localePath('diary'))
+    try {
+      await resetData('diary')
+      navigateTo(localePath('diary'))
+    } catch (error) {
+      // Error handling is done in useSave composable
+      console.error('Reset diary error:', error)
+    }
   }
 }
 
@@ -102,9 +131,13 @@ const resetLabValues = async () => {
     cancelLabel: t('common.cancel')
   })
   if (r === true) {
-    const db = getDatabase()
-    remove(dbRef(db, `${user.value.id}/labValues`))
-    navigateTo(localePath('blood-values'))
+    try {
+      await resetData('labValues')
+      navigateTo(localePath('blood-values'))
+    } catch (error) {
+      // Error handling is done in useSave composable
+      console.error('Reset lab values error:', error)
+    }
   }
 }
 
@@ -116,13 +149,17 @@ const resetOwnFood = async () => {
     cancelLabel: t('common.cancel')
   })
   if (r === true) {
-    const db = getDatabase()
-    remove(dbRef(db, `${user.value.id}/ownFood`))
-    navigateTo(localePath('own-food'))
+    try {
+      await resetData('ownFood')
+      navigateTo(localePath('own-food'))
+    } catch (error) {
+      // Error handling is done in useSave composable
+      console.error('Reset own food error:', error)
+    }
   }
 }
 
-const deleteAccount = async () => {
+const handleDeleteAccount = async () => {
   const r = await confirm.confirm({
     title: t('settings.delete-account'),
     message: t('settings.delete-account-description'),
@@ -130,27 +167,25 @@ const deleteAccount = async () => {
     cancelLabel: t('common.cancel')
   })
   if (r === true) {
-    const db = getDatabase()
-    const auth = getAuth()
-    remove(dbRef(db, store.user.id))
-    auth.currentUser
-      .delete()
-      .then(() => {
-        store.signOut()
-        navigateTo(localePath('index'))
-      })
-      .catch((error) => {
-        notifications.error(t('settings.delete-account-error'))
-        console.error(error)
-      })
+    try {
+      await deleteAccountApi()
+      store.signOut()
+      navigateTo(localePath('index'))
+    } catch (error) {
+      // Error handling is done in useSave composable
+      console.error('Delete account error:', error)
+      notifications.error(t('settings.delete-account-error'))
+    }
   }
 }
 
 const giveHealthDataConsent = async () => {
-  const success = await store.updateHealthDataConsent(true)
-  if (success) {
+  try {
+    await updateConsent({ healthDataConsent: true })
     notifications.success(t('health-consent.consent-given'))
-  } else {
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Update consent error:', error)
     notifications.error(t('health-consent.error-saving'))
   }
 }
@@ -163,31 +198,37 @@ const revokeHealthDataConsent = async () => {
     cancelLabel: t('common.cancel')
   })
   if (r === true) {
-    const success = await store.updateHealthDataConsent(false)
-    if (success) {
+    try {
+      await updateConsent({ healthDataConsent: false })
       notifications.success(t('health-consent.consent-revoked'))
-    } else {
+    } catch (error) {
+      // Error handling is done in useSave composable
+      console.error('Update consent error:', error)
       notifications.error(t('health-consent.error-revoking'))
     }
   }
 }
 
 const updateEmailConsent = async (emailConsent) => {
-  const success = await store.updateEmailConsent(emailConsent)
-  if (success) {
+  try {
+    await updateConsent({ emailConsent })
     notifications.success(t('health-consent.email-consent-updated'))
-  } else {
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Update consent error:', error)
     notifications.error(t('health-consent.error-updating-email'))
   }
 }
 
 const reopenOnboarding = async () => {
-  const reset = await store.resetGettingStartedCompleted()
-  if (!reset) {
+  try {
+    await updateGettingStarted(false)
+    navigateTo(localePath('getting-started'))
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Update getting started error:', error)
     notifications.error(t('health-consent.error-saving'))
-    return
   }
-  navigateTo(localePath('getting-started'))
 }
 
 const handleThemeChange = () => {
@@ -452,7 +493,7 @@ defineOgImageComponent('NuxtSeo', {
         <p class="mb-4 text-sm text-red-700 dark:text-red-300">
           {{ $t('settings.delete-account-info') }}
         </p>
-        <SecondaryButton :text="$t('settings.delete-account')" @click="deleteAccount" />
+        <SecondaryButton :text="$t('settings.delete-account')" @click="handleDeleteAccount" />
       </div>
     </div>
   </div>

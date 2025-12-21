@@ -1,6 +1,5 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { getDatabase, ref as dbRef, push, remove, update } from 'firebase/database'
 import { format, parseISO, formatISO, subMonths, subWeeks } from 'date-fns'
 import { enUS, de, fr, es } from 'date-fns/locale'
 import enChart from 'apexcharts/dist/locales/en.json'
@@ -12,10 +11,10 @@ const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
 const dialog = ref(null)
 const dialog2 = ref(null)
-const config = useRuntimeConfig()
-const localePath = useLocalePath()
 const notifications = useNotifications()
 const confirm = useConfirm()
+const { isPremium } = useLicense()
+const { saveDiaryEntry, deleteDiaryEntry, updateDiaryTotals, createDayEntry } = useSave()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -34,11 +33,10 @@ const chartRef = ref(null)
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
-const user = computed(() => store.user)
 const pheDiary = computed(() => store.pheDiary)
 const settings = computed(() => store.settings)
 
-const license = computed(() => settings.value.license === config.public.pkutoolsLicenseKey)
+const license = computed(() => isPremium.value)
 
 const tableHeaders = computed(() => [
   { key: 'date', title: t('diet-report.date') },
@@ -179,76 +177,118 @@ const signInGoogle = async () => {
   }
 }
 
+// Store original state for restoring on cancel
+const originalEditedItem = ref(null)
+
 const editItem = (item) => {
   editedIndex.value = pheDiary.value.indexOf(item)
   editedKey.value = item['.key']
-  editedItem.value = JSON.parse(JSON.stringify(item))
+  // Ensure log array exists (even if empty) for entries created via createDayEntry
+  const itemCopy = JSON.parse(JSON.stringify(item))
+  if (!itemCopy.log) {
+    itemCopy.log = []
+  }
+  editedItem.value = itemCopy
+  originalEditedItem.value = JSON.parse(JSON.stringify(itemCopy)) // Store original state
   dialog.value.openDialog()
 }
 
-const deleteItem = () => {
-  const db = getDatabase()
+const deleteItem = async () => {
+  // Store deleted item for undo
   const deletedItem = JSON.parse(
     JSON.stringify(pheDiary.value.find((item) => item['.key'] === editedKey.value))
   )
-  remove(dbRef(db, `${user.value.id}/pheDiary/${editedKey.value}`))
 
-  // Show notification with undo
-  notifications.success(t('diary.entry-deleted'), {
-    undoAction: () => {
-      // Extract only the data fields, excluding .key (Firebase will create a new key)
-      const { '.key': _, ...restoredData } = deletedItem
-      push(dbRef(db, `${user.value.id}/pheDiary`), restoredData)
-    },
-    undoLabel: t('common.undo')
-  })
-  close()
+  try {
+    await deleteDiaryEntry({
+      entryKey: editedKey.value
+    })
+
+    notifications.success(t('diary.entry-deleted'), {
+      undoAction: async () => {
+        try {
+          // Restore the entry by recreating it
+          // If it has log items, restore them one by one
+          if (deletedItem.log && deletedItem.log.length > 0) {
+            for (const logItem of deletedItem.log) {
+              await saveDiaryEntry({
+                date: deletedItem.date,
+                ...logItem
+              })
+            }
+          } else {
+            // Simple entry without log items
+            await saveDiaryEntry({
+              date: deletedItem.date,
+              name: 'Manual Entry',
+              weight: 100,
+              phe: deletedItem.phe || 0,
+              kcal: deletedItem.kcal || 0
+            })
+          }
+        } catch (error) {
+          console.error('Undo error:', error)
+          notifications.error('Failed to restore entry. Please add it manually.')
+        }
+      },
+      undoLabel: t('common.undo')
+    })
+    close()
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Delete error:', error)
+  }
 }
 
 const close = () => {
+  // Restore original state if it exists (user cancelled)
+  // This restores any local changes (like deleted log items) back to original
+  if (originalEditedItem.value) {
+    editedItem.value = JSON.parse(JSON.stringify(originalEditedItem.value))
+    originalEditedItem.value = null
+  }
   dialog.value.closeDialog()
+  // Reset state after closing
   editedItem.value = { ...defaultItem }
   editedIndex.value = -1
   editedKey.value = null
 }
 
-const save = () => {
+const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
   }
 
-  const db = getDatabase()
-  if (editedIndex.value > -1) {
-    if (editedItem.value.log) {
-      update(dbRef(db, `${user.value.id}/pheDiary/${editedKey.value}`), {
+  try {
+    if (editedIndex.value > -1) {
+      // Update existing diary entry totals, date, and log items
+      // This syncs any log item deletions and date changes that were made locally
+      await updateDiaryTotals({
+        entryKey: editedKey.value,
         date: editedItem.value.date,
         phe: Number(editedItem.value.phe),
-        log: editedItem.value.log,
-        kcal: Number(editedItem.value.kcal)
+        kcal: Number(editedItem.value.kcal),
+        log: editedItem.value.log || []
       })
+      notifications.success(t('common.saved'))
     } else {
-      update(dbRef(db, `${user.value.id}/pheDiary/${editedKey.value}`), {
+      // Create a new day entry (not a food item)
+      // This always creates a new diary entry, even if a day with the same date already exists
+      await createDayEntry({
         date: editedItem.value.date,
         phe: Number(editedItem.value.phe),
         kcal: Number(editedItem.value.kcal)
       })
+      notifications.success(t('common.saved'))
     }
-  } else {
-    if (
-      pheDiary.value.length >= 14 &&
-      settings.value.license !== config.public.pkutoolsLicenseKey
-    ) {
-      notifications.error(t('app.limit'))
-    } else {
-      push(dbRef(db, `${user.value.id}/pheDiary`), {
-        date: editedItem.value.date,
-        phe: Number(editedItem.value.phe),
-        kcal: Number(editedItem.value.kcal)
-      })
-    }
+    // Clear original state after successful save
+    originalEditedItem.value = null
+    close()
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Save error:', error)
   }
-  close()
 }
 
 // Start add/edit log
@@ -287,10 +327,22 @@ const editLogItem = (item, index) => {
 }
 
 const deleteLogItem = () => {
+  if (!editedItem.value.log || editedLogIndex.value < 0) {
+    return
+  }
+
+  // Update local state immediately so UI reflects the change
+  // The deletion will be saved when the main dialog is saved
   editedItem.value.log.splice(editedLogIndex.value, 1)
-  editedItem.value.phe = editedItem.value.log.reduce((sum, item) => sum + (item.phe || 0), 0)
-  editedItem.value.kcal = editedItem.value.log.reduce((sum, item) => sum + (item.kcal || 0), 0)
-  dialog2.value.closeDialog()
+
+  // Recalculate totals
+  const totalPhe = editedItem.value.log.reduce((sum, item) => sum + (item.phe || 0), 0)
+  const totalKcal = editedItem.value.log.reduce((sum, item) => sum + (item.kcal || 0), 0)
+  editedItem.value.phe = totalPhe
+  editedItem.value.kcal = totalKcal
+
+  // Close the log edit dialog
+  closeLogEdit()
 }
 
 const closeLogEdit = () => {
@@ -299,7 +351,14 @@ const closeLogEdit = () => {
   editedLogIndex.value = -1
 }
 
-const saveLogEdit = () => {
+const openAddLogItem = () => {
+  // Reset log item state for adding new item
+  editedLogIndex.value = -1
+  editedLogItem.value = { ...defaultLogItem }
+  dialog2.value.openDialog()
+}
+
+const saveLogEdit = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
@@ -309,22 +368,59 @@ const saveLogEdit = () => {
     name: editedLogItem.value.name,
     emoji: editedLogItem.value.emoji || null,
     icon: editedLogItem.value.icon || null,
-    pheReference: Number(editedLogItem.value.pheReference) || 0,
-    kcalReference: Number(editedLogItem.value.kcalReference) || 0,
+    pheReference: editedLogItem.value.pheReference
+      ? Number(editedLogItem.value.pheReference)
+      : null,
+    kcalReference: editedLogItem.value.kcalReference
+      ? Number(editedLogItem.value.kcalReference)
+      : null,
     weight: Number(editedLogItem.value.weight),
     phe: calculatePhe(),
     kcal: calculateKcal()
   }
 
-  if (editedLogIndex.value > -1) {
-    editedItem.value.log[editedLogIndex.value] = updatedItem
-  } else {
-    editedItem.value.log.push(updatedItem)
-  }
+  try {
+    if (editedLogIndex.value > -1) {
+      // Update existing log item - only update local state
+      // Changes will be saved when the main dialog is saved
+      if (editedItem.value.log && editedItem.value.log[editedLogIndex.value]) {
+        editedItem.value.log[editedLogIndex.value] = updatedItem
 
-  editedItem.value.phe = editedItem.value.log.reduce((sum, item) => sum + (item.phe || 0), 0)
-  editedItem.value.kcal = editedItem.value.log.reduce((sum, item) => sum + (item.kcal || 0), 0)
-  closeLogEdit()
+        // Recalculate totals
+        const totalPhe = editedItem.value.log.reduce((sum, item) => sum + (item.phe || 0), 0)
+        const totalKcal = editedItem.value.log.reduce((sum, item) => sum + (item.kcal || 0), 0)
+        editedItem.value.phe = totalPhe
+        editedItem.value.kcal = totalKcal
+      }
+
+      notifications.success(t('common.saved'))
+    } else {
+      // Add new log item - only update local state
+      // Changes will be saved when the main dialog is saved
+      if (!editedKey.value) {
+        notifications.error('No entry selected. Please edit an entry first.')
+        return
+      }
+
+      // Update local state immediately so UI reflects the change
+      // Create a new array to ensure Vue reactivity works
+      const currentLog = editedItem.value.log || []
+      editedItem.value.log = [...currentLog, updatedItem]
+
+      // Recalculate totals
+      const totalPhe = editedItem.value.log.reduce((sum, item) => sum + (item.phe || 0), 0)
+      const totalKcal = editedItem.value.log.reduce((sum, item) => sum + (item.kcal || 0), 0)
+      editedItem.value.phe = totalPhe
+      editedItem.value.kcal = totalKcal
+
+      notifications.success(t('common.saved'))
+    }
+    closeLogEdit()
+  } catch (error) {
+    // Error handling
+    console.error('Save log edit error:', error)
+    notifications.error('Failed to save log item. Please try again.')
+  }
 }
 
 // End add/edit log
@@ -578,11 +674,7 @@ defineOgImageComponent('NuxtSeo', {
           <h4 class="text-sm font-medium">
             {{ $t('diary.title') }}
           </h4>
-          <SecondaryButton
-            :text="$t('common.add')"
-            class="mr-0! mb-0!"
-            @click="$refs.dialog2.openDialog()"
-          />
+          <SecondaryButton :text="$t('common.add')" class="mr-0! mb-0!" @click="openAddLogItem" />
         </div>
 
         <DataTable v-if="editedItem.log" :headers="tableHeaders2" class="mb-3">
@@ -595,7 +687,7 @@ defineOgImageComponent('NuxtSeo', {
             <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
               <span class="flex items-center gap-1">
                 <img
-                  v-if="item.icon !== undefined && item.icon !== ''"
+                  v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
                   :src="'/images/food-icons/' + item.icon + '.svg'"
                   onerror="this.src='/images/food-icons/organic-food.svg'"
                   width="25"
@@ -603,14 +695,21 @@ defineOgImageComponent('NuxtSeo', {
                   alt="Food Icon"
                 />
                 <img
-                  v-if="(item.icon === undefined || item.icon === '') && item.emoji === undefined"
+                  v-if="
+                    (item.icon === undefined || item.icon === null || item.icon === '') &&
+                    (item.emoji === undefined || item.emoji === null)
+                  "
                   :src="'/images/food-icons/organic-food.svg'"
                   width="25"
                   class="food-icon"
                   alt="Food Icon"
                 />
                 <span
-                  v-if="(item.icon === undefined || item.icon === '') && item.emoji !== undefined"
+                  v-if="
+                    (item.icon === undefined || item.icon === null || item.icon === '') &&
+                    item.emoji !== undefined &&
+                    item.emoji !== null
+                  "
                   class="ml-0.5 mr-1"
                 >
                   {{ item.emoji }}

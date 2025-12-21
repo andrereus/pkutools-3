@@ -1,6 +1,5 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { getDatabase, ref as dbRef, push, remove, update } from 'firebase/database'
 import { format, parseISO, formatISO } from 'date-fns'
 import { enUS, de, fr, es } from 'date-fns/locale'
 import enChart from 'apexcharts/dist/locales/en.json'
@@ -11,10 +10,10 @@ import esChart from 'apexcharts/dist/locales/es.json'
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
 const dialog = ref(null)
-const config = useRuntimeConfig()
-const localePath = useLocalePath()
 const notifications = useNotifications()
 const confirm = useConfirm()
+const { isPremium } = useLicense()
+const { saveLabValue, updateLabValue, deleteLabValue } = useSave()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -30,11 +29,10 @@ const editedItem = ref({ ...defaultItem })
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
-const user = computed(() => store.user)
 const labValues = computed(() => store.labValues)
 const settings = computed(() => store.settings)
 
-const license = computed(() => settings.value.license === config.public.pkutoolsLicenseKey)
+const license = computed(() => isPremium.value)
 
 const tableHeaders = computed(() => [
   { key: 'date', title: t('blood-values.date') },
@@ -143,25 +141,38 @@ const editItem = (item) => {
   dialog.value.openDialog()
 }
 
-const deleteItem = () => {
-  const db = getDatabase()
+const deleteItem = async () => {
+  // Store deleted item for undo
   const deletedItem = JSON.parse(
     JSON.stringify(labValues.value.find((item) => item['.key'] === editedKey.value))
   )
-  remove(dbRef(db, `${user.value.id}/labValues/${editedKey.value}`))
 
-  // Show notification with undo
-  notifications.success(t('blood-values.item-deleted'), {
-    undoAction: () => {
-      push(dbRef(db, `${user.value.id}/labValues`), {
-        date: deletedItem.date,
-        phe: deletedItem.phe,
-        tyrosine: deletedItem.tyrosine
-      })
-    },
-    undoLabel: t('common.undo')
-  })
-  close()
+  try {
+    await deleteLabValue({
+      entryKey: editedKey.value
+    })
+
+    notifications.success(t('blood-values.item-deleted'), {
+      undoAction: async () => {
+        try {
+          // Restore the item by adding it back via save API
+          await saveLabValue({
+            date: deletedItem.date,
+            phe: deletedItem.phe,
+            tyrosine: deletedItem.tyrosine
+          })
+        } catch (error) {
+          console.error('Undo error:', error)
+          notifications.error('Failed to restore item. Please add it manually.')
+        }
+      },
+      undoLabel: t('common.undo')
+    })
+    close()
+  } catch (error) {
+    // Error handling is done in useSave composable
+    console.error('Delete error:', error)
+  }
 }
 
 const close = () => {
@@ -171,31 +182,44 @@ const close = () => {
   editedKey.value = null
 }
 
-const save = () => {
+const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
   }
 
-  const db = getDatabase()
   if (editedIndex.value > -1) {
-    update(dbRef(db, `${user.value.id}/labValues/${editedKey.value}`), {
-      date: editedItem.value.date,
-      phe: Number(editedItem.value.phe),
-      tyrosine: Number(editedItem.value.tyrosine)
-    })
-  } else {
-    if (
-      labValues.value.length >= 30 &&
-      settings.value.license !== config.public.pkutoolsLicenseKey
-    ) {
-      notifications.error(t('app.limit'))
-    } else {
-      push(dbRef(db, `${user.value.id}/labValues`), {
+    // Update existing entry - use update API (validates server-side with Zod)
+    try {
+      await updateLabValue({
+        entryKey: editedKey.value,
         date: editedItem.value.date,
-        phe: Number(editedItem.value.phe),
-        tyrosine: Number(editedItem.value.tyrosine)
+        phe: editedItem.value.phe ? Number(editedItem.value.phe) : null,
+        tyrosine: editedItem.value.tyrosine ? Number(editedItem.value.tyrosine) : null
       })
+      notifications.success(t('common.saved'))
+    } catch (error) {
+      // Error handling is done in useSave composable
+      console.error('Update error:', error)
+    }
+  } else {
+    // Add new entry - use save API
+    try {
+      // Check limit for free users (server will also check, but we can show error earlier)
+      if (labValues.value.length >= 30 && !isPremium.value) {
+        notifications.error(t('app.limit'))
+        return
+      }
+
+      await saveLabValue({
+        date: editedItem.value.date,
+        phe: editedItem.value.phe ? Number(editedItem.value.phe) : null,
+        tyrosine: editedItem.value.tyrosine ? Number(editedItem.value.tyrosine) : null
+      })
+      notifications.success(t('common.saved'))
+    } catch (error) {
+      // Error handling is done in useSave composable
+      console.error('Save error:', error)
     }
   }
   close()

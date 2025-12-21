@@ -234,6 +234,60 @@ For production deployment, you need:
 3. Database rules configured (see `database.rules.json`)
 4. Environment variables configured (see Deployment section)
 
+#### Firebase Admin SDK Setup
+
+For server-side operations (license validation, data writes, rate limiting), you need Firebase Admin SDK credentials.
+
+**Option 1: JSON File (Local Development - Recommended)**
+
+1. **Get Service Account Credentials:**
+   - Go to Firebase Console > Project Settings > Service Accounts
+   - Click "Generate New Private Key"
+   - Download the JSON file
+
+2. **Place the file:**
+   ```
+   server/config/firebase-service-account.json
+   ```
+
+   - The file will be automatically detected
+   - **Important:** This file is gitignored and should NEVER be committed
+
+**Option 2: Environment Variables (Production/Vercel)**
+
+For production deployments (like Vercel), you cannot upload files. Use environment variables instead:
+
+1. **Extract values from your service account JSON:**
+   - `project_id` → `FIREBASE_ADMIN_PROJECT_ID`
+   - `client_email` → `FIREBASE_ADMIN_CLIENT_EMAIL`
+   - `private_key` → `FIREBASE_ADMIN_PRIVATE_KEY` (copy the entire value including `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`)
+
+2. **Add to Vercel:**
+   - Go to your Vercel project settings
+   - Navigate to Environment Variables
+   - Add each variable:
+     - `FIREBASE_ADMIN_PROJECT_ID`
+     - `FIREBASE_ADMIN_CLIENT_EMAIL`
+     - `FIREBASE_ADMIN_PRIVATE_KEY`
+   - For the private key, paste it as-is (Vercel handles newlines correctly)
+
+**Priority:**
+
+- Local: JSON file is checked first, then environment variables
+- Production: Only environment variables are used
+
+**For Local Development with Emulators:**
+
+- Admin SDK credentials are **NOT required**
+- The Admin SDK will automatically connect to emulators
+- Just run `npm run emulators:data` and `npm run dev`
+
+**License Key:**
+
+- Set `PKU_TOOLS_LICENSE_KEY` to your premium license key (server-side only, never exposed to client)
+
+See `server/config/README.md` for detailed setup instructions.
+
 ### Deployment
 
 The app can be deployed to various platforms. For Vercel:
