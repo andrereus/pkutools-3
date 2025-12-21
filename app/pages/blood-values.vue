@@ -188,6 +188,15 @@ const save = async () => {
     return
   }
 
+  // Check limit before closing (for better UX)
+  if (editedIndex.value === -1 && labValues.value.length >= 30 && !isPremium.value) {
+    notifications.error(t('app.limit'))
+    return
+  }
+
+  // Close dialog immediately for instant feedback
+  close()
+
   if (editedIndex.value > -1) {
     // Update existing entry - use update API (validates server-side with Zod)
     try {
@@ -205,12 +214,6 @@ const save = async () => {
   } else {
     // Add new entry - use save API
     try {
-      // Check limit for free users (server will also check, but we can show error earlier)
-      if (labValues.value.length >= 30 && !isPremium.value) {
-        notifications.error(t('app.limit'))
-        return
-      }
-
       await saveLabValue({
         date: editedItem.value.date,
         phe: editedItem.value.phe ? Number(editedItem.value.phe) : null,
@@ -222,7 +225,6 @@ const save = async () => {
       console.error('Save error:', error)
     }
   }
-  close()
 }
 
 const getlocalDate = (date) => {

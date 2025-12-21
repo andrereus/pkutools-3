@@ -322,6 +322,9 @@ const save = async () => {
     }
   }
 
+  // Navigate immediately for instant feedback
+  navigateTo(localePath('diary'))
+
   // Use server API for all writes - validates with Zod
   try {
     await saveDiaryEntry({
@@ -329,7 +332,6 @@ const save = async () => {
       ...logEntry
     })
     notifications.success(t('common.saved'))
-    navigateTo(localePath('diary'))
   } catch (error) {
     // Error handling is done in useSave composable
     console.error('Save error:', error)

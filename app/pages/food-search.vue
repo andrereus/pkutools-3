@@ -71,6 +71,10 @@ const save = async () => {
     kcal: calculateKcal()
   }
 
+  // Close dialog and navigate immediately for instant feedback
+  dialog.value.closeDialog()
+  navigateTo(localePath('diary'))
+
   // Use server API for all writes - validates with Zod
   try {
     await saveDiaryEntry({
@@ -82,8 +86,6 @@ const save = async () => {
     // Error handling is done in useSave composable
     console.error('Save error:', error)
   }
-  dialog.value.closeDialog()
-  navigateTo(localePath('diary'))
 }
 
 const searchFood = async () => {

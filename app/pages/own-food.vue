@@ -127,6 +127,15 @@ const save = async () => {
     return
   }
 
+  // Check limit before closing (for better UX)
+  if (editedIndex.value === -1 && ownFood.value.length >= 50 && !isPremium.value) {
+    notifications.error(t('app.limit'))
+    return
+  }
+
+  // Close modal immediately for instant feedback
+  closeModal()
+
   if (editedIndex.value > -1) {
     // Update existing entry - use update API (validates server-side with Zod)
     try {
@@ -145,12 +154,6 @@ const save = async () => {
   } else {
     // Add new entry - use save API
     try {
-      // Check limit for free users (server will also check, but we can show error earlier)
-      if (ownFood.value.length >= 50 && !isPremium.value) {
-        notifications.error(t('app.limit'))
-        return
-      }
-
       await saveOwnFood({
         name: editedItem.value.name,
         icon: editedItem.value.icon || null,
@@ -163,7 +166,6 @@ const save = async () => {
       console.error('Save error:', error)
     }
   }
-  closeModal()
 }
 
 const addItem = (item) => {

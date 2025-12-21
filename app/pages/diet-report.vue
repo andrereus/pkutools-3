@@ -260,6 +260,10 @@ const save = async () => {
     return
   }
 
+  // Clear original state and close dialog immediately for instant feedback
+  originalEditedItem.value = null
+  close()
+
   try {
     if (editedIndex.value > -1) {
       // Update existing diary entry totals, date, and log items
@@ -282,9 +286,6 @@ const save = async () => {
       })
       notifications.success(t('common.saved'))
     }
-    // Clear original state after successful save
-    originalEditedItem.value = null
-    close()
   } catch (error) {
     // Error handling is done in useSave composable
     console.error('Save error:', error)

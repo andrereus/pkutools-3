@@ -192,6 +192,9 @@ const save = async () => {
     kcal: calculateKcal()
   }
 
+  // Close dialog immediately for instant feedback
+  close()
+
   try {
     if (selectedDiaryEntry.value && editedIndex.value > -1) {
       // Update existing item - use update API (validates server-side with Zod)
@@ -209,7 +212,6 @@ const save = async () => {
       })
       notifications.success(t('common.saved'))
     }
-    close()
   } catch (error) {
     // Error handling is done in useSave composable
     console.error('Save error:', error)
