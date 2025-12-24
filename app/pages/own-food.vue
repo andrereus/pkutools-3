@@ -12,7 +12,7 @@ const localePath = useLocalePath()
 const notifications = useNotifications()
 const confirm = useConfirm()
 const { isPremium } = useLicense()
-const { saveOwnFood, saveDiaryEntry, updateOwnFood, deleteOwnFood } = useSave()
+const { saveOwnFood, saveDiaryEntry, updateOwnFood, deleteOwnFood } = useApi()
 
 // Reactive state
 const search = ref('')
@@ -111,7 +111,7 @@ const deleteItem = async () => {
       undoLabel: t('common.undo')
     })
   } catch (error) {
-    // Error handling is done in useSave composable
+    // Error handling is done in useApi composable
     console.error('Delete error:', error)
   }
 }
@@ -159,7 +159,7 @@ const save = async () => {
       })
       notifications.success(t('common.saved'))
     } catch (error) {
-      // Error handling is done in useSave composable
+      // Error handling is done in useApi composable
       console.error('Update error:', error)
     }
   } else {
@@ -173,7 +173,7 @@ const save = async () => {
       })
       notifications.success(t('common.saved'))
     } catch (error) {
-      // Error handling is done in useSave composable
+      // Error handling is done in useApi composable
       console.error('Save error:', error)
     }
   }
@@ -223,7 +223,7 @@ const add = async () => {
     dialog2.value.closeDialog()
     navigateTo(localePath('diary'))
   } catch (error) {
-    // Error handling is done in useSave composable
+    // Error handling is done in useApi composable
     console.error('Save error:', error)
   }
 }

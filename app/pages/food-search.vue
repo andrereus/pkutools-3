@@ -8,7 +8,7 @@ const { t, locale } = useI18n()
 const dialog = ref(null)
 const localePath = useLocalePath()
 const notifications = useNotifications()
-const { saveDiaryEntry } = useSave()
+const { saveDiaryEntry } = useApi()
 
 // Reactive state
 const search = ref('')
@@ -83,7 +83,7 @@ const save = async () => {
     })
     notifications.success(t('common.saved'))
   } catch (error) {
-    // Error handling is done in useSave composable
+    // Error handling is done in useApi composable
     console.error('Save error:', error)
   }
 }

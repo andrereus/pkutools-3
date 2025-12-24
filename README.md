@@ -115,7 +115,7 @@ pkutools-3/
 │   │   ├── data/       # Food icons mapping
 │   │   └── images/     # Images and icons
 │   ├── components/     # Reusable Vue components
-│   ├── composables/    # Vue composables (useSave, useLicense, etc.)
+│   ├── composables/    # Vue composables (useApi, useLicense, etc.)
 │   ├── layouts/        # Layout components
 │   ├── pages/          # Route pages (file-based routing)
 │   └── plugins/        # Nuxt plugins (Firebase, ApexCharts)
@@ -341,7 +341,7 @@ All server routes:
 - Use Firebase Admin SDK for database operations
 - Return consistent JSON responses with success/error states
 
-The `useSave` composable (`app/composables/useSave.ts`) provides a unified interface for calling server APIs from client components.
+The `useApi` composable (`app/composables/useApi.ts`) provides a unified interface for calling server APIs from client components.
 
 ### Food Database
 

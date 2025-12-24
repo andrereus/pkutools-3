@@ -5,7 +5,7 @@ const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
-const { updateConsent, updateGettingStarted } = useSave()
+const { updateConsent, updateGettingStarted } = useApi()
 
 const consentGiven = ref(store.settings?.healthDataConsent ?? false)
 const emailConsent = ref(store.settings?.emailConsent ?? false)
@@ -60,7 +60,7 @@ const handleConsentGiven = async () => {
     await updateGettingStarted(true)
     navigateTo(localePath('diary'))
   } catch (error) {
-    // Error handling is done in useSave composable
+    // Error handling is done in useApi composable
     console.error('Update consent error:', error)
     notifications.error(t('health-consent.error-saving'))
   }
@@ -83,7 +83,7 @@ const handleConsentDeclined = async () => {
       navigateTo(localePath('index'))
     }
   } catch (error) {
-    // Error handling is done in useSave composable
+    // Error handling is done in useApi composable
     console.error('Update consent error:', error)
     notifications.error(t('health-consent.error-saving'))
   }

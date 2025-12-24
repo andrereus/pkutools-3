@@ -1,6 +1,6 @@
 import { getAuth } from 'firebase/auth'
 
-export const useSave = () => {
+export const useApi = () => {
   const notifications = useNotifications()
 
   const getAuthToken = async (): Promise<string> => {
@@ -397,6 +397,7 @@ export const useSave = () => {
     maxPhe?: number | null
     maxKcal?: number | null
     labUnit?: 'mgdl' | 'umoll'
+    license?: string | null
   }): Promise<{ success: boolean }> => {
     try {
       const token = await getAuthToken()

@@ -10,7 +10,7 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
 const { isPremium } = useLicense()
-const { saveDiaryEntry } = useSave()
+const { saveDiaryEntry } = useApi()
 
 // Reactive state
 const phe = ref(null)
@@ -333,7 +333,7 @@ const save = async () => {
     })
     notifications.success(t('common.saved'))
   } catch (error) {
-    // Error handling is done in useSave composable
+    // Error handling is done in useApi composable
     console.error('Save error:', error)
   }
 }

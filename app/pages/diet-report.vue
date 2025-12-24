@@ -14,7 +14,7 @@ const dialog2 = ref(null)
 const notifications = useNotifications()
 const confirm = useConfirm()
 const { isPremium } = useLicense()
-const { saveDiaryEntry, deleteDiaryEntry, updateDiaryTotals, createDayEntry } = useSave()
+const { saveDiaryEntry, deleteDiaryEntry, updateDiaryTotals, createDayEntry } = useApi()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -238,7 +238,7 @@ const deleteItem = async () => {
       undoLabel: t('common.undo')
     })
   } catch (error) {
-    // Error handling is done in useSave composable
+    // Error handling is done in useApi composable
     console.error('Delete error:', error)
   }
 }
@@ -290,7 +290,7 @@ const save = async () => {
       notifications.success(t('common.saved'))
     }
   } catch (error) {
-    // Error handling is done in useSave composable
+    // Error handling is done in useApi composable
     console.error('Save error:', error)
   }
 }
