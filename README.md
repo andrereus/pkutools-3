@@ -72,6 +72,7 @@ PKU Tools is a comprehensive Progressive Web App (PWA) designed to help people w
 - **Database**: [Firebase Realtime Database](https://firebase.google.com/docs/database)
 - **Authentication**: [Firebase Authentication](https://firebase.google.com/docs/auth) (Google OAuth + Email/Password)
 - **Search**: [Fuse.js](https://fusejs.io/) for fuzzy search
+- **Server API**: Nuxt server routes with Firebase Admin SDK for secure data operations
 
 ### Internationalization & SEO
 
@@ -114,6 +115,7 @@ pkutools-3/
 │   │   ├── data/       # Food icons mapping
 │   │   └── images/     # Images and icons
 │   ├── components/     # Reusable Vue components
+│   ├── composables/    # Vue composables (useSave, useLicense, etc.)
 │   ├── layouts/        # Layout components
 │   ├── pages/          # Route pages (file-based routing)
 │   └── plugins/        # Nuxt plugins (Firebase, ApexCharts)
@@ -123,6 +125,17 @@ pkutools-3/
 │   ├── data/           # Static food database (JSON/CSV)
 │   ├── images/         # Public images and food icons
 │   └── videos/         # Demo videos
+├── server/
+│   ├── api/            # Server API routes (Nuxt server routes)
+│   │   ├── diary/      # Diary CRUD operations
+│   │   ├── gemini/     # AI estimation API
+│   │   ├── lab-values/ # Lab values CRUD operations
+│   │   ├── license/    # License validation
+│   │   ├── own-food/   # Custom foods CRUD operations
+│   │   └── settings/   # Settings and account management
+│   ├── config/         # Server configuration (Firebase Admin credentials)
+│   ├── types/          # TypeScript types and Zod schemas
+│   └── utils/          # Server utilities (Firebase Admin helpers)
 ├── stores/             # Pinia stores
 ├── nuxt.config.ts      # Nuxt configuration
 ├── package.json        # Dependencies and scripts
@@ -236,51 +249,38 @@ For production deployment, you need:
 
 #### Firebase Admin SDK Setup
 
-For server-side operations (license validation, data writes, rate limiting), you need Firebase Admin SDK credentials.
-
-**Option 1: JSON File (Local Development - Recommended)**
-
-1. **Get Service Account Credentials:**
-   - Go to Firebase Console > Project Settings > Service Accounts
-   - Click "Generate New Private Key"
-   - Download the JSON file
-
-2. **Place the file:**
-   ```
-   server/config/firebase-service-account.json
-   ```
-
-   - The file will be automatically detected
-   - **Important:** This file is gitignored and should NEVER be committed
-
-**Option 2: Environment Variables (Production/Vercel)**
-
-For production deployments (like Vercel), you cannot upload files. Use environment variables instead:
-
-1. **Extract values from your service account JSON:**
-   - `project_id` → `FIREBASE_ADMIN_PROJECT_ID`
-   - `client_email` → `FIREBASE_ADMIN_CLIENT_EMAIL`
-   - `private_key` → `FIREBASE_ADMIN_PRIVATE_KEY` (copy the entire value including `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`)
-
-2. **Add to Vercel:**
-   - Go to your Vercel project settings
-   - Navigate to Environment Variables
-   - Add each variable:
-     - `FIREBASE_ADMIN_PROJECT_ID`
-     - `FIREBASE_ADMIN_CLIENT_EMAIL`
-     - `FIREBASE_ADMIN_PRIVATE_KEY`
-   - For the private key, paste it as-is (Vercel handles newlines correctly)
-
-**Priority:**
-
-- Local: JSON file is checked first, then environment variables
-- Production: Only environment variables are used
+For server-side operations (license validation, data writes, rate limiting), you need Firebase Admin SDK credentials configured via environment variables.
 
 **For Local Development with Emulators:**
 
 - Admin SDK credentials are **NOT required**
 - The Admin SDK will automatically connect to emulators
 - Just run `npm run emulators:data` and `npm run dev`
+
+**For Production (Environment Variables Required):**
+
+1. **Get Service Account Credentials:**
+   - Go to Firebase Console > Project Settings > Service Accounts
+   - Click "Generate New Private Key"
+   - Download the JSON file
+
+2. **Extract values from your service account JSON:**
+   - `project_id` → `FIREBASE_ADMIN_PROJECT_ID`
+   - `client_email` → `FIREBASE_ADMIN_CLIENT_EMAIL`
+   - `private_key` → `FIREBASE_ADMIN_PRIVATE_KEY` (copy the entire value including `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`)
+
+3. **Set Environment Variables:**
+   - **Local Development (when not using emulators):** Add to your `.env` file (see `.env.example` for reference)
+   - **Production/Vercel:** Add to your Vercel project settings:
+     - Go to your Vercel project settings
+     - Navigate to Environment Variables
+     - Add each variable:
+       - `FIREBASE_ADMIN_PROJECT_ID`
+       - `FIREBASE_ADMIN_CLIENT_EMAIL`
+       - `FIREBASE_ADMIN_PRIVATE_KEY`
+     - For the private key, paste it as-is (Vercel handles newlines correctly)
+
+**Note:** Environment variables are the recommended and only supported method for configuring Firebase Admin SDK credentials.
 
 **License Key:**
 
@@ -311,14 +311,37 @@ The app uses Pinia for state management with a single main store (`stores/index.
 ### Data Flow
 
 1. User authenticates via Firebase Auth
-2. Store initializes Firebase Realtime Database listeners
+2. Store initializes Firebase Realtime Database listeners for read operations
 3. Data changes trigger real-time updates to the store
 4. Vue components reactively update based on store state
-5. User actions write directly to Firebase, triggering listeners
+5. User write actions (save, update, delete) go through server API routes:
+   - Client gets Firebase ID token
+   - Server validates token and input data (Zod schemas)
+   - Server performs operations using Firebase Admin SDK
+   - Firebase Realtime Database listeners detect changes and update store
 
 ### Real-time Sync
 
-Firebase Realtime Database listeners (`onValue`) are set up in the store's `initRef()` method. These listeners automatically sync data across all user's devices in real-time.
+Firebase Realtime Database listeners (`onValue`) are set up in the store's `initRef()` method. These listeners automatically sync data across all user's devices in real-time. Write operations go through server API routes for security and validation, but reads continue to use real-time listeners for instant updates.
+
+### Server API Architecture
+
+The application uses Nuxt server routes for all write operations to provide:
+
+- **Security**: Server-side validation and authentication
+- **Input Validation**: Zod schemas ensure data integrity
+- **License Validation**: Server-side license checks (not exposed to client)
+- **Rate Limiting**: Can be implemented server-side for API protection
+- **Error Handling**: Consistent error responses with proper HTTP status codes
+
+All server routes:
+
+- Require Bearer token authentication (Firebase ID tokens)
+- Validate input using Zod schemas (`server/types/schemas.ts`)
+- Use Firebase Admin SDK for database operations
+- Return consistent JSON responses with success/error states
+
+The `useSave` composable (`app/composables/useSave.ts`) provides a unified interface for calling server APIs from client components.
 
 ### Food Database
 
@@ -360,7 +383,7 @@ The app supports 4 languages with localized:
 
 ### License System
 
-The app uses a freemium model with a free tier (limited diary entries) and an optional license key for unlimited access.
+The app uses a freemium model with a free tier (limited diary entries) and an optional license key for unlimited access. License validation is performed server-side via `/api/license/validate` to prevent client-side tampering. The license key is stored server-side and never exposed to the client.
 
 ## Contributing
 
