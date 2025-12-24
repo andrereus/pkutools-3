@@ -27,7 +27,7 @@ export const useApi = () => {
       const token = await getAuthToken()
 
       const response = await $fetch<{ success: boolean; key: string; updated?: boolean }>(
-        '/api/diary/save',
+        '/api/diary/add-food-item',
         {
           method: 'POST',
           headers: {
@@ -147,7 +147,7 @@ export const useApi = () => {
     try {
       const token = await getAuthToken()
 
-      const response = await $fetch<{ success: boolean; key: string }>('/api/diary/update', {
+      const response = await $fetch<{ success: boolean; key: string }>('/api/diary/update-log-item', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`
@@ -271,7 +271,7 @@ export const useApi = () => {
     try {
       const token = await getAuthToken()
 
-      const response = await $fetch<{ success: boolean; key: string }>('/api/diary/delete', {
+      const response = await $fetch<{ success: boolean; key: string }>('/api/diary/delete-entry', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`
@@ -551,7 +551,7 @@ export const useApi = () => {
       const token = await getAuthToken()
 
       const response = await $fetch<{ success: boolean; key: string; updated: boolean }>(
-        '/api/diary/update-totals',
+        '/api/diary/update-entry',
         {
           method: 'POST',
           headers: {
@@ -589,7 +589,7 @@ export const useApi = () => {
     try {
       const token = await getAuthToken()
 
-      const response = await $fetch<{ success: boolean; key: string }>('/api/diary/create-day', {
+      const response = await $fetch<{ success: boolean; key: string }>('/api/diary/create-entry', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`
@@ -620,53 +620,6 @@ export const useApi = () => {
     }
   }
 
-  const addLogItemToEntry = async (data: {
-    entryKey: string
-    logItem: {
-      name: string
-      emoji?: string | null
-      icon?: string | null
-      pheReference?: number | null
-      kcalReference?: number | null
-      weight: number
-      phe: number
-      kcal: number
-    }
-  }): Promise<{ success: boolean; key?: string; updated?: boolean }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; key: string; updated: boolean }>(
-        '/api/diary/add-log-item',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: data
-        }
-      )
-
-      return response
-    } catch (error: unknown) {
-      console.error('Add log item error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 400) {
-        const errorMessage = httpError.data?.message || 'Invalid data. Please check your input.'
-        notifications.error(errorMessage)
-      } else if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else if (httpError.statusCode === 404) {
-        notifications.error('Diary entry not found.')
-      } else {
-        notifications.error('Failed to add log item. Please try again.')
-      }
-
-      throw error
-    }
-  }
-
   return {
     saveDiaryEntry,
     saveLabValue,
@@ -684,7 +637,6 @@ export const useApi = () => {
     updateConsent,
     updateGettingStarted,
     updateDiaryTotals,
-    createDayEntry,
-    addLogItemToEntry
+    createDayEntry
   }
 }
