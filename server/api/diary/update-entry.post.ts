@@ -1,6 +1,7 @@
 import { verifyIdToken, getAdminDatabase } from '../../utils/firebase-admin'
 import { DiaryEntrySchema } from '../../types/schemas'
 import { z } from 'zod'
+import { handleServerError } from '../../utils/error-handler'
 
 const UpdateTotalsSchema = z.object({
   entryKey: z.string().min(1, 'Entry key is required'),
@@ -95,24 +96,7 @@ export default defineEventHandler(async (event) => {
 
     return { success: true, key: entryKey, updated: true }
   } catch (error: unknown) {
-    const firebaseError = error as { code?: string }
-    if (
-      firebaseError.code === 'auth/id-token-expired' ||
-      firebaseError.code === 'auth/argument-error'
-    ) {
-      throw createError({
-        statusCode: 401,
-        message: 'Invalid or expired token'
-      })
-    }
-    const httpError = error as { statusCode?: number }
-    if (httpError.statusCode) {
-      throw error
-    }
-    throw createError({
-      statusCode: 500,
-      message: 'Internal server error'
-    })
+    handleServerError(error)
   }
 })
 

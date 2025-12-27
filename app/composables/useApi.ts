@@ -1,7 +1,7 @@
 import { getAuth } from 'firebase/auth'
 
 export const useApi = () => {
-  const notifications = useNotifications()
+  const errorHandler = useErrorHandler()
 
   const getAuthToken = async (): Promise<string> => {
     const auth = getAuth()
@@ -39,24 +39,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Save diary entry error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 403) {
-        notifications.error(
-          httpError.data?.message ||
-            'Diary limit reached. Upgrade to premium for unlimited entries.'
-        )
-      } else if (httpError.statusCode === 400) {
-        // Show detailed validation error if available
-        const errorMessage = httpError.data?.message || 'Invalid data. Please check your input.'
-        notifications.error(errorMessage)
-      } else if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else {
-        notifications.error('Failed to save diary entry. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Save diary entry')
       throw error
     }
   }
@@ -79,18 +62,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Save lab value error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 400) {
-        const errorMessage = httpError.data?.message || 'Invalid data. Please check your input.'
-        notifications.error(errorMessage)
-      } else if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else {
-        notifications.error('Failed to save lab value. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Save lab value')
       throw error
     }
   }
@@ -114,18 +86,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Save own food error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 400) {
-        const errorMessage = httpError.data?.message || 'Invalid data. Please check your input.'
-        notifications.error(errorMessage)
-      } else if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else {
-        notifications.error('Failed to save custom food. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Save own food')
       throw error
     }
   }
@@ -147,30 +108,20 @@ export const useApi = () => {
     try {
       const token = await getAuthToken()
 
-      const response = await $fetch<{ success: boolean; key: string }>('/api/diary/update-log-item', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      })
+      const response = await $fetch<{ success: boolean; key: string }>(
+        '/api/diary/update-log-item',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: data
+        }
+      )
 
       return response
     } catch (error: unknown) {
-      console.error('Update diary entry error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 400) {
-        const errorMessage = httpError.data?.message || 'Invalid data. Please check your input.'
-        notifications.error(errorMessage)
-      } else if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else if (httpError.statusCode === 404) {
-        notifications.error('Entry not found.')
-      } else {
-        notifications.error('Failed to update diary entry. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Update diary entry')
       throw error
     }
   }
@@ -201,20 +152,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Update lab value error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 400) {
-        const errorMessage = httpError.data?.message || 'Invalid data. Please check your input.'
-        notifications.error(errorMessage)
-      } else if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else if (httpError.statusCode === 404) {
-        notifications.error('Entry not found.')
-      } else {
-        notifications.error('Failed to update lab value. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Update lab value')
       throw error
     }
   }
@@ -247,20 +185,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Update own food error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 400) {
-        const errorMessage = httpError.data?.message || 'Invalid data. Please check your input.'
-        notifications.error(errorMessage)
-      } else if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else if (httpError.statusCode === 404) {
-        notifications.error('Entry not found.')
-      } else {
-        notifications.error('Failed to update custom food. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Update own food')
       throw error
     }
   }
@@ -281,17 +206,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Delete diary entry error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else if (httpError.statusCode === 404) {
-        notifications.error('Diary entry not found.')
-      } else {
-        notifications.error('Failed to delete diary entry. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Delete diary entry')
       throw error
     }
   }
@@ -316,17 +231,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Delete diary log item error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else if (httpError.statusCode === 404) {
-        notifications.error('Diary entry not found.')
-      } else {
-        notifications.error('Failed to delete diary item. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Delete diary log item')
       throw error
     }
   }
@@ -347,17 +252,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Delete lab value error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else if (httpError.statusCode === 404) {
-        notifications.error('Lab value entry not found.')
-      } else {
-        notifications.error('Failed to delete lab value. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Delete lab value')
       throw error
     }
   }
@@ -378,17 +273,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Delete own food error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else if (httpError.statusCode === 404) {
-        notifications.error('Custom food entry not found.')
-      } else {
-        notifications.error('Failed to delete custom food. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Delete own food')
       throw error
     }
   }
@@ -412,18 +297,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Update settings error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 400) {
-        const errorMessage = httpError.data?.message || 'Invalid data. Please check your input.'
-        notifications.error(errorMessage)
-      } else if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else {
-        notifications.error('Failed to update settings. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Update settings')
       throw error
     }
   }
@@ -444,15 +318,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Reset data error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else {
-        notifications.error('Failed to reset data. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Reset data')
       throw error
     }
   }
@@ -470,15 +336,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Delete account error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else {
-        notifications.error('Failed to delete account. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Delete account')
       throw error
     }
   }
@@ -500,15 +358,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Update consent error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else {
-        notifications.error('Failed to update consent. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Update consent')
       throw error
     }
   }
@@ -527,15 +377,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Update getting started error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else {
-        notifications.error('Failed to update getting started status. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Update getting started')
       throw error
     }
   }
@@ -563,20 +405,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Update diary totals error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 400) {
-        const errorMessage = httpError.data?.message || 'Invalid data. Please check your input.'
-        notifications.error(errorMessage)
-      } else if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else if (httpError.statusCode === 404) {
-        notifications.error('Diary entry not found.')
-      } else {
-        notifications.error('Failed to update diary totals. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Update diary totals')
       throw error
     }
   }
@@ -599,23 +428,7 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      console.error('Create day entry error:', error)
-
-      const httpError = error as { statusCode?: number; data?: { message?: string } }
-      if (httpError.statusCode === 403) {
-        notifications.error(
-          httpError.data?.message ||
-            'Diary limit reached. Upgrade to premium for unlimited entries.'
-        )
-      } else if (httpError.statusCode === 400) {
-        const errorMessage = httpError.data?.message || 'Invalid data. Please check your input.'
-        notifications.error(errorMessage)
-      } else if (httpError.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else {
-        notifications.error('Failed to create day entry. Please try again.')
-      }
-
+      errorHandler.handleError(error, 'Create day entry')
       throw error
     }
   }

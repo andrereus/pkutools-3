@@ -1,5 +1,6 @@
 import { verifyIdToken, getAdminDatabase } from '../../utils/firebase-admin'
 import { format } from 'date-fns'
+import { handleServerError } from '../../utils/error-handler'
 
 // Constants for limits
 const BASE_DAILY_ESTIMATE_LIMIT = 20
@@ -79,28 +80,6 @@ export default defineEventHandler(async (event) => {
       resetAt: today // Date when limit resets
     }
   } catch (error: unknown) {
-    // Handle Firebase auth errors
-    const firebaseError = error as { code?: string }
-    if (
-      firebaseError.code === 'auth/id-token-expired' ||
-      firebaseError.code === 'auth/argument-error'
-    ) {
-      throw createError({
-        statusCode: 401,
-        message: 'Invalid or expired token'
-      })
-    }
-
-    // Re-throw createError instances
-    const httpError = error as { statusCode?: number }
-    if (httpError.statusCode) {
-      throw error
-    }
-
-    // Handle unexpected errors
-    throw createError({
-      statusCode: 500,
-      message: 'Internal server error'
-    })
+    handleServerError(error)
   }
 })

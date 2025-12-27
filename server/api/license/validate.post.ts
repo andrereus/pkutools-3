@@ -1,4 +1,5 @@
 import { verifyIdToken } from '../../utils/firebase-admin'
+import { handleServerError } from '../../utils/error-handler'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -37,28 +38,6 @@ export default defineEventHandler(async (event) => {
       premium: isValid
     }
   } catch (error: unknown) {
-    // Handle Firebase auth errors
-    const firebaseError = error as { code?: string }
-    if (
-      firebaseError.code === 'auth/id-token-expired' ||
-      firebaseError.code === 'auth/argument-error'
-    ) {
-      throw createError({
-        statusCode: 401,
-        message: 'Invalid or expired token'
-      })
-    }
-
-    // Re-throw createError instances
-    const httpError = error as { statusCode?: number }
-    if (httpError.statusCode) {
-      throw error
-    }
-
-    // Handle unexpected errors
-    throw createError({
-      statusCode: 500,
-      message: 'Internal server error'
-    })
+    handleServerError(error)
   }
 })

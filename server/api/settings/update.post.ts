@@ -1,5 +1,6 @@
 import { verifyIdToken, getAdminDatabase } from '../../utils/firebase-admin'
 import { z } from 'zod'
+import { handleServerError } from '../../utils/error-handler'
 
 const SettingsUpdateSchema = z.object({
   maxPhe: z.coerce.number().nonnegative('Max Phe must be non-negative').nullable().optional(),
@@ -64,24 +65,7 @@ export default defineEventHandler(async (event) => {
 
     return { success: true }
   } catch (error: unknown) {
-    const firebaseError = error as { code?: string }
-    if (
-      firebaseError.code === 'auth/id-token-expired' ||
-      firebaseError.code === 'auth/argument-error'
-    ) {
-      throw createError({
-        statusCode: 401,
-        message: 'Invalid or expired token'
-      })
-    }
-    const httpError = error as { statusCode?: number }
-    if (httpError.statusCode) {
-      throw error
-    }
-    throw createError({
-      statusCode: 500,
-      message: 'Internal server error'
-    })
+    handleServerError(error)
   }
 })
 
