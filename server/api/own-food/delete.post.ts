@@ -1,19 +1,10 @@
-import { verifyIdToken, getAdminDatabase } from '../../utils/firebase-admin'
+import { getAdminDatabase } from '../../utils/firebase-admin'
 import { handleServerError } from '../../utils/error-handler'
+import { getAuthenticatedUser } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   try {
-    const authHeader = getHeader(event, 'authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw createError({
-        statusCode: 401,
-        message: 'Missing or invalid authorization header'
-      })
-    }
-
-    const token = authHeader.substring(7)
-    const decodedToken = await verifyIdToken(token)
-    const userId = decodedToken.uid
+    const userId = await getAuthenticatedUser(event)
 
     const body = await readBody(event)
     const entryKey = body.entryKey

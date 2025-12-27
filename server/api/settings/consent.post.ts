@@ -1,7 +1,9 @@
-import { verifyIdToken, getAdminDatabase } from '../../utils/firebase-admin'
+import { getAdminDatabase } from '../../utils/firebase-admin'
 import { z } from 'zod'
 import { formatISO } from 'date-fns'
 import { handleServerError } from '../../utils/error-handler'
+import { getAuthenticatedUser } from '../../utils/auth'
+import { formatValidationError } from '../../utils/validation'
 
 const ConsentSchema = z.object({
   healthDataConsent: z.boolean().optional(),
@@ -10,34 +12,12 @@ const ConsentSchema = z.object({
 
 export default defineEventHandler(async (event) => {
   try {
-    const authHeader = getHeader(event, 'authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw createError({
-        statusCode: 401,
-        message: 'Missing or invalid authorization header'
-      })
-    }
-
-    const token = authHeader.substring(7)
-    const decodedToken = await verifyIdToken(token)
-    const userId = decodedToken.uid
-
+    const userId = await getAuthenticatedUser(event)
     const body = await readBody(event)
     const validation = ConsentSchema.safeParse(body)
 
     if (!validation.success) {
-      const errorMessages = validation.error.issues
-        .map((issue) => {
-          const path = issue.path.join('.')
-          return `${path ? `${path}: ` : ''}${issue.message}`
-        })
-        .join(', ')
-
-      throw createError({
-        statusCode: 400,
-        message: `Validation failed: ${errorMessages}`,
-        data: validation.error.issues
-      })
+      formatValidationError(validation.error)
     }
 
     const db = getAdminDatabase()

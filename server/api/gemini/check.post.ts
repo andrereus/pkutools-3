@@ -1,6 +1,8 @@
-import { verifyIdToken, getAdminDatabase } from '../../utils/firebase-admin'
+import { getAdminDatabase } from '../../utils/firebase-admin'
 import { format } from 'date-fns'
 import { handleServerError } from '../../utils/error-handler'
+import { getAuthenticatedUser } from '../../utils/auth'
+import { checkPremiumStatus } from '../../utils/license'
 
 // Constants for limits
 const BASE_DAILY_ESTIMATE_LIMIT = 20
@@ -8,22 +10,7 @@ const FREE_USER_DAILY_ESTIMATE_LIMIT = 2
 
 export default defineEventHandler(async (event) => {
   try {
-    // Get auth token from header
-    const authHeader = getHeader(event, 'authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw createError({
-        statusCode: 401,
-        message: 'Missing or invalid authorization header'
-      })
-    }
-
-    const token = authHeader.substring(7)
-
-    // Verify token and get user ID
-    const decodedToken = await verifyIdToken(token)
-    const userId = decodedToken.uid
-
-    // Get model preference from request body
+    const userId = await getAuthenticatedUser(event)
     const body = await readBody(event)
     const model = body.model || 'gemini-2.5-flash'
     const usePro = model === 'gemini-2.5-pro'
@@ -34,10 +21,7 @@ export default defineEventHandler(async (event) => {
     const settingsSnapshot = await settingsRef.once('value')
     const settings = settingsSnapshot.val() || {}
 
-    // Check license status
-    const config = useRuntimeConfig()
-    const licenseKey = settings.license
-    const isPremium = licenseKey === config.pkutoolsLicenseKey
+    const isPremium = await checkPremiumStatus(userId)
 
     // Get current estimation count
     const today = format(new Date(), 'yyyy-MM-dd')

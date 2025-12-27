@@ -1,21 +1,10 @@
-import { verifyIdToken } from '../../utils/firebase-admin'
 import { handleServerError } from '../../utils/error-handler'
+import { getAuthenticatedUser } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   try {
-    // Get auth token from header
-    const authHeader = getHeader(event, 'authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw createError({
-        statusCode: 401,
-        message: 'Missing or invalid authorization header'
-      })
-    }
-
-    const token = authHeader.substring(7)
-
-    // Verify token
-    await verifyIdToken(token)
+    // Verify authentication (we don't need userId, just verify the token is valid)
+    await getAuthenticatedUser(event)
 
     // Get license key from request body
     const body = await readBody(event)

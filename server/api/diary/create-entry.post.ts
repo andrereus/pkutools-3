@@ -1,7 +1,10 @@
-import { verifyIdToken, getAdminDatabase } from '../../utils/firebase-admin'
+import { getAdminDatabase } from '../../utils/firebase-admin'
 import { z } from 'zod'
 import { format } from 'date-fns'
 import { handleServerError } from '../../utils/error-handler'
+import { getAuthenticatedUser } from '../../utils/auth'
+import { formatValidationError } from '../../utils/validation'
+import { checkPremiumStatus } from '../../utils/license'
 
 const CreateDaySchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
@@ -11,46 +14,16 @@ const CreateDaySchema = z.object({
 
 export default defineEventHandler(async (event) => {
   try {
-    const authHeader = getHeader(event, 'authorization')
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw createError({
-        statusCode: 401,
-        message: 'Missing or invalid authorization header'
-      })
-    }
-
-    const token = authHeader.substring(7)
-    const decodedToken = await verifyIdToken(token)
-    const userId = decodedToken.uid
-
+    const userId = await getAuthenticatedUser(event)
     const body = await readBody(event)
     const validation = CreateDaySchema.safeParse(body)
 
     if (!validation.success) {
-      const errorMessages = validation.error.issues
-        .map((issue) => {
-          const path = issue.path.join('.')
-          return `${path ? `${path}: ` : ''}${issue.message}`
-        })
-        .join(', ')
-
-      throw createError({
-        statusCode: 400,
-        message: `Validation failed: ${errorMessages}`,
-        data: validation.error.issues
-      })
+      formatValidationError(validation.error)
     }
 
     const db = getAdminDatabase()
-
-    // Check license-based limits (free users limited to 14 entries)
-    const settingsRef = db.ref(`/${userId}/settings`)
-    const settingsSnapshot = await settingsRef.once('value')
-    const settings = settingsSnapshot.val() || {}
-
-    const config = useRuntimeConfig()
-    const licenseKey = settings.license
-    const isPremium = licenseKey === config.pkutoolsLicenseKey
+    const isPremium = await checkPremiumStatus(userId)
 
     const { date, phe, kcal } = validation.data
 
