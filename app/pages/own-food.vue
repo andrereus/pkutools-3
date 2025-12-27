@@ -20,6 +20,7 @@ const editedIndex = ref(-1)
 const editedKey = ref(null)
 const weight = ref(100)
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
+const isSaving = ref(false)
 
 const defaultItem = {
   name: '',
@@ -213,6 +214,8 @@ const add = async () => {
     kcal: calculateKcal()
   }
 
+  isSaving.value = true
+
   // Use server API for all writes - validates with Zod
   try {
     await saveDiaryEntry({
@@ -225,6 +228,8 @@ const add = async () => {
   } catch (error) {
     // Error handling is done in useApi composable
     console.error('Save error:', error)
+  } finally {
+    isSaving.value = false
   }
 }
 
@@ -460,6 +465,7 @@ defineOgImageComponent('NuxtSeo', {
       <ModalDialog
         ref="dialog2"
         :title="editedItem.name"
+        :loading="isSaving"
         :buttons="[
           { label: $t('common.add'), type: 'submit', visible: true },
           { label: $t('common.edit'), type: 'edit', visible: true },

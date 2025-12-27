@@ -20,6 +20,7 @@ const icon = ref(null)
 const isOwnFood = ref(false)
 const advancedFood = ref(null)
 const loading = ref(false)
+const isSaving = ref(false)
 const kcalReference = ref(null)
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 
@@ -71,9 +72,7 @@ const save = async () => {
     kcal: calculateKcal()
   }
 
-  // Close dialog and navigate immediately for instant feedback
-  dialog.value.closeDialog()
-  navigateTo(localePath('diary'))
+  isSaving.value = true
 
   // Use server API for all writes - validates with Zod
   try {
@@ -82,9 +81,14 @@ const save = async () => {
       ...logEntry
     })
     notifications.success(t('common.saved'))
+    // Close dialog and navigate after successful save
+    dialog.value.closeDialog()
+    navigateTo(localePath('diary'))
   } catch (error) {
     // Error handling is done in useApi composable
     console.error('Save error:', error)
+  } finally {
+    isSaving.value = false
   }
 }
 
@@ -264,6 +268,7 @@ defineOgImageComponent('NuxtSeo', {
       <ModalDialog
         ref="dialog"
         :title="emoji ? emoji + ' ' + name : name"
+        :loading="isSaving"
         :buttons="[
           { label: $t('common.add'), type: 'submit', visible: userIsAuthenticated },
           { label: $t('common.close'), type: 'simpleClose', visible: true }

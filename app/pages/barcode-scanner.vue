@@ -20,6 +20,7 @@ const result = ref(null)
 const weight = ref(100)
 const select = ref('other')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
+const isSaving = ref(false)
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
@@ -143,8 +144,7 @@ const save = async () => {
     kcal: calculateKcal()
   }
 
-  // Navigate immediately for instant feedback
-  navigateTo(localePath('diary'))
+  isSaving.value = true
 
   // Use server API for all writes - validates with Zod
   try {
@@ -153,9 +153,13 @@ const save = async () => {
       ...logEntry
     })
     notifications.success(t('common.saved'))
+    // Navigate after successful save
+    navigateTo(localePath('diary'))
   } catch (error) {
     // Error handling is done in useApi composable
     console.error('Save error:', error)
+  } finally {
+    isSaving.value = false
   }
 }
 
@@ -281,7 +285,13 @@ defineOgImageComponent('NuxtSeo', {
           = {{ calculateKcal() }} {{ $t('common.kcal') }}
         </p>
 
-        <PrimaryButton v-if="userIsAuthenticated" :text="$t('common.add')" @click="save" />
+        <PrimaryButton
+          v-if="userIsAuthenticated"
+          :text="$t('common.add')"
+          :loading="isSaving"
+          :loading-text="$t('common.saving')"
+          @click="save"
+        />
       </div>
 
       <div v-if="!result.product.nutriments.proteins_100g" class="mb-6">

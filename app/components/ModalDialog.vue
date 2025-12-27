@@ -1,5 +1,18 @@
 <script setup>
-const props = defineProps(['title', 'buttons'])
+const props = defineProps({
+  title: {
+    type: String,
+    required: true
+  },
+  buttons: {
+    type: Array,
+    required: true
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  }
+})
 const emit = defineEmits(['close', 'edit', 'submit', 'delete'])
 
 const dialog = ref(null)
@@ -19,6 +32,11 @@ const filteredButtons = computed(() => {
 })
 
 function handleButtonClick(buttonType) {
+  // Don't allow clicks on disabled buttons
+  if (props.loading && (buttonType === 'submit' || buttonType === 'delete')) {
+    return
+  }
+
   if (buttonType === 'simpleClose') {
     closeDialog()
   } else if (buttonType === 'close') {
@@ -64,8 +82,12 @@ function handleButtonClick(buttonType) {
               v-for="(button, index) in filteredButtons"
               :key="button.type"
               type="button"
+              :disabled="loading && (button.type === 'submit' || button.type === 'delete')"
               :class="[
-                'inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-xs focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 cursor-pointer',
+                'inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-xs focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2',
+                loading && (button.type === 'submit' || button.type === 'delete')
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'cursor-pointer',
                 button.type === 'delete'
                   ? 'bg-red-500 text-white hover:bg-red-600 focus-visible:outline-red-500'
                   : button.type === 'simpleClose' ||
@@ -80,7 +102,7 @@ function handleButtonClick(buttonType) {
               "
               @click="handleButtonClick(button.type)"
             >
-              {{ button.label }}
+              {{ loading && button.type === 'submit' ? $t('common.saving') : button.label }}
             </button>
           </div>
         </div>

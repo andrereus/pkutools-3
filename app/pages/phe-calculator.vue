@@ -21,6 +21,7 @@ const kcalReference = ref(null)
 const select = ref('phe')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isEstimating = ref(false)
+const isSaving = ref(false)
 
 // Constants
 // Base estimate "credits" per day for premium users.
@@ -322,8 +323,7 @@ const save = async () => {
     }
   }
 
-  // Navigate immediately for instant feedback
-  navigateTo(localePath('diary'))
+  isSaving.value = true
 
   // Use server API for all writes - validates with Zod
   try {
@@ -332,9 +332,13 @@ const save = async () => {
       ...logEntry
     })
     notifications.success(t('common.saved'))
+    // Navigate after successful save
+    navigateTo(localePath('diary'))
   } catch (error) {
     // Error handling is done in useApi composable
     console.error('Save error:', error)
+  } finally {
+    isSaving.value = false
   }
 }
 
@@ -489,6 +493,12 @@ defineOgImageComponent('NuxtSeo', {
       <span class="flex-1 ml-1 text-lg">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
     </div>
 
-    <PrimaryButton v-if="userIsAuthenticated" :text="$t('common.add')" @click="save" />
+    <PrimaryButton
+      v-if="userIsAuthenticated"
+      :text="$t('common.add')"
+      :loading="isSaving"
+      :loading-text="$t('common.saving')"
+      @click="save"
+    />
   </div>
 </template>
