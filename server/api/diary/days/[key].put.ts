@@ -34,7 +34,8 @@ export default defineEventHandler(async (event) => {
       formatValidationError(validation.error)
     }
 
-    const { date, phe, kcal, log } = validation.data
+    // TypeScript: validation.data is guaranteed to exist after success check
+    const { date, phe, kcal, log } = validation.data as z.infer<typeof UpdateDaySchema>
 
     const db = getAdminDatabase()
     const diaryEntryRef = db.ref(`/${userId}/pheDiary/${key}`)
@@ -87,4 +88,3 @@ export default defineEventHandler(async (event) => {
     handleServerError(error)
   }
 })
-

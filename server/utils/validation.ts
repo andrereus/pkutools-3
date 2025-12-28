@@ -1,4 +1,4 @@
-import { ZodError } from 'zod'
+import type { ZodError } from 'zod'
 
 /**
  * Formats Zod validation errors into a user-friendly error message
@@ -19,4 +19,3 @@ export function formatValidationError(error: ZodError): never {
     data: error.issues
   })
 }
-

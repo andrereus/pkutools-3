@@ -1,6 +1,5 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
 import { z } from 'zod'
-import { format } from 'date-fns'
 import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
 import { formatValidationError } from '../../utils/validation'
@@ -61,4 +60,3 @@ export default defineEventHandler(async (event) => {
     handleServerError(error)
   }
 })
-

@@ -24,16 +24,19 @@ export default defineEventHandler(async (event) => {
     if (!validation.success) {
       throw createError({
         statusCode: 400,
-        message: validation.error.errors[0]?.message || 'Invalid request body'
+        message: validation.error.issues[0]?.message || 'Invalid request body'
       })
     }
 
-    const { logIndex } = validation.data
+    // TypeScript: validation.data is guaranteed to exist after success check
+    const { logIndex } = validation.data as z.infer<typeof DeleteFoodItemSchema>
 
     const db = getAdminDatabase()
     const diaryEntryRef = db.ref(`/${userId}/pheDiary/${key}`)
     const diaryEntrySnapshot = await diaryEntryRef.once('value')
-    const existingDiaryEntry = diaryEntrySnapshot.val()
+    const existingDiaryEntry = diaryEntrySnapshot.val() as {
+      log?: Array<{ phe?: number; kcal?: number }>
+    } | null
 
     if (!existingDiaryEntry) {
       throw createError({
@@ -54,8 +57,8 @@ export default defineEventHandler(async (event) => {
     currentLog.splice(logIndex, 1)
 
     // Recalculate totals
-    const totalPhe = currentLog.reduce((sum: number, item: any) => sum + (item.phe || 0), 0)
-    const totalKcal = currentLog.reduce((sum: number, item: any) => sum + (item.kcal || 0), 0)
+    const totalPhe = currentLog.reduce((sum: number, item) => sum + (item.phe || 0), 0)
+    const totalKcal = currentLog.reduce((sum: number, item) => sum + (item.kcal || 0), 0)
 
     await diaryEntryRef.update({
       log: currentLog,
@@ -68,4 +71,3 @@ export default defineEventHandler(async (event) => {
     handleServerError(error)
   }
 })
-
