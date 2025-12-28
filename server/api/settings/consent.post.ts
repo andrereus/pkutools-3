@@ -1,14 +1,9 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
-import { z } from 'zod'
 import { formatISO } from 'date-fns'
 import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
 import { formatValidationError } from '../../utils/validation'
-
-const ConsentSchema = z.object({
-  healthDataConsent: z.boolean().optional(),
-  emailConsent: z.boolean().optional()
-})
+import { ConsentSchema } from '../../types/schemas'
 
 export default defineEventHandler(async (event) => {
   try {

@@ -1,15 +1,9 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
-import { z } from 'zod'
 import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
 import { formatValidationError } from '../../utils/validation'
 import { checkPremiumStatus } from '../../utils/license'
-
-const CreateDaySchema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
-  phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
-  kcal: z.coerce.number().nonnegative('Kcal value must be non-negative')
-})
+import { CreateDaySchema } from '../../types/schemas'
 
 export default defineEventHandler(async (event) => {
   try {

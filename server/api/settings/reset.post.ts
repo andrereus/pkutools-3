@@ -1,10 +1,8 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
-import { z } from 'zod'
 import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
 import { formatValidationError } from '../../utils/validation'
-
-const ResetSchema = z.enum(['diary', 'labValues', 'ownFood'])
+import { ResetSchema } from '../../types/schemas'
 
 export default defineEventHandler(async (event) => {
   try {

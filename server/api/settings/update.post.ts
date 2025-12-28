@@ -1,15 +1,8 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
-import { z } from 'zod'
 import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
 import { formatValidationError } from '../../utils/validation'
-
-const SettingsUpdateSchema = z.object({
-  maxPhe: z.coerce.number().nonnegative('Max Phe must be non-negative').nullable().optional(),
-  maxKcal: z.coerce.number().nonnegative('Max Kcal must be non-negative').nullable().optional(),
-  labUnit: z.enum(['mgdl', 'umoll']).optional(),
-  license: z.string().nullable().optional()
-})
+import { SettingsUpdateSchema } from '../../types/schemas'
 
 export default defineEventHandler(async (event) => {
   try {

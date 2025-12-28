@@ -1,11 +1,8 @@
 import { getAdminDatabase } from '../../../utils/firebase-admin'
 import { handleServerError } from '../../../utils/error-handler'
 import { getAuthenticatedUser } from '../../../utils/auth'
-import { z } from 'zod'
-
-const DeleteFoodItemSchema = z.object({
-  logIndex: z.number().int().nonnegative('Valid log index is required')
-})
+import type { z } from 'zod'
+import { DeleteFoodItemSchema } from '../../../types/schemas'
 
 export default defineEventHandler(async (event) => {
   try {

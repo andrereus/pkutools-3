@@ -1,12 +1,8 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
-import { z } from 'zod'
 import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
 import { formatValidationError } from '../../utils/validation'
-
-const GettingStartedSchema = z.object({
-  completed: z.boolean()
-})
+import { GettingStartedSchema } from '../../types/schemas'
 
 export default defineEventHandler(async (event) => {
   try {

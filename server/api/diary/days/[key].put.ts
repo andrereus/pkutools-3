@@ -1,19 +1,9 @@
 import { getAdminDatabase } from '../../../utils/firebase-admin'
-import { DiaryEntrySchema } from '../../../types/schemas'
+import { UpdateDaySchema } from '../../../types/schemas'
 import { z } from 'zod'
 import { handleServerError } from '../../../utils/error-handler'
 import { getAuthenticatedUser } from '../../../utils/auth'
 import { formatValidationError } from '../../../utils/validation'
-
-const UpdateDaySchema = z.object({
-  date: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format')
-    .optional(), // Optional date to allow date changes
-  phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
-  kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
-  log: z.array(DiaryEntrySchema).optional() // Optional log array to sync deletions - validate structure
-})
 
 export default defineEventHandler(async (event) => {
   try {

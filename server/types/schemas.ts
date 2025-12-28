@@ -1,5 +1,9 @@
 import { z } from 'zod'
 
+// ============================================================================
+// Base Entity Schemas
+// ============================================================================
+
 // Diary entry schema
 export const DiaryEntrySchema = z.object({
   name: z.string().min(1, 'Food name is required').max(200, 'Food name is too long'),
@@ -43,27 +47,81 @@ export const OwnFoodSchema = z.object({
   kcal: z.coerce.number().nonnegative('Kcal value must be non-negative')
 })
 
-// Diary save request schema (includes date and log entry)
-export const DiarySaveSchema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), // YYYY-MM-DD format
-  log: z.array(DiaryEntrySchema).min(1)
+// ============================================================================
+// Diary Request Schemas
+// ============================================================================
+
+// Create diary day request schema
+export const CreateDaySchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
+  phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
+  kcal: z.coerce.number().nonnegative('Kcal value must be non-negative')
 })
 
-// Diary update request schema (updates a specific log item in an entry)
-export const DiaryUpdateSchema = z.object({
-  entryKey: z.string().min(1, 'Entry key is required'),
+// Update diary day request schema
+export const UpdateDaySchema = z.object({
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format')
+    .optional(), // Optional date to allow date changes
+  phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
+  kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
+  log: z.array(DiaryEntrySchema).optional() // Optional log array to sync deletions - validate structure
+})
+
+// Update food item in diary request schema
+export const UpdateFoodItemSchema = z.object({
   logIndex: z.number().int().nonnegative('Log index must be non-negative'),
   entry: DiaryEntrySchema
 })
 
-// Lab value update request schema
+// Delete food item from diary request schema
+export const DeleteFoodItemSchema = z.object({
+  logIndex: z.number().int().nonnegative('Valid log index is required')
+})
+
+// ============================================================================
+// Lab Values Request Schemas
+// ============================================================================
+
+// Update lab value request schema
 export const LabValueUpdateSchema = z.object({
   entryKey: z.string().min(1, 'Entry key is required'),
   data: LabValueSchema
 })
 
-// Own food update request schema
+// ============================================================================
+// Own Food Request Schemas
+// ============================================================================
+
+// Update own food request schema
 export const OwnFoodUpdateSchema = z.object({
   entryKey: z.string().min(1, 'Entry key is required'),
   data: OwnFoodSchema
 })
+
+// ============================================================================
+// Settings Request Schemas
+// ============================================================================
+
+// Update settings request schema
+export const SettingsUpdateSchema = z.object({
+  maxPhe: z.coerce.number().nonnegative('Max Phe must be non-negative').nullable().optional(),
+  maxKcal: z.coerce.number().nonnegative('Max Kcal must be non-negative').nullable().optional(),
+  labUnit: z.enum(['mgdl', 'umoll']).optional(),
+  license: z.string().nullable().optional()
+})
+
+// Update consent request schema
+export const ConsentSchema = z.object({
+  healthDataConsent: z.boolean().optional(),
+  emailConsent: z.boolean().optional()
+})
+
+// Update getting started request schema
+export const GettingStartedSchema = z.object({
+  completed: z.boolean()
+})
+
+// Reset data request schema
+export const ResetSchema = z.enum(['diary', 'labValues', 'ownFood'])
