@@ -5,8 +5,7 @@ import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
 import { formatValidationError } from '../../utils/validation'
 
-const UpdateTotalsSchema = z.object({
-  entryKey: z.string().min(1, 'Entry key is required'),
+const UpdateDaySchema = z.object({
   date: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format')
@@ -19,17 +18,26 @@ const UpdateTotalsSchema = z.object({
 export default defineEventHandler(async (event) => {
   try {
     const userId = await getAuthenticatedUser(event)
+    const key = getRouterParam(event, 'key')
     const body = await readBody(event)
-    const validation = UpdateTotalsSchema.safeParse(body)
+
+    if (!key) {
+      throw createError({
+        statusCode: 400,
+        message: 'Day entry key is required'
+      })
+    }
+
+    const validation = UpdateDaySchema.safeParse(body)
 
     if (!validation.success) {
       formatValidationError(validation.error)
     }
 
-    const { entryKey, date, phe, kcal, log } = validation.data
+    const { date, phe, kcal, log } = validation.data
 
     const db = getAdminDatabase()
-    const diaryEntryRef = db.ref(`/${userId}/pheDiary/${entryKey}`)
+    const diaryEntryRef = db.ref(`/${userId}/pheDiary/${key}`)
     const diaryEntrySnapshot = await diaryEntryRef.once('value')
     const existingDiaryEntry = diaryEntrySnapshot.val()
 
@@ -74,7 +82,7 @@ export default defineEventHandler(async (event) => {
 
     await diaryEntryRef.update(updateData)
 
-    return { success: true, key: entryKey, updated: true }
+    return { success: true, key: key, updated: true }
   } catch (error: unknown) {
     handleServerError(error)
   }

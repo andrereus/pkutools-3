@@ -3,6 +3,10 @@ import { getAuth } from 'firebase/auth'
 export const useApi = () => {
   const errorHandler = useErrorHandler()
 
+  // ============================================================================
+  // Helper Functions
+  // ============================================================================
+
   const getAuthToken = async (): Promise<string> => {
     const auth = getAuth()
     const user = auth.currentUser
@@ -12,7 +16,34 @@ export const useApi = () => {
     return await user.getIdToken()
   }
 
-  const saveDiaryEntry = async (data: {
+  // ============================================================================
+  // Diary Operations
+  // ============================================================================
+
+  const createDiaryDay = async (data: {
+    date: string
+    phe: number
+    kcal: number
+  }): Promise<{ success: boolean; key?: string }> => {
+    try {
+      const token = await getAuthToken()
+
+      const response = await $fetch<{ success: boolean; key: string }>('/api/diary/days', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: data
+      })
+
+      return response
+    } catch (error: unknown) {
+      errorHandler.handleError(error, 'Create diary day')
+      throw error
+    }
+  }
+
+  const addFoodItemToDiary = async (data: {
     date?: string
     name: string
     emoji?: string | null
@@ -27,7 +58,7 @@ export const useApi = () => {
       const token = await getAuthToken()
 
       const response = await $fetch<{ success: boolean; key: string; updated?: boolean }>(
-        '/api/diary/add-food-item',
+        '/api/diary/food-items',
         {
           method: 'POST',
           headers: {
@@ -39,10 +70,133 @@ export const useApi = () => {
 
       return response
     } catch (error: unknown) {
-      errorHandler.handleError(error, 'Save diary entry')
+      errorHandler.handleError(error, 'Add food item to diary')
       throw error
     }
   }
+
+  const updateDiaryDay = async (data: {
+    entryKey: string
+    date?: string
+    phe: number
+    kcal: number
+    log?: Array<unknown>
+  }): Promise<{ success: boolean; key?: string; updated?: boolean }> => {
+    try {
+      const token = await getAuthToken()
+
+      const response = await $fetch<{ success: boolean; key: string; updated: boolean }>(
+        `/api/diary/days/${data.entryKey}`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: {
+            date: data.date,
+            phe: data.phe,
+            kcal: data.kcal,
+            log: data.log
+          }
+        }
+      )
+
+      return response
+    } catch (error: unknown) {
+      errorHandler.handleError(error, 'Update diary day')
+      throw error
+    }
+  }
+
+  const updateFoodItemInDiary = async (data: {
+    entryKey: string
+    logIndex: number
+    entry: {
+      name: string
+      emoji?: string | null
+      icon?: string | null
+      pheReference?: number | null
+      kcalReference?: number | null
+      weight: number
+      phe: number
+      kcal: number
+    }
+  }): Promise<{ success: boolean; key?: string }> => {
+    try {
+      const token = await getAuthToken()
+
+      const response = await $fetch<{ success: boolean; key: string }>(
+        `/api/diary/food-items/${data.entryKey}`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: {
+            logIndex: data.logIndex,
+            entry: data.entry
+          }
+        }
+      )
+
+      return response
+    } catch (error: unknown) {
+      errorHandler.handleError(error, 'Update food item in diary')
+      throw error
+    }
+  }
+
+  const deleteDiaryDay = async (entryKey: string): Promise<{ success: boolean; key?: string }> => {
+    try {
+      const token = await getAuthToken()
+
+      const response = await $fetch<{ success: boolean; key: string }>(
+        `/api/diary/days/${entryKey}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+
+      return response
+    } catch (error: unknown) {
+      errorHandler.handleError(error, 'Delete diary day')
+      throw error
+    }
+  }
+
+  const deleteFoodItemFromDiary = async (data: {
+    entryKey: string
+    logIndex: number
+  }): Promise<{ success: boolean; key?: string; deletedLogIndex?: number }> => {
+    try {
+      const token = await getAuthToken()
+
+      const response = await $fetch<{ success: boolean; key: string; deletedLogIndex: number }>(
+        `/api/diary/food-items/${data.entryKey}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: {
+            logIndex: data.logIndex
+          }
+        }
+      )
+
+      return response
+    } catch (error: unknown) {
+      errorHandler.handleError(error, 'Delete food item from diary')
+      throw error
+    }
+  }
+
+  // ============================================================================
+  // Lab Values Operations
+  // ============================================================================
 
   const saveLabValue = async (data: {
     date: string
@@ -63,65 +217,6 @@ export const useApi = () => {
       return response
     } catch (error: unknown) {
       errorHandler.handleError(error, 'Save lab value')
-      throw error
-    }
-  }
-
-  const saveOwnFood = async (data: {
-    name: string
-    icon?: string | null
-    phe: number
-    kcal: number
-  }): Promise<{ success: boolean; key?: string }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; key: string }>('/api/own-food/save', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Save own food')
-      throw error
-    }
-  }
-
-  const updateDiaryEntry = async (data: {
-    entryKey: string
-    logIndex: number
-    entry: {
-      name: string
-      emoji?: string | null
-      icon?: string | null
-      pheReference?: number | null
-      kcalReference?: number | null
-      weight: number
-      phe: number
-      kcal: number
-    }
-  }): Promise<{ success: boolean; key?: string }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; key: string }>(
-        '/api/diary/update-log-item',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: data
-        }
-      )
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Update diary entry')
       throw error
     }
   }
@@ -153,6 +248,55 @@ export const useApi = () => {
       return response
     } catch (error: unknown) {
       errorHandler.handleError(error, 'Update lab value')
+      throw error
+    }
+  }
+
+  const deleteLabValue = async (data: {
+    entryKey: string
+  }): Promise<{ success: boolean; key?: string }> => {
+    try {
+      const token = await getAuthToken()
+
+      const response = await $fetch<{ success: boolean; key: string }>('/api/lab-values/delete', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: data
+      })
+
+      return response
+    } catch (error: unknown) {
+      errorHandler.handleError(error, 'Delete lab value')
+      throw error
+    }
+  }
+
+  // ============================================================================
+  // Own Food Operations
+  // ============================================================================
+
+  const saveOwnFood = async (data: {
+    name: string
+    icon?: string | null
+    phe: number
+    kcal: number
+  }): Promise<{ success: boolean; key?: string }> => {
+    try {
+      const token = await getAuthToken()
+
+      const response = await $fetch<{ success: boolean; key: string }>('/api/own-food/save', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: data
+      })
+
+      return response
+    } catch (error: unknown) {
+      errorHandler.handleError(error, 'Save own food')
       throw error
     }
   }
@@ -190,73 +334,6 @@ export const useApi = () => {
     }
   }
 
-  const deleteDiaryEntry = async (data: {
-    entryKey: string
-  }): Promise<{ success: boolean; key?: string }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; key: string }>('/api/diary/delete-entry', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Delete diary entry')
-      throw error
-    }
-  }
-
-  const deleteDiaryLogItem = async (data: {
-    entryKey: string
-    logIndex: number
-  }): Promise<{ success: boolean; key?: string; deletedLogIndex?: number }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; key: string; deletedLogIndex: number }>(
-        '/api/diary/delete-log-item',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: data
-        }
-      )
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Delete diary log item')
-      throw error
-    }
-  }
-
-  const deleteLabValue = async (data: {
-    entryKey: string
-  }): Promise<{ success: boolean; key?: string }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; key: string }>('/api/lab-values/delete', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Delete lab value')
-      throw error
-    }
-  }
-
   const deleteOwnFood = async (data: {
     entryKey: string
   }): Promise<{ success: boolean; key?: string }> => {
@@ -278,6 +355,10 @@ export const useApi = () => {
     }
   }
 
+  // ============================================================================
+  // Settings Operations
+  // ============================================================================
+
   const updateSettings = async (data: {
     maxPhe?: number | null
     maxKcal?: number | null
@@ -298,45 +379,6 @@ export const useApi = () => {
       return response
     } catch (error: unknown) {
       errorHandler.handleError(error, 'Update settings')
-      throw error
-    }
-  }
-
-  const resetData = async (
-    type: 'diary' | 'labValues' | 'ownFood'
-  ): Promise<{ success: boolean; type: string }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; type: string }>('/api/settings/reset', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: { type }
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Reset data')
-      throw error
-    }
-  }
-
-  const deleteAccount = async (): Promise<{ success: boolean }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean }>('/api/settings/delete-account', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Delete account')
       throw error
     }
   }
@@ -382,74 +424,70 @@ export const useApi = () => {
     }
   }
 
-  const updateDiaryTotals = async (data: {
-    entryKey: string
-    date?: string
-    phe: number
-    kcal: number
-    log?: Array<unknown>
-  }): Promise<{ success: boolean; key?: string; updated?: boolean }> => {
+  const resetData = async (
+    type: 'diary' | 'labValues' | 'ownFood'
+  ): Promise<{ success: boolean; type: string }> => {
     try {
       const token = await getAuthToken()
 
-      const response = await $fetch<{ success: boolean; key: string; updated: boolean }>(
-        '/api/diary/update-entry',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: data
-        }
-      )
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Update diary totals')
-      throw error
-    }
-  }
-
-  const createDayEntry = async (data: {
-    date: string
-    phe: number
-    kcal: number
-  }): Promise<{ success: boolean; key?: string }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; key: string }>('/api/diary/create-entry', {
+      const response = await $fetch<{ success: boolean; type: string }>('/api/settings/reset', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`
         },
-        body: data
+        body: { type }
       })
 
       return response
     } catch (error: unknown) {
-      errorHandler.handleError(error, 'Create day entry')
+      errorHandler.handleError(error, 'Reset data')
       throw error
     }
   }
 
+  const deleteAccount = async (): Promise<{ success: boolean }> => {
+    try {
+      const token = await getAuthToken()
+
+      const response = await $fetch<{ success: boolean }>('/api/settings/delete-account', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      return response
+    } catch (error: unknown) {
+      errorHandler.handleError(error, 'Delete account')
+      throw error
+    }
+  }
+
+  // ============================================================================
+  // Return
+  // ============================================================================
+
   return {
-    saveDiaryEntry,
+    // Diary
+    createDiaryDay,
+    addFoodItemToDiary,
+    updateDiaryDay,
+    updateFoodItemInDiary,
+    deleteDiaryDay,
+    deleteFoodItemFromDiary,
+    // Lab Values
     saveLabValue,
-    saveOwnFood,
-    updateDiaryEntry,
     updateLabValue,
-    updateOwnFood,
-    deleteDiaryEntry,
-    deleteDiaryLogItem,
     deleteLabValue,
+    // Own Food
+    saveOwnFood,
+    updateOwnFood,
     deleteOwnFood,
+    // Settings
     updateSettings,
-    resetData,
-    deleteAccount,
     updateConsent,
     updateGettingStarted,
-    updateDiaryTotals,
-    createDayEntry
+    resetData,
+    deleteAccount
   }
 }

@@ -1,31 +1,37 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
 import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
+import { z } from 'zod'
+
+const DeleteFoodItemSchema = z.object({
+  logIndex: z.number().int().nonnegative('Valid log index is required')
+})
 
 export default defineEventHandler(async (event) => {
   try {
     const userId = await getAuthenticatedUser(event)
-
+    const key = getRouterParam(event, 'key')
     const body = await readBody(event)
-    const entryKey = body.entryKey
-    const logIndex = body.logIndex
 
-    if (!entryKey || typeof entryKey !== 'string') {
+    if (!key) {
       throw createError({
         statusCode: 400,
-        message: 'Entry key is required'
+        message: 'Day entry key is required'
       })
     }
 
-    if (typeof logIndex !== 'number' || logIndex < 0) {
+    const validation = DeleteFoodItemSchema.safeParse(body)
+    if (!validation.success) {
       throw createError({
         statusCode: 400,
-        message: 'Valid log index is required'
+        message: validation.error.errors[0]?.message || 'Invalid request body'
       })
     }
+
+    const { logIndex } = validation.data
 
     const db = getAdminDatabase()
-    const diaryEntryRef = db.ref(`/${userId}/pheDiary/${entryKey}`)
+    const diaryEntryRef = db.ref(`/${userId}/pheDiary/${key}`)
     const diaryEntrySnapshot = await diaryEntryRef.once('value')
     const existingDiaryEntry = diaryEntrySnapshot.val()
 
@@ -57,7 +63,7 @@ export default defineEventHandler(async (event) => {
       kcal: totalKcal
     })
 
-    return { success: true, key: entryKey, deletedLogIndex: logIndex }
+    return { success: true, key: key, deletedLogIndex: logIndex }
   } catch (error: unknown) {
     handleServerError(error)
   }

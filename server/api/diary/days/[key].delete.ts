@@ -5,19 +5,17 @@ import { getAuthenticatedUser } from '../../utils/auth'
 export default defineEventHandler(async (event) => {
   try {
     const userId = await getAuthenticatedUser(event)
+    const key = getRouterParam(event, 'key')
 
-    const body = await readBody(event)
-    const entryKey = body.entryKey
-
-    if (!entryKey || typeof entryKey !== 'string') {
+    if (!key) {
       throw createError({
         statusCode: 400,
-        message: 'Entry key is required'
+        message: 'Day entry key is required'
       })
     }
 
     const db = getAdminDatabase()
-    const diaryEntryRef = db.ref(`/${userId}/pheDiary/${entryKey}`)
+    const diaryEntryRef = db.ref(`/${userId}/pheDiary/${key}`)
     const diaryEntrySnapshot = await diaryEntryRef.once('value')
 
     if (!diaryEntrySnapshot.exists()) {
@@ -29,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
     await diaryEntryRef.remove()
 
-    return { success: true, key: entryKey }
+    return { success: true, key: key }
   } catch (error: unknown) {
     handleServerError(error)
   }

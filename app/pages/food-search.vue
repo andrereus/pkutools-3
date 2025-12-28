@@ -8,7 +8,7 @@ const { t, locale } = useI18n()
 const dialog = ref(null)
 const localePath = useLocalePath()
 const notifications = useNotifications()
-const { saveDiaryEntry } = useApi()
+const { addFoodItemToDiary } = useApi()
 
 // Reactive state
 const search = ref('')
@@ -76,7 +76,7 @@ const save = async () => {
 
   // Use server API for all writes - validates with Zod
   try {
-    await saveDiaryEntry({
+    await addFoodItemToDiary({
       date: selectedDate.value,
       ...logEntry
     })

@@ -1,24 +1,38 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
-import { DiaryUpdateSchema } from '../../types/schemas'
+import { DiaryEntrySchema } from '../../types/schemas'
+import { z } from 'zod'
 import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
 import { formatValidationError } from '../../utils/validation'
 
+const UpdateFoodItemSchema = z.object({
+  logIndex: z.number().int().nonnegative('Log index must be non-negative'),
+  entry: DiaryEntrySchema
+})
+
 export default defineEventHandler(async (event) => {
   try {
     const userId = await getAuthenticatedUser(event)
+    const key = getRouterParam(event, 'key')
     const body = await readBody(event)
 
+    if (!key) {
+      throw createError({
+        statusCode: 400,
+        message: 'Entry key is required'
+      })
+    }
+
     // Validate input
-    const validation = DiaryUpdateSchema.safeParse(body)
+    const validation = UpdateFoodItemSchema.safeParse(body)
     if (!validation.success) {
       formatValidationError(validation.error)
     }
 
-    const { entryKey, logIndex, entry } = validation.data
+    const { logIndex, entry } = validation.data
 
     const db = getAdminDatabase()
-    const diaryRef = db.ref(`/${userId}/pheDiary/${entryKey}`)
+    const diaryRef = db.ref(`/${userId}/pheDiary/${key}`)
     const diarySnapshot = await diaryRef.once('value')
     const diaryEntry = diarySnapshot.val()
 
@@ -55,7 +69,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
-      key: entryKey
+      key: key
     }
   } catch (error: unknown) {
     handleServerError(error)

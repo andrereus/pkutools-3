@@ -12,7 +12,7 @@ const localePath = useLocalePath()
 const notifications = useNotifications()
 const confirm = useConfirm()
 const { isPremium } = useLicense()
-const { saveOwnFood, saveDiaryEntry, updateOwnFood, deleteOwnFood } = useApi()
+const { saveOwnFood, addFoodItemToDiary, updateOwnFood, deleteOwnFood } = useApi()
 
 // Reactive state
 const search = ref('')
@@ -218,7 +218,7 @@ const add = async () => {
 
   // Use server API for all writes - validates with Zod
   try {
-    await saveDiaryEntry({
+    await addFoodItemToDiary({
       date: selectedDate.value,
       ...logEntry
     })

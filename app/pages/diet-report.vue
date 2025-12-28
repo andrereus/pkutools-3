@@ -14,7 +14,7 @@ const dialog2 = ref(null)
 const notifications = useNotifications()
 const confirm = useConfirm()
 const { isPremium } = useLicense()
-const { saveDiaryEntry, deleteDiaryEntry, updateDiaryTotals, createDayEntry } = useApi()
+const { addFoodItemToDiary, deleteDiaryDay, updateDiaryDay, createDiaryDay } = useApi()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -183,7 +183,7 @@ const originalEditedItem = ref(null)
 const editItem = (item) => {
   editedIndex.value = pheDiary.value.indexOf(item)
   editedKey.value = item['.key']
-  // Ensure log array exists (even if empty) for entries created via createDayEntry
+  // Ensure log array exists (even if empty) for entries created via createDiaryDay
   const itemCopy = JSON.parse(JSON.stringify(item))
   if (!itemCopy.log) {
     itemCopy.log = []
@@ -204,9 +204,7 @@ const deleteItem = async () => {
   close()
 
   try {
-    await deleteDiaryEntry({
-      entryKey: entryKey
-    })
+    await deleteDiaryDay(entryKey)
 
     notifications.success(t('diary.entry-deleted'), {
       undoAction: async () => {
@@ -215,14 +213,14 @@ const deleteItem = async () => {
           // If it has log items, restore them one by one
           if (deletedItem.log && deletedItem.log.length > 0) {
             for (const logItem of deletedItem.log) {
-              await saveDiaryEntry({
+              await addFoodItemToDiary({
                 date: deletedItem.date,
                 ...logItem
               })
             }
           } else {
             // Simple entry without log items
-            await saveDiaryEntry({
+            await addFoodItemToDiary({
               date: deletedItem.date,
               name: 'Manual Entry',
               weight: 100,
@@ -271,7 +269,7 @@ const save = async () => {
     if (editedIndex.value > -1) {
       // Update existing diary entry totals, date, and log items
       // This syncs any log item deletions and date changes that were made locally
-      await updateDiaryTotals({
+      await updateDiaryDay({
         entryKey: editedKey.value,
         date: editedItem.value.date,
         phe: Number(editedItem.value.phe),
@@ -282,7 +280,7 @@ const save = async () => {
     } else {
       // Create a new day entry (not a food item)
       // This always creates a new diary entry, even if a day with the same date already exists
-      await createDayEntry({
+      await createDiaryDay({
         date: editedItem.value.date,
         phe: Number(editedItem.value.phe),
         kcal: Number(editedItem.value.kcal)

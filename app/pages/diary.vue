@@ -8,7 +8,7 @@ const dialog2 = ref(null)
 const localePath = useLocalePath()
 const notifications = useNotifications()
 const { isPremium } = useLicense()
-const { saveDiaryEntry, updateDiaryEntry, deleteDiaryLogItem, updateGettingStarted } = useApi()
+const { addFoodItemToDiary, updateFoodItemInDiary, deleteFoodItemFromDiary, updateGettingStarted } = useApi()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -147,7 +147,7 @@ const deleteItem = async () => {
   close()
 
   try {
-    await deleteDiaryLogItem({
+    await deleteFoodItemFromDiary({
       entryKey: entryKey,
       logIndex: logIndex
     })
@@ -156,7 +156,7 @@ const deleteItem = async () => {
       undoAction: async () => {
         try {
           // Restore the item by adding it back via save API
-          await saveDiaryEntry({
+          await addFoodItemToDiary({
             date: entryDate,
             ...deletedItem
           })
@@ -209,7 +209,7 @@ const save = async () => {
   try {
     if (isEditing && entryKey && logIndex > -1) {
       // Update existing item - use update API (validates server-side with Zod)
-      await updateDiaryEntry({
+      await updateFoodItemInDiary({
         entryKey: entryKey,
         logIndex: logIndex,
         entry: newLogEntry
@@ -217,7 +217,7 @@ const save = async () => {
       notifications.success(t('common.saved'))
     } else {
       // Add new item - use save API (validates server-side with Zod)
-      await saveDiaryEntry({
+      await addFoodItemToDiary({
         date: entryDate,
         ...newLogEntry
       })
