@@ -29,6 +29,8 @@ export default defineEventHandler(async (event) => {
 
     // Find existing entry for this date
     // This API is for adding food items to days, so we merge with existing day if date matches
+    // If multiple entries exist for the same date, use the FIRST one (earliest key)
+    // Food items are typically added to the first entry created for that date
     interface DiaryEntry {
       date: string
       log?: Array<unknown>
@@ -36,6 +38,7 @@ export default defineEventHandler(async (event) => {
     let existingEntryKey: string | null = null
     for (const [key, entry] of Object.entries(diaryData)) {
       if ((entry as DiaryEntry).date === date) {
+        // Use the first entry found (earliest key) - this is the entry users expect to add food to
         existingEntryKey = key
         break
       }
@@ -81,6 +84,9 @@ export default defineEventHandler(async (event) => {
       }
     } else {
       // Create new entry
+      // Note: There's a potential race condition here if two requests come in simultaneously
+      // Both might find no existing entry and both create new entries
+      // For production, consider using Firebase transactions for atomicity
       const logEntry = validation.data
       const totalPhe = logEntry.phe || 0
       const totalKcal = logEntry.kcal || 0

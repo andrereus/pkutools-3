@@ -28,10 +28,10 @@ export default defineEventHandler(async (event) => {
       const healthConsent = validation.data.healthDataConsent
       const healthHistory = currentSettings.healthDataConsentHistory || []
 
-      // Initialize history if needed
-      if (healthHistory.length === 0 && currentSettings.healthDataConsent === true && currentSettings.healthDataConsentDate) {
+      // Initialize history if needed (preserve original consent date if it exists)
+      if (healthHistory.length === 0 && currentSettings.healthDataConsentDate) {
         healthHistory.push({
-          action: 'given',
+          action: currentSettings.healthDataConsent === true ? 'given' : 'revoked',
           date: currentSettings.healthDataConsentDate
         })
       }
@@ -55,10 +55,10 @@ export default defineEventHandler(async (event) => {
       const emailConsent = validation.data.emailConsent
       const emailHistory = currentSettings.emailConsentHistory || []
 
-      // Initialize history if needed
-      if (emailHistory.length === 0 && currentSettings.emailConsent === true && currentSettings.emailConsentDate) {
+      // Initialize history if needed (preserve original consent date if it exists)
+      if (emailHistory.length === 0 && currentSettings.emailConsentDate) {
         emailHistory.push({
-          action: 'given',
+          action: currentSettings.emailConsent === true ? 'given' : 'revoked',
           date: currentSettings.emailConsentDate
         })
       }

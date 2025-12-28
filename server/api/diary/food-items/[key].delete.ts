@@ -1,6 +1,7 @@
 import { getAdminDatabase } from '../../../utils/firebase-admin'
 import { handleServerError } from '../../../utils/error-handler'
 import { getAuthenticatedUser } from '../../../utils/auth'
+import { formatValidationError } from '../../../utils/validation'
 import type { z } from 'zod'
 import { DeleteFoodItemSchema } from '../../../types/schemas'
 
@@ -19,10 +20,7 @@ export default defineEventHandler(async (event) => {
 
     const validation = DeleteFoodItemSchema.safeParse(body)
     if (!validation.success) {
-      throw createError({
-        statusCode: 400,
-        message: validation.error.issues[0]?.message || 'Invalid request body'
-      })
+      formatValidationError(validation.error)
     }
 
     // TypeScript: validation.data is guaranteed to exist after success check

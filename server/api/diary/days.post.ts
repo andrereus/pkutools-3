@@ -36,8 +36,21 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Always create a new day entry, even if a day with this date already exists
-    // This is for the diet-report page where you can have multiple entries per date
+    // Check if an entry with this date already exists
+    // Prevent duplicate date entries to avoid confusion
+    interface DiaryEntry {
+      date: string
+    }
+    for (const entry of Object.values(diaryData)) {
+      if ((entry as DiaryEntry).date === date) {
+        throw createError({
+          statusCode: 409,
+          message: 'An entry with this date already exists. Please edit the existing entry instead.'
+        })
+      }
+    }
+
+    // Create a new day entry (only if no duplicate date exists)
     const newEntryRef = db.ref(`/${userId}/pheDiary`).push()
     await newEntryRef.set({
       date,

@@ -47,8 +47,27 @@ export default defineEventHandler(async (event) => {
       kcal: kcal
     }
 
-    // Include date if provided
+    // Include date if provided, but check for duplicates first
     if (date !== undefined) {
+      // Only check for duplicates if the date is actually changing
+      if (date !== existingDiaryEntry.date) {
+        const diaryRef = db.ref(`/${userId}/pheDiary`)
+        const diarySnapshot = await diaryRef.once('value')
+        const diaryData = diarySnapshot.val() || {}
+
+        // Check if another entry with this date already exists (excluding current entry)
+        interface DiaryEntry {
+          date: string
+        }
+        for (const [entryKey, entry] of Object.entries(diaryData)) {
+          if (entryKey !== key && (entry as DiaryEntry).date === date) {
+            throw createError({
+              statusCode: 409,
+              message: 'An entry with this date already exists. Please edit the existing entry instead.'
+            })
+          }
+        }
+      }
       updateData.date = date
     }
 
