@@ -15,9 +15,28 @@ export default defineEventHandler(async (event) => {
       formatValidationError(validation.error)
     }
 
-    // Write to Firebase via Admin SDK
     const db = getAdminDatabase()
+    const { date } = validation.data
+
+    // Check if an entry with this date already exists
+    // Prevent duplicate date entries to avoid confusion
     const labValuesRef = db.ref(`/${userId}/labValues`)
+    const labValuesSnapshot = await labValuesRef.once('value')
+    const labValuesData = labValuesSnapshot.val() || {}
+
+    interface LabValueEntry {
+      date: string
+    }
+    for (const entry of Object.values(labValuesData)) {
+      if ((entry as LabValueEntry).date === date) {
+        throw createError({
+          statusCode: 409,
+          message: 'An entry with this date already exists. Please edit the existing entry instead.'
+        })
+      }
+    }
+
+    // Write to Firebase via Admin SDK (only if no duplicate date exists)
     const newRef = labValuesRef.push()
     await newRef.set(validation.data)
 
