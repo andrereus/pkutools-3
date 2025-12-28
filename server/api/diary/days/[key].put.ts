@@ -1,9 +1,9 @@
-import { getAdminDatabase } from '../../utils/firebase-admin'
-import { DiaryEntrySchema } from '../../types/schemas'
+import { getAdminDatabase } from '../../../utils/firebase-admin'
+import { DiaryEntrySchema } from '../../../types/schemas'
 import { z } from 'zod'
-import { handleServerError } from '../../utils/error-handler'
-import { getAuthenticatedUser } from '../../utils/auth'
-import { formatValidationError } from '../../utils/validation'
+import { handleServerError } from '../../../utils/error-handler'
+import { getAuthenticatedUser } from '../../../utils/auth'
+import { formatValidationError } from '../../../utils/validation'
 
 const UpdateDaySchema = z.object({
   date: z

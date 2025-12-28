@@ -1,6 +1,6 @@
-import { getAdminDatabase } from '../../utils/firebase-admin'
-import { handleServerError } from '../../utils/error-handler'
-import { getAuthenticatedUser } from '../../utils/auth'
+import { getAdminDatabase } from '../../../utils/firebase-admin'
+import { handleServerError } from '../../../utils/error-handler'
+import { getAuthenticatedUser } from '../../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -32,4 +32,3 @@ export default defineEventHandler(async (event) => {
     handleServerError(error)
   }
 })
-
