@@ -261,29 +261,45 @@ const save = async () => {
     return
   }
 
+  // Convert phe and kcal to numbers, handling null/undefined/NaN/empty string
+  // v-model.number can produce NaN for empty inputs, so we need to handle that
+  const pheNum = Number(editedItem.value.phe)
+  const kcalNum = Number(editedItem.value.kcal)
+
+  const pheValue =
+    editedItem.value.phe != null && editedItem.value.phe !== '' && !isNaN(pheNum) ? pheNum : 0
+  const kcalValue =
+    editedItem.value.kcal != null && editedItem.value.kcal !== '' && !isNaN(kcalNum) ? kcalNum : 0
+
+  // Capture state before closing (needed to determine if editing or creating)
+  const isEditing = editedIndex.value > -1
+  const entryKey = editedKey.value
+  const entryDate = editedItem.value.date
+  const entryLog = editedItem.value.log || []
+
   // Clear original state and close dialog immediately for instant feedback
   originalEditedItem.value = null
   close()
 
   try {
-    if (editedIndex.value > -1) {
+    if (isEditing && entryKey) {
       // Update existing diary entry totals, date, and log items
       // This syncs any log item deletions and date changes that were made locally
       await updateDiaryDay({
-        entryKey: editedKey.value,
-        date: editedItem.value.date,
-        phe: Number(editedItem.value.phe),
-        kcal: Number(editedItem.value.kcal),
-        log: editedItem.value.log || []
+        entryKey: entryKey,
+        date: entryDate,
+        phe: pheValue,
+        kcal: kcalValue,
+        log: entryLog
       })
       notifications.success(t('common.saved'))
     } else {
       // Create a new day entry (not a food item)
       // This always creates a new diary entry, even if a day with the same date already exists
       await createDiaryDay({
-        date: editedItem.value.date,
-        phe: Number(editedItem.value.phe),
-        kcal: Number(editedItem.value.kcal)
+        date: entryDate,
+        phe: pheValue,
+        kcal: kcalValue
       })
       notifications.success(t('common.saved'))
     }
