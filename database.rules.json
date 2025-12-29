@@ -1,8 +1,14 @@
 {
-    "rules": {
-        "$uid": {
-            ".read": "$uid === auth.uid",
-            ".write": "$uid === auth.uid"
-        }
+  "rules": {
+    "$uid": {
+      ".read": "$uid === auth.uid",
+      ".write": false,
+      "pheDiary": {
+        ".indexOn": ["date"]
+      },
+      "labValues": {
+        ".indexOn": ["date"]
+      }
     }
+  }
 }

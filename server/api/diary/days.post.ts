@@ -19,14 +19,26 @@ export default defineEventHandler(async (event) => {
     const isPremium = await checkPremiumStatus(userId)
 
     const { date, phe, kcal } = validation.data
-
-    // Check diary entry limit for free users
     const diaryRef = db.ref(`/${userId}/pheDiary`)
-    const diarySnapshot = await diaryRef.once('value')
-    const diaryData = diarySnapshot.val() || {}
 
-    if (!isPremium) {
-      const entryCount = diaryData ? Object.keys(diaryData).length : 0
+    // Check duplicate date and limit based on premium status
+    if (isPremium) {
+      // Premium: Use efficient query to check for duplicates
+      const duplicateSnapshot = await diaryRef.orderByChild('date').equalTo(date).once('value')
+      
+      if (duplicateSnapshot.exists()) {
+        throw createError({
+          statusCode: 409,
+          message: 'An entry with this date already exists. Please edit the existing entry instead.'
+        })
+      }
+    } else {
+      // Free: Fetch minimal data to check limit AND duplicates locally
+      // We only need to know if they have >= 14 entries, so fetch 15
+      const diarySnapshot = await diaryRef.limitToFirst(15).once('value')
+      const diaryData = diarySnapshot.val() || {}
+      
+      const entryCount = Object.keys(diaryData).length
 
       if (entryCount >= 14) {
         throw createError({
@@ -34,24 +46,22 @@ export default defineEventHandler(async (event) => {
           message: 'Diary limit reached. Upgrade to premium for unlimited entries.'
         })
       }
-    }
 
-    // Check if an entry with this date already exists
-    // Prevent duplicate date entries to avoid confusion
-    interface DiaryEntry {
-      date: string
-    }
-    for (const entry of Object.values(diaryData)) {
-      if ((entry as DiaryEntry).date === date) {
-        throw createError({
-          statusCode: 409,
-          message: 'An entry with this date already exists. Please edit the existing entry instead.'
-        })
+      interface DiaryEntry {
+        date: string
+      }
+      for (const entry of Object.values(diaryData)) {
+        if ((entry as DiaryEntry).date === date) {
+          throw createError({
+            statusCode: 409,
+            message: 'An entry with this date already exists. Please edit the existing entry instead.'
+          })
+        }
       }
     }
 
-    // Create a new day entry (only if no duplicate date exists)
-    const newEntryRef = db.ref(`/${userId}/pheDiary`).push()
+    // Create a new day entry
+    const newEntryRef = diaryRef.push()
     await newEntryRef.set({
       date,
       phe,

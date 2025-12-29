@@ -31,20 +31,21 @@ export default defineEventHandler(async (event) => {
 
     // Check for duplicate date if date is being changed
     if (data.date && data.date !== labValue.date) {
-      const labValuesRef = db.ref(`/${userId}/labValues`)
-      const labValuesSnapshot = await labValuesRef.once('value')
-      const labValuesData = labValuesSnapshot.val() || {}
+      const duplicatesSnapshot = await db.ref(`/${userId}/labValues`)
+        .orderByChild('date')
+        .equalTo(data.date)
+        .once('value')
 
       // Check if another entry with this date already exists (excluding current entry)
-      interface LabValueEntry {
-        date: string
-      }
-      for (const [key, entry] of Object.entries(labValuesData)) {
-        if (key !== entryKey && (entry as LabValueEntry).date === data.date) {
-          throw createError({
-            statusCode: 409,
-            message: 'An entry with this date already exists. Please edit the existing entry instead.'
-          })
+      if (duplicatesSnapshot.exists()) {
+        const duplicates = duplicatesSnapshot.val()
+        for (const key of Object.keys(duplicates)) {
+          if (key !== entryKey) {
+            throw createError({
+              statusCode: 409,
+              message: 'An entry with this date already exists. Please edit the existing entry instead.'
+            })
+          }
         }
       }
     }

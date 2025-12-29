@@ -23,30 +23,29 @@ export default defineEventHandler(async (event) => {
     // Determine date
     const date = body.date || format(new Date(), 'yyyy-MM-dd')
 
-    const diaryRef = db.ref(`/${userId}/pheDiary`)
-    const diarySnapshot = await diaryRef.once('value')
-    const diaryData = diarySnapshot.val() || {}
+    // Find existing entry for this date efficiently
+    const querySnapshot = await db.ref(`/${userId}/pheDiary`)
+      .orderByChild('date')
+      .equalTo(date)
+      .limitToFirst(1)
+      .once('value')
 
-    // Find existing entry for this date
-    // This API is for adding food items to days, so we merge with existing day if date matches
-    // If multiple entries exist for the same date, use the FIRST one (earliest key)
-    // Food items are typically added to the first entry created for that date
-    interface DiaryEntry {
-      date: string
-      log?: Array<unknown>
-    }
     let existingEntryKey: string | null = null
-    for (const [key, entry] of Object.entries(diaryData)) {
-      if ((entry as DiaryEntry).date === date) {
-        // Use the first entry found (earliest key) - this is the entry users expect to add food to
-        existingEntryKey = key
-        break
-      }
+    let existingEntryVal: any = null
+
+    if (querySnapshot.exists()) {
+      const data = querySnapshot.val()
+      existingEntryKey = Object.keys(data)[0]
+      existingEntryVal = data[existingEntryKey]
     }
 
     // Check diary entry limit for free users (only when creating new date entry)
     if (!isPremium && !existingEntryKey) {
-      const entryCount = diaryData ? Object.keys(diaryData).length : 0
+      // Free users: Must fetch minimal data to count entries before creating new one
+      const diaryRef = db.ref(`/${userId}/pheDiary`)
+      // limit is 14, so fetch 15 to be sure we exceeded it
+      const diarySnapshot = await diaryRef.limitToFirst(15).once('value')
+      const entryCount = diarySnapshot.numChildren()
 
       if (entryCount >= 14) {
         throw createError({
@@ -64,7 +63,8 @@ export default defineEventHandler(async (event) => {
         phe: number
         kcal: number
       }
-      const existingEntry = diaryData[existingEntryKey] as DiaryEntry
+      // Use the value we already fetched from the query
+      const existingEntry = existingEntryVal as DiaryEntry
       const updatedLog = [...(existingEntry.log || []), validation.data]
 
       // Calculate totals
