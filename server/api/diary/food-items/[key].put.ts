@@ -1,6 +1,6 @@
 import { getAdminDatabase } from '../../../utils/firebase-admin'
 import { UpdateFoodItemSchema } from '../../../types/schemas'
-import { z } from 'zod'
+import type { z } from 'zod'
 import { handleServerError } from '../../../utils/error-handler'
 import { getAuthenticatedUser } from '../../../utils/auth'
 import { formatValidationError } from '../../../utils/validation'

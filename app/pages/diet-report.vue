@@ -219,11 +219,10 @@ const deleteItem = async () => {
               })
             }
           } else {
-            // Simple entry without log items
-            await addFoodItemToDiary({
+            // Simple entry without log items - restore using createDiaryDay
+            // This preserves the original structure without adding a "Manual Entry" log item
+            await createDiaryDay({
               date: deletedItem.date,
-              name: 'Manual Entry',
-              weight: 100,
               phe: deletedItem.phe || 0,
               kcal: deletedItem.kcal || 0
             })

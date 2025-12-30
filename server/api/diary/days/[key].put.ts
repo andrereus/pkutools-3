@@ -1,6 +1,6 @@
 import { getAdminDatabase } from '../../../utils/firebase-admin'
 import { UpdateDaySchema } from '../../../types/schemas'
-import { z } from 'zod'
+import type { z } from 'zod'
 import { handleServerError } from '../../../utils/error-handler'
 import { getAuthenticatedUser } from '../../../utils/auth'
 import { formatValidationError } from '../../../utils/validation'
@@ -39,8 +39,6 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const currentLog = existingDiaryEntry.log || []
-
     // Build update object with all fields that need to be updated
     const updateData: Record<string, unknown> = {
       phe: phe,
@@ -51,7 +49,8 @@ export default defineEventHandler(async (event) => {
     if (date !== undefined) {
       // Only check for duplicates if the date is actually changing
       if (date !== existingDiaryEntry.date) {
-        const duplicatesSnapshot = await db.ref(`/${userId}/pheDiary`)
+        const duplicatesSnapshot = await db
+          .ref(`/${userId}/pheDiary`)
           .orderByChild('date')
           .equalTo(date)
           .once('value')
@@ -63,7 +62,8 @@ export default defineEventHandler(async (event) => {
             if (entryKey !== key) {
               throw createError({
                 statusCode: 409,
-                message: 'An entry with this date already exists. Please edit the existing entry instead.'
+                message:
+                  'An entry with this date already exists. Please edit the existing entry instead.'
               })
             }
           }
@@ -73,23 +73,11 @@ export default defineEventHandler(async (event) => {
     }
 
     // If log array is provided, use it (to sync deletions)
-    // Otherwise, if there are no log items, create a single "Manual Entry" log item
+    // If log is not provided, preserve the existing log (whether empty or not)
     if (log !== undefined) {
       updateData.log = log
-    } else if (currentLog.length === 0) {
-      const manualEntry = {
-        name: 'Manual Entry',
-        emoji: null,
-        icon: null,
-        pheReference: null,
-        kcalReference: null,
-        weight: 100,
-        phe: phe,
-        kcal: kcal
-      }
-      updateData.log = [manualEntry]
     }
-    // If log items exist and log is not provided, don't update log (only totals)
+    // If log is not provided, don't update log (preserve existing log structure)
 
     await diaryEntryRef.update(updateData)
 
