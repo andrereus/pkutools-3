@@ -90,7 +90,11 @@ const saveLicense = async () => {
     })
 
     if (validation.valid) {
-      notifications.success(t('settings.license-active') + ' 🎉')
+      // Determine which plan is active
+      const planName = validation.premiumAI
+        ? t('settings.tier-premium-ai')
+        : t('settings.tier-unlimited')
+      notifications.success(t('settings.license-active') + ' ' + planName + ' 🎉')
     } else {
       notifications.info(t('settings.license-inactive'))
       // Clear cache for invalid licenses to ensure UI reflects invalid state
