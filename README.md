@@ -183,6 +183,20 @@ npm run emulators:data
 
 The emulator UI will be available at `http://localhost:4000`.
 
+#### Troubleshooting: Stuck Emulators
+
+If you forgot to stop the emulators with Ctrl+C and can't start them again (ports are already in use), you can force-stop stuck emulator processes:
+
+```bash
+lsof -ti:9099,9000,4000 | xargs kill -9
+```
+
+This will kill any processes running on the emulator ports (9099 - Auth, 9000 - Database, 4000 - UI).
+
+**Note**: This is a force-kill method that should only be used when the emulator is unresponsive. Any unexported changes since the last graceful shutdown will be lost, but your existing exported data in `emulator-data/` will remain intact.
+
+**Official method** (preferred): Press `Ctrl+C` in the terminal where emulators are running.
+
 ### Start Development Server
 
 Start the development server (in a separate terminal):
