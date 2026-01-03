@@ -39,7 +39,7 @@ const tiers = computed(() => [
   {
     name: t('settings.tier-premium-ai'),
     id: 'tier-premium-ai',
-    price: '$6',
+    price: '€6',
     description: t('settings.tier-premium-ai-desc'),
     features: [t('settings.tier-premium-ai-feature-all'), t('settings.tier-premium-ai-feature-ai')],
     featured: true
