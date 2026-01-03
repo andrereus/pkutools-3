@@ -9,7 +9,7 @@ const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
-const { isPremium } = useLicense()
+const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary } = useApi()
 
 // Reactive state
@@ -27,6 +27,7 @@ const isSaving = ref(false)
 // Base estimate "credits" per day for premium users.
 // Non-premium users get a lower effective limit via computed config.
 const BASE_DAILY_ESTIMATE_LIMIT = 20
+const PREMIUM_AI_DAILY_ESTIMATE_LIMIT = 100
 const FREE_USER_DAILY_ESTIMATE_LIMIT = 2
 
 // Computed properties
@@ -48,7 +49,25 @@ const estimateConfig = computed(() => {
     }
   }
 
-  // Premium users: toggle between more estimates with flash or better quality with pro
+  // Premium+AI users: higher limits
+  if (isPremiumAI.value) {
+    if (useProEstimatesSetting.value) {
+      // Premium+AI with Pro: 10 estimates/day (100 credits / 10 cost)
+      return {
+        model: 'gemini-2.5-pro',
+        dailyLimitCredits: PREMIUM_AI_DAILY_ESTIMATE_LIMIT,
+        costPerEstimate: 10
+      }
+    }
+    // Premium+AI with Flash: 100 estimates/day
+    return {
+      model: 'gemini-2.5-flash',
+      dailyLimitCredits: PREMIUM_AI_DAILY_ESTIMATE_LIMIT,
+      costPerEstimate: 1
+    }
+  }
+
+  // Regular Premium users: toggle between more estimates with flash or better quality with pro
   if (useProEstimatesSetting.value) {
     // Pro: uses more credits per estimate so effective estimates/day = 2
     return {

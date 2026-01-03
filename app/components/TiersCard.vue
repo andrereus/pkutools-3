@@ -34,6 +34,14 @@ const tiers = computed(() => [
       t('settings.tier-unlimited-feature-5'),
       t('settings.tier-unlimited-feature-6')
     ],
+    featured: false
+  },
+  {
+    name: t('settings.tier-premium-ai'),
+    id: 'tier-premium-ai',
+    price: '$6',
+    description: t('settings.tier-premium-ai-desc'),
+    features: [t('settings.tier-premium-ai-feature-all'), t('settings.tier-premium-ai-feature-ai')],
     featured: true
   }
 ])
@@ -43,7 +51,7 @@ const tiers = computed(() => [
   <div
     :class="[
       props.align === 'center' ? 'mx-auto' : '',
-      'my-6 grid max-w-lg grid-cols-1 items-center gap-y-6 sm:gap-y-0 lg:max-w-3xl lg:grid-cols-2'
+      'my-6 grid max-w-lg grid-cols-1 items-center gap-y-6 sm:gap-y-0 lg:max-w-5xl lg:grid-cols-3'
     ]"
   >
     <div
@@ -51,9 +59,11 @@ const tiers = computed(() => [
       :key="tier.id"
       :class="[
         tier.featured ? 'relative' : 'sm:mx-8 lg:mx-0',
-        tierIdx < 1
+        tierIdx === 0
           ? 'rounded-t-xl sm:rounded-b-none lg:rounded-tr-none lg:rounded-bl-xl'
-          : 'lg:rounded-t-xl',
+          : tierIdx === tiers.length - 1
+            ? 'rounded-t-xl sm:rounded-b-none lg:rounded-tl-none lg:rounded-bl-none lg:rounded-tr-xl lg:rounded-br-xl'
+            : '',
         'rounded-xl p-8 ring-1 ring-gray-200 dark:ring-gray-800'
       ]"
     >
@@ -67,9 +77,11 @@ const tiers = computed(() => [
         <span :class="[tier.featured ? '' : '', 'text-xl font-semibold tracking-tight']">{{
           tier.price
         }}</span>
-        <span v-if="tier.id === 'tier-unlimited'" class="text-gray-500 text-base">{{
-          $t('settings.per-month')
-        }}</span>
+        <span
+          v-if="tier.id === 'tier-unlimited' || tier.id === 'tier-premium-ai'"
+          class="text-gray-500 text-base"
+          >{{ $t('settings.per-month') }}</span
+        >
       </p>
       <p :class="[tier.featured ? '' : '', 'text-gray-500 mt-4 text-base/7']">
         {{ tier.description }}
@@ -84,7 +96,7 @@ const tiers = computed(() => [
         </li>
       </ul>
       <a
-        v-if="tier.id === 'tier-unlimited'"
+        v-if="tier.id === 'tier-unlimited' || tier.id === 'tier-premium-ai'"
         href="https://ko-fi.com/andrereus/tiers"
         target="_blank"
         class="bg-sky-500 text-white shadow-xs hover:bg-sky-400 focus-visible:outline-sky-500 mt-6 block rounded-md px-3.5 py-1 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"

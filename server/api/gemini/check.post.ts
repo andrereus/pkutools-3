@@ -2,10 +2,11 @@ import { getAdminDatabase } from '../../utils/firebase-admin'
 import { format } from 'date-fns'
 import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
-import { checkPremiumStatus } from '../../utils/license'
+import { checkPremiumStatus, checkPremiumAIStatus } from '../../utils/license'
 
 // Constants for limits
 const BASE_DAILY_ESTIMATE_LIMIT = 20
+const PREMIUM_AI_DAILY_ESTIMATE_LIMIT = 100
 const FREE_USER_DAILY_ESTIMATE_LIMIT = 2
 
 export default defineEventHandler(async (event) => {
@@ -22,6 +23,7 @@ export default defineEventHandler(async (event) => {
     const settings = settingsSnapshot.val() || {}
 
     const isPremium = await checkPremiumStatus(userId)
+    const isPremiumAI = await checkPremiumAIStatus(userId)
 
     // Get current estimation count
     const today = format(new Date(), 'yyyy-MM-dd')
@@ -35,10 +37,20 @@ export default defineEventHandler(async (event) => {
     if (!isPremium) {
       dailyLimitCredits = FREE_USER_DAILY_ESTIMATE_LIMIT
       costPerEstimate = 1
+    } else if (isPremiumAI && usePro) {
+      // Premium+AI with Pro model: 10 estimates per day (100 credits / 10 cost)
+      dailyLimitCredits = PREMIUM_AI_DAILY_ESTIMATE_LIMIT
+      costPerEstimate = 10
+    } else if (isPremiumAI) {
+      // Premium+AI with Flash model: 100 estimates per day
+      dailyLimitCredits = PREMIUM_AI_DAILY_ESTIMATE_LIMIT
+      costPerEstimate = 1
     } else if (usePro) {
+      // Regular Premium with Pro model: 2 estimates per day (20 credits / 10 cost)
       dailyLimitCredits = BASE_DAILY_ESTIMATE_LIMIT
       costPerEstimate = 10
     } else {
+      // Regular Premium with Flash model: 20 estimates per day
       dailyLimitCredits = BASE_DAILY_ESTIMATE_LIMIT
       costPerEstimate = 1
     }

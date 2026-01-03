@@ -132,6 +132,7 @@ export default defineNuxtConfig({
     firebaseAdminClientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
     firebaseAdminPrivateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY,
     pkutoolsLicenseKey: process.env.PKU_TOOLS_LICENSE_KEY,
+    pkutoolsLicenseKey2: process.env.PKU_TOOLS_LICENSE_KEY_2,
     // Public (exposed to client)
     public: {
       firebaseApiKey: process.env.FIREBASE_API_KEY,

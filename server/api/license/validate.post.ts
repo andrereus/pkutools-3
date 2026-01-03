@@ -20,11 +20,14 @@ export default defineEventHandler(async (event) => {
     // Compare with server-side config (never exposed to client)
     const config = useRuntimeConfig()
     const validLicenseKey = config.pkutoolsLicenseKey
-    const isValid = licenseKey === validLicenseKey
+    const validLicenseKey2 = config.pkutoolsLicenseKey2
+    const isValid = licenseKey === validLicenseKey || licenseKey === validLicenseKey2
+    const isPremiumAI = licenseKey === validLicenseKey2
 
     return {
       valid: isValid,
-      premium: isValid
+      premium: isValid,
+      premiumAI: isPremiumAI
     }
   } catch (error: unknown) {
     handleServerError(error)

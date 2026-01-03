@@ -4,6 +4,7 @@ import { useStore } from '../../stores/index'
 const licenseCache = ref<{
   valid: boolean
   premium: boolean
+  premiumAI?: boolean
   timestamp: number
 } | null>(null)
 
@@ -16,7 +17,7 @@ export const useLicense = () => {
 
   const validateLicense = async (
     licenseKey: string
-  ): Promise<{ valid: boolean; premium: boolean }> => {
+  ): Promise<{ valid: boolean; premium: boolean; premiumAI?: boolean }> => {
     try {
       // Check cache first
       if (licenseCache.value) {
@@ -24,7 +25,8 @@ export const useLicense = () => {
         if (age < CACHE_DURATION) {
           return {
             valid: licenseCache.value.valid,
-            premium: licenseCache.value.premium
+            premium: licenseCache.value.premium,
+            premiumAI: licenseCache.value.premiumAI
           }
         }
       }
@@ -39,7 +41,7 @@ export const useLicense = () => {
       const token = await user.getIdToken()
 
       // Call license validation API
-      const response = await $fetch<{ valid: boolean; premium: boolean }>('/api/license/validate', {
+      const response = await $fetch<{ valid: boolean; premium: boolean; premiumAI?: boolean }>('/api/license/validate', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`
@@ -53,6 +55,7 @@ export const useLicense = () => {
       licenseCache.value = {
         valid: response.valid,
         premium: response.premium,
+        premiumAI: response.premiumAI,
         timestamp: Date.now()
       }
 
@@ -107,6 +110,11 @@ export const useLicense = () => {
     return licenseCache.value?.premium === true
   })
 
+  const isPremiumAI = computed(() => {
+    // Check if user has premium+AI license
+    return licenseCache.value?.premiumAI === true
+  })
+
   const clearCache = () => {
     licenseCache.value = null
   }
@@ -134,6 +142,7 @@ export const useLicense = () => {
   return {
     validateLicense,
     isPremium,
+    isPremiumAI,
     clearCache,
     initializeLicense
   }
