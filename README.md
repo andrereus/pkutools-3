@@ -18,7 +18,7 @@ PKU Tools is a comprehensive Progressive Web App (PWA) designed to help people w
     - Meat: 46 mg Phe per 1g protein
     - Other foods: 50 mg Phe per 1g protein
 
-- **✨ Estimation feature (Beta)**: Estimate Phe and calorie values for foods using AI when no nutritional data is available.
+- **✨ Estimation feature**: Estimate Phe and calorie values for foods using AI when no nutritional data is available.
 
 - **📅 Diary**: Daily food log with:
   - Date navigation (view past and future days)
