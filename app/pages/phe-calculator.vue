@@ -17,6 +17,7 @@ const phe = ref(null)
 const protein = ref(null)
 const weight = ref(null)
 const name = ref('')
+const emoji = ref(null)
 const kcalReference = ref(null)
 const select = ref('phe')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
@@ -222,24 +223,18 @@ const estimateFoodValues = async () => {
     })
 
     // Create a prompt that requests structured JSON output
-    const prompt = `Estimate the nutritional values for the following food: "${sanitizedName}"
+    const prompt = `Estimate nutritional values for: "${sanitizedName}"
 
-Please provide a JSON response with the following structure:
+Return JSON with these fields:
 {
-  "phePer100g": <number in mg per 100g>,
-  "kcalPer100g": <number in kcal per 100g>,
-  "proteinPer100g": <number in g per 100g>,
-  "servingSizeGrams": <number in grams for a typical serving size>
+  "phePer100g": number (phenylalanine in mg per 100g) or null,
+  "kcalPer100g": number (calories in kcal per 100g) or null,
+  "proteinPer100g": number (protein in g per 100g) or null,
+  "servingSizeGrams": number (typical serving size in g) or null,
+  "emoji": string (exactly one emoji character) or null
 }
 
-Important:
-- phePer100g should be the phenylalanine content in milligrams per 100 grams
-- kcalPer100g should be the caloric content in kilocalories per 100 grams
-- proteinPer100g should be the protein content in grams per 100 grams
-- servingSizeGrams should be a typical serving size in grams
-- If you cannot determine a value, use null for that field
-- Provide realistic estimates based on typical nutritional databases
-- For processed foods, provide values for the prepared/cooked state unless specified otherwise`
+Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
 
     const result = await model.generateContent(prompt)
     const response = result.response
@@ -252,6 +247,13 @@ Important:
     }
 
     const foodData = JSON.parse(jsonMatch[0])
+
+    // Store emoji separately if provided
+    if (foodData.emoji && typeof foodData.emoji === 'string' && foodData.emoji.trim() !== '') {
+      emoji.value = foodData.emoji.trim()
+    } else {
+      emoji.value = null
+    }
 
     // Update the form fields with estimated values
     // Check if values are valid numbers before using them
@@ -325,6 +327,7 @@ const save = async () => {
   if (select.value === 'phe') {
     logEntry = {
       name: name.value,
+      emoji: emoji.value || null,
       pheReference: phe.value,
       kcalReference: Number(kcalReference.value) || 0,
       weight: Number(weight.value),
@@ -334,6 +337,7 @@ const save = async () => {
   } else {
     logEntry = {
       name: name.value,
+      emoji: emoji.value || null,
       pheReference: Math.round(protein.value * factor.value),
       kcalReference: Number(kcalReference.value) || 0,
       weight: Number(weight.value),
