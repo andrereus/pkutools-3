@@ -87,8 +87,9 @@
     "estimate-error-premium": "Esta función requiere una suscripción.",
     "estimate-error-daily-limit": "Se alcanzó el límite diario de {limit} estimaciones. Por favor, inténtelo de nuevo mañana.",
     "estimate-info": "Los valores estimados pueden ser inexactos o incorrectos. Limitado a {limit} por día. Más con Premium.",
-    "estimate-info-premium": "Los valores estimados pueden ser inexactos o incorrectos. Limitado a {limit} por día.",
-    "use-pro-model": "Usar el mejor modelo de IA (usa más del contador de estimaciones)",
+    "estimate-info-premium": "Los valores estimados pueden ser inexactos o incorrectos. Limitado a {limit} por día. Más con Premium + AI.",
+    "estimate-info-premium-ai": "Los valores estimados pueden ser inexactos o incorrectos. Limitado a {limit} por día.",
+    "use-pro-model": "Usar el mejor modelo de IA (usa más presupuesto de IA)",
     "use-pro-model-info": "Con esta opción, cada estimación utiliza más de tu presupuesto diario."
   },
   "barcode-scanner": {
@@ -193,6 +194,7 @@
     "tier-premium-ai-desc": "Paga una cuota mensual y accede a todas las funciones con IA.",
     "tier-premium-ai-feature-all": "Todas las funciones Premium",
     "tier-premium-ai-feature-ai": "Presupuesto de IA más grande",
+    "tier-premium-ai-feature-best-model": "Mejor modelo de IA",
     "tier-basic": "Versión de prueba",
     "tier-basic-desc": "Gratis, sin publicidad",
     "tier-basic-feature-1": "14 días en el diario",

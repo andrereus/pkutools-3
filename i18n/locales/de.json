@@ -87,8 +87,9 @@
     "estimate-error-premium": "Diese Funktion erfordert ein Abonnement.",
     "estimate-error-daily-limit": "Tageslimit von {limit} Schätzungen erreicht. Bitte versuchen Sie es morgen erneut.",
     "estimate-info": "Geschätzte Werte können ungenau oder falsch sein. Begrenzt auf {limit} pro Tag. Mehr mit Premium.",
-    "estimate-info-premium": "Geschätzte Werte können ungenau oder falsch sein. Begrenzt auf {limit} pro Tag.",
-    "use-pro-model": "Bestes KI-Modell verwenden (verbraucht mehr von deinem Schätzungskonto)",
+    "estimate-info-premium": "Geschätzte Werte können ungenau oder falsch sein. Begrenzt auf {limit} pro Tag. Mehr mit Premium + AI.",
+    "estimate-info-premium-ai": "Geschätzte Werte können ungenau oder falsch sein. Begrenzt auf {limit} pro Tag.",
+    "use-pro-model": "Bestes KI-Modell verwenden (verbraucht mehr KI-Budget)",
     "use-pro-model-info": "Mit dieser Option verbraucht jede Schätzung mehr von deinem Tagesbudget."
   },
   "barcode-scanner": {
@@ -193,6 +194,7 @@
     "tier-premium-ai-desc": "Unterstütze monatlich und bekomme Zugang zu allen Funktionen mit KI.",
     "tier-premium-ai-feature-all": "Alle Premium-Funktionen",
     "tier-premium-ai-feature-ai": "Größeres KI-Budget",
+    "tier-premium-ai-feature-best-model": "Bestes KI-Modell",
     "tier-basic": "Testversion",
     "tier-basic-desc": "Kostenlos, werbefrei",
     "tier-basic-feature-1": "14 Tage im Tagebuch",

@@ -87,8 +87,9 @@
     "estimate-error-premium": "This feature requires a subscription.",
     "estimate-error-daily-limit": "Daily limit of {limit} estimates reached. Please try again tomorrow.",
     "estimate-info": "Estimated values can be inaccurate or wrong. Limited to {limit} per day. More with Premium.",
-    "estimate-info-premium": "Estimated values can be inaccurate or wrong. Limited to {limit} per day.",
-    "use-pro-model": "Use best AI model (uses up more of the estimation count)",
+    "estimate-info-premium": "Estimated values can be inaccurate or wrong. Limited to {limit} per day. More with Premium + AI.",
+    "estimate-info-premium-ai": "Estimated values can be inaccurate or wrong. Limited to {limit} per day.",
+    "use-pro-model": "Use best AI model (uses up more AI budget)",
     "use-pro-model-info": "With this option, each estimate uses more of your daily budget."
   },
   "barcode-scanner": {
@@ -193,6 +194,7 @@
     "tier-premium-ai-desc": "Support monthly and get access to all features with AI.",
     "tier-premium-ai-feature-all": "All Premium features",
     "tier-premium-ai-feature-ai": "Bigger AI budget",
+    "tier-premium-ai-feature-best-model": "Best AI model",
     "tier-basic": "Trial version",
     "tier-basic-desc": "Free of charge, ad-free",
     "tier-basic-feature-1": "14 days in the diary",

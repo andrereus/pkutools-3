@@ -34,8 +34,9 @@ const FREE_USER_DAILY_ESTIMATE_LIMIT = 2
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
 const settings = computed(() => store.settings)
-// Premium users can choose to use Gemini 2.5 Pro (higher quality, higher cost per estimate)
+// Premium+AI users can choose to use Gemini 2.5 Pro (higher quality, higher cost per estimate)
 // or stick with Gemini 2.5 Flash (more estimates). This is a simple per-session toggle.
+// Regular Premium users can only use Gemini 2.5 Flash.
 const useProEstimatesSetting = ref(false)
 
 // Configuration for the AI model, cost per estimate and daily limit
@@ -50,7 +51,7 @@ const estimateConfig = computed(() => {
     }
   }
 
-  // Premium+AI users: higher limits
+  // Premium+AI users: higher limits, can use pro model
   if (isPremiumAI.value) {
     if (useProEstimatesSetting.value) {
       // Premium+AI with Pro: 10 estimates/day (100 credits / 10 cost)
@@ -68,17 +69,7 @@ const estimateConfig = computed(() => {
     }
   }
 
-  // Regular Premium users: toggle between more estimates with flash or better quality with pro
-  if (useProEstimatesSetting.value) {
-    // Pro: uses more credits per estimate so effective estimates/day = 2
-    return {
-      model: 'gemini-2.5-pro',
-      dailyLimitCredits: BASE_DAILY_ESTIMATE_LIMIT,
-      costPerEstimate: 10
-    }
-  }
-
-  // Premium + flash: full 20 estimates/day
+  // Regular Premium users: only flash model, 20 estimates/day
   return {
     model: 'gemini-2.5-flash',
     dailyLimitCredits: BASE_DAILY_ESTIMATE_LIMIT,
@@ -440,14 +431,21 @@ defineOgImageComponent('NuxtSeo', {
 
     <div v-if="userIsAuthenticated" class="mt-1 text-xs text-gray-600 dark:text-gray-400">
       {{
-        $t(isPremium ? 'phe-calculator.estimate-info-premium' : 'phe-calculator.estimate-info', {
-          limit: humanDailyEstimateLimit
-        })
+        $t(
+          isPremiumAI
+            ? 'phe-calculator.estimate-info-premium-ai'
+            : isPremium
+              ? 'phe-calculator.estimate-info-premium'
+              : 'phe-calculator.estimate-info',
+          {
+            limit: humanDailyEstimateLimit
+          }
+        )
       }}
     </div>
 
     <div
-      v-if="userIsAuthenticated && isPremium"
+      v-if="userIsAuthenticated && isPremiumAI"
       class="mt-2 text-xs text-gray-600 dark:text-gray-400 max-w-xl"
     >
       <label class="inline-flex items-start gap-2 cursor-pointer select-none">

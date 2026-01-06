@@ -25,6 +25,14 @@ export default defineEventHandler(async (event) => {
     const isPremium = await checkPremiumStatus(userId)
     const isPremiumAI = await checkPremiumAIStatus(userId)
 
+    // Pro model is only available for Premium+AI users
+    if (usePro && !isPremiumAI) {
+      throw createError({
+        statusCode: 403,
+        message: 'Pro model is only available with Premium+AI plan'
+      })
+    }
+
     // Get current estimation count
     const today = format(new Date(), 'yyyy-MM-dd')
     const estimateDate = settings.estimationDate
@@ -45,10 +53,6 @@ export default defineEventHandler(async (event) => {
       // Premium+AI with Flash model: 100 estimates per day
       dailyLimitCredits = PREMIUM_AI_DAILY_ESTIMATE_LIMIT
       costPerEstimate = 1
-    } else if (usePro) {
-      // Regular Premium with Pro model: 2 estimates per day (20 credits / 10 cost)
-      dailyLimitCredits = BASE_DAILY_ESTIMATE_LIMIT
-      costPerEstimate = 10
     } else {
       // Regular Premium with Flash model: 20 estimates per day
       dailyLimitCredits = BASE_DAILY_ESTIMATE_LIMIT
