@@ -94,15 +94,15 @@ const badges = computed(() => [
     <div class="px-4 py-5 sm:p-6">
       <div class="flex items-center gap-3 font-medium mb-2">
         <LucideAward class="h-5 w-5" />
-        {{ $t('assistant.motivation') }}
+        {{ $t('insights.motivation') }}
       </div>
       <div class="flex flex-col gap-4">
         <div>
           <p v-if="streak > 0">
-            {{ $t('assistant.streak', { streak }) }}
+            {{ $t('insights.streak', { streak }) }}
           </p>
           <p v-else>
-            {{ $t('assistant.start-tracking') }}
+            {{ $t('insights.start-tracking') }}
           </p>
         </div>
         <!-- Badges -->

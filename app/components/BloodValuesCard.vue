@@ -21,11 +21,11 @@ const recentLabValues = computed(() => {
     <div class="px-4 py-5 sm:p-6">
       <div class="flex items-center gap-3 font-medium mb-2">
         <LucideChartLine class="h-5 w-5" />
-        {{ $t('assistant.blood-values') }}
+        {{ $t('insights.blood-values') }}
       </div>
       <p>
         {{
-          $t('assistant.blood-values-phe', {
+          $t('insights.blood-values-phe', {
             phe: recentLabValues.phe,
             unit: settings?.labUnit === 'mgdl' ? 'mg/dL' : 'µmol/L'
           })
@@ -33,7 +33,7 @@ const recentLabValues = computed(() => {
       </p>
       <p>
         {{
-          $t('assistant.blood-values-tyrosine', {
+          $t('insights.blood-values-tyrosine', {
             tyrosine: recentLabValues.tyrosine,
             unit: settings?.labUnit === 'mgdl' ? 'mg/dL' : 'µmol/L'
           })

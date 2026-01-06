@@ -19,22 +19,22 @@ const signInGoogle = async () => {
 definePageMeta({
   i18n: {
     paths: {
-      en: '/assistant',
-      de: '/assistent',
-      es: '/asistente',
-      fr: '/assistant'
+      en: '/insights',
+      de: '/einblicke',
+      es: '/insights',
+      fr: '/insights'
     }
   }
 })
 
 useSeoMeta({
-  title: () => t('assistant.title'),
-  description: () => t('assistant.description')
+  title: () => t('insights.title'),
+  description: () => t('insights.description')
 })
 
 defineOgImageComponent('NuxtSeo', {
-  title: () => t('assistant.title') + ' - PKU Tools',
-  description: () => t('assistant.description'),
+  title: () => t('insights.title') + ' - PKU Tools',
+  description: () => t('insights.description'),
   theme: '#3498db'
 })
 </script>
@@ -42,7 +42,7 @@ defineOgImageComponent('NuxtSeo', {
 <template>
   <div>
     <header>
-      <PageHeader :title="$t('assistant.title')" class="inline-block" />
+      <PageHeader :title="$t('insights.title')" class="inline-block" />
     </header>
 
     <div v-if="!userIsAuthenticated">

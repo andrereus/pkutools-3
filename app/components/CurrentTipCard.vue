@@ -34,12 +34,12 @@ const nutritionBalance = computed(() => {
     <div class="px-4 py-5 sm:p-6">
       <div class="flex items-center gap-3 font-medium mb-2">
         <LucideClock class="h-5 w-5" />
-        {{ $t('assistant.satiety-tip') }}
+        {{ $t('insights.satiety-tip') }}
       </div>
       <p>
         <template v-if="nutritionBalance.difference > 5">
           {{
-            $t('assistant.satiety-tip-high', {
+            $t('insights.satiety-tip-high', {
               phePercentage: Math.round(nutritionBalance.phePercentage),
               kcalPercentage: Math.round(nutritionBalance.kcalPercentage)
             })
@@ -47,7 +47,7 @@ const nutritionBalance = computed(() => {
         </template>
         <template v-else-if="nutritionBalance.difference < -5">
           {{
-            $t('assistant.satiety-tip-low', {
+            $t('insights.satiety-tip-low', {
               phePercentage: Math.round(nutritionBalance.phePercentage),
               kcalPercentage: Math.round(nutritionBalance.kcalPercentage)
             })
@@ -55,7 +55,7 @@ const nutritionBalance = computed(() => {
         </template>
         <template v-else>
           {{
-            $t('assistant.satiety-tip-text', {
+            $t('insights.satiety-tip-text', {
               phePercentage: Math.round(nutritionBalance.phePercentage),
               kcalPercentage: Math.round(nutritionBalance.kcalPercentage)
             })

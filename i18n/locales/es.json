@@ -261,8 +261,8 @@
     "blood-values-description": "Rastrear los valores de sangre en un diagrama.",
     "suggestions-name": "Sugerencias de 1 clic",
     "suggestions-description": "Añade sugerencias al registro con un solo clic.",
-    "assistant-name": "Asistente",
-    "assistant-description": "Obtenga una visión general e información sobre su nutrición."
+    "insights-name": "Insights",
+    "insights-description": "Ver insights y tendencias sobre tu nutrición."
   },
   "footer": {
     "tools": "Herramientas",
@@ -270,10 +270,10 @@
     "account": "Cuenta",
     "about": "Acerca de"
   },
-  "assistant": {
-    "title": "Asistente",
-    "description": "Obtenga una visión general e información sobre su nutrición.",
-    "info": "Asistente puede cometer errores.",
+  "insights": {
+    "title": "Insights",
+    "description": "Ver insights y tendencias sobre tu nutrición.",
+    "info": "Los insights pueden contener imprecisiones.",
     "satiety-tip": "Actualmente",
     "satiety-tip-high": "Tu ingesta de Phe ({phePercentage}%) es mayor que tu ingesta calórica ({kcalPercentage}%).",
     "satiety-tip-low": "Tu ingesta de Phe ({phePercentage}%) es menor que tu ingesta calórica ({kcalPercentage}%).",
@@ -283,7 +283,7 @@
     "blood-values": "Valores de sangre",
     "blood-values-phe": "Tu último valor de Phe fue {phe} {unit}.",
     "blood-values-tyrosine": "Tu último valor de Tirosina fue {tyrosine} {unit}.",
-    "motivation": "Estadísticas",
+    "motivation": "Insights",
     "streak": "Has registrado tu nutrición durante {streak} días seguidos.",
     "week": "Has registrado durante 7 o más días consecutivos.",
     "keep-going": "",

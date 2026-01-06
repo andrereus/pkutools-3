@@ -261,8 +261,8 @@
     "blood-values-description": "Verfolge Blutwerte in einem Diagramm.",
     "suggestions-name": "1-Klick Vorschläge",
     "suggestions-description": "Füge Vorschläge mit einem Klick dem Tagebuch hinzu.",
-    "assistant-name": "Assistent",
-    "assistant-description": "Erhalte eine Übersicht und Einblicke über deine Ernährung."
+    "insights-name": "Einblicke",
+    "insights-description": "Zeige Einblicke und Trends zu deiner Ernährung an."
   },
   "footer": {
     "tools": "Tools",
@@ -270,10 +270,10 @@
     "account": "Account",
     "about": "About"
   },
-  "assistant": {
-    "title": "Assistent",
-    "description": "Erhalte eine Übersicht und Einblicke über deine Ernährung.",
-    "info": "Assistent kann Fehler machen.",
+  "insights": {
+    "title": "Einblicke",
+    "description": "Zeige Einblicke und Trends zu deiner Ernährung an.",
+    "info": "Einblicke können Ungenauigkeiten enthalten.",
     "satiety-tip": "Aktuell",
     "satiety-tip-high": "Deine Phe-Aufnahme ({phePercentage}%) ist höher als deine Kalorienaufnahme ({kcalPercentage}%).",
     "satiety-tip-low": "Deine Phe-Aufnahme ({phePercentage}%) ist niedriger als deine Kalorienaufnahme ({kcalPercentage}%).",
@@ -283,7 +283,7 @@
     "blood-values": "Blutwerte",
     "blood-values-phe": "Dein letzter Phe-Wert war {phe} {unit}.",
     "blood-values-tyrosine": "Dein letzter Tyrosin-Wert war {tyrosine} {unit}.",
-    "motivation": "Statistiken",
+    "motivation": "Einblicke",
     "streak": "Du hast deine Ernährung {streak} Tage in Folge protokolliert.",
     "week": "Du hast 7 oder mehr Tage in Folge protokolliert.",
     "keep-going": "",

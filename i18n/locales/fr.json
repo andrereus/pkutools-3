@@ -261,8 +261,8 @@
     "blood-values-description": "Suivez les valeurs sanguines dans un diagramme.",
     "suggestions-name": "Suggestions 1-clic",
     "suggestions-description": "Ajoutez des suggestions au journal en un seul clic.",
-    "assistant-name": "Assistant",
-    "assistant-description": "Obtenez un aperçu et des informations sur votre nutrition."
+    "insights-name": "Insights",
+    "insights-description": "Voir des insights et des tendances sur votre nutrition."
   },
   "footer": {
     "tools": "Outils",
@@ -270,10 +270,10 @@
     "account": "Compte",
     "about": "À propos"
   },
-  "assistant": {
-    "title": "Assistant",
-    "description": "Obtenir un aperçu et des informations sur votre nutrition.",
-    "info": "Assistant peut faire des erreurs.",
+  "insights": {
+    "title": "Insights",
+    "description": "Voir des insights et des tendances sur votre nutrition.",
+    "info": "Les insights peuvent contenir des imprécisions.",
     "satiety-tip": "Actuellement",
     "satiety-tip-high": "Votre apport en Phe ({phePercentage}%) est supérieur à votre apport calorique ({kcalPercentage}%).",
     "satiety-tip-low": "Votre apport en Phe ({phePercentage}%) est inférieur à votre apport calorique ({kcalPercentage}%).",
@@ -283,7 +283,7 @@
     "blood-values": "Valeurs sanguines",
     "blood-values-phe": "Votre dernière valeur de Phe était {phe} {unit}.",
     "blood-values-tyrosine": "Votre dernière valeur de Tyrosine était {tyrosine} {unit}.",
-    "motivation": "Statistiques",
+    "motivation": "Insights",
     "streak": "Vous avez suivi votre nutrition pendant {streak} jours d'affilée.",
     "week": "Vous avez suivi pendant 7 jours ou plus consécutifs.",
     "keep-going": "",
@@ -292,7 +292,7 @@
     "phe-stats-average": "Au cours des 14 derniers jours (hors aujourd'hui), votre apport moyen en Phe était de {average} mg.",
     "phe-stats-deviation": "L'écart moyen par rapport à votre limite quotidienne est de {deviation}%.",
     "deactivated": "Actuellement indisponible",
-    "deactivated-explanation": "L'assistant est temporairement désactivé."
+    "deactivated-explanation": "Les insights sont temporairement désactivés."
   },
   "badges": {
     "streak-3-title": "Série de 3 Jours",

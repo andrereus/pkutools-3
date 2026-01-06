@@ -8,7 +8,7 @@ import {
   LucideCalendar,
   LucideChartLine,
   LucideSparkles,
-  LucideBot
+  LucideLightbulb
 } from 'lucide-vue-next'
 
 const store = useStore()
@@ -55,10 +55,10 @@ const features = [
     route: 'blood-values'
   },
   {
-    name: 'features.assistant-name',
-    description: 'features.assistant-description',
-    icon: LucideBot,
-    route: 'assistant'
+    name: 'features.insights-name',
+    description: 'features.insights-description',
+    icon: LucideLightbulb,
+    route: 'insights'
   },
   {
     name: 'features.suggestions-name',

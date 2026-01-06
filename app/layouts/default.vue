@@ -19,7 +19,8 @@ import {
   LucideCalendar,
   LucideChartLine,
   LucideBot,
-  LucidePlus
+  LucidePlus,
+  LucideLightbulb
 } from 'lucide-vue-next'
 
 const store = useStore()
@@ -48,7 +49,7 @@ const navigation = computed(() => {
     { name: 'diary.title', icon: 'LucideCalendar', route: 'diary' },
     { name: 'diet-report.title', icon: 'LucideBook', route: 'diet-report' },
     { name: 'blood-values.title', icon: 'LucideChartLine', route: 'blood-values' },
-    { name: 'assistant.title', icon: 'LucideBot', route: 'assistant' }
+    { name: 'insights.title', icon: 'LucideLightbulb', route: 'insights' }
   ]
 })
 
@@ -59,7 +60,7 @@ const tabNavigation = computed(() => {
       { name: 'diet-report.tab-title', icon: 'LucideBook', route: 'diet-report' },
       { name: 'common.add', icon: 'LucidePlus', route: 'phe-calculator' },
       { name: 'blood-values.tab-title', icon: 'LucideChartLine', route: 'blood-values' },
-      { name: 'assistant.title', icon: 'LucideBot', route: 'assistant' }
+      { name: 'insights.title', icon: 'LucideLightbulb', route: 'insights' }
     ]
   } else {
     return [
@@ -94,7 +95,7 @@ const footerNavigation = computed(() => {
       { name: 'diary.title', route: 'diary' },
       { name: 'diet-report.title', route: 'diet-report' },
       { name: 'blood-values.title', route: 'blood-values' },
-      { name: 'assistant.title', route: 'assistant' }
+      { name: 'insights.title', route: 'insights' }
     ],
     account: [
       { name: 'sign-in.title', route: 'sign-in' },
@@ -205,7 +206,8 @@ const iconMap = {
   LucideCalendar,
   LucideChartLine,
   LucideBot,
-  LucidePlus
+  LucidePlus,
+  LucideLightbulb
 }
 
 const handleCookieConsent = (consent) => {

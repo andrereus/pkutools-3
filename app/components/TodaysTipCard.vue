@@ -21,11 +21,11 @@ const yesterdayEntry = computed(() => {
     <div class="px-4 py-5 sm:p-6">
       <div class="flex items-center gap-3 font-medium mb-2">
         <LucideCalendar class="h-5 w-5" />
-        {{ $t('assistant.previous-day') }}
+        {{ $t('insights.previous-day') }}
       </div>
       <p>
         {{
-          $t('assistant.previous-day-text', {
+          $t('insights.previous-day-text', {
             phe: Math.round(yesterdayEntry.phe),
             percentage: Math.round((yesterdayEntry.phe / settings.maxPhe) * 100)
           })

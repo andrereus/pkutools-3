@@ -39,7 +39,7 @@ PKU Tools is a comprehensive Progressive Web App (PWA) designed to help people w
   - Icon selection from 307+ food icons
   - Automatically included in food search results
 
-- **🤖 Assistant**: Overview and insights about the diet.
+- **📊 Insights**: Overview and insights about the diet.
 
 ### User Experience
 

@@ -44,11 +44,11 @@ const pheStats = computed(() => {
     <div class="px-4 py-5 sm:p-6">
       <div class="flex items-center gap-3 font-medium mb-2">
         <LucideBook class="h-5 w-5" />
-        {{ $t('assistant.diet-report') }}
+        {{ $t('insights.diet-report') }}
       </div>
       <div>
-        <p>{{ $t('assistant.phe-stats-average', { average: pheStats.average }) }}</p>
-        <p>{{ $t('assistant.phe-stats-deviation', { deviation: pheStats.deviation }) }}</p>
+        <p>{{ $t('insights.phe-stats-average', { average: pheStats.average }) }}</p>
+        <p>{{ $t('insights.phe-stats-deviation', { deviation: pheStats.deviation }) }}</p>
       </div>
     </div>
   </div>
