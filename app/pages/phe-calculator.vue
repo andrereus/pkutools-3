@@ -133,74 +133,80 @@ const calculateKcal = () => {
 // These functions are kept for backward compatibility but are no longer used
 
 const estimateFoodValues = async () => {
-  if (!name.value || name.value.trim() === '') {
-    notifications.error(t('phe-calculator.estimate-error-no-name'))
+  // Prevent multiple simultaneous requests
+  if (isEstimating.value) {
     return
   }
 
-  // Sanitize input to prevent prompt injection
-  const sanitizedName = name.value
-    .trim()
-    .slice(0, 200) // Limit length
-    .replace(/"/g, '\\"') // Escape quotes to prevent breaking out of string
-    .replace(/\n/g, ' ') // Replace newlines with spaces
-    .replace(/\r/g, '') // Remove carriage returns
-    .replace(/\t/g, ' ') // Replace tabs with spaces
-    .trim() // Trim again after replacements
+  // Set loading state immediately to disable button and prevent double-clicks
+  isEstimating.value = true
 
-  // Check permission via server API (checks license-based limits)
   try {
-    const auth = getAuth()
-    const currentUser = auth.currentUser
-    if (!currentUser) {
+    if (!name.value || name.value.trim() === '') {
+      notifications.error(t('phe-calculator.estimate-error-no-name'))
+      return
+    }
+
+    // Sanitize input to prevent prompt injection
+    const sanitizedName = name.value
+      .trim()
+      .slice(0, 200) // Limit length
+      .replace(/"/g, '\\"') // Escape quotes to prevent breaking out of string
+      .replace(/\n/g, ' ') // Replace newlines with spaces
+      .replace(/\r/g, '') // Remove carriage returns
+      .replace(/\t/g, ' ') // Replace tabs with spaces
+      .trim() // Trim again after replacements
+
+    // Check permission via server API (checks license-based limits)
+    try {
+      const auth = getAuth()
+      const currentUser = auth.currentUser
+      if (!currentUser) {
+        notifications.error(t('phe-calculator.estimate-error-firebase'))
+        return
+      }
+
+      const token = await currentUser.getIdToken()
+      const { model: modelName } = estimateConfig.value
+
+      const response = await $fetch('/api/gemini/check', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: {
+          model: modelName
+        }
+      })
+      const checkResponse = { allowed: response.allowed, remaining: response.remaining }
+
+      if (!checkResponse.allowed) {
+        notifications.error(
+          t('phe-calculator.estimate-error-daily-limit', { limit: checkResponse.remaining })
+        )
+        return
+      }
+    } catch (error) {
+      console.error('Gemini check error:', error)
+      const err = error || {}
+      if (err.statusCode === 401) {
+        notifications.error('Authentication failed. Please sign in again.')
+      } else if (err.statusCode === 403) {
+        notifications.error(t('phe-calculator.estimate-error-daily-limit', { limit: 0 }))
+      } else {
+        notifications.error('Failed to check estimate limits. Please try again.')
+      }
+      return
+    }
+
+    let firebaseApp
+    try {
+      firebaseApp = getApp()
+    } catch {
       notifications.error(t('phe-calculator.estimate-error-firebase'))
       return
     }
 
-    const token = await currentUser.getIdToken()
-    const { model: modelName } = estimateConfig.value
-
-    const response = await $fetch('/api/gemini/check', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      body: {
-        model: modelName
-      }
-    })
-    const checkResponse = { allowed: response.allowed, remaining: response.remaining }
-
-    if (!checkResponse.allowed) {
-      notifications.error(
-        t('phe-calculator.estimate-error-daily-limit', { limit: checkResponse.remaining })
-      )
-      return
-    }
-  } catch (error) {
-    console.error('Gemini check error:', error)
-    const err = error || {}
-    if (err.statusCode === 401) {
-      notifications.error('Authentication failed. Please sign in again.')
-    } else if (err.statusCode === 403) {
-      notifications.error(t('phe-calculator.estimate-error-daily-limit', { limit: 0 }))
-    } else {
-      notifications.error('Failed to check estimate limits. Please try again.')
-    }
-    return
-  }
-
-  let firebaseApp
-  try {
-    firebaseApp = getApp()
-  } catch {
-    notifications.error(t('phe-calculator.estimate-error-firebase'))
-    return
-  }
-
-  isEstimating.value = true
-
-  try {
     // Initialize the Gemini Developer API backend service
     const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() })
 
