@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { format, subDays } from 'date-fns'
+import { format, subDays, parseISO, differenceInDays } from 'date-fns'
 import {
   LucideAward,
   LucideFlame,
@@ -24,7 +24,7 @@ const getDiaryEntriesForDays = (days, includeToday = false) => {
     .filter(Boolean)
 }
 
-// Calculate streak
+// Calculate current streak from today
 const streak = computed(() => {
   if (!pheDiary.value.length) return 0
   let currentStreak = 0
@@ -44,13 +44,45 @@ const streak = computed(() => {
   return currentStreak
 })
 
-// Badges configuration
+// Calculate maximum streak ever achieved in the entire diary
+const maxStreak = computed(() => {
+  if (!pheDiary.value.length) return 0
+  
+  // Get all dates and sort them chronologically
+  const dates = pheDiary.value
+    .map(entry => parseISO(entry.date))
+    .sort((a, b) => a.getTime() - b.getTime())
+  
+  if (dates.length === 0) return 0
+  if (dates.length === 1) return 1
+  
+  let maxStreakFound = 1
+  let currentStreak = 1
+  
+  // Iterate through sorted dates to find consecutive sequences
+  for (let i = 1; i < dates.length; i++) {
+    const daysDiff = differenceInDays(dates[i], dates[i - 1])
+    
+    // If dates are consecutive (difference is exactly 1 day)
+    if (daysDiff === 1) {
+      currentStreak++
+      maxStreakFound = Math.max(maxStreakFound, currentStreak)
+    } else {
+      // Reset streak when there's a gap
+      currentStreak = 1
+    }
+  }
+  
+  return maxStreakFound
+})
+
+// Badges configuration - use maxStreak instead of streak
 const badges = computed(() => [
   {
     id: 'streak-3',
     title: t('badges.streak-3-title'),
     description: t('badges.streak-3-description'),
-    earned: streak.value >= 3,
+    earned: maxStreak.value >= 3,
     icon: LucideFlame,
     earnedColor: 'text-orange-600 dark:text-orange-400',
     earnedBg: 'bg-orange-100 dark:bg-orange-900/30',
@@ -60,7 +92,7 @@ const badges = computed(() => [
     id: 'streak-5',
     title: t('badges.streak-5-title'),
     description: t('badges.streak-5-description'),
-    earned: streak.value >= 5,
+    earned: maxStreak.value >= 5,
     icon: LucideStar,
     earnedColor: 'text-yellow-600 dark:text-yellow-400',
     earnedBg: 'bg-yellow-100 dark:bg-yellow-900/30',
@@ -70,7 +102,7 @@ const badges = computed(() => [
     id: 'streak-7',
     title: t('badges.streak-7-title'),
     description: t('badges.streak-7-description'),
-    earned: streak.value >= 7,
+    earned: maxStreak.value >= 7,
     icon: LucideAward,
     earnedColor: 'text-blue-600 dark:text-blue-400',
     earnedBg: 'bg-blue-100 dark:bg-blue-900/30',
@@ -80,7 +112,7 @@ const badges = computed(() => [
     id: 'streak-14',
     title: t('badges.streak-14-title'),
     description: t('badges.streak-14-description'),
-    earned: streak.value >= 14,
+    earned: maxStreak.value >= 14,
     icon: LucideCrown,
     earnedColor: 'text-purple-600 dark:text-purple-400',
     earnedBg: 'bg-purple-100 dark:bg-purple-900/30',
