@@ -6,96 +6,34 @@ PKU Tools is a comprehensive Progressive Web App (PWA) designed to help people w
 
 ### Core Functionality
 
-- **🔍 Food Search**: Search through a comprehensive USDA-based food database with multilingual support. Uses fuzzy search (Fuse.js) to find foods quickly, even with typos or partial matches.
-
-- **📷 Barcode Scanner**: Scan product barcodes to quickly look up nutritional information (requires camera access).
-
-- **📱 Phe Calculator**: Calculate phenylalanine content from:
-  - Direct Phe values (mg per 100g)
-  - Protein content with automatic conversion factors:
-    - Fruit: 27 mg Phe per 1g protein
-    - Vegetables: 35 mg Phe per 1g protein
-    - Meat: 46 mg Phe per 1g protein
-    - Other foods: 50 mg Phe per 1g protein
-
-- **✨ Estimation feature**: Estimate Phe and calorie values for foods using AI when no nutritional data is available.
-
-- **📅 Diary**: Daily food log with:
-  - Date navigation (view past and future days)
-  - Progress bars showing Phe and calorie consumption vs. daily limits
-  - Quick-add suggestions based on recently used foods (recency-weighted algorithm)
-  - Edit and delete entries
-
-- **📖 Diet Report**: Generate comprehensive reports on dietary patterns and compliance.
-
-- **📈 Blood Values**: Track and visualize lab results:
-  - Record Phe and tyrosine blood values
-  - Interactive charts with ApexCharts
-  - Export data as CSV, SVG, or PNG
-  - Multilingual chart labels
-
-- **🍎 Own Foods**: Create and manage custom food entries with:
-  - Custom Phe and calorie values
-  - Icon selection from 307+ food icons
-  - Automatically included in food search results
-
-- **📊 Insights**: Overview and insights about the diet.
+- **🔍 Food Search**: USDA-based food database with fuzzy search (multilingual support)
+- **📷 Barcode Scanner**: Scan product barcodes to lookup nutritional information
+- **📱 Phe Calculator**: Calculate phenylalanine from direct values or protein content (with automatic conversion factors for fruit, vegetables, meat, and other foods)
+- **✨ AI Estimation**: Estimate Phe and calorie values for foods when no nutritional data is available
+- **📅 Diary**: Daily food log with date navigation, progress bars, and smart suggestions based on eating history
+- **📖 Diet Report**: Interactive charts and sortable tables showing dietary patterns over time (with CSV export)
+- **📈 Blood Values**: Track and visualize Phe and tyrosine lab results with interactive charts (export as CSV, SVG, or PNG)
+- **🍎 Own Foods**: Create and manage custom food entries with icon selection (automatically included in search)
+- **📊 Insights**: Overview dashboard with consistency streaks, badges, and summary statistics
 
 ### User Experience
 
-- **🌍 Multi-language Support**: Available in English, German, Spanish, and French with localized routes and content.
-
-- **📱 PWA Support**: Install as a native app on mobile and desktop devices via web manifest. Also available as a TWA (Trusted Web Activity) on Google Play Store.
-
-- **🔄 Real-time Sync**: All data syncs in real-time across devices using Firebase Realtime Database.
-
-- **🌓 Dark Mode**: Automatic dark mode based on system preferences with manual override option.
-
-- **✨ Smart Suggestions**: One-click food suggestions based on your eating history, prioritizing recently consumed items.
+- **🌍 Multi-language Support**: English, German, Spanish, and French with localized routes
+- **📱 PWA Support**: Installable as native app (also available as TWA on Google Play Store)
+- **🔄 Real-time Sync**: Data syncs across devices via Firebase Realtime Database
+- **🌓 Dark Mode**: Automatic based on system preferences with manual override
 
 ## Tech Stack
 
-### Frontend
+**Frontend**: [Nuxt 4](https://nuxt.com/) with Vue 3, [Tailwind CSS](https://tailwindcss.com/) (via Vite plugin), [Headless UI](https://headlessui.com/), [shadcn-vue](https://www.shadcn-vue.com/), [TanStack Vue Table](https://tanstack.com/table), [ApexCharts](https://apexcharts.com/), [Lucide Icons](https://lucide.dev/)
 
-- **Framework**: [Nuxt 4](https://nuxt.com/) with Vue 3
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) with `@tailwindcss/vite`
-- **Icons**: [Lucide Icons](https://lucide.dev/) via `nuxt-lucide-icons`
-- **UI Components**: [Headless UI](https://headlessui.com/) via `nuxt-headlessui`
-- **Charts**: [ApexCharts](https://apexcharts.com/) with `vue3-apexcharts`
-- **Date Handling**: [date-fns](https://date-fns.org/)
+**Backend**: Firebase (Realtime Database, Authentication), Nuxt server routes with Firebase Admin SDK
 
-**Note**: `@nuxtjs/tailwindcss` doesn't fully support Nuxt 4 yet, so Tailwind is configured via Vite plugin instead.
+**State & Data**: [Pinia](https://pinia.vuejs.org/), [Fuse.js](https://fusejs.io/) for fuzzy search
 
-### State Management & Data
+**i18n & SEO**: [@nuxtjs/i18n](https://i18n.nuxtjs.org/), [@nuxtjs/seo](https://nuxt-seo.vercel.app/)
 
-- **State Management**: [Pinia](https://pinia.vuejs.org/)
-- **Database**: [Firebase Realtime Database](https://firebase.google.com/docs/database)
-- **Authentication**: [Firebase Authentication](https://firebase.google.com/docs/auth) (Google OAuth + Email/Password)
-- **Search**: [Fuse.js](https://fusejs.io/) for fuzzy search
-- **Server API**: Nuxt server routes with Firebase Admin SDK for secure data operations
-
-### Internationalization & SEO
-
-- **i18n**: [@nuxtjs/i18n](https://i18n.nuxtjs.org/)
-- **SEO**: [@nuxtjs/seo](https://nuxt-seo.vercel.app/) with Schema.org markup
-
-### Development Tools
-
-- **Linting**: ESLint with `@nuxt/eslint`
-- **Formatting**: Prettier
-- **TypeScript**: Type checking support
-- **Package Manager**: npm (also supports pnpm, yarn, bun)
-
-### Analytics & Monitoring
-
-- **Product Analytics**: PostHog (respects cookie consent)
-- **Privacy Analytics**: Umami
-- **Changelog**: Headway widget
-
-### Deployment
-
-- **Hosting**: Vercel (recommended)
-- **Build**: Nuxt static generation or SSR
+**Tools**: ESLint, Prettier, TypeScript (for code quality and type checking)
 
 ## Project History
 
@@ -110,36 +48,15 @@ PKU Tools has undergone significant refactoring over its versions:
 ```
 pkutools-3/
 ├── app/
-│   ├── assets/         # Static assets
-│   │   ├── css/        # Global styles
-│   │   ├── data/       # Food icons mapping
-│   │   └── images/     # Images and icons
-│   ├── components/     # Reusable Vue components
-│   ├── composables/    # Vue composables (useApi, useLicense, etc.)
-│   ├── layouts/        # Layout components
-│   ├── pages/          # Route pages (file-based routing)
-│   └── plugins/        # Nuxt plugins (Firebase, ApexCharts)
-├── i18n/
-│   └── locales/        # Translation files (en, de, es, fr)
-├── public/
-│   ├── data/           # Static food database (JSON/CSV)
-│   ├── images/         # Public images and food icons
-│   └── videos/         # Demo videos
-├── server/
-│   ├── api/            # Server API routes (Nuxt server routes)
-│   │   ├── diary/      # Diary CRUD operations
-│   │   ├── gemini/     # AI estimation API
-│   │   ├── lab-values/ # Lab values CRUD operations
-│   │   ├── license/    # License validation
-│   │   ├── own-food/   # Custom foods CRUD operations
-│   │   └── settings/   # Settings and account management
-│   ├── config/         # Server configuration (Firebase Admin credentials)
-│   ├── types/          # TypeScript types and Zod schemas
-│   └── utils/          # Server utilities (Firebase Admin helpers)
+│   ├── components/     # Vue components (ui/ for shadcn-vue tables)
+│   ├── composables/    # useApi, useLicense, etc.
+│   ├── pages/          # File-based routing
+│   └── plugins/        # Firebase, ApexCharts
+├── i18n/locales/       # Translation files (en, de, es, fr)
+├── public/data/        # Food database (JSON/CSV)
+├── server/api/         # Server routes (diary, lab-values, own-food, etc.)
 ├── stores/             # Pinia stores
-├── nuxt.config.ts      # Nuxt configuration
-├── package.json        # Dependencies and scripts
-└── tsconfig.json       # TypeScript configuration
+└── nuxt.config.ts
 ```
 
 ## Setup
@@ -171,78 +88,40 @@ npm install
 
 ### Firebase Emulators
 
-For local development, you can use Firebase emulators to test without affecting your production database. No Firebase project configuration or environment variables are needed for local development with emulators.
-
-Start Firebase emulator with data persistence:
+Start emulators with data persistence (no Firebase config needed for local dev):
 
 ```bash
 npm run emulators:data
 ```
 
-**Important**: Always use Ctrl+C before closing the terminal to ensure data is exported. If you close the terminal without using Ctrl+C, your emulator data will be lost.
+**Important**: Always use `Ctrl+C` to stop emulators and preserve data. Emulator UI at `http://localhost:4000`.
 
-The emulator UI will be available at `http://localhost:4000`.
-
-#### Troubleshooting: Stuck Emulators
-
-If you forgot to stop the emulators with Ctrl+C and can't start them again (ports are already in use), you can force-stop stuck emulator processes:
-
-```bash
-lsof -ti:9099,9000,4000 | xargs kill -9
-```
-
-This will kill any processes running on the emulator ports (9099 - Auth, 9000 - Database, 4000 - UI).
-
-**Note**: This is a force-kill method that should only be used when the emulator is unresponsive. Any unexported changes since the last graceful shutdown will be lost, but your existing exported data in `emulator-data/` will remain intact.
-
-**Official method** (preferred): Press `Ctrl+C` in the terminal where emulators are running.
+**Troubleshooting**: If ports are stuck, force-kill: `lsof -ti:9099,9000,4000 | xargs kill -9` (ports: 9099=Auth, 9000=Database, 4000=UI)
 
 ### Start Development Server
-
-Start the development server (in a separate terminal):
 
 ```bash
 npm run dev
 ```
 
-The app will automatically connect to the Firebase emulators when running in development mode. You'll see "Connected to Firebase emulators" in the browser console.
-
-The app will be available at `http://localhost:3000`.
+App available at `http://localhost:3000` (automatically connects to Firebase emulators).
 
 ### Available Scripts
 
-- `npm run dev` - Start development server with hot-reload
-- `npm run build` - Build for production
-- `npm run emulators` - Start Firebase emulators
-- `npm run emulators:data` - Start Firebase emulators with data persistence
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint errors automatically
-- `npm run format:check` - Check code formatting
-- `npm run format` - Format code with Prettier
+- `npm run dev` - Development server
+- `npm run build` - Production build
+- `npm run emulators` - Firebase emulators (no data persistence)
+- `npm run emulators:data` - Firebase emulators with data persistence
+- `npm run lint` / `npm run lint:fix` - Linting
+- `npm run format:check` / `npm run format` - Check/format code
 
 ## Quality Assurance
 
-### Code Quality
-
-- **Code Style**: ESLint is configured for Vue 3 and Nuxt best practices, Prettier handles code formatting, and TypeScript is used for type safety (though most files are `.vue` or `.js`)
-- **Editor Setup**: It's recommended to set up ESLint and Prettier in your editor for automatic formatting and linting
-- **Best Practices**: Follow existing code style and component patterns
-
-### Testing & Internationalization
-
-- **Testing**: Test on multiple devices and browsers (including PWA installation on mobile)
-- **Internationalization**: Add translations for new strings in all locale files
-
-### Monitoring & Analytics
-
-- **Analytics & UX**: PostHog (respects cookie consent) and Umami (privacy analytics)
-- **Bug Detection**: PostHog (Sentry may be added again in the future)
-- **Performance, Accessibility & SEO**: PostHog, Lighthouse and Google Search Console
-
-### Dependency Management
-
-- Dependabot notifies about dependencies
-- Dependency updates, migration to new versions and other checks are mainly handled by the maintainer (`npm outdated`, `npm update --save`, `npm audit`)
+- ESLint + Prettier + TypeScript for code quality
+- Test on multiple devices/browsers (including PWA installation)
+- Add translations for new strings in all locale files (en, de, es, fr)
+- Analytics: PostHog (respects cookie consent), Umami (privacy analytics)
+- Dependency management: Dependabot notifications, manual updates via `npm outdated`, `npm update --save`, `npm audit`
 
 ## Production
 
@@ -252,152 +131,62 @@ The app will be available at `http://localhost:3000`.
 npm run build
 ```
 
-### Firebase Configuration for Production
+### Production Deployment
 
-For production deployment, you need:
+**Firebase Setup:**
 
-1. A Firebase project with Realtime Database enabled
-2. Authentication enabled with Google and Email/Password providers
-3. Database rules configured (see `database.rules.json`)
-4. Environment variables configured (see Deployment section)
+- Realtime Database enabled
+- Authentication (Google + Email/Password)
+- Database rules configured (`database.rules.json`)
 
-#### Firebase Admin SDK Setup
+**Firebase Admin SDK** (for server-side operations):
 
-For server-side operations (license validation, data writes, rate limiting), you need Firebase Admin SDK credentials configured via environment variables.
+- Get service account JSON from Firebase Console > Project Settings > Service Accounts
+- Set environment variables:
+  - `FIREBASE_ADMIN_PROJECT_ID` (from `project_id`)
+  - `FIREBASE_ADMIN_CLIENT_EMAIL` (from `client_email`)
+  - `FIREBASE_ADMIN_PRIVATE_KEY` (from `private_key`, include full key with headers)
 
-**For Local Development with Emulators:**
+**Note**: Admin SDK credentials not needed for local emulator development.
 
-- Admin SDK credentials are **NOT required**
-- The Admin SDK will automatically connect to emulators
-- Just run `npm run emulators:data` and `npm run dev`
+**Client-Side Firebase** (for production): Set environment variables as shown in `.env.example`.
 
-**For Production (Environment Variables Required):**
+**Note**: Client-side Firebase config not needed for local emulator development.
 
-1. **Get Service Account Credentials:**
-   - Go to Firebase Console > Project Settings > Service Accounts
-   - Click "Generate New Private Key"
-   - Download the JSON file
+**License Keys** (for server-side validation):
 
-2. **Extract values from your service account JSON:**
-   - `project_id` → `FIREBASE_ADMIN_PROJECT_ID`
-   - `client_email` → `FIREBASE_ADMIN_CLIENT_EMAIL`
-   - `private_key` → `FIREBASE_ADMIN_PRIVATE_KEY` (copy the entire value including `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`)
+- `PKU_TOOLS_LICENSE_KEY` - Premium license validation
+- `PKU_TOOLS_LICENSE_KEY_2` - Premium license validation (also enables premium AI features)
 
-3. **Set Environment Variables:**
-   - **Local Development (when not using emulators):** Add to your `.env` file (see `.env.example` for reference)
-   - **Production/Vercel:** Add to your Vercel project settings:
-     - Go to your Vercel project settings
-     - Navigate to Environment Variables
-     - Add each variable:
-       - `FIREBASE_ADMIN_PROJECT_ID`
-       - `FIREBASE_ADMIN_CLIENT_EMAIL`
-       - `FIREBASE_ADMIN_PRIVATE_KEY`
-     - For the private key, paste it as-is (Vercel handles newlines correctly)
+Both keys are server-side only, never exposed to client.
 
-**Note:** Environment variables are the recommended and only supported method for configuring Firebase Admin SDK credentials.
+**Deploy to Vercel:**
 
-**License Key:**
-
-- Set `PKU_TOOLS_LICENSE_KEY` to your premium license key (server-side only, never exposed to client)
-
-See `server/config/README.md` for detailed setup instructions.
-
-### Deployment
-
-The app can be deployed to various platforms. For Vercel:
-
-1. Connect your repository to Vercel
-2. Add environment variables in the Vercel dashboard (create `.env` from `.env.example` for local reference)
-3. Deploy (automatic on push to main branch)
+1. Connect repository
+2. Add environment variables (see `.env.example` for all required variables)
+3. Deploy (automatic on push to main)
 
 ## Architecture
 
-### State Management
+**State Management**: Pinia store manages authentication, Gemini Developer API, and read-only state (diary entries, lab values, custom foods, settings) via Realtime Database.
 
-The app uses Pinia for state management with a single main store (`stores/index.js`) that manages:
+**Data Flow**:
 
-- **User authentication state**
-- **pheDiary**: Array of daily diary entries
-- **labValues**: Array of blood test results
-- **ownFood**: Array of user-created custom foods
-- **settings**: User preferences and configuration
+- Reads: Firebase Realtime Database listeners for instant sync across devices
+- Writes: Nuxt server routes with Firebase Admin SDK for security and validation (Zod schemas)
 
-### Data Flow
+**Server API**: All write operations require Firebase ID token authentication, validate with Zod schemas, and handle license validation server-side.
 
-1. User authenticates via Firebase Auth
-2. Store initializes Firebase Realtime Database listeners for read operations
-3. Data changes trigger real-time updates to the store
-4. Vue components reactively update based on store state
-5. User write actions (save, update, delete) go through server API routes:
-   - Client gets Firebase ID token
-   - Server validates token and input data (Zod schemas)
-   - Server performs operations using Firebase Admin SDK
-   - Firebase Realtime Database listeners detect changes and update store
+**Food Database**: Static JSON (`/public/data/usda-phe-kcal.json`) with USDA data, multilingual names (en, de, es, fr), and icons. User custom foods stored in Firebase and merged during search.
 
-### Real-time Sync
-
-Firebase Realtime Database listeners (`onValue`) are set up in the store's `initRef()` method. These listeners automatically sync data across all user's devices in real-time. Write operations go through server API routes for security and validation, but reads continue to use real-time listeners for instant updates.
-
-### Server API Architecture
-
-The application uses Nuxt server routes for all write operations to provide:
-
-- **Security**: Server-side validation and authentication
-- **Input Validation**: Zod schemas ensure data integrity
-- **License Validation**: Server-side license checks (not exposed to client)
-- **Rate Limiting**: Can be implemented server-side for API protection
-- **Error Handling**: Consistent error responses with proper HTTP status codes
-
-All server routes:
-
-- Require Bearer token authentication (Firebase ID tokens)
-- Validate input using Zod schemas (`server/types/schemas.ts`)
-- Use Firebase Admin SDK for database operations
-- Return consistent JSON responses with success/error states
-
-The `useApi` composable (`app/composables/useApi.ts`) provides a unified interface for calling server APIs from client components.
-
-### Food Database
-
-The food database is stored as static JSON at `/public/data/usda-phe-kcal.json`. It includes:
-
-- Multilingual food names (en, de, es, fr)
-- Phe values (in grams, converted to mg for display)
-- Calorie values
-- Emoji representations
-
-User's custom foods are stored in Firebase and merged with the static database during search.
-
-**Database Creation Process**: The food database was created using a complex AI workflow that combines two USDA database exports (phenylalanine values and calorie values). The AI workflow was necessary to match appropriate icons to food items. Translations were added using Google Docs. The process involves Python transformations to combine the USDA data sources and convert CSV to JSON format. Previously, the database was created using various Python transformations, which have since been replaced by the current AI workflow approach.
+**Database Creation**: The food database combines two USDA database exports (phenylalanine values and calorie values) using an AI workflow to match appropriate icons to food items. Translations were added via Google Docs, and the data is converted from CSV to JSON format.
 
 ## Additional Information
 
-### Internationalization
-
-The app supports 4 languages with localized:
-
-- Routes (e.g., `/diary` → `/tagebuch` in German)
-- Content (via `i18n/locales/*.json`)
-- Date formatting (via date-fns locales)
-- Chart labels (via ApexCharts locales)
-
-### PWA Features
-
-- **Web Manifest**: Enables app installation on mobile and desktop devices
-- **TWA Support**: Available as a Trusted Web Activity on Google Play Store
-- **Safe Area Insets**: Support for notched devices
-- **Responsive Design**: Mobile-first approach
-
-### Privacy & Compliance
-
-- **Health Data Consent**: Required before saving diary entries (GDPR compliance)
-- **Cookie Consent**: User choice for analytics tracking
-- **Consent History**: Tracks consent changes over time
-- **Data Storage**: All user data stored in Firebase (user-specific paths)
-
-### License System
-
-The app uses a freemium model with a free tier (limited diary entries) and an optional license key for unlimited access. License validation is performed server-side via `/api/license/validate` to prevent client-side tampering. The license key is stored server-side and never exposed to the client.
+- **i18n**: 4 languages (en, de, es, fr) with localized routes, content, dates, and charts
+- **PWA**: Installable on mobile/desktop, TWA on Google Play, safe area support, mobile-first design
+- **Privacy**: Health data consent (GDPR), cookie consent for analytics, consent history tracking
+- **License**: Freemium model (limited free tier, premium with license key). Server-side validation only.
 
 ## Contributing
 
