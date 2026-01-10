@@ -96,7 +96,7 @@ const columns = [
     header: ({ column }) => {
       return h(DataTableColumnHeader, {
         column: column,
-        title: t('blood-values.phe')
+        title: t('blood-values.phe-header')
       })
     },
     cell: ({ row }) => {
@@ -113,7 +113,7 @@ const columns = [
     header: ({ column }) => {
       return h(DataTableColumnHeader, {
         column: column,
-        title: t('blood-values.tyrosine')
+        title: t('blood-values.tyrosine-header')
       })
     },
     cell: ({ row }) => {
@@ -358,7 +358,7 @@ const exportLabValues = async () => {
   })
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
-    csvContent += 'Date,Phe,Tyrosine\n'
+    csvContent += 'Date,Phe,Tyr\n'
 
     labValues.value.forEach((entry) => {
       const date = formatISO(parseISO(entry.date), { representation: 'date' })
