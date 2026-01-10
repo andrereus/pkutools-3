@@ -290,7 +290,7 @@
     "blood-values": "Valeurs sanguines",
     "blood-values-phe": "Votre dernière valeur de Phe était {phe} {unit}.",
     "blood-values-tyrosine": "Votre dernière valeur de Tyrosine était {tyrosine} {unit}.",
-    "motivation": "Insights",
+    "motivation": "Réalisations",
     "streak": "Vous avez suivi votre nutrition pendant {streak} jours d'affilée.",
     "streak-max": "Série actuelle : {streak} jours. Meilleure série : {maxStreak} jours.",
     "streak-max-same": "Vous avez suivi votre nutrition pendant {streak} jours d'affilée.",

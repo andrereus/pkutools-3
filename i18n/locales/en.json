@@ -290,7 +290,7 @@
     "blood-values": "Blood Values",
     "blood-values-phe": "Your last Phe value was {phe} {unit}.",
     "blood-values-tyrosine": "Your last Tyrosine value was {tyrosine} {unit}.",
-    "motivation": "Insights",
+    "motivation": "Achievements",
     "streak": "You've tracked your nutrition for {streak} days in a row.",
     "streak-max": "Current streak: {streak} days. Best streak: {maxStreak} days.",
     "streak-max-same": "You've tracked your nutrition for {streak} days in a row.",
