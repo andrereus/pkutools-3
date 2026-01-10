@@ -95,20 +95,20 @@ const columns = [
     },
     cell: ({ row }) => {
       const item = row.original
-      return h('div', { class: 'flex items-center gap-1' }, [
+      return h('span', { class: 'flex items-center gap-1 min-w-0' }, [
         h('img', {
           src:
             item.icon !== undefined && item.icon !== null && item.icon !== ''
               ? `/images/food-icons/${item.icon}.svg`
               : '/images/food-icons/organic-food.svg',
           width: 25,
-          class: 'food-icon',
+          class: 'food-icon flex-shrink-0',
           alt: 'Food Icon',
           onError: (e) => {
             e.target.src = '/images/food-icons/organic-food.svg'
           }
         }),
-        h('span', item.name)
+        h('span', { style: 'word-wrap: break-word; overflow-wrap: break-word;' }, item.name)
       ])
     }
   },
@@ -444,14 +444,16 @@ defineOgImageComponent('NuxtSeo', {
               <div
                 class="overflow-hidden shadow-sm ring-1 ring-gray-300 dark:ring-gray-800 ring-opacity-5 sm:rounded-lg"
               >
-                <Table class="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
+                <Table class="w-full divide-y divide-gray-300 dark:divide-gray-600">
                   <TableHeader class="bg-gray-50 dark:bg-gray-950">
                     <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
                       <TableHead
                         v-for="(header, index) in headerGroup.headers"
                         :key="header.id"
-                        class="py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap"
-                        :class="index === 0 ? 'pl-4 pr-3 sm:pl-6' : 'px-3'"
+                        :class="[
+                          'py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-300',
+                          index === 0 ? 'pl-4 pr-3 sm:pl-6' : 'px-3 whitespace-nowrap'
+                        ]"
                       >
                         <FlexRender
                           v-if="!header.isPlaceholder"
@@ -475,10 +477,10 @@ defineOgImageComponent('NuxtSeo', {
                           v-for="cell in row.getVisibleCells()"
                           :key="cell.id"
                           :class="[
-                            'py-4 text-sm whitespace-nowrap',
+                            'py-4 text-sm',
                             cell.column.id === 'name'
                               ? 'pl-4 pr-3 sm:pl-6 font-medium text-gray-900 dark:text-gray-300'
-                              : 'px-3 font-normal text-gray-500 dark:text-gray-400'
+                              : 'px-3 font-normal text-gray-500 dark:text-gray-400 whitespace-nowrap'
                           ]"
                         >
                           <FlexRender
