@@ -3,6 +3,26 @@ import { useStore } from '../../stores/index'
 import foodIcons from '~/assets/data/food-icons-map.json'
 import Fuse from 'fuse.js'
 import { format } from 'date-fns'
+import {
+  FlexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useVueTable
+} from '@tanstack/vue-table'
+import { h, ref, computed } from 'vue'
+import { valueUpdater } from '@/components/ui/table/utils'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import DataTableColumnHeader from '@/components/ui/data-table/DataTableColumnHeader.vue'
+import DataTablePagination from '@/components/ui/data-table/DataTablePagination.vue'
 
 const store = useStore()
 const { t } = useI18n()
@@ -37,12 +57,6 @@ const ownFood = computed(() => store.ownFood)
 
 const license = computed(() => isPremium.value)
 
-const tableHeaders = computed(() => [
-  { key: 'food', title: t('common.food') },
-  { key: 'phe', title: t('common.phe') },
-  { key: 'kcal', title: t('common.kcal') }
-])
-
 const formTitle = computed(() => {
   return editedIndex.value === -1 ? t('common.add') : t('common.edit')
 })
@@ -62,6 +76,95 @@ const filteredOwnFood = computed(() => {
 
   const results = fuse.search(search.value.trim())
   return results.map((result) => result.item)
+})
+
+// Table state
+const sorting = ref([])
+const columnFilters = ref([])
+const columnVisibility = ref({})
+
+// Column definitions
+const columns = [
+  {
+    accessorKey: 'name',
+    header: ({ column }) => {
+      return h(DataTableColumnHeader, {
+        column: column,
+        title: t('common.food')
+      })
+    },
+    cell: ({ row }) => {
+      const item = row.original
+      return h('div', { class: 'flex items-center gap-1' }, [
+        h('img', {
+          src:
+            item.icon !== undefined && item.icon !== null && item.icon !== ''
+              ? `/images/food-icons/${item.icon}.svg`
+              : '/images/food-icons/organic-food.svg',
+          width: 25,
+          class: 'food-icon',
+          alt: 'Food Icon',
+          onError: (e) => {
+            e.target.src = '/images/food-icons/organic-food.svg'
+          }
+        }),
+        h('span', item.name)
+      ])
+    }
+  },
+  {
+    accessorKey: 'phe',
+    header: ({ column }) => {
+      return h(DataTableColumnHeader, {
+        column: column,
+        title: t('common.phe')
+      })
+    },
+    cell: ({ row }) => {
+      return h('div', row.getValue('phe'))
+    }
+  },
+  {
+    accessorKey: 'kcal',
+    header: ({ column }) => {
+      return h(DataTableColumnHeader, {
+        column: column,
+        title: t('common.kcal')
+      })
+    },
+    cell: ({ row }) => {
+      return h('div', row.getValue('kcal'))
+    }
+  }
+]
+
+// Table instance
+const table = useVueTable({
+  data: filteredOwnFood,
+  columns,
+  getCoreRowModel: getCoreRowModel(),
+  getPaginationRowModel: getPaginationRowModel(),
+  initialState: {
+    pagination: {
+      pageSize: 20
+    }
+  },
+  onSortingChange: (updaterOrValue) => valueUpdater(updaterOrValue, sorting),
+  onColumnFiltersChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnFilters),
+  onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
+  getSortedRowModel: getSortedRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+  state: {
+    get sorting() {
+      return sorting.value
+    },
+    get columnFilters() {
+      return columnFilters.value
+    },
+    get columnVisibility() {
+      return columnVisibility.value
+    }
+  }
 })
 
 // Methods
@@ -334,41 +437,73 @@ defineOgImageComponent('NuxtSeo', {
         </div>
       </div>
 
-      <DataTable :headers="tableHeaders" class="mb-8">
-        <tr
-          v-for="(item, index) in filteredOwnFood"
-          :key="index"
-          class="cursor-pointer"
-          @click="addItem(item)"
-        >
-          <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
-            <span class="flex items-center gap-1">
-              <img
-                v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
-                :src="'/images/food-icons/' + item.icon + '.svg'"
-                onerror="this.src='/images/food-icons/organic-food.svg'"
-                width="25"
-                class="food-icon"
-                alt="Food Icon"
-              />
-              <img
-                v-if="item.icon === undefined || item.icon === null || item.icon === ''"
-                :src="'/images/food-icons/organic-food.svg'"
-                width="25"
-                class="food-icon"
-                alt="Food Icon"
-              />
-              {{ item.name }}
-            </span>
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-            {{ item.phe }}
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-            {{ item.kcal }}
-          </td>
-        </tr>
-      </DataTable>
+      <div class="mb-8">
+        <div class="mt-6 flow-root">
+          <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+              <div
+                class="overflow-hidden shadow-sm ring-1 ring-gray-300 dark:ring-gray-800 ring-opacity-5 sm:rounded-lg"
+              >
+                <Table class="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
+                  <TableHeader class="bg-gray-50 dark:bg-gray-950">
+                    <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+                      <TableHead
+                        v-for="(header, index) in headerGroup.headers"
+                        :key="header.id"
+                        class="py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap"
+                        :class="index === 0 ? 'pl-4 pr-3 sm:pl-6' : 'px-3'"
+                      >
+                        <FlexRender
+                          v-if="!header.isPlaceholder"
+                          :render="header.column.columnDef.header"
+                          :props="header.getContext()"
+                        />
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody
+                    class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900"
+                  >
+                    <template v-if="table.getRowModel().rows?.length">
+                      <TableRow
+                        v-for="row in table.getRowModel().rows"
+                        :key="row.id"
+                        class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
+                        @click="addItem(row.original)"
+                      >
+                        <TableCell
+                          v-for="cell in row.getVisibleCells()"
+                          :key="cell.id"
+                          :class="[
+                            'py-4 text-sm whitespace-nowrap',
+                            cell.column.id === 'name'
+                              ? 'pl-4 pr-3 sm:pl-6 font-medium text-gray-900 dark:text-gray-300'
+                              : 'px-3 font-normal text-gray-500 dark:text-gray-400'
+                          ]"
+                        >
+                          <FlexRender
+                            :render="cell.column.columnDef.cell"
+                            :props="cell.getContext()"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    </template>
+                    <TableRow v-else>
+                      <TableCell
+                        :colspan="columns.length"
+                        class="h-24 text-center text-gray-500 dark:text-gray-400"
+                      >
+                        {{ $t('common.no-entries') }}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <DataTablePagination :table="table" />
+      </div>
 
       <PrimaryButton :text="$t('common.add')" @click="$refs.dialog.openDialog()" />
 

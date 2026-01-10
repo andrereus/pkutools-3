@@ -47,7 +47,10 @@
     "total-kcal": "Kcal totales",
     "optional": "Opcional",
     "date": "Fecha",
-    "undo": "Deshacer"
+    "undo": "Deshacer",
+    "no-entries": "Sin entradas",
+    "page": "Página",
+    "of": "de"
   },
   "home": {
     "title": "Inicio",

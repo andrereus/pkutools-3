@@ -6,6 +6,26 @@ import enChart from 'apexcharts/dist/locales/en.json'
 import deChart from 'apexcharts/dist/locales/de.json'
 import frChart from 'apexcharts/dist/locales/fr.json'
 import esChart from 'apexcharts/dist/locales/es.json'
+import {
+  FlexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useVueTable
+} from '@tanstack/vue-table'
+import { h, ref, computed } from 'vue'
+import { valueUpdater } from '@/components/ui/table/utils'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import DataTableColumnHeader from '@/components/ui/data-table/DataTableColumnHeader.vue'
+import DataTablePagination from '@/components/ui/data-table/DataTablePagination.vue'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
@@ -38,11 +58,103 @@ const settings = computed(() => store.settings)
 
 const license = computed(() => isPremium.value)
 
-const tableHeaders = computed(() => [
-  { key: 'date', title: t('diet-report.date') },
-  { key: 'phe', title: t('common.phe') },
-  { key: 'kcal', title: t('common.kcal') }
-])
+const getlocalDate = (date) => {
+  if (date) {
+    const locales = { enUS, de, fr, es }
+    return format(parseISO(date), 'eee P', { locale: locales[i18nLocale.value] })
+  } else {
+    return ''
+  }
+}
+
+// Table state
+const sorting = ref([])
+const columnFilters = ref([])
+const columnVisibility = ref({})
+
+// Column definitions
+const columns = [
+  {
+    accessorKey: 'date',
+    header: ({ column }) => {
+      return h(DataTableColumnHeader, {
+        column: column,
+        title: t('diet-report.date')
+      })
+    },
+    cell: ({ row }) => {
+      return h('div', getlocalDate(row.original.date))
+    },
+    sortingFn: (rowA, rowB) => {
+      const dateA = parseISO(rowA.original.date)
+      const dateB = parseISO(rowB.original.date)
+      return dateA.getTime() - dateB.getTime()
+    }
+  },
+  {
+    accessorKey: 'phe',
+    header: ({ column }) => {
+      return h(DataTableColumnHeader, {
+        column: column,
+        title: t('common.phe')
+      })
+    },
+    cell: ({ row }) => {
+      return h('div', row.getValue('phe'))
+    },
+    sortingFn: (rowA, rowB) => {
+      const pheA = rowA.original.phe ?? 0
+      const pheB = rowB.original.phe ?? 0
+      return pheA - pheB
+    }
+  },
+  {
+    accessorKey: 'kcal',
+    header: ({ column }) => {
+      return h(DataTableColumnHeader, {
+        column: column,
+        title: t('common.kcal')
+      })
+    },
+    cell: ({ row }) => {
+      return h('div', row.getValue('kcal'))
+    },
+    sortingFn: (rowA, rowB) => {
+      const kcalA = rowA.original.kcal ?? 0
+      const kcalB = rowB.original.kcal ?? 0
+      return kcalA - kcalB
+    }
+  }
+]
+
+// Table instance
+const table = useVueTable({
+  data: pheDiary,
+  columns,
+  getCoreRowModel: getCoreRowModel(),
+  getPaginationRowModel: getPaginationRowModel(),
+  initialState: {
+    pagination: {
+      pageSize: 20
+    }
+  },
+  onSortingChange: (updaterOrValue) => valueUpdater(updaterOrValue, sorting),
+  onColumnFiltersChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnFilters),
+  onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
+  getSortedRowModel: getSortedRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
+  state: {
+    get sorting() {
+      return sorting.value
+    },
+    get columnFilters() {
+      return columnFilters.value
+    },
+    get columnVisibility() {
+      return columnVisibility.value
+    }
+  }
+})
 
 const tableHeaders2 = computed(() => [
   { key: 'food', title: t('common.food') },
@@ -159,12 +271,6 @@ const oldestDate = computed(() => {
     const entryDate = parseISO(entry.date)
     return entryDate < oldest ? entryDate : oldest
   }, parseISO(pheDiary.value[0].date))
-})
-
-const sortedPheDiary = computed(() => {
-  return [...pheDiary.value].sort((a, b) => {
-    return parseISO(a.date) - parseISO(b.date)
-  })
 })
 
 // Methods
@@ -442,15 +548,6 @@ const saveLogEdit = async () => {
 
 // End add/edit log
 
-const getlocalDate = (date) => {
-  if (date) {
-    const locales = { enUS, de, fr, es }
-    return format(parseISO(date), 'eee P', { locale: locales[i18nLocale.value] })
-  } else {
-    return ''
-  }
-}
-
 const escapeCSV = (value) => {
   if (value === null || value === undefined) return ''
   return `"${value.toString().replace(/"/g, '""')}"`
@@ -637,24 +734,73 @@ defineOgImageComponent('NuxtSeo', {
         </ClientOnly>
       </div>
 
-      <DataTable :headers="tableHeaders" class="mb-8">
-        <tr
-          v-for="(item, index) in sortedPheDiary"
-          :key="index"
-          class="cursor-pointer"
-          @click="editItem(item)"
-        >
-          <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
-            {{ getlocalDate(item.date) }}
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-            {{ item.phe }}
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-            {{ item.kcal }}
-          </td>
-        </tr>
-      </DataTable>
+      <div class="mb-8">
+        <div class="mt-6 flow-root">
+          <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+              <div
+                class="overflow-hidden shadow-sm ring-1 ring-gray-300 dark:ring-gray-800 ring-opacity-5 sm:rounded-lg"
+              >
+                <Table class="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
+                  <TableHeader class="bg-gray-50 dark:bg-gray-950">
+                    <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+                      <TableHead
+                        v-for="(header, index) in headerGroup.headers"
+                        :key="header.id"
+                        class="py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap"
+                        :class="index === 0 ? 'pl-4 pr-3 sm:pl-6' : 'px-3'"
+                      >
+                        <FlexRender
+                          v-if="!header.isPlaceholder"
+                          :render="header.column.columnDef.header"
+                          :props="header.getContext()"
+                        />
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody
+                    class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900"
+                  >
+                    <template v-if="table.getRowModel().rows?.length">
+                      <TableRow
+                        v-for="row in table.getRowModel().rows"
+                        :key="row.id"
+                        class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
+                        @click="editItem(row.original)"
+                      >
+                        <TableCell
+                          v-for="cell in row.getVisibleCells()"
+                          :key="cell.id"
+                          :class="[
+                            'py-4 text-sm whitespace-nowrap',
+                            cell.column.id === 'date'
+                              ? 'pl-4 pr-3 sm:pl-6 font-medium text-gray-900 dark:text-gray-300'
+                              : 'px-3 font-normal text-gray-500 dark:text-gray-400'
+                          ]"
+                        >
+                          <FlexRender
+                            :render="cell.column.columnDef.cell"
+                            :props="cell.getContext()"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    </template>
+                    <TableRow v-else>
+                      <TableCell
+                        :colspan="columns.length"
+                        class="h-24 text-center text-gray-500 dark:text-gray-400"
+                      >
+                        {{ $t('common.no-entries') }}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <DataTablePagination :table="table" />
+      </div>
 
       <PrimaryButton :text="$t('common.add')" @click="$refs.dialog.openDialog()" />
 

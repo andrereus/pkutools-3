@@ -47,7 +47,10 @@
     "total-kcal": "Total kcal",
     "optional": "Optional",
     "date": "Date",
-    "undo": "Undo"
+    "undo": "Undo",
+    "no-entries": "No entries",
+    "page": "Page",
+    "of": "of"
   },
   "home": {
     "title": "Home",
