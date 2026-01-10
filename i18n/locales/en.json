@@ -292,6 +292,8 @@
     "blood-values-tyrosine": "Your last Tyrosine value was {tyrosine} {unit}.",
     "motivation": "Insights",
     "streak": "You've tracked your nutrition for {streak} days in a row.",
+    "streak-max": "Current streak: {streak} days. Best streak: {maxStreak} days.",
+    "streak-max-same": "You've tracked your nutrition for {streak} days in a row.",
     "week": "You've tracked for 7 or more consecutive days.",
     "keep-going": "",
     "start-tracking": "You can track your nutrition daily to view your statistics.",

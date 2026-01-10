@@ -130,8 +130,13 @@ const badges = computed(() => [
       </div>
       <div class="flex flex-col gap-4">
         <div>
-          <p v-if="streak > 0">
-            {{ $t('insights.streak', { streak }) }}
+          <p v-if="streak > 0 || maxStreak > 0">
+            <template v-if="streak === maxStreak">
+              {{ $t('insights.streak-max-same', { streak }) }}
+            </template>
+            <template v-else>
+              {{ $t('insights.streak-max', { streak, maxStreak }) }}
+            </template>
           </p>
           <p v-else>
             {{ $t('insights.start-tracking') }}
