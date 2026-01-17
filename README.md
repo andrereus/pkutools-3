@@ -25,7 +25,7 @@ PKU Tools is a comprehensive Progressive Web App (PWA) designed to help people w
 
 ## Tech Stack
 
-**Frontend**: [Nuxt 4](https://nuxt.com/) with Vue 3, [Tailwind CSS](https://tailwindcss.com/) (via Vite plugin), [Headless UI](https://headlessui.com/), [shadcn-vue](https://www.shadcn-vue.com/), [TanStack Vue Table](https://tanstack.com/table), [ApexCharts](https://apexcharts.com/), [Lucide Icons](https://lucide.dev/)
+**Frontend**: [Nuxt 4](https://nuxt.com/) with Vue 3, [Tailwind CSS](https://tailwindcss.com/) (via Vite plugin), [Headless UI](https://headlessui.com/), [TanStack Vue Table](https://tanstack.com/table), [ApexCharts](https://apexcharts.com/), [Lucide Icons](https://lucide.dev/) (via [nuxt-lucide-icons](https://nuxt.com/modules/lucide-icons))
 
 **Backend**: Firebase (Realtime Database, Authentication), Nuxt server routes with Firebase Admin SDK
 
@@ -48,8 +48,9 @@ PKU Tools has undergone significant refactoring over its versions:
 ```
 pkutools-3/
 ├── app/
-│   ├── components/     # Vue components (ui/ for shadcn-vue tables)
+│   ├── components/     # Vue components
 │   ├── composables/    # useApi, useLicense, etc.
+│   ├── lib/           # Utility functions (e.g., table-utils)
 │   ├── pages/          # File-based routing
 │   └── plugins/        # Firebase, ApexCharts
 ├── i18n/locales/       # Translation files (en, de, es, fr)

@@ -1,5 +1,4 @@
 <script setup>
-import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -23,7 +22,7 @@ const totalPages = computed(() => props.table.getPageCount())
       @click="table.previousPage()"
       class="p-1 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      <ChevronLeft class="h-6 w-6" aria-hidden="true" />
+      <LucideChevronLeft class="h-6 w-6" aria-hidden="true" />
     </button>
     <span class="text-sm text-gray-700 dark:text-gray-300">
       {{ t('common.page') }} {{ currentPage }} {{ t('common.of') }} {{ totalPages }}
@@ -34,7 +33,7 @@ const totalPages = computed(() => props.table.getPageCount())
       @click="table.nextPage()"
       class="p-1 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      <ChevronRight class="h-6 w-6" aria-hidden="true" />
+      <LucideChevronRight class="h-6 w-6" aria-hidden="true" />
     </button>
   </div>
 </template>

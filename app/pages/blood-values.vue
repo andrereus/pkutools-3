@@ -15,17 +15,9 @@ import {
   useVueTable
 } from '@tanstack/vue-table'
 import { h, ref, computed } from 'vue'
-import { valueUpdater } from '@/components/ui/table/utils'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
-import DataTableColumnHeader from '@/components/ui/data-table/DataTableColumnHeader.vue'
-import DataTablePagination from '@/components/ui/data-table/DataTablePagination.vue'
+import { valueUpdater } from '@/lib/table-utils'
+import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
+import DataTablePagination from '@/components/DataTablePagination.vue'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
@@ -442,34 +434,34 @@ defineOgImageComponent('NuxtSeo', {
               <div
                 class="overflow-hidden shadow-sm ring-1 ring-gray-300 dark:ring-gray-800 ring-opacity-5 sm:rounded-lg"
               >
-                <Table class="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
-                  <TableHeader class="bg-gray-50 dark:bg-gray-950">
-                    <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
-                      <TableHead
+                <table class="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
+                  <thead class="bg-gray-50 dark:bg-gray-950">
+                    <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
+                      <th
                         v-for="(header, index) in headerGroup.headers"
                         :key="header.id"
-                        class="py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap"
-                        :class="index === 0 ? 'pl-4 pr-3 sm:pl-6' : 'px-3'"
+                        :class="[
+                          'py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-300 whitespace-nowrap',
+                          index === 0 ? 'pl-4 pr-3 sm:pl-6' : 'px-3'
+                        ]"
                       >
                         <FlexRender
                           v-if="!header.isPlaceholder"
                           :render="header.column.columnDef.header"
                           :props="header.getContext()"
                         />
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody
-                    class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900"
-                  >
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
                     <template v-if="table.getRowModel().rows?.length">
-                      <TableRow
+                      <tr
                         v-for="row in table.getRowModel().rows"
                         :key="row.id"
                         class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
                         @click="editItem(row.original)"
                       >
-                        <TableCell
+                        <td
                           v-for="cell in row.getVisibleCells()"
                           :key="cell.id"
                           :class="[
@@ -483,19 +475,19 @@ defineOgImageComponent('NuxtSeo', {
                             :render="cell.column.columnDef.cell"
                             :props="cell.getContext()"
                           />
-                        </TableCell>
-                      </TableRow>
+                        </td>
+                      </tr>
                     </template>
-                    <TableRow v-else>
-                      <TableCell
+                    <tr v-else>
+                      <td
                         :colspan="columns.length"
                         class="h-24 text-center text-gray-500 dark:text-gray-400"
                       >
                         {{ $t('common.no-entries') }}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
