@@ -63,87 +63,62 @@ const selectedDayLog = computed(() => {
   return entry?.log || []
 })
 
-// Empty state greetings with variants
-const emptyStateGreetings = [
-  {
-    greeting: 'diary.empty-state.greeting-1',
-    message: 'diary.empty-state.message-1',
-    icon: LucideSun
-  },
-  {
-    greeting: 'diary.empty-state.greeting-2',
-    message: 'diary.empty-state.message-2',
-    icon: LucideSparkles
-  },
-  {
-    greeting: 'diary.empty-state.greeting-3',
-    message: 'diary.empty-state.message-3',
-    icon: LucideCoffee
-  },
-  {
-    greeting: 'diary.empty-state.greeting-4',
-    message: 'diary.empty-state.message-4',
-    icon: LucideHeart
-  },
-  {
-    greeting: 'diary.empty-state.greeting-5',
-    message: 'diary.empty-state.message-5',
-    icon: LucideZap
-  },
-  {
-    greeting: 'diary.empty-state.greeting-6',
-    message: 'diary.empty-state.message-6',
-    icon: LucideCalendar
-  }
+// Available greetings (headlines)
+const greetings = [
+  'diary.empty-state.greeting-1',
+  'diary.empty-state.greeting-2',
+  'diary.empty-state.greeting-3',
+  'diary.empty-state.greeting-4',
+  'diary.empty-state.greeting-5',
+  'diary.empty-state.greeting-6'
 ]
 
-// Randomize the combinations - shuffle icons with greetings/messages
-const randomizedGreetings = ref([])
+// Available messages (text)
+const messages = [
+  'diary.empty-state.message-1',
+  'diary.empty-state.message-2',
+  'diary.empty-state.message-3',
+  'diary.empty-state.message-4',
+  'diary.empty-state.message-5',
+  'diary.empty-state.message-6'
+]
 
-// Initialize and randomize when date changes
-watch(
-  () => date.value,
-  () => {
-    // Create a shuffled copy of greetings
-    const shuffled = [...emptyStateGreetings]
-    // Shuffle using date as seed for consistent randomization per day
-    const dateSeed = date.value.split('-').join('')
-    let seed = parseInt(dateSeed)
-    
-    // Simple seeded shuffle algorithm
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      seed = (seed * 9301 + 49297) % 233280
-      const j = Math.floor((seed / 233280) * (i + 1))
-      ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-    }
-    
-    // Now shuffle icons separately and assign them randomly
-    const icons = [LucideSun, LucideSparkles, LucideCoffee, LucideHeart, LucideZap, LucideCalendar]
-    const shuffledIcons = [...icons]
-    for (let i = shuffledIcons.length - 1; i > 0; i--) {
-      seed = (seed * 9301 + 49297) % 233280
-      const j = Math.floor((seed / 233280) * (i + 1))
-      ;[shuffledIcons[i], shuffledIcons[j]] = [shuffledIcons[j], shuffledIcons[i]]
-    }
-    
-    // Combine shuffled greetings with shuffled icons
-    randomizedGreetings.value = shuffled.map((greeting, index) => ({
-      ...greeting,
-      icon: shuffledIcons[index]
-    }))
-  },
-  { immediate: true }
-)
+// Available icons
+const icons = [LucideSun, LucideSparkles, LucideCoffee, LucideHeart, LucideZap, LucideCalendar]
 
-// Select a random greeting variant (persists per day but randomized)
-const selectedGreeting = computed(() => {
-  if (randomizedGreetings.value.length === 0) {
-    return emptyStateGreetings[0]
+// Get time-appropriate greeting key for greeting-1
+const getTimeBasedGreeting = (greetingKey) => {
+  if (greetingKey === 'diary.empty-state.greeting-1') {
+    const hour = new Date().getHours()
+    if (hour >= 5 && hour < 12) {
+      return 'diary.empty-state.greeting-1-morning'
+    } else if (hour >= 12 && hour < 18) {
+      return 'diary.empty-state.greeting-1-afternoon'
+    } else {
+      return 'diary.empty-state.greeting-1-evening'
+    }
   }
-  // Use date as seed to pick one from randomized list
-  const dateSeed = date.value.split('-').join('')
-  const seed = parseInt(dateSeed) % randomizedGreetings.value.length
-  return randomizedGreetings.value[seed]
+  return greetingKey
+}
+
+// Select icon, headline, and text independently based on date
+// Each day gets a different combination, but same date = same combination
+const selectedGreeting = computed(() => {
+  // Use date as seed to generate independent indices
+  const dateHash = date.value.split('-').join('')
+  const dateNum = parseInt(dateHash)
+  
+  // Generate different indices using simple hash with different offsets
+  // This ensures icon, greeting, and message are selected independently
+  const iconIndex = dateNum % icons.length
+  const greetingIndex = (dateNum + 1000) % greetings.length
+  const messageIndex = (dateNum + 2000) % messages.length
+  
+  return {
+    icon: icons[iconIndex],
+    greeting: getTimeBasedGreeting(greetings[greetingIndex]),
+    message: messages[messageIndex]
+  }
 })
 
 const userName = computed(() => {

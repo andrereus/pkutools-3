@@ -133,6 +133,9 @@
     "empty-state": {
       "friend": "ami",
       "greeting-1": "Bonjour {name} !",
+      "greeting-1-morning": "Bonjour {name} !",
+      "greeting-1-afternoon": "Bon après-midi {name} !",
+      "greeting-1-evening": "Bonsoir {name} !",
       "message-1": "Prêt à commencer ? Ajoutez votre première entrée !",
       "greeting-2": "Salut {name} !",
       "message-2": "Votre journal vous attend. Enregistrez vos repas pour rester sur la bonne voie.",

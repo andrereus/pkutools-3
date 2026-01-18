@@ -133,6 +133,9 @@
     "empty-state": {
       "friend": "friend",
       "greeting-1": "Good morning, {name}!",
+      "greeting-1-morning": "Good morning, {name}!",
+      "greeting-1-afternoon": "Good afternoon, {name}!",
+      "greeting-1-evening": "Good evening, {name}!",
       "message-1": "Ready to start tracking? Add your first food entry!",
       "greeting-2": "Hey {name}!",
       "message-2": "Your diary is waiting. Log your meals to stay on track.",

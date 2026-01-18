@@ -133,6 +133,9 @@
     "empty-state": {
       "friend": "Freund",
       "greeting-1": "Guten Morgen, {name}!",
+      "greeting-1-morning": "Guten Morgen, {name}!",
+      "greeting-1-afternoon": "Guten Tag, {name}!",
+      "greeting-1-evening": "Guten Abend, {name}!",
       "message-1": "Bereit zu starten? Füge deinen ersten Eintrag hinzu!",
       "greeting-2": "Hallo {name}!",
       "message-2": "Dein Tagebuch wartet. Erfasse deine Mahlzeiten, um auf Kurs zu bleiben.",
