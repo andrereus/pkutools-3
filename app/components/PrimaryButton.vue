@@ -15,16 +15,20 @@ defineProps({
   disabled: {
     type: Boolean,
     default: false
+  },
+  type: {
+    type: String,
+    default: 'button'
   }
 })
 </script>
 
 <template>
   <button
-    type="button"
+    :type="type"
     :disabled="disabled || loading"
     :class="[
-      'rounded-sm bg-sky-500 px-2 py-1 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 mr-3 mb-3',
+      'rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 mr-3 mb-3',
       disabled || loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
     ]"
   >

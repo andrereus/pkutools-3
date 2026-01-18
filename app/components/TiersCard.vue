@@ -103,7 +103,7 @@ const tiers = computed(() => [
         v-if="tier.id === 'tier-unlimited' || tier.id === 'tier-premium-ai'"
         href="https://ko-fi.com/andrereus/tiers"
         target="_blank"
-        class="bg-sky-500 text-white shadow-xs hover:bg-sky-400 focus-visible:outline-sky-500 mt-6 block rounded-md px-3.5 py-1 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2"
+        class="bg-sky-500 text-white shadow-xs hover:bg-sky-400 focus-visible:outline-sky-500 mt-6 block rounded-full px-3 py-1.5 text-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500"
         >{{ $t('settings.subscribe') }}</a
       >
     </div>

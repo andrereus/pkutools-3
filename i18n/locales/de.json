@@ -129,7 +129,22 @@
     "set-phe": "Phe-Toleranz einstellen",
     "set-kcal": "Kalorienbedarf einstellen",
     "item-deleted": "Eintrag gelöscht",
-    "entry-deleted": "Eintrag gelöscht"
+    "entry-deleted": "Eintrag gelöscht",
+    "empty-state": {
+      "friend": "Freund",
+      "greeting-1": "Guten Morgen, {name}!",
+      "message-1": "Bereit zu starten? Füge deinen ersten Eintrag hinzu!",
+      "greeting-2": "Hallo {name}!",
+      "message-2": "Dein Tagebuch wartet. Erfasse deine Mahlzeiten, um auf Kurs zu bleiben.",
+      "greeting-3": "Hallo {name}!",
+      "message-3": "Zeit für deine erste Mahlzeit. Jeder Eintrag hilft dir, die Kontrolle zu behalten.",
+      "greeting-4": "Hi {name}!",
+      "message-4": "Lass uns beginnen. Füge dein erstes Lebensmittel hinzu!",
+      "greeting-5": "Willkommen zurück, {name}!",
+      "message-5": "Dein Tagebuch ist heute leer. Beginne mit der Erfassung!",
+      "greeting-6": "Hallo {name}!",
+      "message-6": "Bereit zu erfassen? Füge deine erste Mahlzeit hinzu und behalte deine Phe im Blick."
+    }
   },
   "diet-report": {
     "title": "Diätbericht",

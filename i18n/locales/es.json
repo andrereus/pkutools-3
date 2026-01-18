@@ -129,7 +129,22 @@
     "set-phe": "Establecer tolerancia Phe",
     "set-kcal": "Fijar las necesidades calóricas",
     "item-deleted": "Elemento eliminado",
-    "entry-deleted": "Entrada eliminada"
+    "entry-deleted": "Entrada eliminada",
+    "empty-state": {
+      "friend": "amigo",
+      "greeting-1": "¡Buenos días, {name}!",
+      "message-1": "¿Listo para comenzar? ¡Añade tu primera entrada!",
+      "greeting-2": "¡Hola {name}!",
+      "message-2": "Tu diario te espera. Registra tus comidas para mantenerte en el camino.",
+      "greeting-3": "¡Hola {name}!",
+      "message-3": "Es hora de registrar tu primera comida. Cada entrada te ayuda a mantener el control.",
+      "greeting-4": "¡Hola {name}!",
+      "message-4": "Comencemos. ¡Añade tu primer alimento!",
+      "greeting-5": "¡Bienvenido de nuevo, {name}!",
+      "message-5": "Tu diario está vacío hoy. ¡Comienza a registrar tus comidas!",
+      "greeting-6": "¡Hola {name}!",
+      "message-6": "¿Listo para registrar? Añade tu primera comida y mantén tu Phe bajo control."
+    }
   },
   "diet-report": {
     "title": "Informe de dieta",

@@ -129,7 +129,22 @@
     "set-phe": "Set Phe tolerance",
     "set-kcal": "Set calorie requirement",
     "item-deleted": "Item deleted",
-    "entry-deleted": "Entry deleted"
+    "entry-deleted": "Entry deleted",
+    "empty-state": {
+      "friend": "friend",
+      "greeting-1": "Good morning, {name}!",
+      "message-1": "Ready to start tracking? Add your first food entry!",
+      "greeting-2": "Hey {name}!",
+      "message-2": "Your diary is waiting. Log your meals to stay on track.",
+      "greeting-3": "Hello {name}!",
+      "message-3": "Time to log your first meal. Every entry helps you stay in control.",
+      "greeting-4": "Hi {name}!",
+      "message-4": "Let's begin tracking. Add your first food item!",
+      "greeting-5": "Welcome back, {name}!",
+      "message-5": "Your diary is empty today. Start logging your meals!",
+      "greeting-6": "Hello there, {name}!",
+      "message-6": "Ready to track? Add your first meal and keep your Phe in check."
+    }
   },
   "diet-report": {
     "title": "Diet Report",

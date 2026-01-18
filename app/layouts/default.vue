@@ -624,13 +624,13 @@ const handleCookieConsent = (consent) => {
       </span>
       <div class="flex gap-2 justify-end">
         <button
-          class="bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
+          class="rounded-full bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold px-3 py-1.5 shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 cursor-pointer"
           @click="handleCookieConsent('yes')"
         >
           {{ $t('cookie-consent.accept') }}
         </button>
         <button
-          class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 text-sm font-medium px-4 py-2 rounded-lg transition"
+          class="rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 text-gray-900 dark:text-gray-300 text-sm font-semibold px-3 py-1.5 shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400 cursor-pointer"
           @click="handleCookieConsent('no')"
         >
           {{ $t('cookie-consent.decline') }}

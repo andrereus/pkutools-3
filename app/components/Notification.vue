@@ -146,7 +146,7 @@ const buttonStyles = {
                     v-if="undoAction"
                     type="button"
                     :class="[
-                      'ml-3 shrink-0 rounded-md text-sm font-medium focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500 cursor-pointer',
+                      'ml-3 shrink-0 rounded-full px-3 py-1.5 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 cursor-pointer',
                       buttonStyles[type]
                     ]"
                     @click="handleUndo"
@@ -157,7 +157,7 @@ const buttonStyles = {
                 <div class="ml-4 flex shrink-0">
                   <button
                     type="button"
-                    class="inline-flex rounded-md text-gray-400 hover:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-600 dark:hover:text-white dark:focus:outline-indigo-500 cursor-pointer"
+                    class="inline-flex rounded-full p-1 text-gray-400 hover:text-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:hover:text-white dark:focus-visible:outline-indigo-500 cursor-pointer"
                     @click="handleClose"
                   >
                     <span class="sr-only">Close</span>

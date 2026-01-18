@@ -20,7 +20,7 @@ const totalPages = computed(() => props.table.getPageCount())
       type="button"
       :disabled="!table.getCanPreviousPage()"
       @click="table.previousPage()"
-      class="p-1 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-1 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
     >
       <LucideChevronLeft class="h-6 w-6" aria-hidden="true" />
     </button>
@@ -31,7 +31,7 @@ const totalPages = computed(() => props.table.getPageCount())
       type="button"
       :disabled="!table.getCanNextPage()"
       @click="table.nextPage()"
-      class="p-1 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      class="p-1 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
     >
       <LucideChevronRight class="h-6 w-6" aria-hidden="true" />
     </button>

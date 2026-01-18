@@ -129,7 +129,22 @@
     "set-phe": "Régler la tolérance Phe",
     "set-kcal": "Régler les besoins en calories",
     "item-deleted": "Élément supprimé",
-    "entry-deleted": "Entrée supprimée"
+    "entry-deleted": "Entrée supprimée",
+    "empty-state": {
+      "friend": "ami",
+      "greeting-1": "Bonjour {name} !",
+      "message-1": "Prêt à commencer ? Ajoutez votre première entrée !",
+      "greeting-2": "Salut {name} !",
+      "message-2": "Votre journal vous attend. Enregistrez vos repas pour rester sur la bonne voie.",
+      "greeting-3": "Bonjour {name} !",
+      "message-3": "Il est temps d'enregistrer votre premier repas. Chaque entrée vous aide à garder le contrôle.",
+      "greeting-4": "Salut {name} !",
+      "message-4": "Commençons. Ajoutez votre premier aliment !",
+      "greeting-5": "Bon retour, {name} !",
+      "message-5": "Votre journal est vide aujourd'hui. Commencez à enregistrer vos repas !",
+      "greeting-6": "Bonjour {name} !",
+      "message-6": "Prêt à suivre ? Ajoutez votre premier repas et gardez votre Phe sous contrôle."
+    }
   },
   "diet-report": {
     "title": "Rapport de régime",

@@ -167,38 +167,44 @@ defineOgImageComponent('NuxtSeo', {
         </HeadlessTabList>
         <HeadlessTabPanels>
           <HeadlessTabPanel>
-            <EmailInput v-model="email" id-name="email" :label="$t('sign-in.email')" />
-            <PasswordInput v-model="password" id-name="password" :label="$t('sign-in.password')" />
+            <form @submit.prevent="signInEmailPassword">
+              <EmailInput v-model="email" id-name="email" :label="$t('sign-in.email')" />
+              <PasswordInput v-model="password" id-name="password" :label="$t('sign-in.password')" />
 
-            <PrimaryButton :text="$t('sign-in.signin')" class="mt-4" @click="signInEmailPassword" />
+              <PrimaryButton :text="$t('sign-in.signin')" class="mt-4" type="submit" />
+            </form>
           </HeadlessTabPanel>
           <HeadlessTabPanel>
             <p class="mt-2 mb-6">{{ $t('sign-in.register-note') }}</p>
 
-            <TextInput v-model="name" id-name="name" :label="$t('sign-in.name')" />
-            <EmailInput v-model="email" id-name="register-email" :label="$t('sign-in.email')" />
-            <PasswordInput
-              v-model="password"
-              id-name="register-password"
-              :label="$t('sign-in.password')"
-            />
+            <form @submit.prevent="registerEmailPassword">
+              <TextInput v-model="name" id-name="name" :label="$t('sign-in.name')" />
+              <EmailInput v-model="email" id-name="register-email" :label="$t('sign-in.email')" />
+              <PasswordInput
+                v-model="password"
+                id-name="register-password"
+                :label="$t('sign-in.password')"
+              />
 
-            <PrimaryButton
-              :text="$t('sign-in.register')"
-              class="mt-4"
-              @click="registerEmailPassword"
-            />
+              <PrimaryButton
+                :text="$t('sign-in.register')"
+                class="mt-4"
+                type="submit"
+              />
+            </form>
           </HeadlessTabPanel>
           <HeadlessTabPanel>
             <p class="mt-2 mb-6">{{ $t('sign-in.reset-note') }}</p>
 
-            <EmailInput v-model="email" id-name="reset-email" :label="$t('sign-in.email')" />
+            <form @submit.prevent="resetPassword">
+              <EmailInput v-model="email" id-name="reset-email" :label="$t('sign-in.email')" />
 
-            <PrimaryButton
-              :text="$t('sign-in.reset-password')"
-              class="mt-4"
-              @click="resetPassword"
-            />
+              <PrimaryButton
+                :text="$t('sign-in.reset-password')"
+                class="mt-4"
+                type="submit"
+              />
+            </form>
           </HeadlessTabPanel>
         </HeadlessTabPanels>
       </HeadlessTabGroup>

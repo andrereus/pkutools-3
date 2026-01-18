@@ -1,6 +1,14 @@
 <script setup>
 import { useStore } from '../../stores/index'
 import { format, parseISO, subDays, addDays } from 'date-fns'
+import {
+  LucideCalendar,
+  LucideSparkles,
+  LucideSun,
+  LucideCoffee,
+  LucideHeart,
+  LucideZap
+} from 'lucide-vue-next'
 
 const store = useStore()
 const { t } = useI18n()
@@ -53,6 +61,93 @@ const formTitle = computed(() => {
 const selectedDayLog = computed(() => {
   const entry = pheDiary.value.find((entry) => entry.date === date.value)
   return entry?.log || []
+})
+
+// Empty state greetings with variants
+const emptyStateGreetings = [
+  {
+    greeting: 'diary.empty-state.greeting-1',
+    message: 'diary.empty-state.message-1',
+    icon: LucideSun
+  },
+  {
+    greeting: 'diary.empty-state.greeting-2',
+    message: 'diary.empty-state.message-2',
+    icon: LucideSparkles
+  },
+  {
+    greeting: 'diary.empty-state.greeting-3',
+    message: 'diary.empty-state.message-3',
+    icon: LucideCoffee
+  },
+  {
+    greeting: 'diary.empty-state.greeting-4',
+    message: 'diary.empty-state.message-4',
+    icon: LucideHeart
+  },
+  {
+    greeting: 'diary.empty-state.greeting-5',
+    message: 'diary.empty-state.message-5',
+    icon: LucideZap
+  },
+  {
+    greeting: 'diary.empty-state.greeting-6',
+    message: 'diary.empty-state.message-6',
+    icon: LucideCalendar
+  }
+]
+
+// Randomize the combinations - shuffle icons with greetings/messages
+const randomizedGreetings = ref([])
+
+// Initialize and randomize when date changes
+watch(
+  () => date.value,
+  () => {
+    // Create a shuffled copy of greetings
+    const shuffled = [...emptyStateGreetings]
+    // Shuffle using date as seed for consistent randomization per day
+    const dateSeed = date.value.split('-').join('')
+    let seed = parseInt(dateSeed)
+    
+    // Simple seeded shuffle algorithm
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      seed = (seed * 9301 + 49297) % 233280
+      const j = Math.floor((seed / 233280) * (i + 1))
+      ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+    
+    // Now shuffle icons separately and assign them randomly
+    const icons = [LucideSun, LucideSparkles, LucideCoffee, LucideHeart, LucideZap, LucideCalendar]
+    const shuffledIcons = [...icons]
+    for (let i = shuffledIcons.length - 1; i > 0; i--) {
+      seed = (seed * 9301 + 49297) % 233280
+      const j = Math.floor((seed / 233280) * (i + 1))
+      ;[shuffledIcons[i], shuffledIcons[j]] = [shuffledIcons[j], shuffledIcons[i]]
+    }
+    
+    // Combine shuffled greetings with shuffled icons
+    randomizedGreetings.value = shuffled.map((greeting, index) => ({
+      ...greeting,
+      icon: shuffledIcons[index]
+    }))
+  },
+  { immediate: true }
+)
+
+// Select a random greeting variant (persists per day but randomized)
+const selectedGreeting = computed(() => {
+  if (randomizedGreetings.value.length === 0) {
+    return emptyStateGreetings[0]
+  }
+  // Use date as seed to pick one from randomized list
+  const dateSeed = date.value.split('-').join('')
+  const seed = parseInt(dateSeed) % randomizedGreetings.value.length
+  return randomizedGreetings.value[seed]
+})
+
+const userName = computed(() => {
+  return store.user?.name || store.user?.email?.split('@')[0] || null
 })
 
 const selectedDiaryEntry = computed(
@@ -302,7 +397,7 @@ defineOgImageComponent('NuxtSeo', {
       <NuxtLink
         type="button"
         :to="$localePath('sign-in')"
-        class="rounded-sm bg-black/5 dark:bg-white/15 px-2 py-1 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 mr-3 mb-6"
+        class="rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400 mr-3 mb-6"
       >
         {{ $t('sign-in.signin-with-email') }}
       </NuxtLink>
@@ -310,7 +405,7 @@ defineOgImageComponent('NuxtSeo', {
 
     <div v-if="userIsAuthenticated">
       <div class="flex justify-between items-center gap-4 mb-6">
-        <button class="p-1 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer" @click="prevDay">
+        <button class="p-1 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400" @click="prevDay">
           <LucideChevronLeft class="h-6 w-6" aria-hidden="true" />
         </button>
         <input
@@ -320,7 +415,7 @@ defineOgImageComponent('NuxtSeo', {
           name="date"
           class="flex-1 block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
         />
-        <button class="p-1 rounded-md bg-gray-100 dark:bg-gray-800 cursor-pointer" @click="nextDay">
+        <button class="p-1 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400" @click="nextDay">
           <LucideChevronRight class="h-6 w-6" aria-hidden="true" />
         </button>
       </div>
@@ -366,7 +461,31 @@ defineOgImageComponent('NuxtSeo', {
         </div>
       </div>
 
-      <DataTable :headers="tableHeaders" class="mb-6">
+      <!-- Empty State -->
+      <div
+        v-if="selectedDayLog.length === 0"
+        class="mt-6 mb-6 flex flex-col items-center justify-center py-6 px-4 text-center"
+      >
+        <component
+          :is="selectedGreeting.icon"
+          class="h-12 w-12 text-sky-500 dark:text-sky-400 mb-4"
+          aria-hidden="true"
+        />
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <template v-if="userName">
+            {{ $t(selectedGreeting.greeting, { name: userName }) }}
+          </template>
+          <template v-else>
+            {{ $t(selectedGreeting.greeting, { name: $t('diary.empty-state.friend') }) }}
+          </template>
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 max-w-md">
+          {{ $t(selectedGreeting.message) }}
+        </p>
+      </div>
+
+      <!-- Data Table -->
+      <DataTable v-else :headers="tableHeaders" class="mb-6">
         <tr
           v-for="(item, index) in selectedDayLog"
           :key="index"
@@ -461,7 +580,7 @@ defineOgImageComponent('NuxtSeo', {
 
       <NuxtLink
         :to="$localePath('phe-calculator')"
-        class="rounded-sm bg-sky-500 px-2 py-1 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 mr-3 mb-3"
+        class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 mr-3 mb-3"
       >
         {{ $t('common.add') }}
       </NuxtLink>

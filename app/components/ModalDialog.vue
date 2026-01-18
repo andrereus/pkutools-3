@@ -84,17 +84,17 @@ function handleButtonClick(buttonType) {
               type="button"
               :disabled="loading && (button.type === 'submit' || button.type === 'delete')"
               :class="[
-                'inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-xs focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2',
+                'inline-flex w-full justify-center rounded-full px-3 py-2 text-sm font-semibold shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2',
                 loading && (button.type === 'submit' || button.type === 'delete')
                   ? 'opacity-50 cursor-not-allowed'
                   : 'cursor-pointer',
                 button.type === 'delete'
-                  ? 'bg-red-500 text-white hover:bg-red-600 focus-visible:outline-red-500'
+                  ? 'bg-red-500 text-white hover:bg-red-600 focus-visible:outline-red-500 dark:bg-red-500 dark:shadow-none dark:hover:bg-red-400 dark:focus-visible:outline-red-500'
                   : button.type === 'simpleClose' ||
                       button.type === 'close' ||
                       button.type === 'edit'
-                    ? 'bg-white text-gray-900 hover:bg-gray-50 ring-1 ring-inset ring-gray-300'
-                    : 'bg-sky-500 text-white hover:bg-sky-600 focus-visible:outline-sky-500',
+                    ? 'bg-white text-gray-900 hover:bg-gray-50 ring-1 ring-inset ring-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:ring-gray-600 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400'
+                    : 'bg-sky-500 text-white hover:bg-sky-600 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500',
                 filteredButtons.length > 1 && index > 0 ? 'mt-3 sm:mt-0' : ''
               ]"
               :autofocus="

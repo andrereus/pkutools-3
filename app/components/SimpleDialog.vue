@@ -37,7 +37,7 @@ defineExpose({ openDialog, closeDialog })
           <div class="mt-5 sm:mt-6">
             <button
               type="button"
-              class="inline-flex w-full justify-center rounded-md bg-sky-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-sky-500 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 cursor-pointer"
+              class="inline-flex w-full justify-center rounded-full bg-sky-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 cursor-pointer"
               @click="$emit('close')"
             >
               {{ $t('common.cancel') }}
