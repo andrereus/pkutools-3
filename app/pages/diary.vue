@@ -468,7 +468,7 @@ defineOgImageComponent('NuxtSeo', {
       >
         <component
           :is="selectedGreeting.icon"
-          class="h-12 w-12 text-sky-500 dark:text-sky-400 mb-4"
+          class="h-8 w-8 text-sky-500 dark:text-sky-400 mb-4"
           aria-hidden="true"
         />
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
