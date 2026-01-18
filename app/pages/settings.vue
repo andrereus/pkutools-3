@@ -1,6 +1,7 @@
 <script setup>
 import { format, parseISO } from 'date-fns'
 import { enUS, de, fr, es } from 'date-fns/locale'
+import { getAuth, updateProfile } from 'firebase/auth'
 import { useStore } from '../../stores/index'
 
 const store = useStore()
@@ -28,6 +29,7 @@ const formatConsentDate = (dateString) => {
 
 // Reactive state
 const selectedTheme = ref('system')
+const username = ref('')
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
@@ -236,6 +238,35 @@ const reopenOnboarding = async () => {
   }
 }
 
+const saveUsername = async () => {
+  try {
+    const auth = getAuth()
+    const user = auth.currentUser
+
+    if (!user) {
+      notifications.error(t('app.auth-error'))
+      return
+    }
+
+    // Update Firebase Auth profile (client-side, consistent with registration)
+    await updateProfile(user, {
+      displayName: username.value?.trim() || null
+    })
+
+    // Update the store to reflect the change immediately
+    // Note: Firebase Auth profile updates don't trigger onAuthStateChanged,
+    // so we update the store directly for immediate UI feedback
+    store.user = {
+      ...store.user,
+      name: username.value?.trim() || null
+    }
+
+    notifications.success(t('settings.username-saved'))
+  } catch (error) {
+    handleError(error, 'update username')
+  }
+}
+
 const handleThemeChange = () => {
   if (selectedTheme.value === 'light') {
     localStorage.setItem('theme', 'light')
@@ -256,6 +287,8 @@ const handleThemeChange = () => {
 // Lifecycle hooks
 onMounted(() => {
   selectedTheme.value = localStorage.getItem('theme') || 'system'
+  // Initialize username from store (handle null/undefined as empty string for input)
+  username.value = store.user?.name || ''
 })
 
 definePageMeta({
@@ -466,6 +499,23 @@ defineOgImageComponent('NuxtSeo', {
           class="mb-6"
         />
         <PrimaryButton :text="$t('settings.check-license')" @click="saveLicense" />
+      </div>
+
+      <!-- Username Section -->
+      <div
+        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+      >
+        <PageHeader :title="$t('settings.change-username')" class="mb-4" />
+        <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+          {{ $t('settings.change-username-info') }}
+        </p>
+        <TextInput
+          v-model="username"
+          id-name="username"
+          :label="$t('settings.username')"
+          class="mb-4"
+        />
+        <PrimaryButton :text="$t('common.save')" @click="saveUsername" />
       </div>
 
       <!-- Account Management Section -->
