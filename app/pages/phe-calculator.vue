@@ -6,7 +6,7 @@ import { getAuth } from 'firebase/auth'
 import { format } from 'date-fns'
 
 const store = useStore()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
 const { isPremium, isPremiumAI } = useLicense()
@@ -19,6 +19,7 @@ const weight = ref(null)
 const name = ref('')
 const emoji = ref(null)
 const kcalReference = ref(null)
+const estimationExplanation = ref(null)
 const select = ref('phe')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isEstimating = ref(false)
@@ -140,6 +141,7 @@ const estimateFoodValues = async () => {
 
   // Set loading state immediately to disable button and prevent double-clicks
   isEstimating.value = true
+  estimationExplanation.value = null // Clear previous explanation
 
   try {
     if (!name.value || name.value.trim() === '') {
@@ -219,6 +221,15 @@ const estimateFoodValues = async () => {
       }
     })
 
+    // Map locale codes to language names for the prompt
+    const languageMap = {
+      en: 'English',
+      de: 'German',
+      es: 'Spanish',
+      fr: 'French'
+    }
+    const appLanguage = languageMap[locale.value] || 'English'
+
     // Create a prompt that requests structured JSON output
     const prompt = `Estimate nutritional values for: "${sanitizedName}"
 
@@ -228,7 +239,8 @@ Return JSON with these fields:
   "kcalPer100g": number (calories in kcal per 100g) or null,
   "proteinPer100g": number (protein in g per 100g) or null,
   "servingSizeGrams": number (typical serving size in g) or null,
-  "emoji": string (exactly one emoji character) or null
+  "emoji": string (exactly one emoji character) or null,
+  "explanation": string (explanation about the estimation in ${appLanguage}, maximum 140 characters) or null
 }
 
 Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
@@ -250,6 +262,13 @@ Base estimates on typical nutritional databases. Use null for unknown values. Fo
       emoji.value = foodData.emoji.trim()
     } else {
       emoji.value = null
+    }
+
+    // Store explanation if provided
+    if (foodData.explanation && typeof foodData.explanation === 'string' && foodData.explanation.trim() !== '') {
+      estimationExplanation.value = foodData.explanation.trim()
+    } else {
+      estimationExplanation.value = null
     }
 
     // Update the form fields with estimated values
@@ -463,6 +482,13 @@ defineOgImageComponent('NuxtSeo', {
         />
         <span>{{ $t('phe-calculator.use-pro-model') }}</span>
       </label>
+    </div>
+
+    <div
+      v-if="userIsAuthenticated && estimationExplanation"
+      class="mt-2 text-xs text-gray-600 dark:text-gray-400 italic break-words"
+    >
+      {{ estimationExplanation }}
     </div>
 
     <div v-if="userIsAuthenticated" class="flex gap-4 mt-4">
