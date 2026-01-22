@@ -38,7 +38,6 @@ const settings = computed(() => store.settings)
 // Premium+AI users can choose to use Gemini 2.5 Pro (higher quality, higher cost per estimate)
 // or stick with Gemini 2.5 Flash (more estimates). This is a simple per-session toggle.
 // Regular Premium users can only use Gemini 2.5 Flash.
-const useProEstimatesSetting = ref(false)
 
 // Configuration for the AI model, cost per estimate and daily limit
 // estimationCount is treated as "credits used" per day.
@@ -52,17 +51,8 @@ const estimateConfig = computed(() => {
     }
   }
 
-  // Premium+AI users: higher limits, can use pro model
+  // Premium+AI users: higher limits, use flash model
   if (isPremiumAI.value) {
-    if (useProEstimatesSetting.value) {
-      // Premium+AI with Pro: 10 estimates/day (100 credits / 10 cost)
-      return {
-        model: 'gemini-2.5-pro',
-        dailyLimitCredits: PREMIUM_AI_DAILY_ESTIMATE_LIMIT,
-        costPerEstimate: 10
-      }
-    }
-    // Premium+AI with Flash: 100 estimates/day
     return {
       model: 'gemini-2.5-flash',
       dailyLimitCredits: PREMIUM_AI_DAILY_ESTIMATE_LIMIT,
@@ -344,21 +334,25 @@ const save = async () => {
     logEntry = {
       name: name.value,
       emoji: emoji.value || null,
+      icon: null,
       pheReference: phe.value,
       kcalReference: Number(kcalReference.value) || 0,
       weight: Number(weight.value),
       phe: calculatePhe(),
-      kcal: calculateKcal()
+      kcal: calculateKcal(),
+      note: estimationExplanation.value && estimationExplanation.value.trim() !== '' ? estimationExplanation.value.trim() : null
     }
   } else {
     logEntry = {
       name: name.value,
       emoji: emoji.value || null,
+      icon: null,
       pheReference: Math.round(protein.value * factor.value),
       kcalReference: Number(kcalReference.value) || 0,
       weight: Number(weight.value),
       phe: calculatePhe(),
-      kcal: calculateKcal()
+      kcal: calculateKcal(),
+      note: estimationExplanation.value && estimationExplanation.value.trim() !== '' ? estimationExplanation.value.trim() : null
     }
   }
 
@@ -467,21 +461,6 @@ defineOgImageComponent('NuxtSeo', {
           }
         )
       }}
-    </div>
-
-    <div
-      v-if="userIsAuthenticated && isPremiumAI"
-      class="mt-2 text-xs text-gray-600 dark:text-gray-400 max-w-xl"
-    >
-      <label class="inline-flex items-start gap-2 cursor-pointer select-none">
-        <input
-          id="use-pro-estimates"
-          v-model="useProEstimatesSetting"
-          type="checkbox"
-          class="mt-0.5 h-3.5 w-3.5 rounded border-gray-300 text-sky-600 focus:ring-sky-500"
-        />
-        <span>{{ $t('phe-calculator.use-pro-model') }}</span>
-      </label>
     </div>
 
     <div

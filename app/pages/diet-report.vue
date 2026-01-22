@@ -18,6 +18,7 @@ import { h, ref, computed } from 'vue'
 import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
+import { LucideStickyNote } from 'lucide-vue-next'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
@@ -418,7 +419,8 @@ const defaultLogItem = {
   kcalReference: null,
   weight: null,
   phe: null,
-  kcal: null
+  kcal: null,
+  note: null
 }
 
 const editedLogItem = ref({ ...defaultLogItem })
@@ -491,7 +493,8 @@ const saveLogEdit = async () => {
       : null,
     weight: Number(editedLogItem.value.weight),
     phe: calculatePhe(),
-    kcal: calculateKcal()
+    kcal: calculateKcal(),
+    note: editedLogItem.value.note && editedLogItem.value.note.trim() !== '' ? editedLogItem.value.note.trim() : null
   }
 
   try {
@@ -555,7 +558,7 @@ const exportAllFoodItems = async () => {
   })
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
-    csvContent += 'Date,Name,Weight,Phe,Kcal\n'
+    csvContent += 'Date,Name,Weight,Phe,Kcal,Note\n'
 
     pheDiary.value.forEach((diaryEntry) => {
       const date = formatISO(parseISO(diaryEntry.date), { representation: 'date' })
@@ -567,7 +570,8 @@ const exportAllFoodItems = async () => {
               escapeCSV(logEntry.name),
               escapeCSV(logEntry.weight),
               escapeCSV(logEntry.phe),
-              escapeCSV(logEntry.kcal)
+              escapeCSV(logEntry.kcal),
+              escapeCSV(logEntry.note || '')
             ].join(',') + '\n'
           csvContent += row
         })
@@ -870,6 +874,15 @@ defineOgImageComponent('NuxtSeo', {
                   {{ item.emoji }}
                 </span>
                 {{ item.name }}
+                <!-- Note indicator badge -->
+                <span
+                  v-if="item.note"
+                  class="inline-flex items-center rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
+                  :title="item.note"
+                >
+                  <LucideStickyNote class="h-3 w-3 mr-1" />
+                  {{ $t('diary.has-note') }}
+                </span>
               </span>
             </td>
             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
@@ -917,6 +930,23 @@ defineOgImageComponent('NuxtSeo', {
         <div class="flex gap-4 mt-4">
           <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>
           <span class="flex-1 ml-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
+        </div>
+        <div class="mt-3">
+          <label
+            for="note"
+            class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
+            >{{ $t('diary.note') }}</label
+          >
+          <div class="mt-1 mb-3">
+            <textarea
+              id="note"
+              v-model="editedLogItem.note"
+              name="note"
+              rows="3"
+              :placeholder="$t('diary.note-placeholder')"
+              class="block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+            />
+          </div>
         </div>
       </ModalDialog>
 

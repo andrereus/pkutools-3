@@ -141,7 +141,8 @@ const save = async () => {
     kcalReference: result.value.product.nutriments['energy-kcal_100g'] || 0,
     weight: Number(weight.value),
     phe: calculatePhe(),
-    kcal: calculateKcal()
+    kcal: calculateKcal(),
+    note: null
   }
 
   isSaving.value = true

@@ -1,9 +1,13 @@
 <script setup>
 import { useStore } from '../../stores/index'
 import { format, parseISO, subDays, addDays } from 'date-fns'
+import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai'
+import { getApp } from 'firebase/app'
+import { getAuth } from 'firebase/auth'
 import {
   LucideCalendar,
   LucideSparkles,
+  LucideStickyNote,
   LucideSun,
   LucideCoffee,
   LucideHeart,
@@ -11,11 +15,11 @@ import {
 } from 'lucide-vue-next'
 
 const store = useStore()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const dialog2 = ref(null)
 const localePath = useLocalePath()
 const notifications = useNotifications()
-const { isPremium } = useLicense()
+const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary, updateFoodItemInDiary, deleteFoodItemFromDiary, updateGettingStarted } = useApi()
 
 // Reactive state
@@ -25,6 +29,15 @@ const date = ref(format(new Date(), 'yyyy-MM-dd'))
 const visibleItems = ref(5)
 const ensuredOnboarding = ref(false)
 
+// Quick add AI estimation state
+const quickAddInput = ref('')
+const isQuickAdding = ref(false)
+
+// Constants for estimation limits
+const BASE_DAILY_ESTIMATE_LIMIT = 20
+const PREMIUM_AI_DAILY_ESTIMATE_LIMIT = 100
+const FREE_USER_DAILY_ESTIMATE_LIMIT = 2
+
 const defaultItem = {
   name: '',
   emoji: null,
@@ -33,7 +46,8 @@ const defaultItem = {
   kcalReference: null,
   weight: null,
   phe: null,
-  kcal: null
+  kcal: null,
+  note: null
 }
 
 const editedItem = ref({ ...defaultItem })
@@ -128,6 +142,45 @@ const userName = computed(() => {
 const selectedDiaryEntry = computed(
   () => pheDiary.value.find((entry) => entry.date === date.value) || null
 )
+
+// Estimation config for quick add
+const estimateConfig = computed(() => {
+  if (!isPremium.value) {
+    return {
+      model: 'gemini-2.5-flash',
+      dailyLimitCredits: FREE_USER_DAILY_ESTIMATE_LIMIT,
+      costPerEstimate: 1
+    }
+  }
+  if (isPremiumAI.value) {
+    return {
+      model: 'gemini-2.5-flash',
+      dailyLimitCredits: PREMIUM_AI_DAILY_ESTIMATE_LIMIT,
+      costPerEstimate: 1
+    }
+  }
+  return {
+    model: 'gemini-2.5-flash',
+    dailyLimitCredits: BASE_DAILY_ESTIMATE_LIMIT,
+    costPerEstimate: 1
+  }
+})
+
+// Human-readable daily limit in "number of estimates"
+const humanDailyEstimateLimit = computed(() => {
+  const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
+  return Math.floor(dailyLimitCredits / costPerEstimate)
+})
+
+// Remaining number of full estimates the user can make today
+const remainingEstimates = computed(() => {
+  const today = format(new Date(), 'yyyy-MM-dd')
+  const estimateDate = settings.value.estimationDate
+  const currentCount = estimateDate === today ? settings.value.estimationCount || 0 : 0
+  const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
+  const remainingCredits = Math.max(0, dailyLimitCredits - currentCount)
+  return Math.floor(remainingCredits / costPerEstimate)
+})
 
 const pheResult = computed(() => {
   return selectedDayLog.value.reduce((sum, item) => sum + item.phe, 0)
@@ -270,7 +323,8 @@ const save = async () => {
     kcalReference: Number(editedItem.value.kcalReference) || null,
     weight: Number(editedItem.value.weight),
     phe: calculatePhe(),
-    kcal: calculateKcal()
+    kcal: calculateKcal(),
+    note: editedItem.value.note && editedItem.value.note.trim() !== '' ? editedItem.value.note.trim() : null
   }
 
   // Close dialog immediately for instant feedback
@@ -307,6 +361,227 @@ const prevDay = () => {
 const nextDay = () => {
   const currentDate = parseISO(date.value)
   date.value = format(addDays(currentDate, 1), 'yyyy-MM-dd')
+}
+
+const quickAddFood = async () => {
+  // Prevent multiple simultaneous requests
+  if (isQuickAdding.value) {
+    return
+  }
+
+  // Set loading state immediately
+  isQuickAdding.value = true
+
+  try {
+    if (!quickAddInput.value || quickAddInput.value.trim() === '') {
+      notifications.error(t('phe-calculator.estimate-error-no-name'))
+      return
+    }
+
+    // Sanitize input to prevent prompt injection
+    const sanitizedName = quickAddInput.value
+      .trim()
+      .slice(0, 200)
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, ' ')
+      .replace(/\r/g, '')
+      .replace(/\t/g, ' ')
+      .trim()
+
+    // Check permission via server API
+    try {
+      const auth = getAuth()
+      const currentUser = auth.currentUser
+      if (!currentUser) {
+        notifications.error(t('phe-calculator.estimate-error-firebase'))
+        return
+      }
+
+      const token = await currentUser.getIdToken()
+      const { model: modelName } = estimateConfig.value
+
+      const response = await $fetch('/api/gemini/check', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: {
+          model: modelName
+        }
+      })
+      const checkResponse = { allowed: response.allowed, remaining: response.remaining }
+
+      if (!checkResponse.allowed) {
+        notifications.error(
+          t('phe-calculator.estimate-error-daily-limit', { limit: checkResponse.remaining })
+        )
+        return
+      }
+    } catch (error) {
+      console.error('Gemini check error:', error)
+      const err = error || {}
+      if (err.statusCode === 401) {
+        notifications.error('Authentication failed. Please sign in again.')
+      } else if (err.statusCode === 403) {
+        notifications.error(t('phe-calculator.estimate-error-daily-limit', { limit: 0 }))
+      } else {
+        notifications.error('Failed to check estimate limits. Please try again.')
+      }
+      return
+    }
+
+    let firebaseApp
+    try {
+      firebaseApp = getApp()
+    } catch {
+      notifications.error(t('phe-calculator.estimate-error-firebase'))
+      return
+    }
+
+    // Initialize the Gemini Developer API backend service
+    const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() })
+
+    // Create a GenerativeModel instance with structured output support
+    const { model: modelName } = estimateConfig.value
+    const model = getGenerativeModel(ai, {
+      model: modelName,
+      generationConfig: {
+        responseMimeType: 'application/json'
+      }
+    })
+
+    // Map locale codes to language names for the prompt
+    const languageMap = {
+      en: 'English',
+      de: 'German',
+      es: 'Spanish',
+      fr: 'French'
+    }
+    const appLanguage = languageMap[locale.value] || 'English'
+
+    // Create a prompt that requests structured JSON output
+    const prompt = `Estimate nutritional values for: "${sanitizedName}"
+
+Return JSON with these fields:
+{
+  "phePer100g": number (phenylalanine in mg per 100g) or null,
+  "kcalPer100g": number (calories in kcal per 100g) or null,
+  "proteinPer100g": number (protein in g per 100g) or null,
+  "servingSizeGrams": number (typical serving size in g) or null,
+  "emoji": string (exactly one emoji character) or null,
+  "explanation": string (explanation about the estimation in ${appLanguage}, maximum 140 characters) or null
+}
+
+Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
+
+    const result = await model.generateContent(prompt)
+    const response = result.response
+    const text = response.text()
+
+    // Parse the JSON response
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response')
+    }
+
+    const foodData = JSON.parse(jsonMatch[0])
+
+    // Determine phe value and mode
+    let pheReference = null
+    let weight = 100 // Default weight
+
+    if (
+      foodData.phePer100g !== null &&
+      foodData.phePer100g !== undefined &&
+      !isNaN(Number(foodData.phePer100g))
+    ) {
+      pheReference = Math.round(Number(foodData.phePer100g))
+    } else if (
+      foodData.proteinPer100g !== null &&
+      foodData.proteinPer100g !== undefined &&
+      !isNaN(Number(foodData.proteinPer100g))
+    ) {
+      // Use protein with factor 50 (other mode)
+      pheReference = Math.round(Number(foodData.proteinPer100g) * 50)
+    }
+
+    if (
+      foodData.servingSizeGrams !== null &&
+      foodData.servingSizeGrams !== undefined &&
+      !isNaN(Number(foodData.servingSizeGrams)) &&
+      Number(foodData.servingSizeGrams) > 0
+    ) {
+      weight = Math.round(Number(foodData.servingSizeGrams))
+    }
+
+    const kcalReference =
+      foodData.kcalPer100g !== null &&
+      foodData.kcalPer100g !== undefined &&
+      !isNaN(Number(foodData.kcalPer100g))
+        ? Math.round(Number(foodData.kcalPer100g))
+        : null
+
+    // Check if we have at least pheReference before saving
+    if (!pheReference) {
+      notifications.error(t('phe-calculator.estimate-error'))
+      return
+    }
+
+    // Calculate final values
+    const phe = Math.round((weight * pheReference) / 100)
+    const kcal = kcalReference ? Math.round((weight * kcalReference) / 100) : 0
+
+    // Store estimation explanation as note if provided
+    const note = foodData.explanation && typeof foodData.explanation === 'string' && foodData.explanation.trim() !== '' ? foodData.explanation.trim() : null
+
+    // Prepare log entry
+    const logEntry = {
+      name: sanitizedName,
+      emoji: foodData.emoji && typeof foodData.emoji === 'string' && foodData.emoji.trim() !== '' ? foodData.emoji.trim() : null,
+      icon: null,
+      pheReference: pheReference,
+      kcalReference: kcalReference || 0,
+      weight: weight,
+      phe: phe,
+      kcal: kcal,
+      note: note
+    }
+
+    // Check health consent before saving
+    if (!store.user || store.settings.healthDataConsent !== true) {
+      notifications.error(t('health-consent.no-consent'))
+      return
+    }
+
+    // Immediately add to diary
+    await addFoodItemToDiary({
+      date: date.value,
+      ...logEntry
+    })
+
+    notifications.success(t('common.saved'))
+    
+    // Clear input
+    quickAddInput.value = ''
+  } catch (error) {
+    console.error('Error in quick add:', error)
+
+    const errorMessage = error?.message || error?.error?.message || ''
+    const errorType = error?.type || error?.error?.type || ''
+
+    if (
+      errorType === 'RESOURCE_EXHAUSTED' ||
+      errorMessage.includes('quota') ||
+      errorMessage.includes('Quota exceeded') ||
+      errorMessage.includes('rate limit')
+    ) {
+      notifications.error(t('phe-calculator.estimate-error-quota'))
+    } else {
+      notifications.error(t('phe-calculator.estimate-error'))
+    }
+  } finally {
+    isQuickAdding.value = false
+  }
 }
 
 // Watchers
@@ -498,6 +773,15 @@ defineOgImageComponent('NuxtSeo', {
                 {{ item.emoji }}
               </span>
               {{ item.name }}
+              <!-- Note indicator badge -->
+              <span
+                v-if="item.note"
+                class="inline-flex items-center rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
+                :title="item.note"
+              >
+                <LucideStickyNote class="h-3 w-3 mr-1" />
+                {{ $t('diary.has-note') }}
+              </span>
             </span>
           </td>
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
@@ -551,14 +835,72 @@ defineOgImageComponent('NuxtSeo', {
           <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>
           <span class="flex-1 ml-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
         </div>
+        <div class="mt-3">
+          <label
+            for="note"
+            class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
+            >{{ $t('diary.note') }}</label
+          >
+          <div class="mt-1 mb-3">
+            <textarea
+              id="note"
+              v-model="editedItem.note"
+              name="note"
+              rows="3"
+              :placeholder="$t('diary.note-placeholder')"
+              class="block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+            />
+          </div>
+        </div>
       </ModalDialog>
 
-      <NuxtLink
-        :to="$localePath('phe-calculator')"
-        class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 mr-3 mb-3"
-      >
-        {{ $t('common.add') }}
-      </NuxtLink>
+      <div class="flex gap-3 items-start mb-3">
+        <div class="flex-1">
+          <label for="quick-add" class="sr-only">{{ $t('diary.quick-add-placeholder') }}</label>
+          <div class="relative">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <LucideSparkles class="h-5 w-5 text-gray-400" aria-hidden="true" />
+            </div>
+            <input
+              id="quick-add"
+              v-model="quickAddInput"
+              type="text"
+              name="quick-add"
+              :placeholder="$t('diary.quick-add-placeholder')"
+              autocomplete="off"
+              :disabled="isQuickAdding || remainingEstimates === 0"
+              class="block w-full rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              @keyup.enter="quickAddFood"
+            />
+          </div>
+        </div>
+        <div class="flex items-center h-9">
+          <button
+            type="button"
+            class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-full flex items-center"
+            :disabled="isQuickAdding || !quickAddInput || quickAddInput.trim() === '' || remainingEstimates === 0"
+            @click="quickAddFood"
+          >
+            <span v-if="isQuickAdding">{{ $t('phe-calculator.estimating') }}</span>
+            <span v-else>{{ $t('common.add') }}</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-1 text-xs text-gray-600 dark:text-gray-400 mb-3">
+        {{
+          $t(
+            isPremiumAI
+              ? 'phe-calculator.estimate-info-premium-ai'
+              : isPremium
+                ? 'phe-calculator.estimate-info-premium'
+                : 'phe-calculator.estimate-info',
+            {
+              limit: humanDailyEstimateLimit
+            }
+          )
+        }}
+      </div>
 
       <span v-if="lastAdded.length !== 0" class="mt-3">
         <SecondaryButton

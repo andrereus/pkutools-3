@@ -53,6 +53,7 @@ export const useApi = () => {
     weight: number
     phe: number
     kcal: number
+    note?: string | null
   }): Promise<{ success: boolean; key?: string; updated?: boolean }> => {
     try {
       const token = await getAuthToken()
@@ -120,6 +121,7 @@ export const useApi = () => {
       weight: number
       phe: number
       kcal: number
+      note?: string | null
     }
   }): Promise<{ success: boolean; key?: string }> => {
     try {
@@ -282,6 +284,7 @@ export const useApi = () => {
     icon?: string | null
     phe: number
     kcal: number
+    note?: string | null
   }): Promise<{ success: boolean; key?: string }> => {
     try {
       const token = await getAuthToken()
@@ -307,6 +310,7 @@ export const useApi = () => {
     icon?: string | null
     phe: number
     kcal: number
+    note?: string | null
   }): Promise<{ success: boolean; key?: string }> => {
     try {
       const token = await getAuthToken()
@@ -322,6 +326,7 @@ export const useApi = () => {
             name: data.name,
             icon: data.icon,
             phe: data.phe,
+            note: data.note,
             kcal: data.kcal
           }
         }

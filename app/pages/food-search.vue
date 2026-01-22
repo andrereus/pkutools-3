@@ -23,6 +23,7 @@ const loading = ref(false)
 const isSaving = ref(false)
 const kcalReference = ref(null)
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
+const note = ref(null)
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
@@ -43,6 +44,7 @@ const loadItem = (item) => {
   phe.value = item.phe
   weight.value = 100
   kcalReference.value = item.kcal
+  note.value = item.note || null
   selectedDate.value = format(new Date(), 'yyyy-MM-dd')
   dialog.value.openDialog()
 }
@@ -69,7 +71,8 @@ const save = async () => {
     kcalReference: Number(kcalReference.value) || 0,
     weight: Number(weight.value),
     phe: calculatePhe(),
-    kcal: calculateKcal()
+    kcal: calculateKcal(),
+    note: note.value && note.value.trim() !== '' ? note.value.trim() : null
   }
 
   isSaving.value = true
@@ -113,6 +116,7 @@ const searchFood = async () => {
         icon: item.icon,
         phe: item.phe,
         kcal: item.kcal,
+        note: item.note || null,
         isOwnFood: true
       }))
     )

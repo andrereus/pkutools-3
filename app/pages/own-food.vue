@@ -15,6 +15,7 @@ import { h, ref, computed } from 'vue'
 import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
+import { LucideStickyNote } from 'lucide-vue-next'
 
 const store = useStore()
 const { t } = useI18n()
@@ -38,7 +39,8 @@ const defaultItem = {
   name: '',
   icon: null,
   phe: null,
-  kcal: null
+  kcal: null,
+  note: null
 }
 
 const editedItem = ref({ ...defaultItem })
@@ -59,7 +61,7 @@ const filteredOwnFood = computed(() => {
   }
 
   const fuse = new Fuse(ownFood.value, {
-    keys: ['name', 'phe'],
+    keys: ['name', 'phe', 'note'],
     threshold: 0.2,
     minMatchCharLength: 2,
     ignoreLocation: true,
@@ -100,7 +102,21 @@ const columns = [
             e.target.src = '/images/food-icons/organic-food.svg'
           }
         }),
-        h('span', { style: 'word-wrap: break-word; overflow-wrap: break-word;' }, item.name)
+        h('span', { style: 'word-wrap: break-word; overflow-wrap: break-word;' }, item.name),
+        item.note
+          ? h(
+              'span',
+              {
+                class:
+                  'inline-flex items-center rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300 ml-2 flex-shrink-0',
+                title: item.note
+              },
+              [
+                h(LucideStickyNote, { class: 'h-3 w-3 mr-1' }),
+                h('span', {}, t('diary.has-note'))
+              ]
+            )
+          : null
       ])
     }
   },
@@ -239,6 +255,7 @@ const save = async () => {
   const entryIcon = editedItem.value.icon || null
   const entryPhe = Number(editedItem.value.phe)
   const entryKcal = Number(editedItem.value.kcal) || 0
+  const entryNote = editedItem.value.note && editedItem.value.note.trim() !== '' ? editedItem.value.note.trim() : null
 
   // Close modal immediately for instant feedback
   closeModal()
@@ -251,7 +268,8 @@ const save = async () => {
         name: entryName,
         icon: entryIcon,
         phe: entryPhe,
-        kcal: entryKcal
+        kcal: entryKcal,
+        note: entryNote
       })
       notifications.success(t('common.saved'))
     } catch (error) {
@@ -265,7 +283,8 @@ const save = async () => {
         name: entryName,
         icon: entryIcon,
         phe: entryPhe,
-        kcal: entryKcal
+        kcal: entryKcal,
+        note: entryNote
       })
       notifications.success(t('common.saved'))
     } catch (error) {
@@ -306,7 +325,8 @@ const add = async () => {
     kcalReference: editedItem.value.kcal || 0,
     weight: Number(weight.value),
     phe: calculatePhe(),
-    kcal: calculateKcal()
+    kcal: calculateKcal(),
+    note: editedItem.value.note && editedItem.value.note.trim() !== '' ? editedItem.value.note.trim() : null
   }
 
   isSaving.value = true
@@ -343,11 +363,11 @@ const exportOwnFood = async () => {
   })
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
-    csvContent += 'Name,Phe per 100g,Kcal per 100g\n'
+    csvContent += 'Name,Phe per 100g,Kcal per 100g,Note\n'
 
     ownFood.value.forEach((entry) => {
       const row =
-        [escapeCSV(entry.name), escapeCSV(entry.phe), escapeCSV(entry.kcal)].join(',') + '\n'
+        [escapeCSV(entry.name), escapeCSV(entry.phe), escapeCSV(entry.kcal), escapeCSV(entry.note || '')].join(',') + '\n'
       csvContent += row
     })
     triggerDownload(csvContent)
@@ -573,6 +593,23 @@ defineOgImageComponent('NuxtSeo', {
             :label="$t('common.kcal-per-100g')"
             class="flex-1"
           />
+        </div>
+        <div class="mt-3">
+          <label
+            for="note"
+            class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
+            >{{ $t('diary.note') }}</label
+          >
+          <div class="mt-1 mb-3">
+            <textarea
+              id="note"
+              v-model="editedItem.note"
+              name="note"
+              rows="3"
+              :placeholder="$t('diary.note-placeholder')"
+              class="block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+            />
+          </div>
         </div>
       </ModalDialog>
 
