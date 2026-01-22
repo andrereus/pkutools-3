@@ -522,7 +522,8 @@ Base estimates on typical nutritional databases. Use null for unknown values. Fo
         : null
 
     // Check if we have at least pheReference before saving
-    if (!pheReference) {
+    // Note: pheReference can be 0 (valid for zero-protein foods), so check for null/undefined specifically
+    if (pheReference === null || pheReference === undefined) {
       notifications.error(t('phe-calculator.estimate-error'))
       return
     }
