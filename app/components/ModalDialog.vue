@@ -73,9 +73,13 @@ function handleButtonClick(buttonType) {
           <div
             :class="[
               'mt-5 sm:mt-6',
-              filteredButtons.length === 1 ? '' : 'sm:grid sm:grid-flow-row-dense sm:gap-3',
-              filteredButtons.length === 2 ? 'sm:grid-cols-2' : '',
-              filteredButtons.length === 3 ? 'sm:grid-cols-3' : ''
+              filteredButtons.length === 1
+                ? ''
+                : filteredButtons.length === 2
+                  ? 'grid grid-cols-2 gap-3'
+                  : filteredButtons.length === 3
+                    ? 'grid grid-cols-3 gap-3'
+                    : 'grid grid-cols-2 gap-3'
             ]"
           >
             <button
@@ -94,8 +98,7 @@ function handleButtonClick(buttonType) {
                       button.type === 'close' ||
                       button.type === 'edit'
                     ? 'bg-white text-gray-900 hover:bg-gray-50 ring-1 ring-inset ring-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:ring-gray-600 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400'
-                    : 'bg-sky-500 text-white hover:bg-sky-600 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500',
-                filteredButtons.length > 1 && index > 0 ? 'mt-3 sm:mt-0' : ''
+                    : 'bg-sky-500 text-white hover:bg-sky-600 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500'
               ]"
               :autofocus="
                 button.type === 'submit' || button.type === 'simpleClose' || button.type === 'close'
