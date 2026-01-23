@@ -28,7 +28,16 @@ function closeDialog() {
 defineExpose({ openDialog, closeDialog })
 
 const filteredButtons = computed(() => {
-  return props.buttons.filter((button) => button.visible !== false)
+  const visible = props.buttons.filter((button) => button.visible !== false)
+  
+  // Sort buttons in consistent order: Cancel/Close left, Delete middle, Submit right
+  const buttonOrder = { close: 1, simpleClose: 1, delete: 2, edit: 2, submit: 3 }
+  
+  return visible.sort((a, b) => {
+    const orderA = buttonOrder[a.type] || 3
+    const orderB = buttonOrder[b.type] || 3
+    return orderA - orderB
+  })
 })
 
 function handleButtonClick(buttonType) {
