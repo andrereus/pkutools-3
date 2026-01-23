@@ -108,13 +108,10 @@ const columns = [
               'span',
               {
                 class:
-                  'inline-flex items-center rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300 ml-2 flex-shrink-0',
+                  'inline-flex items-center rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300 ml-2 flex-shrink-0',
                 title: item.note
               },
-              [
-                h(LucideStickyNote, { class: 'h-3 w-3 mr-1' }),
-                h('span', {}, t('diary.has-note'))
-              ]
+              [h(LucideStickyNote, { class: 'h-3.5 w-3.5' })]
             )
           : null
       ])

@@ -877,11 +877,10 @@ defineOgImageComponent('NuxtSeo', {
                 <!-- Note indicator badge -->
                 <span
                   v-if="item.note"
-                  class="inline-flex items-center rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
+                  class="inline-flex items-center rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
                   :title="item.note"
                 >
-                  <LucideStickyNote class="h-3 w-3 mr-1" />
-                  {{ $t('diary.has-note') }}
+                  <LucideStickyNote class="h-3.5 w-3.5" />
                 </span>
               </span>
             </td>
