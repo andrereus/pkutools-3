@@ -79,9 +79,9 @@ export default defineEventHandler(async (event) => {
 
     const wasShared = ownFood.shared === true
     const willBeShared = data.shared === true
-    const existingCommunityKey = ownFood.communityKey
+    const existingCommunityKey = ownFood.communityKey || null
 
-    let communityKey = existingCommunityKey
+    let communityKey: string | null = existingCommunityKey
 
     // Handle sharing state changes
     if (!wasShared && willBeShared) {
