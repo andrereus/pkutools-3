@@ -135,7 +135,14 @@ Add optional `communityFoodKey` to input. If provided, increment `usageCount`.
 
 ### 7. Own Food UI ([app/pages/own-food.vue](app/pages/own-food.vue))
 
-In the **edit dialog** (not table): Add checkbox "Share with community" with helper text showing language.
+**In table:**
+
+- Show "Shared" badge on foods where `shared: true`
+
+**In add/edit dialog:**
+
+- Add checkbox "Share with community" with helper text showing language
+- If shared: show vote count (likes/dislikes) so contributor can see feedback
 
 ### 8. Food Search ([app/pages/food-search.vue](app/pages/food-search.vue))
 
