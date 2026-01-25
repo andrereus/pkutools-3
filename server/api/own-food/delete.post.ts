@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
 
     const ownFood = ownFoodSnapshot.val()
 
-    // If the food was shared, remove the community food entry
+    // If the food was shared, remove the community food entry (voterIds deleted automatically as child)
     if (ownFood.shared && ownFood.communityKey) {
       await db.ref(`communityFoods/${ownFood.communityKey}`).remove()
     }

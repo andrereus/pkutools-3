@@ -39,20 +39,18 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Get user's existing vote
-    const userVoteRef = db.ref(`${userId}/communityVotes/${communityFoodKey}`)
-    const userVoteSnapshot = await userVoteRef.once('value')
-    const existingVote = userVoteSnapshot.val()
+    // Get user's existing vote from voterIds on the community food
+    const voterRef = db.ref(`communityFoods/${communityFoodKey}/voterIds/${userId}`)
+    const existingVoteSnapshot = await voterRef.once('value')
+    const existingVote = existingVoteSnapshot.val() // Will be 1, -1, or null
 
     let likeDelta = 0
     let dislikeDelta = 0
 
-    if (existingVote) {
-      const previousVote = existingVote.vote
-
-      if (previousVote === vote) {
+    if (existingVote !== null) {
+      if (existingVote === vote) {
         // Same vote - toggle off (remove vote)
-        await userVoteRef.remove()
+        await voterRef.remove()
 
         if (vote === 1) {
           likeDelta = -1
@@ -61,7 +59,7 @@ export default defineEventHandler(async (event) => {
         }
       } else {
         // Different vote - switch vote
-        await userVoteRef.set({ vote })
+        await voterRef.set(vote)
 
         if (vote === 1) {
           // Switching from dislike to like
@@ -74,8 +72,8 @@ export default defineEventHandler(async (event) => {
         }
       }
     } else {
-      // New vote
-      await userVoteRef.set({ vote })
+      // New vote - store the vote value (1 or -1)
+      await voterRef.set(vote)
 
       if (vote === 1) {
         likeDelta = 1

@@ -35,7 +35,6 @@ export const useStore = defineStore('main', {
     ownFood: [],
     settings: { ...defaultSettings },
     communityFoods: [],
-    communityVotes: {},
     unsubscribeFunctions: {}
   }),
   actions: {
@@ -120,8 +119,7 @@ export const useStore = defineStore('main', {
         pheDiary: [],
         labValues: [],
         ownFood: [],
-        settings: { ...defaultSettings },
-        communityVotes: {}
+        settings: { ...defaultSettings }
       }
 
       const bindRef = (key, dbRef) => {
@@ -154,7 +152,6 @@ export const useStore = defineStore('main', {
       bindRef('labValues', ref(db, `${userId}/labValues`))
       bindRef('ownFood', ref(db, `${userId}/ownFood`))
       bindRef('settings', ref(db, `${userId}/settings`))
-      bindRef('communityVotes', ref(db, `${userId}/communityVotes`))
 
       // Community foods - global listener (not user-specific)
       const communityFoodsUnsubscribe = onValue(ref(db, 'communityFoods'), (snapshot) => {

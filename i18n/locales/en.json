@@ -124,7 +124,9 @@
     "delete-shared-warning": "This food is shared with the community. Deleting it will also remove it for all community users. Consider keeping this food instead - shared foods don't count towards your storage limit, and keeping it allows the community to continue benefiting from your contribution.",
     "unshare-title": "Remove from community?",
     "unshare-warning": "This will remove the food from the community database. All likes, dislikes, and usage statistics will be permanently lost.",
-    "unshare-confirm": "Remove from community"
+    "unshare-confirm": "Remove from community",
+    "reset-votes-title": "Reset community votes?",
+    "reset-votes-warning": "Changing the phenylalanine or calorie values will reset all community votes for this food. Users who previously voted will need to vote again."
   },
   "diary": {
     "title": "Diary",

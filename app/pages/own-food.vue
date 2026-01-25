@@ -301,6 +301,13 @@ const save = async () => {
   const wasShared = originalFood?.shared === true
   const isUnsharing = wasShared && !entryShared
 
+  // Check if phe or kcal changed on a shared food (will reset votes)
+  const willResetVotes =
+    wasShared &&
+    entryShared &&
+    originalFood &&
+    (originalFood.phe !== entryPhe || originalFood.kcal !== entryKcal)
+
   // Close modal first so confirmation dialog appears on top
   closeModal()
 
@@ -312,6 +319,21 @@ const save = async () => {
       confirmLabel: t('own-food.unshare-confirm'),
       cancelLabel: t('common.cancel'),
       variant: 'destructive'
+    })
+
+    if (!confirmed) {
+      return
+    }
+  }
+
+  // If phe/kcal changed on shared food, warn that votes will be reset
+  if (willResetVotes) {
+    const confirmed = await confirm.confirm({
+      title: t('own-food.reset-votes-title'),
+      message: t('own-food.reset-votes-warning'),
+      confirmLabel: t('common.save'),
+      cancelLabel: t('common.cancel'),
+      variant: 'default'
     })
 
     if (!confirmed) {

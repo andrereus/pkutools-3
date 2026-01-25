@@ -119,7 +119,7 @@ export default defineEventHandler(async (event) => {
 
       await communityFoodRef.set(communityFoodData)
     } else if (wasShared && !willBeShared) {
-      // Unsharing - remove community food entry
+      // Unsharing - remove community food entry (voterIds deleted automatically as child)
       if (existingCommunityKey) {
         await db.ref(`communityFoods/${existingCommunityKey}`).remove()
       }
@@ -149,6 +149,7 @@ export default defineEventHandler(async (event) => {
           updateData.dislikes = 0
           updateData.score = 0
           updateData.hidden = false
+          updateData.voterIds = null // Clear all votes
         }
 
         await communityFoodRef.update(updateData)

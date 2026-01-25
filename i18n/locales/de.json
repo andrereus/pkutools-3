@@ -124,7 +124,9 @@
     "delete-shared-warning": "Dieses Lebensmittel wird mit der Community geteilt. Das Löschen entfernt es auch für alle Community-Nutzer. Erwägen Sie, es zu behalten - geteilte Lebensmittel zählen nicht zum Speicherlimit und die Community profitiert weiterhin von Ihrem Beitrag.",
     "unshare-title": "Aus der Community entfernen?",
     "unshare-warning": "Dies entfernt das Lebensmittel aus der Community-Datenbank. Alle Likes, Dislikes und Nutzungsstatistiken gehen dauerhaft verloren.",
-    "unshare-confirm": "Aus Community entfernen"
+    "unshare-confirm": "Aus Community entfernen",
+    "reset-votes-title": "Community-Stimmen zurücksetzen?",
+    "reset-votes-warning": "Das Ändern der Phenylalanin- oder Kalorienwerte setzt alle Community-Stimmen für dieses Lebensmittel zurück. Nutzer, die zuvor abgestimmt haben, müssen erneut abstimmen."
   },
   "diary": {
     "title": "Tagebuch",

@@ -124,7 +124,9 @@
     "delete-shared-warning": "Cet aliment est partagé avec la communauté. Le supprimer le supprimera également pour tous les utilisateurs de la communauté. Pensez à le conserver - les aliments partagés ne comptent pas dans votre limite de stockage et la communauté continuera à bénéficier de votre contribution.",
     "unshare-title": "Retirer de la communauté ?",
     "unshare-warning": "Cela supprimera l'aliment de la base de données communautaire. Tous les j'aime, je n'aime pas et statistiques d'utilisation seront définitivement perdus.",
-    "unshare-confirm": "Retirer de la communauté"
+    "unshare-confirm": "Retirer de la communauté",
+    "reset-votes-title": "Réinitialiser les votes de la communauté ?",
+    "reset-votes-warning": "La modification des valeurs de phénylalanine ou de calories réinitialisera tous les votes de la communauté pour cet aliment. Les utilisateurs ayant voté précédemment devront voter à nouveau."
   },
   "diary": {
     "title": "Journal",

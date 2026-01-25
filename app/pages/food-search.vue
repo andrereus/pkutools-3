@@ -35,7 +35,6 @@ const userIsAuthenticated = computed(() => store.user !== null)
 const userId = computed(() => store.user?.id)
 const ownFood = computed(() => store.ownFood)
 const communityFoods = computed(() => store.communityFoods)
-const communityVotes = computed(() => store.communityVotes)
 
 // Get current community food data for dialog (for community foods or shared own foods)
 const currentCommunityFood = computed(() => {
@@ -44,10 +43,10 @@ const currentCommunityFood = computed(() => {
   return communityFoods.value.find((f) => f['.key'] === key) || null
 })
 
-// Get user's vote for current community food
+// Get user's vote for current community food (stored in voterIds on the community food)
 const currentUserVote = computed(() => {
-  if (!communityFoodKey.value || !communityVotes.value) return null
-  return communityVotes.value[communityFoodKey.value]?.vote || null
+  if (!communityFoodKey.value || !currentCommunityFood.value || !userId.value) return null
+  return currentCommunityFood.value.voterIds?.[userId.value] || null
 })
 
 const tableHeaders = computed(() => [
