@@ -17,6 +17,15 @@ todos:
   - id: api-vote
     content: Create server/api/community-food/vote.post.ts
     status: pending
+  - id: api-diary
+    content: Modify diary food-items API to track community food usage
+    status: pending
+  - id: api-settings
+    content: Modify settings reset API to preserve shared foods
+    status: pending
+  - id: api-composable
+    content: Add voteCommunityFood() to useApi composable
+    status: pending
   - id: own-food-ui
     content: Add share checkbox to own-food.vue
     status: pending
@@ -61,6 +70,7 @@ Path: `/communityFoods/{key}`
   icon: string | null,
   phe: number,
   kcal: number,
+  note: string | null,        // Included from own food
   language: string,           // 'en' | 'de' | 'es' | 'fr'
   contributorId: string,      // For edit/delete permissions only (not displayed)
   ownFoodKey: string,
@@ -108,8 +118,8 @@ Add `communityFoods` array and `communityVotes` object with Firebase listeners.
 
 **save/update.post.ts:**
 
-- If `shared: true`: create/update in `/communityFoods` with user's language
-- If `shared: false`: remove from `/communityFoods`
+- If `shared: true`: create/update in `/communityFoods` with user's language, store `communityKey`
+- If `shared: false` (unsharing): remove from `/communityFoods`, set `communityKey: null`
 - If phe/kcal changed on shared food: reset votes to 0
 - Check duplicates before sharing (same name + language + similar phe)
 
@@ -131,7 +141,9 @@ Add `communityFoods` array and `communityVotes` object with Firebase listeners.
 
 ### 6. Diary API - `server/api/diary/food-items.post.ts`
 
-Add optional `communityFoodKey` to input. If provided, increment `usageCount`.
+Add optional `communityFoodKey` to input. If provided, increment `usageCount` on the community food.
+
+**Note:** `communityFoodKey` is used transiently to track usage but NOT stored in the diary entry. This prevents double-counting when users add from "recently used" foods.
 
 ### 7. Own Food UI ([app/pages/own-food.vue](app/pages/own-food.vue))
 
@@ -149,6 +161,7 @@ Add optional `communityFoodKey` to input. If provided, increment `usageCount`.
 **In table:**
 
 - Include community foods (filtered by user's language, exclude hidden)
+- Exclude community foods where `contributorId` matches current user (they see their own food instead)
 - Show community badge on community food rows
 
 **In detail dialog (after clicking a food):**
@@ -204,6 +217,8 @@ Add optional `communityFoodKey` to input. If provided, increment `usageCount`.
 | `app/pages/own-food.vue` | Share checkbox |
 
 | `app/pages/food-search.vue` | Show community foods |
+
+| `app/composables/useApi.ts` | Add voteCommunityFood() |
 
 | `i18n/locales/*.json` | Translations |
 
