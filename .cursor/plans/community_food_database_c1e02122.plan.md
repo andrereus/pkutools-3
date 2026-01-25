@@ -140,7 +140,10 @@ Path: `/communityFoods/{foodKey}`
   likes: number,
   dislikes: number,
   usageCount: number,         // Times added to diary by any user
-  score: number               // likes - dislikes (for sorting)
+  score: number,              // likes - dislikes (for sorting)
+
+  // Moderation
+  hidden: boolean             // Auto-hidden when score < -3
 }
 ```
 
@@ -176,11 +179,12 @@ Path: `/{userId}/notifications/{notificationKey}`
 
 ```typescript
 {
-  type: 'community_comment',
+  type: 'community_comment' | 'food_hidden',
   communityFoodKey: string,
   communityFoodName: string,
-  commenterName: string,
-  comment: string,
+  commenterName?: string,     // For comment notifications
+  comment?: string,           // For comment notifications
+  reason?: string,            // For hidden notifications
   createdAt: number,
   read: boolean
 }
@@ -411,8 +415,10 @@ for (const [key, existing] of Object.entries(allInLanguage)) {
     "editWarning": "Changing nutritional values will reset votes and comments",
     "sharedFoodsKept": "Shared foods are preserved to maintain community data",
     "notification": {
-      "newComment": "{name} commented on your food \"{food}\""
-    }
+      "newComment": "{name} commented on your food \"{food}\"",
+      "foodHidden": "Your food \"{food}\" was hidden due to too many dislikes"
+    },
+    "hidden": "This food is hidden due to community feedback"
   }
 }
 ```
@@ -451,13 +457,90 @@ for (const [key, existing] of Object.entries(allInLanguage)) {
 
 | `i18n/locales/*.json` | Modify | Add translations |
 
+## Security
+
+### Input Handling
+
+All user input is validated server-side with Zod schemas:
+
+| Field | Max Length | Validation |
+
+|-------|------------|------------|
+
+| name | 200 chars | Required, trimmed |
+
+| source | 200 chars | Optional |
+
+| note | 500 chars | Optional |
+
+| comment | 500 chars | Required if provided |
+
+**XSS Prevention:**
+
+- Vue templates use `{{ }}` interpolation which auto-escapes HTML
+- No `v-html` is used for user-generated content
+- All text is treated as text, not HTML
+
+**Identity Verification:**
+
+- `contributorId` and `contributorName` are set server-side from Firebase Auth token
+- Client cannot spoof contributor identity
+- Auth token verified on every API call via `getAuthenticatedUser()`
+
+**Database Security:**
+
+- Firebase rules: `communityFoods` is read-only for clients
+- All writes via Firebase Admin SDK on server
+- User can only read their own votes/notifications
+
+### Content Moderation
+
+**Auto-hide threshold:**
+
+- Foods with `score < -3` (3+ net dislikes) are hidden from search results by default
+- Add `hidden: true` flag to community food when threshold reached
+- Creator notified when food is hidden
+- Creator can edit food (resets votes) to try again
+
+Implementation in food search:
+
+```typescript
+// Filter out hidden foods by default
+const visibleFoods = communityFoods.filter((food) => !food.hidden && food.score >= -3)
+```
+
+Update vote API to check threshold:
+
+```typescript
+// After updating score
+if (updatedScore < -3 && !food.hidden) {
+  await foodRef.update({ hidden: true })
+  // Notify creator their food was hidden
+  await notifyCreator(food.contributorId, {
+    type: 'food_hidden',
+    communityFoodKey: foodKey,
+    communityFoodName: food.name,
+    reason: 'Too many dislikes'
+  })
+}
+```
+
+### Data Integrity
+
+- `communityKey` reference ensures own food and community food stay in sync
+- Deleting own food removes community entry
+- Unsharing removes community entry but keeps own food
+- Atomic updates for vote counts prevent race conditions
+
 ## Quality Control Summary
 
 - **Likes/Dislikes**: Visible counts, score-based sorting surfaces quality
+- **Auto-hide**: Foods with 3+ net dislikes hidden from results
 - **Visible comments**: Feedback from dislikers is public, creates accountability
-- **Creator notifications**: Food creators notified of comments, can respond/fix
-- **Usage tracking**: Based on actual diary usage, not copying
+- **Creator notifications**: Food creators notified of comments and hiding
+- **Usage tracking**: Based on actual diary usage
 - **Language localization**: Foods tagged by language, filtered by default
 - **Duplicate prevention**: Per-language duplicate check
 - **Vote/comment reset on edit**: Prevents gaming by editing nutritional values
 - **Shared food protection**: Can't accidentally delete via bulk reset
+- **Server-side validation**: All input validated with Zod, identity from Auth token
