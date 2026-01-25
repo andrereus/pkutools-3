@@ -131,7 +131,8 @@ export default defineEventHandler(async (event) => {
       const existingCommunityFood = communityFoodSnapshot.val()
 
       if (existingCommunityFood) {
-        // Check if phe or kcal changed - reset votes if so
+        // Check if name, phe or kcal changed - reset votes if so
+        const nameChanged = existingCommunityFood.name !== data.name
         const pheChanged = existingCommunityFood.phe !== data.phe
         const kcalChanged = existingCommunityFood.kcal !== data.kcal
 
@@ -143,8 +144,8 @@ export default defineEventHandler(async (event) => {
           note: data.note || null
         }
 
-        if (pheChanged || kcalChanged) {
-          // Reset votes when nutritional values change
+        if (nameChanged || pheChanged || kcalChanged) {
+          // Reset votes when name or nutritional values change
           updateData.likes = 0
           updateData.dislikes = 0
           updateData.score = 0

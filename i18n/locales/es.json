@@ -126,7 +126,7 @@
     "unshare-warning": "Esto eliminará el alimento de la base de datos de la comunidad. Todos los me gusta, no me gusta y estadísticas de uso se perderán permanentemente.",
     "unshare-confirm": "Eliminar de la comunidad",
     "reset-votes-title": "¿Restablecer votos de la comunidad?",
-    "reset-votes-warning": "Cambiar los valores de fenilalanina o calorías restablecerá todos los votos de la comunidad para este alimento. Los usuarios que votaron anteriormente deberán votar de nuevo."
+    "reset-votes-warning": "Cambiar el nombre, los valores de fenilalanina o calorías restablecerá todos los votos de la comunidad para este alimento. Los usuarios que votaron anteriormente deberán votar de nuevo."
   },
   "diary": {
     "title": "Diario",

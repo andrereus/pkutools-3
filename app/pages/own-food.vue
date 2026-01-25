@@ -301,12 +301,12 @@ const save = async () => {
   const wasShared = originalFood?.shared === true
   const isUnsharing = wasShared && !entryShared
 
-  // Check if phe or kcal changed on a shared food (will reset votes)
+  // Check if name, phe or kcal changed on a shared food (will reset votes)
   const willResetVotes =
     wasShared &&
     entryShared &&
     originalFood &&
-    (originalFood.phe !== entryPhe || originalFood.kcal !== entryKcal)
+    (originalFood.name !== entryName || originalFood.phe !== entryPhe || originalFood.kcal !== entryKcal)
 
   // Close modal first so confirmation dialog appears on top
   closeModal()

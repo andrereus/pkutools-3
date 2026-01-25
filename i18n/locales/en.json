@@ -126,7 +126,7 @@
     "unshare-warning": "This will remove the food from the community database. All likes, dislikes, and usage statistics will be permanently lost.",
     "unshare-confirm": "Remove from community",
     "reset-votes-title": "Reset community votes?",
-    "reset-votes-warning": "Changing the phenylalanine or calorie values will reset all community votes for this food. Users who previously voted will need to vote again."
+    "reset-votes-warning": "Changing the name, phenylalanine, or calorie values will reset all community votes for this food. Users who previously voted will need to vote again."
   },
   "diary": {
     "title": "Diary",
