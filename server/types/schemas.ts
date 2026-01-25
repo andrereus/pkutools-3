@@ -46,7 +46,36 @@ export const OwnFoodSchema = z.object({
   icon: z.string().nullable().optional(),
   phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
   kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
-  note: z.string().max(500, 'Note is too long').nullable().optional()
+  note: z.string().max(500, 'Note is too long').nullable().optional(),
+  shared: z.boolean().default(false)
+})
+
+// ============================================================================
+// Community Food Schemas
+// ============================================================================
+
+// Community food schema (for validation when creating/updating)
+export const CommunityFoodSchema = z.object({
+  name: z.string().min(1).max(200),
+  icon: z.string().nullable().optional(),
+  phe: z.coerce.number().nonnegative(),
+  kcal: z.coerce.number().nonnegative(),
+  note: z.string().max(500).nullable().optional(),
+  language: z.enum(['en', 'de', 'es', 'fr']),
+  contributorId: z.string().min(1),
+  ownFoodKey: z.string().min(1),
+  createdAt: z.number(),
+  likes: z.number().default(0),
+  dislikes: z.number().default(0),
+  score: z.number().default(0),
+  usageCount: z.number().default(0),
+  hidden: z.boolean().default(false)
+})
+
+// Vote schema for community foods
+export const CommunityVoteSchema = z.object({
+  communityFoodKey: z.string().min(1, 'Community food key is required'),
+  vote: z.union([z.literal(1), z.literal(-1)])
 })
 
 // ============================================================================

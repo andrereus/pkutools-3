@@ -1,5 +1,6 @@
 {
   "app": {
+    "language-name": "Deutsch",
     "description": "Nährwert-App für phenylalaninarme Diät",
     "long-description": "Diese App richtet sich an Menschen mit PKU. Sie kombiniert Taschenrechner, Bleistift, Papier und Nährwerttabelle.",
     "signin-google": "Anmelden mit Google",
@@ -118,7 +119,12 @@
     "description": "Hinterlege eigene Lebensmittel zum schnellen Hinzufügen.",
     "export-filename": "PKU Tools - Eigene Lebensmittel",
     "choose-icon": "Icon auswählen",
-    "item-deleted": "Lebensmittel gelöscht"
+    "item-deleted": "Lebensmittel gelöscht",
+    "delete-shared-title": "Geteiltes Lebensmittel löschen?",
+    "delete-shared-warning": "Dieses Lebensmittel wird mit der Community geteilt. Das Löschen entfernt es auch für alle Community-Nutzer. Erwägen Sie, es zu behalten - geteilte Lebensmittel zählen nicht zum Speicherlimit und die Community profitiert weiterhin von Ihrem Beitrag.",
+    "unshare-title": "Aus der Community entfernen?",
+    "unshare-warning": "Dies entfernt das Lebensmittel aus der Community-Datenbank. Alle Likes, Dislikes und Nutzungsstatistiken gehen dauerhaft verloren.",
+    "unshare-confirm": "Aus Community entfernen"
   },
   "diary": {
     "title": "Tagebuch",
@@ -205,9 +211,9 @@
     "reset-blood-values": "Blutwerte löschen",
     "reset-blood-values-description": "Möchtest du wirklich alle Blutwerte löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
     "reset-own-food": "Eigene Lebensmittel löschen",
-    "reset-own-food-description": "Möchtest du wirklich alle eigenen Lebensmittel löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "reset-own-food-description": "Möchtest du wirklich alle eigenen Lebensmittel löschen? Diese Aktion kann nicht rückgängig gemacht werden. Hinweis: Mit der Community geteilte Lebensmittel werden behalten und bleiben bearbeitbar.",
     "delete-account": "Account löschen",
-    "delete-account-description": "Möchtest du wirklich deinen Account löschen? Alle deine Daten werden dauerhaft entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "delete-account-description": "Möchtest du wirklich deinen Account löschen? Alle deine Daten werden dauerhaft entfernt. Diese Aktion kann nicht rückgängig gemacht werden. Hinweis: Mit der Community geteilte Lebensmittel bleiben verfügbar, um anderen zu helfen, können aber nicht mehr von dir bearbeitet werden.",
     "delete-account-info": "Funktioniert nur wenn die letzte Anmeldung nicht zu lange her ist. Dazu bitte einmal ab- und wieder anmelden.",
     "delete-account-error": "Das hat leider nicht geklappt. Versuche dich einmal ab- und wieder anzumelden.",
     "theme": "Darstellung (diese App/dieser Browser)",
@@ -295,7 +301,9 @@
     "suggestions-name": "1-Klick Vorschläge",
     "suggestions-description": "Füge Vorschläge mit einem Klick dem Tagebuch hinzu.",
     "insights-name": "Einblicke",
-    "insights-description": "Zeige Einblicke und Trends zu deiner Ernährung an."
+    "insights-description": "Zeige Einblicke und Trends zu deiner Ernährung an.",
+    "community-food-name": "Community-Lebensmittel",
+    "community-food-description": "Teile und entdecke Lebensmittel aus der PKU-Community."
   },
   "footer": {
     "tools": "Tools",
@@ -380,5 +388,15 @@
   "getting-started": {
     "title": "Erste Schritte",
     "subtitle": "Willkommen bei PKU Tools! Hier können Sie die App einrichten und der Datenverarbeitung zustimmen."
+  },
+  "community": {
+    "share": "Mit Community teilen",
+    "shareLanguage": "Wird in {language} geteilt",
+    "shared": "Mit Community geteilt",
+    "communityFood": "Community",
+    "like": "Gefällt mir",
+    "dislike": "Gefällt mir nicht",
+    "usageCount": "{count} mal verwendet",
+    "duplicateError": "Ein ähnliches Lebensmittel existiert bereits in der Community"
   }
 }

@@ -4,37 +4,37 @@ overview: MVP community food sharing - users toggle sharing on own foods, browse
 todos:
   - id: schemas
     content: Add shared field to OwnFoodSchema, create CommunityFoodSchema
-    status: pending
+    status: completed
   - id: firebase-rules
     content: Add communityFoods read access to database.rules.json
-    status: pending
+    status: completed
   - id: store
     content: Add communityFoods and communityVotes to Pinia store
-    status: pending
+    status: completed
   - id: api-own-food
     content: Modify own-food APIs to sync shared foods to communityFoods
-    status: pending
+    status: completed
   - id: api-vote
     content: Create server/api/community-food/vote.post.ts
-    status: pending
+    status: completed
   - id: api-diary
     content: Modify diary food-items API to track community food usage
-    status: pending
+    status: completed
   - id: api-settings
     content: Modify settings reset API to preserve shared foods
-    status: pending
+    status: completed
   - id: api-composable
     content: Add voteCommunityFood() to useApi composable
-    status: pending
+    status: completed
   - id: own-food-ui
     content: Add share checkbox to own-food.vue
-    status: pending
+    status: completed
   - id: search-integration
     content: Add community foods to food-search.vue with voting
-    status: pending
+    status: completed
   - id: translations
     content: Add community strings to i18n locales
-    status: pending
+    status: completed
 isProject: false
 ---
 

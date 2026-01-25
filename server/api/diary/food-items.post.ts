@@ -5,17 +5,26 @@ import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
 import { formatValidationError } from '../../utils/validation'
 import { checkPremiumStatus } from '../../utils/license'
+import { z } from 'zod'
+
+// Extended schema to accept optional communityFoodKey (not stored in diary)
+const DiaryFoodItemRequestSchema = DiaryEntrySchema.extend({
+  communityFoodKey: z.string().optional()
+})
 
 export default defineEventHandler(async (event) => {
   try {
     const userId = await getAuthenticatedUser(event)
     const body = await readBody(event)
 
-    // Validate input - expect a single log entry with optional date
-    const validation = DiaryEntrySchema.safeParse(body)
+    // Validate input - expect a single log entry with optional date and communityFoodKey
+    const validation = DiaryFoodItemRequestSchema.safeParse(body)
     if (!validation.success) {
       formatValidationError(validation.error)
     }
+
+    // Extract communityFoodKey (used for tracking, not stored)
+    const { communityFoodKey, ...diaryEntryData } = validation.data
 
     const db = getAdminDatabase()
     const isPremium = await checkPremiumStatus(userId)
@@ -55,6 +64,19 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    // If communityFoodKey provided, increment usage count (fire and forget)
+    if (communityFoodKey) {
+      const communityFoodRef = db.ref(`communityFoods/${communityFoodKey}`)
+      communityFoodRef.once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+          const currentUsage = snapshot.val().usageCount || 0
+          communityFoodRef.update({ usageCount: currentUsage + 1 })
+        }
+      }).catch(() => {
+        // Silently ignore errors - usage tracking is not critical
+      })
+    }
+
     if (existingEntryKey) {
       // Update existing entry - add new log item
       interface DiaryEntry {
@@ -65,7 +87,7 @@ export default defineEventHandler(async (event) => {
       }
       // Use the value we already fetched from the query
       const existingEntry = existingEntryVal as DiaryEntry
-      const updatedLog = [...(existingEntry.log || []), validation.data]
+      const updatedLog = [...(existingEntry.log || []), diaryEntryData]
 
       // Calculate totals
       const totalPhe = updatedLog.reduce((sum: number, item) => sum + (item.phe || 0), 0)
@@ -87,7 +109,7 @@ export default defineEventHandler(async (event) => {
       // Note: There's a potential race condition here if two requests come in simultaneously
       // Both might find no existing entry and both create new entries
       // For production, consider using Firebase transactions for atomicity
-      const logEntry = validation.data
+      const logEntry = diaryEntryData
       const totalPhe = logEntry.phe || 0
       const totalKcal = logEntry.kcal || 0
 

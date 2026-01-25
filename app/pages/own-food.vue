@@ -15,7 +15,7 @@ import { h, ref, computed } from 'vue'
 import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
-import { LucideStickyNote } from 'lucide-vue-next'
+import { LucideStickyNote, LucideUsers, LucideThumbsUp, LucideThumbsDown } from 'lucide-vue-next'
 
 const store = useStore()
 const { t } = useI18n()
@@ -40,7 +40,9 @@ const defaultItem = {
   icon: null,
   phe: null,
   kcal: null,
-  note: null
+  note: null,
+  shared: false,
+  communityKey: null
 }
 
 const editedItem = ref({ ...defaultItem })
@@ -48,8 +50,15 @@ const editedItem = ref({ ...defaultItem })
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
 const ownFood = computed(() => store.ownFood)
+const communityFoods = computed(() => store.communityFoods)
 
 const license = computed(() => isPremium.value)
+
+// Get community food data for the currently edited item
+const editedCommunityFood = computed(() => {
+  if (!editedItem.value.communityKey) return null
+  return communityFoods.value.find((f) => f['.key'] === editedItem.value.communityKey) || null
+})
 
 const formTitle = computed(() => {
   return editedIndex.value === -1 ? t('common.add') : t('common.edit')
@@ -103,6 +112,17 @@ const columns = [
           }
         }),
         h('span', { style: 'word-wrap: break-word; overflow-wrap: break-word;' }, item.name),
+        item.shared
+          ? h(
+              'span',
+              {
+                class:
+                  'inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 ml-2 flex-shrink-0',
+                title: t('community.shared')
+              },
+              [h(LucideUsers, { class: 'h-3.5 w-3.5' })]
+            )
+          : null,
         item.note
           ? h(
               'span',
@@ -194,8 +214,23 @@ const deleteItem = async () => {
     JSON.stringify(ownFood.value.find((item) => item['.key'] === entryKey))
   )
 
-  // Close modal immediately for instant feedback
+  // Close modal first so confirmation dialog appears on top
   closeModal()
+
+  // If shared, show warning and ask for confirmation
+  if (deletedItem.shared) {
+    const confirmed = await confirm.confirm({
+      title: t('own-food.delete-shared-title'),
+      message: t('own-food.delete-shared-warning'),
+      confirmLabel: t('common.delete'),
+      cancelLabel: t('common.cancel'),
+      variant: 'destructive'
+    })
+
+    if (!confirmed) {
+      return
+    }
+  }
 
   try {
     await deleteOwnFood({
@@ -206,11 +241,14 @@ const deleteItem = async () => {
       undoAction: async () => {
         try {
           // Restore the item by adding it back via save API
+          // Note: shared status is not restored as community food was already deleted
           await saveOwnFood({
             name: deletedItem.name,
             icon: deletedItem.icon || null,
             phe: deletedItem.phe,
-            kcal: deletedItem.kcal
+            kcal: deletedItem.kcal,
+            note: deletedItem.note || null,
+            shared: false // Don't restore shared status
           })
         } catch (error) {
           console.error('Undo error:', error)
@@ -253,9 +291,30 @@ const save = async () => {
   const entryPhe = Number(editedItem.value.phe)
   const entryKcal = Number(editedItem.value.kcal) || 0
   const entryNote = editedItem.value.note && editedItem.value.note.trim() !== '' ? editedItem.value.note.trim() : null
+  const entryShared = editedItem.value.shared || false
 
-  // Close modal immediately for instant feedback
+  // Check if unsharing (was shared, now not shared)
+  const originalFood = entryKey ? ownFood.value.find((item) => item['.key'] === entryKey) : null
+  const wasShared = originalFood?.shared === true
+  const isUnsharing = wasShared && !entryShared
+
+  // Close modal first so confirmation dialog appears on top
   closeModal()
+
+  // If unsharing, show warning
+  if (isUnsharing) {
+    const confirmed = await confirm.confirm({
+      title: t('own-food.unshare-title'),
+      message: t('own-food.unshare-warning'),
+      confirmLabel: t('own-food.unshare-confirm'),
+      cancelLabel: t('common.cancel'),
+      variant: 'destructive'
+    })
+
+    if (!confirmed) {
+      return
+    }
+  }
 
   if (isEditing && entryKey) {
     // Update existing entry - use update API (validates server-side with Zod)
@@ -266,7 +325,8 @@ const save = async () => {
         icon: entryIcon,
         phe: entryPhe,
         kcal: entryKcal,
-        note: entryNote
+        note: entryNote,
+        shared: entryShared
       })
       notifications.success(t('common.saved'))
     } catch (error) {
@@ -281,7 +341,8 @@ const save = async () => {
         icon: entryIcon,
         phe: entryPhe,
         kcal: entryKcal,
-        note: entryNote
+        note: entryNote,
+        shared: entryShared
       })
       notifications.success(t('common.saved'))
     } catch (error) {
@@ -608,6 +669,47 @@ defineOgImageComponent('NuxtSeo', {
             />
           </div>
         </div>
+
+        <!-- Share with community -->
+        <div class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+          <div class="flex items-start">
+            <div class="flex h-6 items-center">
+              <input
+                id="shared"
+                v-model="editedItem.shared"
+                name="shared"
+                type="checkbox"
+                class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
+              />
+            </div>
+            <div class="ml-3 text-sm leading-6">
+              <label for="shared" class="font-medium text-gray-900 dark:text-gray-300">
+                {{ $t('community.share') }}
+              </label>
+              <p class="text-gray-500 dark:text-gray-400">
+                {{ $t('community.shareLanguage', { language: $t('app.language-name') }) }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Vote counts for shared foods -->
+          <div
+            v-if="editedItem.shared && editedCommunityFood"
+            class="mt-3 flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400"
+          >
+            <span class="flex items-center gap-1">
+              <LucideThumbsUp class="h-4 w-4 text-emerald-600" />
+              {{ editedCommunityFood.likes || 0 }}
+            </span>
+            <span class="flex items-center gap-1">
+              <LucideThumbsDown class="h-4 w-4 text-red-500" />
+              {{ editedCommunityFood.dislikes || 0 }}
+            </span>
+            <span class="text-gray-400">
+              {{ $t('community.usageCount', { count: editedCommunityFood.usageCount || 0 }) }}
+            </span>
+          </div>
+        </div>
       </ModalDialog>
 
       <SecondaryButton v-if="license" :text="$t('common.export')" @click="exportOwnFood" />
@@ -646,6 +748,24 @@ defineOgImageComponent('NuxtSeo', {
         <div class="flex gap-4 mt-4">
           <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>
           <span class="flex-1 ml-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
+        </div>
+
+        <!-- Community metrics for shared foods -->
+        <div
+          v-if="editedItem.shared && editedCommunityFood"
+          class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400"
+        >
+          <span class="flex items-center gap-1">
+            <LucideThumbsUp class="h-4 w-4 text-emerald-600" />
+            {{ editedCommunityFood.likes || 0 }}
+          </span>
+          <span class="flex items-center gap-1">
+            <LucideThumbsDown class="h-4 w-4 text-red-500" />
+            {{ editedCommunityFood.dislikes || 0 }}
+          </span>
+          <span class="text-gray-400">
+            {{ $t('community.usageCount', { count: editedCommunityFood.usageCount || 0 }) }}
+          </span>
         </div>
       </ModalDialog>
     </div>

@@ -8,7 +8,7 @@ const { t, locale } = useI18n()
 const dialog = ref(null)
 const localePath = useLocalePath()
 const notifications = useNotifications()
-const { addFoodItemToDiary } = useApi()
+const { addFoodItemToDiary, voteCommunityFood } = useApi()
 
 // Reactive state
 const search = ref('')
@@ -18,16 +18,34 @@ const name = ref('')
 const emoji = ref('🌱')
 const icon = ref(null)
 const isOwnFood = ref(false)
+const isCommunityFood = ref(false)
+const communityFoodKey = ref(null)
 const advancedFood = ref(null)
 const loading = ref(false)
 const isSaving = ref(false)
+const isVoting = ref(false)
 const kcalReference = ref(null)
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const note = ref(null)
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
+const userId = computed(() => store.user?.id)
 const ownFood = computed(() => store.ownFood)
+const communityFoods = computed(() => store.communityFoods)
+const communityVotes = computed(() => store.communityVotes)
+
+// Get current community food data for dialog
+const currentCommunityFood = computed(() => {
+  if (!communityFoodKey.value) return null
+  return communityFoods.value.find((f) => f['.key'] === communityFoodKey.value) || null
+})
+
+// Get user's vote for current community food
+const currentUserVote = computed(() => {
+  if (!communityFoodKey.value || !communityVotes.value) return null
+  return communityVotes.value[communityFoodKey.value]?.vote || null
+})
 
 const tableHeaders = computed(() => [
   { key: 'food', title: t('common.food') },
@@ -41,6 +59,8 @@ const loadItem = (item) => {
   emoji.value = item.emoji || null
   icon.value = item.icon !== undefined ? item.icon : null
   isOwnFood.value = item.isOwnFood || false
+  isCommunityFood.value = item.isCommunityFood || false
+  communityFoodKey.value = item.communityFoodKey || null
   phe.value = item.phe
   weight.value = 100
   kcalReference.value = item.kcal
@@ -81,7 +101,9 @@ const save = async () => {
   try {
     await addFoodItemToDiary({
       date: selectedDate.value,
-      ...logEntry
+      ...logEntry,
+      // Pass communityFoodKey to track usage (not stored in diary)
+      communityFoodKey: communityFoodKey.value || undefined
     })
     notifications.success(t('common.saved'))
     // Close dialog and navigate after successful save
@@ -92,6 +114,23 @@ const save = async () => {
     console.error('Save error:', error)
   } finally {
     isSaving.value = false
+  }
+}
+
+// Vote on community food
+const vote = async (voteValue) => {
+  if (!communityFoodKey.value || !userIsAuthenticated.value) return
+
+  isVoting.value = true
+  try {
+    await voteCommunityFood({
+      communityFoodKey: communityFoodKey.value,
+      vote: voteValue
+    })
+  } catch (error) {
+    console.error('Vote error:', error)
+  } finally {
+    isVoting.value = false
   }
 }
 
@@ -108,7 +147,8 @@ const searchFood = async () => {
       emoji: item.emoji,
       phe: Math.round(item.phe * 1000),
       kcal: item.kcal,
-      isOwnFood: false
+      isOwnFood: false,
+      isCommunityFood: false
     }))
     .concat(
       ownFood.value.map((item) => ({
@@ -117,8 +157,34 @@ const searchFood = async () => {
         phe: item.phe,
         kcal: item.kcal,
         note: item.note || null,
-        isOwnFood: true
+        isOwnFood: true,
+        isCommunityFood: false
       }))
+    )
+    .concat(
+      // Add community foods (filtered by language, exclude hidden, exclude user's own)
+      communityFoods.value
+        .filter((item) => {
+          // Filter by language
+          if (item.language !== locale.value) return false
+          // Exclude hidden foods
+          if (item.hidden) return false
+          // Exclude user's own shared foods (they see them in own food section)
+          if (item.contributorId === userId.value) return false
+          return true
+        })
+        .map((item) => ({
+          name: item.name,
+          icon: item.icon,
+          phe: item.phe,
+          kcal: item.kcal,
+          note: item.note || null,
+          isOwnFood: false,
+          isCommunityFood: true,
+          communityFoodKey: item['.key'],
+          likes: item.likes || 0,
+          dislikes: item.dislikes || 0
+        }))
     )
 
   const fuse = new Fuse(food, {
@@ -254,6 +320,15 @@ defineOgImageComponent('NuxtSeo', {
                 <LucideUser class="h-3 w-3 mr-1" />
                 {{ $t('food-search.own-food') }}
               </span>
+              <!-- Community food indicator badge -->
+              <span
+                v-if="item.isCommunityFood"
+                class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300"
+                :title="$t('community.communityFood')"
+              >
+                <LucideUsers class="h-3 w-3 mr-1" />
+                {{ $t('community.communityFood') }}
+              </span>
             </span>
           </td>
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
@@ -289,6 +364,63 @@ defineOgImageComponent('NuxtSeo', {
         <div class="flex gap-4 my-6">
           <span class="flex-1">= {{ calculatePhe() }} mg Phe</span>
           <span class="flex-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
+        </div>
+
+        <!-- Note display -->
+        <div
+          v-if="note"
+          class="mb-4 p-3 bg-sky-50 dark:bg-sky-900/20 rounded-lg text-sm text-gray-700 dark:text-gray-300"
+        >
+          <div class="flex items-start gap-2">
+            <LucideStickyNote class="h-4 w-4 mt-0.5 text-sky-600 dark:text-sky-400 shrink-0" />
+            <span>{{ note }}</span>
+          </div>
+        </div>
+
+        <!-- Community food voting section -->
+        <div
+          v-if="isCommunityFood && currentCommunityFood && userIsAuthenticated"
+          class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-2"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <!-- Like button -->
+              <button
+                type="button"
+                :disabled="isVoting"
+                :class="[
+                  'inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-full transition-colors',
+                  currentUserVote === 1
+                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'
+                    : 'bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-emerald-900/30 dark:hover:text-emerald-400'
+                ]"
+                @click="vote(1)"
+              >
+                <LucideThumbsUp class="h-4 w-4" />
+                {{ currentCommunityFood.likes || 0 }}
+              </button>
+
+              <!-- Dislike button -->
+              <button
+                type="button"
+                :disabled="isVoting"
+                :class="[
+                  'inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-full transition-colors',
+                  currentUserVote === -1
+                    ? 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300'
+                    : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-red-900/30 dark:hover:text-red-400'
+                ]"
+                @click="vote(-1)"
+              >
+                <LucideThumbsDown class="h-4 w-4" />
+                {{ currentCommunityFood.dislikes || 0 }}
+              </button>
+            </div>
+
+            <span class="text-sm text-gray-500 dark:text-gray-400">
+              {{ $t('community.usageCount', { count: currentCommunityFood.usageCount || 0 }) }}
+            </span>
+          </div>
         </div>
       </ModalDialog>
     </div>

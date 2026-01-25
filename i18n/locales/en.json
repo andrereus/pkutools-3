@@ -1,5 +1,6 @@
 {
   "app": {
+    "language-name": "English",
     "description": "Nutrition app for low-phenylalanine diets",
     "long-description": "This app is intended for people with PKU. It combines a calculator, pencil, paper and nutritional table.",
     "signin-google": "Sign in with Google",
@@ -118,7 +119,12 @@
     "description": "Save your own foods for quick addition.",
     "export-filename": "PKU Tools - Own Food",
     "choose-icon": "Select icon",
-    "item-deleted": "Food deleted"
+    "item-deleted": "Food deleted",
+    "delete-shared-title": "Delete shared food?",
+    "delete-shared-warning": "This food is shared with the community. Deleting it will also remove it for all community users. Consider keeping this food instead - shared foods don't count towards your storage limit, and keeping it allows the community to continue benefiting from your contribution.",
+    "unshare-title": "Remove from community?",
+    "unshare-warning": "This will remove the food from the community database. All likes, dislikes, and usage statistics will be permanently lost.",
+    "unshare-confirm": "Remove from community"
   },
   "diary": {
     "title": "Diary",
@@ -205,9 +211,9 @@
     "reset-blood-values": "Delete Blood Values",
     "reset-blood-values-description": "Are you sure you want to delete all blood values? This action cannot be undone.",
     "reset-own-food": "Delete Own Food",
-    "reset-own-food-description": "Are you sure you want to delete all custom foods? This action cannot be undone.",
+    "reset-own-food-description": "Are you sure you want to delete all custom foods? This action cannot be undone. Note: Foods shared with the community will be kept and remain editable.",
     "delete-account": "Delete account",
-    "delete-account-description": "Are you sure you want to delete your account? All of your data will be permanently removed. This action cannot be undone.",
+    "delete-account-description": "Are you sure you want to delete your account? All of your data will be permanently removed. This action cannot be undone. Note: Foods you shared with the community will remain available to help others, but can no longer be edited by you.",
     "delete-account-info": "Only works if the last login was not too long ago. Please log out once and log in again.",
     "delete-account-error": "Unfortunately this did not work. Try logging out and back in again.",
     "theme": "Appearance (this app/this browser)",
@@ -295,7 +301,9 @@
     "suggestions-name": "1-Click Suggestions",
     "suggestions-description": "Add suggestions to the diary with one click.",
     "insights-name": "Insights",
-    "insights-description": "View insights and trends about your nutrition."
+    "insights-description": "View insights and trends about your nutrition.",
+    "community-food-name": "Community Foods",
+    "community-food-description": "Share and discover foods from the PKU community."
   },
   "footer": {
     "tools": "Tools",
@@ -380,5 +388,15 @@
   "getting-started": {
     "title": "Getting Started",
     "subtitle": "Welcome to PKU Tools! Here you can set up the app and consent to data processing."
+  },
+  "community": {
+    "share": "Share with community",
+    "shareLanguage": "Will be shared in {language}",
+    "shared": "Shared with community",
+    "communityFood": "Community",
+    "like": "Like",
+    "dislike": "Dislike",
+    "usageCount": "Used {count} times",
+    "duplicateError": "A similar food already exists in the community"
   }
 }

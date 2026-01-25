@@ -17,26 +17,54 @@ export default defineEventHandler(async (event) => {
     const db = getAdminDatabase()
     const resetType = validation.data
 
-    let refPath: string
     switch (resetType) {
-      case 'diary':
-        refPath = `/${userId}/pheDiary`
+      case 'diary': {
+        const dataRef = db.ref(`/${userId}/pheDiary`)
+        await dataRef.remove()
         break
-      case 'labValues':
-        refPath = `/${userId}/labValues`
+      }
+      case 'labValues': {
+        const dataRef = db.ref(`/${userId}/labValues`)
+        await dataRef.remove()
         break
-      case 'ownFood':
-        refPath = `/${userId}/ownFood`
+      }
+      case 'ownFood': {
+        // For ownFood, preserve shared foods to maintain community data integrity
+        const ownFoodRef = db.ref(`/${userId}/ownFood`)
+        const snapshot = await ownFoodRef.once('value')
+        const foods = snapshot.val()
+
+        if (foods) {
+          const deletePromises: Promise<void>[] = []
+          let sharedCount = 0
+
+          for (const [key, food] of Object.entries(foods)) {
+            const foodData = food as { shared?: boolean }
+            if (foodData.shared === true) {
+              // Skip shared foods - preserve them
+              sharedCount++
+            } else {
+              // Delete non-shared foods
+              deletePromises.push(db.ref(`/${userId}/ownFood/${key}`).remove())
+            }
+          }
+
+          await Promise.all(deletePromises)
+
+          return {
+            success: true,
+            type: resetType,
+            sharedFoodsPreserved: sharedCount
+          }
+        }
         break
+      }
       default:
         throw createError({
           statusCode: 400,
           message: 'Invalid reset type'
         })
     }
-
-    const dataRef = db.ref(refPath)
-    await dataRef.remove()
 
     return { success: true, type: resetType }
   } catch (error: unknown) {

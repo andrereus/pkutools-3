@@ -1,5 +1,6 @@
 {
   "app": {
+    "language-name": "Français",
     "description": "Application nutritionnelle pour régime pauvre en phénylalanine",
     "long-description": "Cette application s'adresse aux personnes atteintes de PKU. Elle combine calculatrice, crayon, papier et tableau des valeurs nutritives.",
     "signin-google": "Se connecter avec Google",
@@ -118,7 +119,12 @@
     "description": "Enregistrez vos propres aliments pour un ajout rapide.",
     "export-filename": "PKU Tools - Aliments personnels",
     "choose-icon": "Sélectionner une icône",
-    "item-deleted": "Aliment supprimé"
+    "item-deleted": "Aliment supprimé",
+    "delete-shared-title": "Supprimer l'aliment partagé ?",
+    "delete-shared-warning": "Cet aliment est partagé avec la communauté. Le supprimer le supprimera également pour tous les utilisateurs de la communauté. Pensez à le conserver - les aliments partagés ne comptent pas dans votre limite de stockage et la communauté continuera à bénéficier de votre contribution.",
+    "unshare-title": "Retirer de la communauté ?",
+    "unshare-warning": "Cela supprimera l'aliment de la base de données communautaire. Tous les j'aime, je n'aime pas et statistiques d'utilisation seront définitivement perdus.",
+    "unshare-confirm": "Retirer de la communauté"
   },
   "diary": {
     "title": "Journal",
@@ -205,9 +211,9 @@
     "reset-blood-values": "Supprimer les valeurs sanguines",
     "reset-blood-values-description": "Êtes-vous sûr de vouloir supprimer toutes les valeurs sanguines ? Cette action ne peut pas être annulée.",
     "reset-own-food": "Supprimer Aliments personnels",
-    "reset-own-food-description": "Êtes-vous sûr de vouloir supprimer tous les aliments personnalisés ? Cette action ne peut pas être annulée.",
+    "reset-own-food-description": "Êtes-vous sûr de vouloir supprimer tous les aliments personnalisés ? Cette action ne peut pas être annulée. Note : Les aliments partagés avec la communauté seront conservés et resteront modifiables.",
     "delete-account": "Supprimer le compte",
-    "delete-account-description": "Êtes-vous sûr de vouloir supprimer votre compte ? Toutes vos données seront définitivement supprimées. Cette action ne peut pas être annulée.",
+    "delete-account-description": "Êtes-vous sûr de vouloir supprimer votre compte ? Toutes vos données seront définitivement supprimées. Cette action ne peut pas être annulée. Note : Les aliments que vous avez partagés avec la communauté resteront disponibles pour aider les autres, mais ne pourront plus être modifiés par vous.",
     "delete-account-info": "Cela ne fonctionne que si la dernière connexion ne date pas de trop longtemps. Pour cela, veuillez vous déconnecter et vous reconnecter une fois.",
     "delete-account-error": "Cela n'a malheureusement pas fonctionné. Essaie de te déconnecter et de te reconnecter une fois.",
     "theme": "Apparence (cette application/ce navigateur)",
@@ -295,7 +301,9 @@
     "suggestions-name": "Suggestions 1-clic",
     "suggestions-description": "Ajoutez des suggestions au journal en un seul clic.",
     "insights-name": "Insights",
-    "insights-description": "Voir des insights et des tendances sur votre nutrition."
+    "insights-description": "Voir des insights et des tendances sur votre nutrition.",
+    "community-food-name": "Aliments communautaires",
+    "community-food-description": "Partagez et découvrez des aliments de la communauté PKU."
   },
   "footer": {
     "tools": "Outils",
@@ -380,5 +388,15 @@
   "getting-started": {
     "title": "Premiers Pas",
     "subtitle": "Bienvenue dans PKU Tools ! Ici vous pouvez configurer l'application et donner votre consentement pour le traitement des données."
+  },
+  "community": {
+    "share": "Partager avec la communauté",
+    "shareLanguage": "Sera partagé en {language}",
+    "shared": "Partagé avec la communauté",
+    "communityFood": "Communauté",
+    "like": "J'aime",
+    "dislike": "Je n'aime pas",
+    "usageCount": "Utilisé {count} fois",
+    "duplicateError": "Un aliment similaire existe déjà dans la communauté"
   }
 }

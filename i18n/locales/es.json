@@ -1,5 +1,6 @@
 {
   "app": {
+    "language-name": "Español",
     "description": "Aplicación nutricional para dietas bajas en fenilalanina",
     "long-description": "Esta aplicación está dirigida a personas con fenilcetonuria. Combina calculadora, lápiz, papel y tabla nutricional.",
     "signin-google": "Iniciar sesión con Google",
@@ -118,7 +119,12 @@
     "description": "Guarda tus propios alimentos para añadir rápidamente.",
     "export-filename": "PKU Tools - Alimento propio",
     "choose-icon": "Seleccionar icono",
-    "item-deleted": "Alimento eliminado"
+    "item-deleted": "Alimento eliminado",
+    "delete-shared-title": "¿Eliminar alimento compartido?",
+    "delete-shared-warning": "Este alimento se comparte con la comunidad. Eliminarlo también lo eliminará para todos los usuarios de la comunidad. Considera mantenerlo - los alimentos compartidos no cuentan para tu límite de almacenamiento y la comunidad seguirá beneficiándose de tu contribución.",
+    "unshare-title": "¿Eliminar de la comunidad?",
+    "unshare-warning": "Esto eliminará el alimento de la base de datos de la comunidad. Todos los me gusta, no me gusta y estadísticas de uso se perderán permanentemente.",
+    "unshare-confirm": "Eliminar de la comunidad"
   },
   "diary": {
     "title": "Diario",
@@ -205,9 +211,9 @@
     "reset-blood-values": "Eliminar los valores de sangre",
     "reset-blood-values-description": "¿Estás seguro de que quieres eliminar todos los valores de sangre? Esta acción no se puede deshacer.",
     "reset-own-food": "Borrar Alimento propio",
-    "reset-own-food-description": "¿Estás seguro de que quieres eliminar todos los alimentos personalizados? Esta acción no se puede deshacer.",
+    "reset-own-food-description": "¿Estás seguro de que quieres eliminar todos los alimentos personalizados? Esta acción no se puede deshacer. Nota: Los alimentos compartidos con la comunidad se mantendrán y seguirán siendo editables.",
     "delete-account": "Eliminar cuenta",
-    "delete-account-description": "¿Estás seguro de que quieres eliminar tu cuenta? Todos tus datos se eliminarán permanentemente. Esta acción no se puede deshacer.",
+    "delete-account-description": "¿Estás seguro de que quieres eliminar tu cuenta? Todos tus datos se eliminarán permanentemente. Esta acción no se puede deshacer. Nota: Los alimentos que compartiste con la comunidad seguirán disponibles para ayudar a otros, pero ya no podrás editarlos.",
     "delete-account-info": "Sólo funciona si el último inicio de sesión no fue hace mucho tiempo. Por favor, cierra la sesión una vez y vuelve a iniciarla.",
     "delete-account-error": "Lamentablemente, esto no ha funcionado. Intente cerrar la sesión y volver a iniciarla.",
     "theme": "Apariencia (esta aplicación/este navegador)",
@@ -295,7 +301,9 @@
     "suggestions-name": "Sugerencias de 1 clic",
     "suggestions-description": "Añade sugerencias al registro con un solo clic.",
     "insights-name": "Insights",
-    "insights-description": "Ver insights y tendencias sobre tu nutrición."
+    "insights-description": "Ver insights y tendencias sobre tu nutrición.",
+    "community-food-name": "Alimentos de la comunidad",
+    "community-food-description": "Comparte y descubre alimentos de la comunidad PKU."
   },
   "footer": {
     "tools": "Herramientas",
@@ -380,5 +388,15 @@
   "getting-started": {
     "title": "Primeros Pasos",
     "subtitle": "¡Bienvenido a PKU Tools! Aquí puede configurar la aplicación y dar su consentimiento para el procesamiento de datos."
+  },
+  "community": {
+    "share": "Compartir con la comunidad",
+    "shareLanguage": "Se compartirá en {language}",
+    "shared": "Compartido con la comunidad",
+    "communityFood": "Comunidad",
+    "like": "Me gusta",
+    "dislike": "No me gusta",
+    "usageCount": "Usado {count} veces",
+    "duplicateError": "Ya existe un alimento similar en la comunidad"
   }
 }

@@ -54,6 +54,7 @@ export const useApi = () => {
     phe: number
     kcal: number
     note?: string | null
+    communityFoodKey?: string // Optional: tracks usage count but not stored in diary
   }): Promise<{ success: boolean; key?: string; updated?: boolean }> => {
     try {
       const token = await getAuthToken()
@@ -285,17 +286,21 @@ export const useApi = () => {
     phe: number
     kcal: number
     note?: string | null
-  }): Promise<{ success: boolean; key?: string }> => {
+    shared?: boolean
+  }): Promise<{ success: boolean; key?: string; communityKey?: string }> => {
     try {
       const token = await getAuthToken()
 
-      const response = await $fetch<{ success: boolean; key: string }>('/api/own-food/save', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      })
+      const response = await $fetch<{ success: boolean; key: string; communityKey?: string }>(
+        '/api/own-food/save',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: data
+        }
+      )
 
       return response
     } catch (error: unknown) {
@@ -311,26 +316,31 @@ export const useApi = () => {
     phe: number
     kcal: number
     note?: string | null
-  }): Promise<{ success: boolean; key?: string }> => {
+    shared?: boolean
+  }): Promise<{ success: boolean; key?: string; communityKey?: string | null }> => {
     try {
       const token = await getAuthToken()
 
-      const response = await $fetch<{ success: boolean; key: string }>('/api/own-food/update', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: {
-          entryKey: data.entryKey,
-          data: {
-            name: data.name,
-            icon: data.icon,
-            phe: data.phe,
-            note: data.note,
-            kcal: data.kcal
+      const response = await $fetch<{ success: boolean; key: string; communityKey?: string | null }>(
+        '/api/own-food/update',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: {
+            entryKey: data.entryKey,
+            data: {
+              name: data.name,
+              icon: data.icon,
+              phe: data.phe,
+              note: data.note,
+              kcal: data.kcal,
+              shared: data.shared
+            }
           }
         }
-      })
+      )
 
       return response
     } catch (error: unknown) {
@@ -469,6 +479,44 @@ export const useApi = () => {
   }
 
   // ============================================================================
+  // Community Food Operations
+  // ============================================================================
+
+  const voteCommunityFood = async (data: {
+    communityFoodKey: string
+    vote: 1 | -1
+  }): Promise<{
+    success: boolean
+    likes: number
+    dislikes: number
+    score: number
+    hidden: boolean
+  }> => {
+    try {
+      const token = await getAuthToken()
+
+      const response = await $fetch<{
+        success: boolean
+        likes: number
+        dislikes: number
+        score: number
+        hidden: boolean
+      }>('/api/community-food/vote', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: data
+      })
+
+      return response
+    } catch (error: unknown) {
+      errorHandler.handleError(error, 'Vote community food')
+      throw error
+    }
+  }
+
+  // ============================================================================
   // Return
   // ============================================================================
 
@@ -488,6 +536,8 @@ export const useApi = () => {
     saveOwnFood,
     updateOwnFood,
     deleteOwnFood,
+    // Community Food
+    voteCommunityFood,
     // Settings
     updateSettings,
     updateConsent,

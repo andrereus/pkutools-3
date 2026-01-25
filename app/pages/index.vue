@@ -8,7 +8,8 @@ import {
   LucideCalendar,
   LucideChartLine,
   LucideSparkles,
-  LucideLightbulb
+  LucideLightbulb,
+  LucideUsers
 } from 'lucide-vue-next'
 
 const store = useStore()
@@ -71,6 +72,12 @@ const features = [
     description: 'features.own-food-description',
     icon: LucideApple,
     route: 'own-food'
+  },
+  {
+    name: 'features.community-food-name',
+    description: 'features.community-food-description',
+    icon: LucideUsers,
+    route: 'food-search'
   }
 ]
 
