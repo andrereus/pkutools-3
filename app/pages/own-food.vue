@@ -290,7 +290,10 @@ const save = async () => {
   const entryIcon = editedItem.value.icon || null
   const entryPhe = Number(editedItem.value.phe)
   const entryKcal = Number(editedItem.value.kcal) || 0
-  const entryNote = editedItem.value.note && editedItem.value.note.trim() !== '' ? editedItem.value.note.trim() : null
+  const entryNote =
+    editedItem.value.note && editedItem.value.note.trim() !== ''
+      ? editedItem.value.note.trim()
+      : null
   const entryShared = editedItem.value.shared || false
 
   // Check if unsharing (was shared, now not shared)
@@ -384,7 +387,10 @@ const add = async () => {
     weight: Number(weight.value),
     phe: calculatePhe(),
     kcal: calculateKcal(),
-    note: editedItem.value.note && editedItem.value.note.trim() !== '' ? editedItem.value.note.trim() : null
+    note:
+      editedItem.value.note && editedItem.value.note.trim() !== ''
+        ? editedItem.value.note.trim()
+        : null
   }
 
   isSaving.value = true
@@ -425,7 +431,12 @@ const exportOwnFood = async () => {
 
     ownFood.value.forEach((entry) => {
       const row =
-        [escapeCSV(entry.name), escapeCSV(entry.phe), escapeCSV(entry.kcal), escapeCSV(entry.note || '')].join(',') + '\n'
+        [
+          escapeCSV(entry.name),
+          escapeCSV(entry.phe),
+          escapeCSV(entry.kcal),
+          escapeCSV(entry.note || '')
+        ].join(',') + '\n'
       csvContent += row
     })
     triggerDownload(csvContent)
@@ -533,7 +544,9 @@ defineOgImageComponent('NuxtSeo', {
                       </th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+                  <tbody
+                    class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900"
+                  >
                     <template v-if="table.getRowModel().rows?.length">
                       <tr
                         v-for="row in table.getRowModel().rows"

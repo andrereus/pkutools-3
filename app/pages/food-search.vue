@@ -20,6 +20,8 @@ const icon = ref(null)
 const isOwnFood = ref(false)
 const isCommunityFood = ref(false)
 const communityFoodKey = ref(null)
+const isSharedOwnFood = ref(false)
+const ownFoodCommunityKey = ref(null)
 const advancedFood = ref(null)
 const loading = ref(false)
 const isSaving = ref(false)
@@ -35,10 +37,11 @@ const ownFood = computed(() => store.ownFood)
 const communityFoods = computed(() => store.communityFoods)
 const communityVotes = computed(() => store.communityVotes)
 
-// Get current community food data for dialog
+// Get current community food data for dialog (for community foods or shared own foods)
 const currentCommunityFood = computed(() => {
-  if (!communityFoodKey.value) return null
-  return communityFoods.value.find((f) => f['.key'] === communityFoodKey.value) || null
+  const key = communityFoodKey.value || ownFoodCommunityKey.value
+  if (!key) return null
+  return communityFoods.value.find((f) => f['.key'] === key) || null
 })
 
 // Get user's vote for current community food
@@ -61,6 +64,8 @@ const loadItem = (item) => {
   isOwnFood.value = item.isOwnFood || false
   isCommunityFood.value = item.isCommunityFood || false
   communityFoodKey.value = item.communityFoodKey || null
+  isSharedOwnFood.value = item.isShared || false
+  ownFoodCommunityKey.value = item.ownFoodCommunityKey || null
   phe.value = item.phe
   weight.value = 100
   kcalReference.value = item.kcal
@@ -158,7 +163,9 @@ const searchFood = async () => {
         kcal: item.kcal,
         note: item.note || null,
         isOwnFood: true,
-        isCommunityFood: false
+        isCommunityFood: false,
+        isShared: item.shared || false,
+        ownFoodCommunityKey: item.communityKey || null
       }))
     )
     .concat(
@@ -313,12 +320,21 @@ defineOgImageComponent('NuxtSeo', {
               {{ item.name }}
               <!-- Own food indicator badge -->
               <span
-                v-if="item.isOwnFood"
+                v-if="item.isOwnFood && !item.isShared"
                 class="inline-flex items-center rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
                 :title="$t('food-search.own-food-indicator')"
               >
                 <LucideUser class="h-3 w-3 mr-1" />
                 {{ $t('food-search.own-food') }}
+              </span>
+              <!-- Shared own food indicator badge -->
+              <span
+                v-if="item.isOwnFood && item.isShared"
+                class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300"
+                :title="$t('community.shared')"
+              >
+                <LucideUsers class="h-3 w-3 mr-1" />
+                {{ $t('community.sharedBadge') }}
               </span>
               <!-- Community food indicator badge -->
               <span
@@ -418,6 +434,26 @@ defineOgImageComponent('NuxtSeo', {
             </div>
 
             <span class="text-sm text-gray-500 dark:text-gray-400">
+              {{ $t('community.usageCount', { count: currentCommunityFood.usageCount || 0 }) }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Shared own food metrics section (display only, no voting) -->
+        <div
+          v-if="isSharedOwnFood && currentCommunityFood && userIsAuthenticated"
+          class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-2"
+        >
+          <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+            <span class="flex items-center gap-1">
+              <LucideThumbsUp class="h-4 w-4 text-emerald-600" />
+              {{ currentCommunityFood.likes || 0 }}
+            </span>
+            <span class="flex items-center gap-1">
+              <LucideThumbsDown class="h-4 w-4 text-red-500" />
+              {{ currentCommunityFood.dislikes || 0 }}
+            </span>
+            <span class="text-gray-400">
               {{ $t('community.usageCount', { count: currentCommunityFood.usageCount || 0 }) }}
             </span>
           </div>
