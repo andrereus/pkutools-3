@@ -69,7 +69,9 @@
     "search": "Buscar alimentos",
     "search-info": "Afine su búsqueda con varias palabras, por ejemplo \"manzanas crudas\" o \"patatas cocidas\". Utiliza el escáner de códigos de barras para los productos. Fuente: fdc.nal.usda.gov",
     "own-food": "Propio",
-    "own-food-indicator": "Este es tu propio alimento"
+    "own-food-indicator": "Este es tu propio alimento",
+    "add-food": "Añadir alimento",
+    "add-food-description": "¿No lo encuentras? Añade tu propio alimento y compártelo con la comunidad."
   },
   "phe-calculator": {
     "title": "Calculadora de Phe",

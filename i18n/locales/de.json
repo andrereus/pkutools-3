@@ -69,7 +69,9 @@
     "search": "Lebensmittel suchen",
     "search-info": "Verfeinere deine Suche mit mehreren Wörtern, z.B. \"äpfel roh\" oder \"kartoffeln gekocht\". Verwende für Produkte den Barcode Scanner. Quelle: fdc.nal.usda.gov",
     "own-food": "Eigenes",
-    "own-food-indicator": "Dies ist dein eigenes Lebensmittel"
+    "own-food-indicator": "Dies ist dein eigenes Lebensmittel",
+    "add-food": "Lebensmittel hinzufügen",
+    "add-food-description": "Nicht gefunden? Füge dein eigenes Lebensmittel hinzu und teile es mit der Community."
   },
   "phe-calculator": {
     "title": "Phe Rechner",

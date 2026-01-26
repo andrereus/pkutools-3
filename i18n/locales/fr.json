@@ -69,7 +69,9 @@
     "search": "Chercher des aliments",
     "search-info": "Affine ta recherche avec plusieurs mots, par exemple \"pommes crues\" ou \"pommes de terre cuites\". Utilise le scanner de codes-barres pour les produits. Source: fdc.nal.usda.gov",
     "own-food": "Propre",
-    "own-food-indicator": "C'est ton propre aliment"
+    "own-food-indicator": "C'est ton propre aliment",
+    "add-food": "Ajouter un aliment",
+    "add-food-description": "Vous ne trouvez pas ? Ajoutez votre propre aliment et partagez-le avec la communauté."
   },
   "phe-calculator": {
     "title": "Calculateur Phe",

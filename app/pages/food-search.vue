@@ -378,6 +378,21 @@ defineOgImageComponent('NuxtSeo', {
         {{ $t('food-search.search-info') }}
       </p>
 
+      <!-- Add food call-to-action -->
+      <div
+        v-if="userIsAuthenticated"
+        class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-lg bg-sky-50 dark:bg-sky-900/20 px-4 py-3"
+      >
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          {{ $t('food-search.add-food-description') }}
+        </p>
+        <SecondaryButton
+          :text="$t('food-search.add-food')"
+          class="mb-0! mr-0!"
+          @click="navigateTo(localePath('own-food'))"
+        />
+      </div>
+
       <ModalDialog
         ref="dialog"
         :title="emoji ? emoji + ' ' + name : name"

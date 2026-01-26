@@ -69,7 +69,9 @@
     "search": "Search for food",
     "search-info": "Refine your search with several words, e.g. \"apples raw\" or \"potatoes cooked\". Use the Barcode Scanner for products. Source: fdc.nal.usda.gov",
     "own-food": "Own",
-    "own-food-indicator": "This is your own food"
+    "own-food-indicator": "This is your own food",
+    "add-food": "Add food",
+    "add-food-description": "Can't find something? Add your own food and share it with the community."
   },
   "phe-calculator": {
     "title": "Phe Calculator",
