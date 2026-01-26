@@ -24,6 +24,8 @@ const isSharedOwnFood = ref(false)
 const ownFoodCommunityKey = ref(null)
 const advancedFood = ref(null)
 const loading = ref(false)
+const fuseInstance = ref(null)
+const cachedUsdaFood = ref(null)
 const isSaving = ref(false)
 const isVoting = ref(false)
 const kcalReference = ref(null)
@@ -138,22 +140,11 @@ const vote = async (voteValue) => {
   }
 }
 
-const searchFood = async () => {
-  loading.value = true
+// Build Fuse index from cached data
+const buildFuseIndex = () => {
+  if (!cachedUsdaFood.value) return
 
-  // Load multilingual food data
-  const foodData = await $fetch('/data/usda-phe-kcal.json')
-
-  // Map the food data to use the correct language
-  const food = foodData
-    .map((item) => ({
-      name: item[locale.value] || item.en, // fallback to English if translation missing
-      emoji: item.emoji,
-      phe: Math.round(item.phe * 1000),
-      kcal: item.kcal,
-      isOwnFood: false,
-      isCommunityFood: false
-    }))
+  const food = cachedUsdaFood.value
     .concat(
       ownFood.value.map((item) => ({
         name: item.name,
@@ -168,14 +159,10 @@ const searchFood = async () => {
       }))
     )
     .concat(
-      // Add community foods (filtered by language, exclude hidden, exclude user's own)
       communityFoods.value
         .filter((item) => {
-          // Filter by language
           if (item.language !== locale.value) return false
-          // Exclude hidden foods
           if (item.hidden) return false
-          // Exclude user's own shared foods (they see them in own food section)
           if (item.contributorId === userId.value) return false
           return true
         })
@@ -193,15 +180,47 @@ const searchFood = async () => {
         }))
     )
 
-  const fuse = new Fuse(food, {
+  fuseInstance.value = new Fuse(food, {
     keys: ['name', 'phe'],
     threshold: 0.2,
     minMatchCharLength: 2,
     ignoreLocation: true,
     useExtendedSearch: true
   })
+}
 
-  const results = fuse.search(search.value.trim())
+// Load USDA data once
+const loadUsdaData = async () => {
+  if (cachedUsdaFood.value) return
+  
+  const foodData = await $fetch('/data/usda-phe-kcal.json')
+  cachedUsdaFood.value = foodData.map((item) => ({
+    name: item[locale.value] || item.en,
+    emoji: item.emoji,
+    phe: Math.round(item.phe * 1000),
+    kcal: item.kcal,
+    isOwnFood: false,
+    isCommunityFood: false
+  }))
+}
+
+// Rebuild index when user data changes
+watch([ownFood, communityFoods], () => {
+  if (cachedUsdaFood.value) {
+    buildFuseIndex()
+  }
+})
+
+const searchFood = async () => {
+  loading.value = true
+
+  // Load USDA data and build index once
+  await loadUsdaData()
+  if (!fuseInstance.value) {
+    buildFuseIndex()
+  }
+
+  const results = fuseInstance.value.search(search.value.trim())
   advancedFood.value = results.map((result) => result.item)
   loading.value = false
 }
