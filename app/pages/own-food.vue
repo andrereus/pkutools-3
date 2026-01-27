@@ -522,6 +522,13 @@ defineOgImageComponent('NuxtSeo', {
     </div>
 
     <div v-if="userIsAuthenticated">
+      <!-- Info about sharing with community -->
+      <div class="mb-6 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 px-4 py-3">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          {{ $t('own-food.share-info') }}
+        </p>
+      </div>
+
       <div class="w-full mb-6">
         <label for="search" class="sr-only">{{ $t('food-search.search') }}</label>
         <div class="relative">

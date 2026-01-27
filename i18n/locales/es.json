@@ -119,6 +119,7 @@
   "own-food": {
     "title": "Alimentos propios",
     "description": "Guarda tus propios alimentos para añadir rápidamente.",
+    "share-info": "Comparte tus propios alimentos con la comunidad para que otros los encuentren en la Búsqueda de alimentos.",
     "export-filename": "PKU Tools - Alimento propio",
     "choose-icon": "Seleccionar icono",
     "item-deleted": "Alimento eliminado",

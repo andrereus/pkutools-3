@@ -119,6 +119,7 @@
   "own-food": {
     "title": "Eigene Lebensmittel",
     "description": "Hinterlege eigene Lebensmittel zum schnellen Hinzufügen.",
+    "share-info": "Teile deine eigenen Lebensmittel mit der Community – andere finden sie dann in der Lebensmittelsuche.",
     "export-filename": "PKU Tools - Eigene Lebensmittel",
     "choose-icon": "Icon auswählen",
     "item-deleted": "Lebensmittel gelöscht",

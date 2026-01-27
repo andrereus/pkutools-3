@@ -119,6 +119,7 @@
   "own-food": {
     "title": "Own Food",
     "description": "Save your own foods for quick addition.",
+    "share-info": "Share your own food with the community so others can find it in Food Search.",
     "export-filename": "PKU Tools - Own Food",
     "choose-icon": "Select icon",
     "item-deleted": "Food deleted",

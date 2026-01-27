@@ -119,6 +119,7 @@
   "own-food": {
     "title": "Aliments personnels",
     "description": "Enregistrez vos propres aliments pour un ajout rapide.",
+    "share-info": "Partagez vos aliments personnels avec la communauté pour que d'autres puissent les trouver dans la Recherche alimentaire.",
     "export-filename": "PKU Tools - Aliments personnels",
     "choose-icon": "Sélectionner une icône",
     "item-deleted": "Aliment supprimé",
