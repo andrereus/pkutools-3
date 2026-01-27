@@ -2,7 +2,7 @@
 import { useStore } from '../../stores/index'
 import Fuse from 'fuse.js'
 import { format } from 'date-fns'
-import { isCommunityFoodHidden } from '../../utils/community-food'
+import { isCommunityFoodHidden } from '../utils/community-food'
 
 const store = useStore()
 const { t, locale } = useI18n()
