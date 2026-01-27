@@ -2,6 +2,7 @@
 import { useStore } from '../../stores/index'
 import Fuse from 'fuse.js'
 import { format } from 'date-fns'
+import { isCommunityFoodHidden } from '../../utils/community-food'
 
 const store = useStore()
 const { t, locale } = useI18n()
@@ -162,7 +163,9 @@ const buildFuseIndex = () => {
       communityFoods.value
         .filter((item) => {
           if (item.language !== locale.value) return false
-          if (item.hidden) return false
+          // Filter out hidden foods based on score threshold
+          const score = (item.likes || 0) - (item.dislikes || 0)
+          if (isCommunityFoodHidden(score)) return false
           if (item.contributorId === userId.value) return false
           return true
         })

@@ -3,6 +3,7 @@ import { CommunityVoteSchema } from '../../types/schemas'
 import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
 import { formatValidationError } from '../../utils/validation'
+import { isCommunityFoodHidden } from '../../utils/community-food'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -93,11 +94,6 @@ export default defineEventHandler(async (event) => {
       score: newScore
     }
 
-    // Auto-hide if score drops below -3
-    if (newScore < -3 && !communityFood.hidden) {
-      updateData.hidden = true
-    }
-
     await communityFoodRef.update(updateData)
 
     return {
@@ -105,7 +101,7 @@ export default defineEventHandler(async (event) => {
       likes: newLikes,
       dislikes: newDislikes,
       score: newScore,
-      hidden: updateData.hidden || communityFood.hidden
+      hidden: isCommunityFoodHidden(newScore)
     }
   } catch (error: unknown) {
     handleServerError(error)

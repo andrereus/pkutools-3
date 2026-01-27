@@ -3,6 +3,7 @@ import { OwnFoodUpdateSchema } from '../../types/schemas'
 import { handleServerError } from '../../utils/error-handler'
 import { getAuthenticatedUser } from '../../utils/auth'
 import { formatValidationError } from '../../utils/validation'
+import { isCommunityFoodHidden } from '../../utils/community-food'
 
 // Helper to get user's language from Accept-Language header
 function getLanguageFromHeader(event: Parameters<typeof defineEventHandler>[0] extends (e: infer E) => unknown ? E : never): 'en' | 'de' | 'es' | 'fr' {
@@ -42,8 +43,9 @@ async function checkDuplicateCommunityFood(
   for (const key of Object.keys(foods)) {
     if (key === excludeKey) continue
     const existing = foods[key]
-    // Skip hidden foods - they shouldn't block new submissions
-    if (existing.hidden) continue
+    // Skip hidden foods (based on score) - they shouldn't block new submissions
+    const score = (existing.likes || 0) - (existing.dislikes || 0)
+    if (isCommunityFoodHidden(score)) continue
     // Duplicate = same name (case-insensitive) AND exact same phe value
     if (normalizeString(existing.name) === normalizedName && existing.phe === phe) {
       return true
@@ -113,8 +115,7 @@ export default defineEventHandler(async (event) => {
         likes: 0,
         dislikes: 0,
         score: 0,
-        usageCount: 0,
-        hidden: false
+        usageCount: 0
       }
 
       await communityFoodRef.set(communityFoodData)
@@ -149,7 +150,6 @@ export default defineEventHandler(async (event) => {
           updateData.likes = 0
           updateData.dislikes = 0
           updateData.score = 0
-          updateData.hidden = false
           updateData.voterIds = null // Clear all votes
         }
 

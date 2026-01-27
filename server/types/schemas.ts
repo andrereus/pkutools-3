@@ -55,6 +55,7 @@ export const OwnFoodSchema = z.object({
 // ============================================================================
 
 // Community food schema (for validation when creating/updating)
+// Note: hidden status is computed from score (score < -3), not stored
 export const CommunityFoodSchema = z.object({
   name: z.string().min(1).max(200),
   icon: z.string().nullable().optional(),
@@ -68,8 +69,7 @@ export const CommunityFoodSchema = z.object({
   likes: z.number().default(0),
   dislikes: z.number().default(0),
   score: z.number().default(0),
-  usageCount: z.number().default(0),
-  hidden: z.boolean().default(false)
+  usageCount: z.number().default(0)
 })
 
 // Vote schema for community foods
