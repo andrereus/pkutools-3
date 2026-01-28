@@ -110,7 +110,8 @@ const save = async () => {
       date: selectedDate.value,
       ...logEntry,
       // Pass communityFoodKey to track usage (not stored in diary)
-      communityFoodKey: communityFoodKey.value || undefined
+      // Check both communityFoodKey (for community foods) and ownFoodCommunityKey (for own shared foods)
+      communityFoodKey: communityFoodKey.value || ownFoodCommunityKey.value || undefined
     })
     notifications.success(t('common.saved'))
     // Close dialog and navigate after successful save

@@ -421,7 +421,11 @@ const add = async () => {
   try {
     await addFoodItemToDiary({
       date: selectedDate.value,
-      ...logEntry
+      ...logEntry,
+      // Pass communityFoodKey to track usage if food is shared (not stored in diary)
+      communityFoodKey: editedItem.value.shared && editedItem.value.communityKey
+        ? editedItem.value.communityKey
+        : undefined
     })
     notifications.success(t('common.saved'))
     dialog2.value.closeDialog()
