@@ -18,7 +18,7 @@ import DataTablePagination from '@/components/DataTablePagination.vue'
 import { LucideStickyNote, LucideUsers, LucideThumbsUp, LucideThumbsDown } from 'lucide-vue-next'
 
 const store = useStore()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const dialog = ref(null)
 const dialog2 = ref(null)
 const localePath = useLocalePath()

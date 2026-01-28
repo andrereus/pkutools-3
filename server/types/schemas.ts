@@ -51,6 +51,11 @@ export const OwnFoodSchema = z.object({
   shared: z.boolean().default(false)
 })
 
+// Own food save request schema (includes locale)
+export const OwnFoodSaveSchema = OwnFoodSchema.extend({
+  locale: z.enum(['en', 'de', 'es', 'fr']).optional() // Optional locale from frontend
+})
+
 // ============================================================================
 // Community Food Schemas
 // ============================================================================
@@ -129,6 +134,7 @@ export const LabValueUpdateSchema = z.object({
 // Update own food request schema
 export const OwnFoodUpdateSchema = z.object({
   entryKey: z.string().min(1, 'Entry key is required'),
+  locale: z.enum(['en', 'de', 'es', 'fr']).optional(), // Optional locale from frontend
   data: OwnFoodSchema
 })
 

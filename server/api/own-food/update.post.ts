@@ -5,8 +5,17 @@ import { getAuthenticatedUser } from '../../utils/auth'
 import { formatValidationError } from '../../utils/validation'
 import { isCommunityFoodHidden } from '../../utils/community-food'
 
-// Helper to get user's language from Accept-Language header
-function getLanguageFromHeader(event: Parameters<typeof defineEventHandler>[0] extends (e: infer E) => unknown ? E : never): 'en' | 'de' | 'es' | 'fr' {
+// Helper to get user's language from request body or Accept-Language header (fallback)
+function getLanguage(
+  event: Parameters<typeof defineEventHandler>[0] extends (e: infer E) => unknown ? E : never,
+  bodyLocale?: string
+): 'en' | 'de' | 'es' | 'fr' {
+  // Prefer locale from request body (from frontend i18n)
+  if (bodyLocale && ['en', 'de', 'es', 'fr'].includes(bodyLocale)) {
+    return bodyLocale as 'en' | 'de' | 'es' | 'fr'
+  }
+
+  // Fallback to Accept-Language header
   const acceptLanguage = getHeader(event, 'accept-language') || ''
   const supportedLanguages = ['en', 'de', 'es', 'fr'] as const
   for (const lang of supportedLanguages) {
@@ -65,7 +74,7 @@ export default defineEventHandler(async (event) => {
       formatValidationError(validation.error)
     }
 
-    const { entryKey, data } = validation.data
+    const { entryKey, locale, data } = validation.data
 
     const db = getAdminDatabase()
     const ownFoodRef = db.ref(`/${userId}/ownFood/${entryKey}`)
@@ -88,7 +97,7 @@ export default defineEventHandler(async (event) => {
     // Handle sharing state changes
     if (!wasShared && willBeShared) {
       // Newly sharing - create community food entry
-      const language = getLanguageFromHeader(event)
+      const language = getLanguage(event, locale)
 
       // Check for duplicates
       const isDuplicate = await checkDuplicateCommunityFood(db, data.name, data.phe, language)
@@ -172,4 +181,3 @@ export default defineEventHandler(async (event) => {
     handleServerError(error)
   }
 })
-

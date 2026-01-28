@@ -2,6 +2,7 @@ import { getAuth } from 'firebase/auth'
 
 export const useApi = () => {
   const errorHandler = useErrorHandler()
+  const { locale } = useI18n()
 
   // ============================================================================
   // Helper Functions
@@ -298,7 +299,10 @@ export const useApi = () => {
           headers: {
             Authorization: `Bearer ${token}`
           },
-          body: data
+          body: {
+            ...data,
+            locale: locale.value
+          }
         }
       )
 
@@ -332,6 +336,7 @@ export const useApi = () => {
         },
         body: {
           entryKey: data.entryKey,
+          locale: locale.value,
           data: {
             name: data.name,
             icon: data.icon,
