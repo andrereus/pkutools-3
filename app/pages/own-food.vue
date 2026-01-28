@@ -306,7 +306,9 @@ const save = async () => {
     wasShared &&
     entryShared &&
     originalFood &&
-    (originalFood.name !== entryName || originalFood.phe !== entryPhe || originalFood.kcal !== entryKcal)
+    (originalFood.name !== entryName ||
+      originalFood.phe !== entryPhe ||
+      originalFood.kcal !== entryKcal)
 
   // Close modal first so confirmation dialog appears on top
   closeModal()
@@ -422,10 +424,11 @@ const add = async () => {
     await addFoodItemToDiary({
       date: selectedDate.value,
       ...logEntry,
-      // Pass communityFoodKey to track usage if food is shared (not stored in diary)
-      communityFoodKey: editedItem.value.shared && editedItem.value.communityKey
-        ? editedItem.value.communityKey
-        : undefined
+      // Pass communityFoodKey to track usage count (will be stored in diary entry)
+      communityFoodKey:
+        editedItem.value.shared && editedItem.value.communityKey
+          ? editedItem.value.communityKey
+          : undefined
     })
     notifications.success(t('common.saved'))
     dialog2.value.closeDialog()

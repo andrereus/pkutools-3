@@ -54,7 +54,7 @@ export const useApi = () => {
     phe: number
     kcal: number
     note?: string | null
-    communityFoodKey?: string // Optional: tracks usage count but not stored in diary
+    communityFoodKey?: string | null // Optional: tracks usage count and stored in diary entry
   }): Promise<{ success: boolean; key?: string; updated?: boolean }> => {
     try {
       const token = await getAuthToken()
@@ -321,26 +321,27 @@ export const useApi = () => {
     try {
       const token = await getAuthToken()
 
-      const response = await $fetch<{ success: boolean; key: string; communityKey?: string | null }>(
-        '/api/own-food/update',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: {
-            entryKey: data.entryKey,
-            data: {
-              name: data.name,
-              icon: data.icon,
-              phe: data.phe,
-              note: data.note,
-              kcal: data.kcal,
-              shared: data.shared
-            }
+      const response = await $fetch<{
+        success: boolean
+        key: string
+        communityKey?: string | null
+      }>('/api/own-food/update', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: {
+          entryKey: data.entryKey,
+          data: {
+            name: data.name,
+            icon: data.icon,
+            phe: data.phe,
+            note: data.note,
+            kcal: data.kcal,
+            shared: data.shared
           }
         }
-      )
+      })
 
       return response
     } catch (error: unknown) {

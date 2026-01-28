@@ -7,9 +7,12 @@ import { formatValidationError } from '../../utils/validation'
 import { checkPremiumStatus } from '../../utils/license'
 import { z } from 'zod'
 
-// Extended schema to accept optional communityFoodKey (not stored in diary)
+// Extended schema to accept optional date (not part of DiaryEntrySchema)
 const DiaryFoodItemRequestSchema = DiaryEntrySchema.extend({
-  communityFoodKey: z.string().optional()
+  date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format')
+    .optional()
 })
 
 export default defineEventHandler(async (event) => {
@@ -17,23 +20,26 @@ export default defineEventHandler(async (event) => {
     const userId = await getAuthenticatedUser(event)
     const body = await readBody(event)
 
-    // Validate input - expect a single log entry with optional date and communityFoodKey
+    // Validate input - expect a single log entry with optional date
+    // communityFoodKey is now part of DiaryEntrySchema and will be stored in the entry
     const validation = DiaryFoodItemRequestSchema.safeParse(body)
     if (!validation.success) {
       formatValidationError(validation.error)
     }
 
-    // Extract communityFoodKey (used for tracking, not stored)
-    const { communityFoodKey, ...diaryEntryData } = validation.data
+    // Extract date (not stored in log entry, used to find/create diary day)
+    const { date: requestDate, ...diaryEntryData } = validation.data
+    const communityFoodKey = diaryEntryData.communityFoodKey || null
 
     const db = getAdminDatabase()
     const isPremium = await checkPremiumStatus(userId)
 
     // Determine date
-    const date = body.date || format(new Date(), 'yyyy-MM-dd')
+    const date = requestDate || format(new Date(), 'yyyy-MM-dd')
 
     // Find existing entry for this date efficiently
-    const querySnapshot = await db.ref(`/${userId}/pheDiary`)
+    const querySnapshot = await db
+      .ref(`/${userId}/pheDiary`)
       .orderByChild('date')
       .equalTo(date)
       .limitToFirst(1)
@@ -67,14 +73,17 @@ export default defineEventHandler(async (event) => {
     // If communityFoodKey provided, increment usage count (fire and forget)
     if (communityFoodKey) {
       const communityFoodRef = db.ref(`communityFoods/${communityFoodKey}`)
-      communityFoodRef.once('value').then((snapshot) => {
-        if (snapshot.exists()) {
-          const currentUsage = snapshot.val().usageCount || 0
-          communityFoodRef.update({ usageCount: currentUsage + 1 })
-        }
-      }).catch(() => {
-        // Silently ignore errors - usage tracking is not critical
-      })
+      communityFoodRef
+        .once('value')
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const currentUsage = snapshot.val().usageCount || 0
+            communityFoodRef.update({ usageCount: currentUsage + 1 })
+          }
+        })
+        .catch(() => {
+          // Silently ignore errors - usage tracking is not critical
+        })
     }
 
     if (existingEntryKey) {
@@ -131,4 +140,3 @@ export default defineEventHandler(async (event) => {
     handleServerError(error)
   }
 })
-

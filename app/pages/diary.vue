@@ -20,7 +20,8 @@ const dialog2 = ref(null)
 const localePath = useLocalePath()
 const notifications = useNotifications()
 const { isPremium, isPremiumAI } = useLicense()
-const { addFoodItemToDiary, updateFoodItemInDiary, deleteFoodItemFromDiary, updateGettingStarted } = useApi()
+const { addFoodItemToDiary, updateFoodItemInDiary, deleteFoodItemFromDiary, updateGettingStarted } =
+  useApi()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -47,7 +48,8 @@ const defaultItem = {
   weight: null,
   phe: null,
   kcal: null,
-  note: null
+  note: null,
+  communityFoodKey: null
 }
 
 const editedItem = ref({ ...defaultItem })
@@ -121,13 +123,13 @@ const selectedGreeting = computed(() => {
   // Use date as seed to generate independent indices
   const dateHash = date.value.split('-').join('')
   const dateNum = parseInt(dateHash)
-  
+
   // Generate different indices using simple hash with different offsets
   // This ensures icon, greeting, and message are selected independently
   const iconIndex = dateNum % icons.length
   const greetingIndex = (dateNum + 1000) % greetings.length
   const messageIndex = (dateNum + 2000) % messages.length
-  
+
   return {
     icon: icons[iconIndex],
     greeting: getTimeBasedGreeting(greetings[greetingIndex]),
@@ -279,9 +281,11 @@ const deleteItem = async () => {
       undoAction: async () => {
         try {
           // Restore the item by adding it back via save API
+          // Pass communityFoodKey to increment usage count (will be stored in entry)
           await addFoodItemToDiary({
             date: entryDate,
-            ...deletedItem
+            ...deletedItem,
+            communityFoodKey: deletedItem.communityFoodKey || undefined
           })
         } catch (error) {
           console.error('Undo error:', error)
@@ -324,7 +328,11 @@ const save = async () => {
     weight: Number(editedItem.value.weight),
     phe: calculatePhe(),
     kcal: calculateKcal(),
-    note: editedItem.value.note && editedItem.value.note.trim() !== '' ? editedItem.value.note.trim() : null
+    note:
+      editedItem.value.note && editedItem.value.note.trim() !== ''
+        ? editedItem.value.note.trim()
+        : null,
+    communityFoodKey: editedItem.value.communityFoodKey || null
   }
 
   // Close dialog immediately for instant feedback
@@ -341,9 +349,12 @@ const save = async () => {
       notifications.success(t('common.saved'))
     } else {
       // Add new item - use save API (validates server-side with Zod)
+      // If communityFoodKey exists, pass it to track usage count
       await addFoodItemToDiary({
         date: entryDate,
-        ...newLogEntry
+        ...newLogEntry,
+        // Pass communityFoodKey to increment usage count (will be stored in entry)
+        communityFoodKey: newLogEntry.communityFoodKey || undefined
       })
       notifications.success(t('common.saved'))
     }
@@ -533,12 +544,20 @@ Base estimates on typical nutritional databases. Use null for unknown values. Fo
     const kcal = kcalReference ? Math.round((weight * kcalReference) / 100) : 0
 
     // Store estimation explanation as note if provided
-    const note = foodData.explanation && typeof foodData.explanation === 'string' && foodData.explanation.trim() !== '' ? foodData.explanation.trim() : null
+    const note =
+      foodData.explanation &&
+      typeof foodData.explanation === 'string' &&
+      foodData.explanation.trim() !== ''
+        ? foodData.explanation.trim()
+        : null
 
     // Prepare log entry
     const logEntry = {
       name: sanitizedName,
-      emoji: foodData.emoji && typeof foodData.emoji === 'string' && foodData.emoji.trim() !== '' ? foodData.emoji.trim() : null,
+      emoji:
+        foodData.emoji && typeof foodData.emoji === 'string' && foodData.emoji.trim() !== ''
+          ? foodData.emoji.trim()
+          : null,
       icon: null,
       pheReference: pheReference,
       kcalReference: kcalReference || 0,
@@ -561,7 +580,7 @@ Base estimates on typical nutritional databases. Use null for unknown values. Fo
     })
 
     notifications.success(t('common.saved'))
-    
+
     // Clear input
     quickAddInput.value = ''
   } catch (error) {
@@ -656,7 +675,10 @@ defineOgImageComponent('NuxtSeo', {
 
     <div v-if="userIsAuthenticated">
       <div class="flex justify-between items-center gap-4 mb-6">
-        <button class="p-1 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400" @click="prevDay">
+        <button
+          class="p-1 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
+          @click="prevDay"
+        >
           <LucideChevronLeft class="h-6 w-6" aria-hidden="true" />
         </button>
         <input
@@ -666,7 +688,10 @@ defineOgImageComponent('NuxtSeo', {
           name="date"
           class="flex-1 block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
         />
-        <button class="p-1 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400" @click="nextDay">
+        <button
+          class="p-1 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
+          @click="nextDay"
+        >
           <LucideChevronRight class="h-6 w-6" aria-hidden="true" />
         </button>
       </div>
@@ -748,7 +773,7 @@ defineOgImageComponent('NuxtSeo', {
               <img
                 v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
                 :src="'/images/food-icons/' + item.icon + '.svg'"
-                onerror="this.src='/images/food-icons/organic-food.svg'"
+                onerror="this.src = '/images/food-icons/organic-food.svg'"
                 width="25"
                 class="food-icon"
                 alt="Food Icon"
@@ -878,7 +903,12 @@ defineOgImageComponent('NuxtSeo', {
           <button
             type="button"
             class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-full flex items-center"
-            :disabled="isQuickAdding || !quickAddInput || quickAddInput.trim() === '' || remainingEstimates === 0"
+            :disabled="
+              isQuickAdding ||
+              !quickAddInput ||
+              quickAddInput.trim() === '' ||
+              remainingEstimates === 0
+            "
             @click="quickAddFood"
           >
             <span v-if="isQuickAdding">{{ $t('phe-calculator.estimating') }}</span>

@@ -109,7 +109,7 @@ const save = async () => {
     await addFoodItemToDiary({
       date: selectedDate.value,
       ...logEntry,
-      // Pass communityFoodKey to track usage (not stored in diary)
+      // Pass communityFoodKey to track usage count (will be stored in diary entry)
       // Check both communityFoodKey (for community foods) and ownFoodCommunityKey (for own shared foods)
       communityFoodKey: communityFoodKey.value || ownFoodCommunityKey.value || undefined
     })
@@ -196,7 +196,7 @@ const buildFuseIndex = () => {
 // Load USDA data once
 const loadUsdaData = async () => {
   if (cachedUsdaFood.value) return
-  
+
   const foodData = await $fetch('/data/usda-phe-kcal.json')
   cachedUsdaFood.value = foodData.map((item) => ({
     name: item[locale.value] || item.en,
@@ -314,7 +314,7 @@ defineOgImageComponent('NuxtSeo', {
               <img
                 v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
                 :src="'/images/food-icons/' + item.icon + '.svg'"
-                onerror="this.src='/images/food-icons/organic-food.svg'"
+                onerror="this.src = '/images/food-icons/organic-food.svg'"
                 width="25"
                 class="food-icon"
                 alt="Food Icon"

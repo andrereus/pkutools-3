@@ -25,7 +25,8 @@ export const DiaryEntrySchema = z.object({
     .max(10000, 'Weight is too large'),
   phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
   kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
-  note: z.string().max(500, 'Note is too long').nullable().optional()
+  note: z.string().max(500, 'Note is too long').nullable().optional(),
+  communityFoodKey: z.string().nullable().optional() // Optional: tracks which community food was used (stored in diary entry)
 })
 
 // Lab value schema
