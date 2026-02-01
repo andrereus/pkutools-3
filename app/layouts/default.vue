@@ -42,9 +42,9 @@ const user = computed(() => store.user)
 const navigation = computed(() => {
   return [
     { name: 'app.start', icon: 'LucideHouse', route: 'index' },
-    { name: 'phe-calculator.title', icon: 'LucideCalculator', route: 'phe-calculator' },
     { name: 'food-search.title', icon: 'LucideSearch', route: 'food-search' },
     { name: 'barcode-scanner.title', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
+    { name: 'phe-calculator.title', icon: 'LucideCalculator', route: 'phe-calculator' },
     { name: 'diary.title', icon: 'LucideCalendar', route: 'diary' },
     { name: 'diet-report.title', icon: 'LucideBook', route: 'diet-report' },
     { name: 'blood-values.title', icon: 'LucideChartLine', route: 'blood-values' },
@@ -57,16 +57,16 @@ const tabNavigation = computed(() => {
     return [
       { name: 'home.title', icon: 'LucideHouse', route: 'diary' },
       { name: 'diet-report.tab-title', icon: 'LucideBook', route: 'diet-report' },
-      { name: 'common.add', icon: 'LucidePlus', route: 'phe-calculator' },
+      { name: 'common.add', icon: 'LucidePlus', route: 'food-search' },
       { name: 'blood-values.tab-title', icon: 'LucideChartLine', route: 'blood-values' },
       { name: 'own-food.tab-title', icon: 'LucideApple', route: 'own-food' }
     ]
   } else {
     return [
       { name: 'home.title', icon: 'LucideHouse', route: 'index' },
-      { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' },
       { name: 'app.search', icon: 'LucideSearch', route: 'food-search' },
       { name: 'app.scanner', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
+      { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' },
       { name: 'sign-in.title', icon: 'LucideLogIn', route: 'sign-in' }
     ]
   }
@@ -85,9 +85,9 @@ const userNavigation = computed(() => {
 const footerNavigation = computed(() => {
   return {
     tools: [
-      { name: 'phe-calculator.title', route: 'phe-calculator' },
       { name: 'food-search.title', route: 'food-search' },
-      { name: 'barcode-scanner.title', route: 'barcode-scanner' }
+      { name: 'barcode-scanner.title', route: 'barcode-scanner' },
+      { name: 'phe-calculator.title', route: 'phe-calculator' }
     ],
     features: [
       { name: 'diary.title', route: 'diary' },

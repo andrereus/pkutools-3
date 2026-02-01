@@ -5,6 +5,7 @@ import {
   LucideCalculator,
   LucideScanBarcode,
   LucideApple,
+  LucideBook,
   LucideCalendar,
   LucideChartLine,
   LucideSparkles,
@@ -16,14 +17,8 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
 
-// Features data
+// Features data (8 items for even layout: short descriptions, merged Own & Community Foods, merged AI features)
 const features = [
-  {
-    name: 'features.calculator-name',
-    description: 'features.calculator-description',
-    icon: LucideCalculator,
-    route: 'phe-calculator'
-  },
   {
     name: 'features.search-name',
     description: 'features.search-description',
@@ -37,9 +32,9 @@ const features = [
     route: 'barcode-scanner'
   },
   {
-    name: 'features.estimation-name',
-    description: 'features.estimation-description',
-    icon: LucideSparkles,
+    name: 'features.calculator-name',
+    description: 'features.calculator-description',
+    icon: LucideCalculator,
     route: 'phe-calculator'
   },
   {
@@ -49,28 +44,28 @@ const features = [
     route: 'diary'
   },
   {
+    name: 'features.diet-report-name',
+    description: 'features.diet-report-description',
+    icon: LucideBook,
+    route: 'diet-report'
+  },
+  {
     name: 'features.blood-values-name',
     description: 'features.blood-values-description',
     icon: LucideChartLine,
     route: 'blood-values'
   },
   {
-    name: 'features.suggestions-name',
-    description: 'features.suggestions-description',
-    icon: LucideSparkles,
-    route: 'diary'
-  },
-  {
-    name: 'features.own-food-name',
-    description: 'features.own-food-description',
+    name: 'features.own-community-name',
+    description: 'features.own-community-description',
     icon: LucideApple,
     route: 'own-food'
   },
   {
-    name: 'features.community-food-name',
-    description: 'features.community-food-description',
-    icon: LucideUsers,
-    route: 'food-search'
+    name: 'features.ai-features-name',
+    description: 'features.ai-features-description',
+    icon: LucideSparkles,
+    route: 'phe-calculator'
   }
 ]
 
