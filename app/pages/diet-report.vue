@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { format, parseISO, formatISO, subMonths, subWeeks } from 'date-fns'
+import { format, parseISO, formatISO, subMonths, subWeeks, differenceInDays } from 'date-fns'
 import { enUS, de, fr, es } from 'date-fns/locale'
 import enChart from 'apexcharts/dist/locales/en.json'
 import deChart from 'apexcharts/dist/locales/de.json'
@@ -372,17 +372,23 @@ const oldestDate = computed(() => {
   }, parseISO(pheDiary.value[0].date))
 })
 
-// Apply smart default selection once when diary has many days (so chart doesn't show "all" and get crowded)
+// Span of the data in days (so we use date range, not entry count, when someone doesn't log every day)
+const dateRangeSpanInDays = computed(() => {
+  if (!pheDiary.value.length || pheDiary.value.length < 2) return 0
+  return differenceInDays(newestDate.value, oldestDate.value)
+})
+
+// Apply smart default selection once when diary date range is large (so chart doesn't show "all" and get crowded)
 watch(
-  () => pheDiary.value.length,
-  (count) => {
-    if (defaultSelectionApplied.value || count < 2) return
+  () => dateRangeSpanInDays.value,
+  (spanInDays) => {
+    if (defaultSelectionApplied.value || spanInDays < 2) return
     defaultSelectionApplied.value = true
-    if (count > DAYS_THRESHOLD_THREE_MONTHS) {
+    if (spanInDays > DAYS_THRESHOLD_THREE_MONTHS) {
       selection.value = 'three_months'
-    } else if (count > DAYS_THRESHOLD_ONE_MONTH) {
+    } else if (spanInDays > DAYS_THRESHOLD_ONE_MONTH) {
       selection.value = 'one_month'
-    } else if (count > DAYS_THRESHOLD_TWO_WEEKS) {
+    } else if (spanInDays > DAYS_THRESHOLD_TWO_WEEKS) {
       selection.value = 'two_weeks'
     }
   },
