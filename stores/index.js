@@ -14,7 +14,6 @@ import { defineStore } from 'pinia'
 
 const defaultSettings = {
   maxPhe: null,
-  maxKcal: null,
   labUnit: 'mgdl',
   license: null,
   healthDataConsent: false,
@@ -158,7 +157,10 @@ export const useStore = defineStore('main', {
       const communityFoodsUnsubscribe = onValue(ref(db, 'communityFoods'), (snapshot) => {
         const data = snapshot.val()
         if (data && typeof data === 'object') {
-          this.communityFoods = Object.entries(data).map(([key, value]) => ({ ...value, '.key': key }))
+          this.communityFoods = Object.entries(data).map(([key, value]) => ({
+            ...value,
+            '.key': key
+          }))
         } else {
           this.communityFoods = []
         }
