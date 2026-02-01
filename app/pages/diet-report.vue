@@ -43,6 +43,7 @@ const editedItem = ref({ ...defaultItem })
 
 const selection = ref('all')
 const chartRef = ref(null)
+const chartRefKcal = ref(null)
 const defaultSelectionApplied = ref(false)
 
 // Smart default: when there are many days, default to a shorter range so the chart isn't crowded
@@ -182,6 +183,23 @@ const graph = computed(() => {
   ]
 })
 
+const graphKcal = computed(() => {
+  const newPheDiary = pheDiary.value
+  const chartKcalDiary = newPheDiary
+    .map((obj) => {
+      return { x: obj.date, y: obj.kcal }
+    })
+    .sort((a, b) => {
+      return parseISO(a.x) - parseISO(b.x)
+    })
+  return [
+    {
+      name: t('common.kcal'),
+      data: chartKcalDiary
+    }
+  ]
+})
+
 const chartOptions = computed(() => {
   const en = enChart
   const de = deChart
@@ -257,6 +275,84 @@ const chartOptions = computed(() => {
       mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
     },
     colors: ['#3498db']
+  }
+})
+
+const chartOptionsKcal = computed(() => {
+  const en = enChart
+  const de = deChart
+  const fr = frChart
+  const es = esChart
+  return {
+    chart: {
+      locales: [en, de, fr, es],
+      defaultLocale: i18nLocale.value,
+      toolbar: {
+        tools: {
+          zoom: false,
+          zoomin: false,
+          zoomout: false,
+          reset: false
+        },
+        export: {
+          csv: {
+            filename: 'PKU Tools - Chart Data (kcal)',
+            headerCategory: 'Date',
+            headerValue: t('common.kcal'),
+            dateFormatter(timestamp) {
+              return timestamp
+            }
+          },
+          svg: {
+            filename: 'PKU Tools - Chart (kcal)'
+          },
+          png: {
+            filename: 'PKU Tools - Chart (kcal)'
+          }
+        },
+        autoSelected: 'pan'
+      },
+      zoom: {
+        enabled: true
+      },
+      background: 'transparent'
+    },
+    stroke: {
+      curve: 'smooth'
+    },
+    markers: {
+      size: 1
+    },
+    grid: {
+      show: false
+    },
+    dataLabels: {
+      enabled: false
+    },
+    xaxis: {
+      type: 'datetime',
+      ...(chartXAxisRange.value.min !== undefined && {
+        min: chartXAxisRange.value.min,
+        max: chartXAxisRange.value.max
+      })
+    },
+    yaxis: {
+      min: 0
+    },
+    annotations: {
+      yaxis: [
+        {
+          y: settings.value.maxKcal || 0,
+          borderWidth: 2,
+          borderColor: '#e67e22',
+          strokeDashArray: 6
+        }
+      ]
+    },
+    theme: {
+      mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+    },
+    colors: ['#e67e22']
   }
 })
 
@@ -541,7 +637,10 @@ const saveLogEdit = async () => {
     weight: Number(editedLogItem.value.weight),
     phe: calculatePhe(),
     kcal: calculateKcal(),
-    note: editedLogItem.value.note && editedLogItem.value.note.trim() !== '' ? editedLogItem.value.note.trim() : null
+    note:
+      editedLogItem.value.note && editedLogItem.value.note.trim() !== ''
+        ? editedLogItem.value.note.trim()
+        : null
   }
 
   try {
@@ -660,38 +759,30 @@ const triggerDownload = (csvContent) => {
   document.body.removeChild(link)
 }
 
-const updateData = (timeline) => {
-  selection.value = timeline
-
+const getZoomRange = (timeline) => {
+  const newest = newestDate.value
+  const oldest = oldestDate.value
   switch (timeline) {
     case 'all':
-      chartRef.value.chart.zoomX(oldestDate.value.getTime(), newestDate.value.getTime())
-      break
+      return { min: oldest.getTime(), max: newest.getTime() }
     case 'one_week':
-      chartRef.value.chart.zoomX(
-        subWeeks(newestDate.value, 1).getTime(),
-        newestDate.value.getTime()
-      )
-      break
+      return { min: subWeeks(newest, 1).getTime(), max: newest.getTime() }
     case 'two_weeks':
-      chartRef.value.chart.zoomX(
-        subWeeks(newestDate.value, 2).getTime(),
-        newestDate.value.getTime()
-      )
-      break
+      return { min: subWeeks(newest, 2).getTime(), max: newest.getTime() }
     case 'one_month':
-      chartRef.value.chart.zoomX(
-        subMonths(newestDate.value, 1).getTime(),
-        newestDate.value.getTime()
-      )
-      break
+      return { min: subMonths(newest, 1).getTime(), max: newest.getTime() }
     case 'three_months':
-      chartRef.value.chart.zoomX(
-        subMonths(newestDate.value, 3).getTime(),
-        newestDate.value.getTime()
-      )
-      break
+      return { min: subMonths(newest, 3).getTime(), max: newest.getTime() }
+    default:
+      return { min: oldest.getTime(), max: newest.getTime() }
   }
+}
+
+const updateData = (timeline) => {
+  selection.value = timeline
+  const { min, max } = getZoomRange(timeline)
+  chartRef.value?.chart?.zoomX(min, max)
+  chartRefKcal.value?.chart?.zoomX(min, max)
 }
 
 definePageMeta({
@@ -766,12 +857,26 @@ defineOgImageComponent('NuxtSeo', {
         </div>
 
         <ClientOnly>
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            {{ $t('common.phe') }}
+          </p>
           <apexchart
             ref="chartRef"
             type="area"
             height="250"
             :options="chartOptions"
             :series="graph"
+            class="mb-6"
+          />
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            {{ $t('common.kcal') }}
+          </p>
+          <apexchart
+            ref="chartRefKcal"
+            type="area"
+            height="250"
+            :options="chartOptionsKcal"
+            :series="graphKcal"
             class="-mb-2"
           />
         </ClientOnly>
@@ -803,7 +908,9 @@ defineOgImageComponent('NuxtSeo', {
                       </th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+                  <tbody
+                    class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900"
+                  >
                     <template v-if="table.getRowModel().rows?.length">
                       <tr
                         v-for="row in table.getRowModel().rows"
@@ -895,7 +1002,7 @@ defineOgImageComponent('NuxtSeo', {
                 <img
                   v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
                   :src="'/images/food-icons/' + item.icon + '.svg'"
-                  onerror="this.src='/images/food-icons/organic-food.svg'"
+                  onerror="this.src = '/images/food-icons/organic-food.svg'"
                   width="25"
                   class="food-icon"
                   alt="Food Icon"

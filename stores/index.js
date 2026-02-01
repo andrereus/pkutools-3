@@ -14,6 +14,7 @@ import { defineStore } from 'pinia'
 
 const defaultSettings = {
   maxPhe: null,
+  maxKcal: null,
   labUnit: 'mgdl',
   license: null,
   healthDataConsent: false,

@@ -159,8 +159,25 @@ const graph = computed(() => {
     })
   return [
     {
-      name: 'Phe',
+      name: t('blood-values.phe-header'),
       data: chartLabValues
+    }
+  ]
+})
+
+const graphTyrosine = computed(() => {
+  const newLabValues = labValues.value
+  const chartTyrosineValues = newLabValues
+    .map((obj) => {
+      return { x: obj.date, y: obj.tyrosine }
+    })
+    .sort((a, b) => {
+      return parseISO(a.x) - parseISO(b.x)
+    })
+  return [
+    {
+      name: t('blood-values.tyrosine-header'),
+      data: chartTyrosineValues
     }
   ]
 })
@@ -219,6 +236,63 @@ const chartOptions = computed(() => {
       mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
     },
     colors: ['#3498db']
+  }
+})
+
+const chartOptionsTyrosine = computed(() => {
+  const en = enChart
+  const de = deChart
+  const fr = frChart
+  const es = esChart
+  return {
+    chart: {
+      locales: [en, de, fr, es],
+      defaultLocale: i18nLocale.value,
+      toolbar: {
+        export: {
+          csv: {
+            filename: 'PKU Tools - Chart Data (Tyrosine)',
+            headerCategory: 'Date',
+            headerValue: t('blood-values.tyrosine-header'),
+            dateFormatter(timestamp) {
+              return timestamp
+            }
+          },
+          svg: {
+            filename: 'PKU Tools - Chart (Tyrosine)'
+          },
+          png: {
+            filename: 'PKU Tools - Chart (Tyrosine)'
+          }
+        }
+      },
+      zoom: {
+        enabled: false
+      },
+      background: 'transparent'
+    },
+    stroke: {
+      curve: 'smooth'
+    },
+    markers: {
+      size: 1
+    },
+    grid: {
+      show: false
+    },
+    dataLabels: {
+      enabled: false
+    },
+    xaxis: {
+      type: 'datetime'
+    },
+    yaxis: {
+      min: 0
+    },
+    theme: {
+      mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+    },
+    colors: ['#e67e22']
   }
 })
 
@@ -417,14 +491,28 @@ defineOgImageComponent('NuxtSeo', {
       <p v-if="labValues.length < 2" class="mb-6">{{ $t('blood-values.chart-info') }}</p>
 
       <ClientOnly>
-        <apexchart
-          v-if="labValues.length >= 2"
-          type="area"
-          height="250"
-          :options="chartOptions"
-          :series="graph"
-          class="-mb-2"
-        />
+        <div v-if="labValues.length >= 2">
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            {{ $t('blood-values.phe-header') }}
+          </p>
+          <apexchart
+            type="area"
+            height="250"
+            :options="chartOptions"
+            :series="graph"
+            class="mb-6"
+          />
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            {{ $t('blood-values.tyrosine-header') }}
+          </p>
+          <apexchart
+            type="area"
+            height="250"
+            :options="chartOptionsTyrosine"
+            :series="graphTyrosine"
+            class="-mb-2"
+          />
+        </div>
       </ClientOnly>
 
       <div class="mb-8">
@@ -453,7 +541,9 @@ defineOgImageComponent('NuxtSeo', {
                       </th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+                  <tbody
+                    class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900"
+                  >
                     <template v-if="table.getRowModel().rows?.length">
                       <tr
                         v-for="row in table.getRowModel().rows"
