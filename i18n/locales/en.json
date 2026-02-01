@@ -118,6 +118,7 @@
   },
   "own-food": {
     "title": "Own Food",
+    "tab-title": "Own Food",
     "description": "Save your own foods for quick addition.",
     "share-info": "Share your own food with the community so others can find it in Food Search.",
     "export-filename": "PKU Tools - Own Food",
@@ -175,7 +176,9 @@
     "export-days": "Export days",
     "export-days-description": "Your daily Phe totals will be exported as a CSV file.",
     "export-filename": "PKU Tools - Diet Report",
-    "chart-info": "The chart gets displayed after the second entry."
+    "chart-info": "The chart gets displayed after the second entry.",
+    "phe-stats-average": "In the last 14 days (excluding today), your average Phe intake was {average} mg.",
+    "phe-stats-deviation": "The average deviation from your daily limit is {deviation}%."
   },
   "blood-values": {
     "title": "Blood Values",
@@ -305,8 +308,6 @@
     "blood-values-description": "Track blood values in a diagram.",
     "suggestions-name": "1-Click Suggestions",
     "suggestions-description": "Add suggestions to the diary with one click.",
-    "insights-name": "Insights",
-    "insights-description": "View insights and trends about your nutrition.",
     "community-food-name": "Community Foods",
     "community-food-description": "Share and discover foods from the PKU community."
   },
@@ -315,42 +316,6 @@
     "logs": "Logs",
     "account": "Account",
     "about": "About"
-  },
-  "insights": {
-    "title": "Insights",
-    "description": "View insights and trends about your nutrition.",
-    "info": "Insights can contain inaccuracies.",
-    "satiety-tip": "Currently",
-    "satiety-tip-high": "Your Phe intake ({phePercentage}%) is higher than your calorie intake ({kcalPercentage}%).",
-    "satiety-tip-low": "Your Phe intake ({phePercentage}%) is lower than your calorie intake ({kcalPercentage}%).",
-    "satiety-tip-text": "Your Phe intake is {phePercentage}% and your calorie intake is {kcalPercentage}%.",
-    "previous-day": "Today",
-    "previous-day-text": "Yesterday's Phe intake was {phe} mg ({percentage}% of your daily limit).",
-    "blood-values": "Blood Values",
-    "blood-values-phe": "Your last Phe value was {phe} {unit}.",
-    "blood-values-tyrosine": "Your last Tyrosine value was {tyrosine} {unit}.",
-    "motivation": "Achievements",
-    "streak": "You've tracked your nutrition for {streak} days in a row.",
-    "streak-max": "Current streak: {streak} days. Best streak: {maxStreak} days.",
-    "streak-max-same": "You've tracked your nutrition for {streak} days in a row.",
-    "week": "You've tracked for 7 or more consecutive days.",
-    "keep-going": "",
-    "start-tracking": "You can track your nutrition daily to view your statistics.",
-    "diet-report": "Diet Report",
-    "phe-stats-average": "In the last 14 days (excluding today), your average Phe intake was {average} mg.",
-    "phe-stats-deviation": "The average deviation from your daily limit is {deviation}%.",
-    "deactivated": "Currently unavailable",
-    "deactivated-explanation": "Insights are temporarily deactivated."
-  },
-  "badges": {
-    "streak-3-title": "3 Day Streak",
-    "streak-3-description": "Track for 3 consecutive days",
-    "streak-5-title": "5 Day Streak",
-    "streak-5-description": "Track for 5 consecutive days",
-    "streak-7-title": "1 Week Streak",
-    "streak-7-description": "Track for 7 consecutive days",
-    "streak-14-title": "2 Week Streak",
-    "streak-14-description": "Track for 14 consecutive days"
   },
   "cookie-consent": {
     "message": "We use cookies for essential functions and to improve the app. Accept cookies?",

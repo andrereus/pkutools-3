@@ -118,6 +118,7 @@
   },
   "own-food": {
     "title": "Alimentos propios",
+    "tab-title": "Alim. propios",
     "description": "Guarda tus propios alimentos para añadir rápidamente.",
     "share-info": "Comparte tus propios alimentos con la comunidad para que otros los encuentren en la Búsqueda de alimentos.",
     "export-filename": "PKU Tools - Alimento propio",
@@ -175,7 +176,9 @@
     "export-days": "Días de exportación",
     "export-days-description": "Tus totales diarios de Phe se exportarán como un archivo CSV.",
     "export-filename": "PKU Tools - Informe de dieta",
-    "chart-info": "El diagrama se muestra después de la segunda entrada."
+    "chart-info": "El diagrama se muestra después de la segunda entrada.",
+    "phe-stats-average": "En los últimos 14 días (sin contar hoy), tu ingesta promedio de Phe fue de {average} mg.",
+    "phe-stats-deviation": "La desviación promedio de tu límite diario es de {deviation}%."
   },
   "blood-values": {
     "title": "Valores de sangre",
@@ -305,8 +308,6 @@
     "blood-values-description": "Rastrear los valores de sangre en un diagrama.",
     "suggestions-name": "Sugerencias de 1 clic",
     "suggestions-description": "Añade sugerencias al registro con un solo clic.",
-    "insights-name": "Insights",
-    "insights-description": "Ver insights y tendencias sobre tu nutrición.",
     "community-food-name": "Alimentos de la comunidad",
     "community-food-description": "Comparte y descubre alimentos de la comunidad PKU."
   },
@@ -315,42 +316,6 @@
     "logs": "Registros",
     "account": "Cuenta",
     "about": "Acerca de"
-  },
-  "insights": {
-    "title": "Insights",
-    "description": "Ver insights y tendencias sobre tu nutrición.",
-    "info": "Los insights pueden contener imprecisiones.",
-    "satiety-tip": "Actualmente",
-    "satiety-tip-high": "Tu ingesta de Phe ({phePercentage}%) es mayor que tu ingesta calórica ({kcalPercentage}%).",
-    "satiety-tip-low": "Tu ingesta de Phe ({phePercentage}%) es menor que tu ingesta calórica ({kcalPercentage}%).",
-    "satiety-tip-text": "Tu ingesta de Phe es {phePercentage}% y tu ingesta calórica es {kcalPercentage}%.",
-    "previous-day": "Hoy",
-    "previous-day-text": "Ayer la ingesta de Phe fue de {phe} mg ({percentage}% de tu límite diario).",
-    "blood-values": "Valores de sangre",
-    "blood-values-phe": "Tu último valor de Phe fue {phe} {unit}.",
-    "blood-values-tyrosine": "Tu último valor de Tirosina fue {tyrosine} {unit}.",
-    "motivation": "Logros",
-    "streak": "Has registrado tu nutrición durante {streak} días seguidos.",
-    "streak-max": "Racha actual: {streak} días. Mejor racha: {maxStreak} días.",
-    "streak-max-same": "Has registrado tu nutrición durante {streak} días seguidos.",
-    "week": "Has registrado durante 7 o más días consecutivos.",
-    "keep-going": "",
-    "start-tracking": "Puedes registrar tu nutrición diariamente para ver tus estadísticas.",
-    "diet-report": "Informe de dieta",
-    "phe-stats-average": "En los últimos 14 días (sin contar hoy), tu ingesta promedio de Phe fue de {average} mg.",
-    "phe-stats-deviation": "La desviación promedio de tu límite diario es de {deviation}%.",
-    "deactivated": "Actualmente no disponible",
-    "deactivated-explanation": "El asistente está temporalmente desactivado."
-  },
-  "badges": {
-    "streak-3-title": "Racha de 3 Días",
-    "streak-3-description": "Registrado durante 3 días consecutivos",
-    "streak-5-title": "Racha de 5 Días",
-    "streak-5-description": "Registrado durante 5 días consecutivos",
-    "streak-7-title": "Racha de 1 Semana",
-    "streak-7-description": "Registrado durante 7 días consecutivos",
-    "streak-14-title": "Racha de 2 Semanas",
-    "streak-14-description": "Registrado durante 14 días consecutivos"
   },
   "cookie-consent": {
     "message": "Utilizamos cookies para funciones esenciales y para mejorar la aplicación. ¿Aceptar cookies?",

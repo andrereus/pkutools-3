@@ -118,6 +118,7 @@
   },
   "own-food": {
     "title": "Eigene Lebensmittel",
+    "tab-title": "Eig. Leb.",
     "description": "Hinterlege eigene Lebensmittel zum schnellen Hinzufügen.",
     "share-info": "Teile deine eigenen Lebensmittel mit der Community – andere finden sie dann in der Lebensmittelsuche.",
     "export-filename": "PKU Tools - Eigene Lebensmittel",
@@ -175,7 +176,9 @@
     "export-days": "Tage exportieren",
     "export-days-description": "Deine täglichen Phe-Summen werden als CSV-Datei exportiert.",
     "export-filename": "PKU Tools - Diätbericht",
-    "chart-info": "Das Diagramm wird nach dem zweiten Eintrag angezeigt."
+    "chart-info": "Das Diagramm wird nach dem zweiten Eintrag angezeigt.",
+    "phe-stats-average": "In den letzten 14 Tagen (ohne heute) lag deine durchschnittliche Phe-Aufnahme bei {average} mg.",
+    "phe-stats-deviation": "Die durchschnittliche Abweichung von deinem Tageslimit beträgt {deviation}%."
   },
   "blood-values": {
     "title": "Blutwerte",
@@ -305,8 +308,6 @@
     "blood-values-description": "Verfolge Blutwerte in einem Diagramm.",
     "suggestions-name": "1-Klick Vorschläge",
     "suggestions-description": "Füge Vorschläge mit einem Klick dem Tagebuch hinzu.",
-    "insights-name": "Einblicke",
-    "insights-description": "Zeige Einblicke und Trends zu deiner Ernährung an.",
     "community-food-name": "Community-Lebensmittel",
     "community-food-description": "Teile und entdecke Lebensmittel aus der PKU-Community."
   },
@@ -315,42 +316,6 @@
     "logs": "Protokolle",
     "account": "Account",
     "about": "About"
-  },
-  "insights": {
-    "title": "Einblicke",
-    "description": "Zeige Einblicke und Trends zu deiner Ernährung an.",
-    "info": "Einblicke können Ungenauigkeiten enthalten.",
-    "satiety-tip": "Aktuell",
-    "satiety-tip-high": "Deine Phe-Aufnahme ({phePercentage}%) ist höher als deine Kalorienaufnahme ({kcalPercentage}%).",
-    "satiety-tip-low": "Deine Phe-Aufnahme ({phePercentage}%) ist niedriger als deine Kalorienaufnahme ({kcalPercentage}%).",
-    "satiety-tip-text": "Deine Phe-Aufnahme beträgt {phePercentage}% und deine Kalorienaufnahme beträgt {kcalPercentage}%.",
-    "previous-day": "Heute",
-    "previous-day-text": "Gestern lag die Phe-Aufnahme bei {phe} mg ({percentage}% deines Tageslimits).",
-    "blood-values": "Blutwerte",
-    "blood-values-phe": "Dein letzter Phe-Wert war {phe} {unit}.",
-    "blood-values-tyrosine": "Dein letzter Tyrosin-Wert war {tyrosine} {unit}.",
-    "motivation": "Errungenschaften",
-    "streak": "Du hast deine Ernährung {streak} Tage in Folge protokolliert.",
-    "streak-max": "Aktuelle Serie: {streak} Tage. Beste Serie: {maxStreak} Tage.",
-    "streak-max-same": "Du hast deine Ernährung {streak} Tage in Folge protokolliert.",
-    "week": "Du hast 7 oder mehr Tage in Folge protokolliert.",
-    "keep-going": "",
-    "start-tracking": "Du kannst deine Ernährung täglich protokollieren, um deine Statistiken zu sehen.",
-    "diet-report": "Diätbericht",
-    "phe-stats-average": "In den letzten 14 Tagen (ohne heute) lag deine durchschnittliche Phe-Aufnahme bei {average} mg.",
-    "phe-stats-deviation": "Die durchschnittliche Abweichung von deinem Tageslimit beträgt {deviation}%.",
-    "deactivated": "Derzeit nicht verfügbar",
-    "deactivated-explanation": "Der Assistent ist vorübergehend deaktiviert."
-  },
-  "badges": {
-    "streak-3-title": "3 Tage Serie",
-    "streak-3-description": "3 Tage in Folge protokolliert",
-    "streak-5-title": "5 Tage Serie",
-    "streak-5-description": "5 Tage in Folge protokolliert",
-    "streak-7-title": "1 Woche Serie",
-    "streak-7-description": "7 Tage in Folge protokolliert",
-    "streak-14-title": "2 Wochen Serie",
-    "streak-14-description": "14 Tage in Folge protokolliert"
   },
   "cookie-consent": {
     "message": "Wir verwenden Cookies für grundlegende Funktionen und zur Verbesserung der App. Cookies akzeptieren?",

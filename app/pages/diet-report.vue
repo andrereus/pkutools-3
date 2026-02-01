@@ -888,6 +888,10 @@ defineOgImageComponent('NuxtSeo', {
         </ClientOnly>
       </div>
 
+      <div class="mt-6 mb-8">
+        <DietReportCard />
+      </div>
+
       <div class="mb-8">
         <div class="mt-6 flow-root">
           <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

@@ -18,19 +18,22 @@ const getDiaryEntriesForDays = (days, includeToday = false) => {
     .filter(Boolean)
 }
 
-// Calculate Phe statistics
+// Calculate Phe statistics (average does not require maxPhe; deviation does)
 const pheStats = computed(() => {
-  if (!settings.value?.maxPhe || !pheDiary.value.length) {
-    return { average: 0, deviation: 0 }
-  }
-
   const last14Days = getDiaryEntriesForDays(14, false)
-  if (!last14Days.length) return { average: 0, deviation: 0 }
+  if (!last14Days.length) return { average: 0, deviation: null }
 
   const average = Math.round(
-    last14Days.reduce((sum, entry) => sum + entry.phe, 0) / last14Days.length
+    last14Days.reduce((sum, entry) => sum + (entry.phe ?? 0), 0) / last14Days.length
   )
-  const deviations = last14Days.map((entry) => Math.abs(1 - entry.phe / settings.value.maxPhe))
+
+  if (!settings.value?.maxPhe) {
+    return { average, deviation: null }
+  }
+
+  const deviations = last14Days.map((entry) =>
+    Math.abs(1 - (entry.phe ?? 0) / settings.value.maxPhe)
+  )
   const averageDeviation = Math.round(
     (deviations.reduce((sum, dev) => sum + dev, 0) / deviations.length) * 100
   )
@@ -44,11 +47,13 @@ const pheStats = computed(() => {
     <div class="px-4 py-5 sm:p-6">
       <div class="flex items-center gap-3 font-medium mb-2">
         <LucideBook class="h-5 w-5" />
-        {{ $t('insights.diet-report') }}
+        {{ $t('diet-report.title') }}
       </div>
       <div>
-        <p>{{ $t('insights.phe-stats-average', { average: pheStats.average }) }}</p>
-        <p>{{ $t('insights.phe-stats-deviation', { deviation: pheStats.deviation }) }}</p>
+        <p>{{ $t('diet-report.phe-stats-average', { average: pheStats.average }) }}</p>
+        <p v-if="pheStats.deviation !== null">
+          {{ $t('diet-report.phe-stats-deviation', { deviation: pheStats.deviation }) }}
+        </p>
       </div>
     </div>
   </div>

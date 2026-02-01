@@ -19,8 +19,7 @@ import {
   LucideCalendar,
   LucideChartLine,
   LucideBot,
-  LucidePlus,
-  LucideLightbulb
+  LucidePlus
 } from 'lucide-vue-next'
 
 const store = useStore()
@@ -49,7 +48,7 @@ const navigation = computed(() => {
     { name: 'diary.title', icon: 'LucideCalendar', route: 'diary' },
     { name: 'diet-report.title', icon: 'LucideBook', route: 'diet-report' },
     { name: 'blood-values.title', icon: 'LucideChartLine', route: 'blood-values' },
-    { name: 'insights.title', icon: 'LucideLightbulb', route: 'insights' }
+    { name: 'own-food.title', icon: 'LucideApple', route: 'own-food' }
   ]
 })
 
@@ -60,7 +59,7 @@ const tabNavigation = computed(() => {
       { name: 'diet-report.tab-title', icon: 'LucideBook', route: 'diet-report' },
       { name: 'common.add', icon: 'LucidePlus', route: 'phe-calculator' },
       { name: 'blood-values.tab-title', icon: 'LucideChartLine', route: 'blood-values' },
-      { name: 'insights.title', icon: 'LucideLightbulb', route: 'insights' }
+      { name: 'own-food.tab-title', icon: 'LucideApple', route: 'own-food' }
     ]
   } else {
     return [
@@ -75,7 +74,6 @@ const tabNavigation = computed(() => {
 
 const userNavigation = computed(() => {
   return [
-    { name: 'own-food.title', icon: 'LucideApple', route: 'own-food' },
     { name: 'settings.title', icon: 'LucideSettings', route: 'settings' },
     { name: 'help.title', icon: 'LucideLifeBuoy', route: 'help' },
     { name: 'imprint.title', icon: 'LucideInfo', route: 'imprint' },
@@ -94,8 +92,7 @@ const footerNavigation = computed(() => {
     features: [
       { name: 'diary.title', route: 'diary' },
       { name: 'diet-report.title', route: 'diet-report' },
-      { name: 'blood-values.title', route: 'blood-values' },
-      { name: 'insights.title', route: 'insights' }
+      { name: 'blood-values.title', route: 'blood-values' }
     ],
     account: [
       { name: 'sign-in.title', route: 'sign-in' },
@@ -206,8 +203,7 @@ const iconMap = {
   LucideCalendar,
   LucideChartLine,
   LucideBot,
-  LucidePlus,
-  LucideLightbulb
+  LucidePlus
 }
 
 const handleCookieConsent = (consent) => {

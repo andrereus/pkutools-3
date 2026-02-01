@@ -118,6 +118,7 @@
   },
   "own-food": {
     "title": "Aliments personnels",
+    "tab-title": "Alim. perso.",
     "description": "Enregistrez vos propres aliments pour un ajout rapide.",
     "share-info": "Partagez vos aliments personnels avec la communauté pour que d'autres puissent les trouver dans la Recherche alimentaire.",
     "export-filename": "PKU Tools - Aliments personnels",
@@ -175,7 +176,9 @@
     "export-days": "Exporter les jours",
     "export-days-description": "Vos totaux quotidiens de Phe seront exportés sous forme de fichier CSV.",
     "export-filename": "PKU Tools - Rapport sur le régime",
-    "chart-info": "Le diagramme s'affiche après la deuxième entrée."
+    "chart-info": "Le diagramme s'affiche après la deuxième entrée.",
+    "phe-stats-average": "Au cours des 14 derniers jours (hors aujourd'hui), votre apport moyen en Phe était de {average} mg.",
+    "phe-stats-deviation": "L'écart moyen par rapport à votre limite quotidienne est de {deviation}%."
   },
   "blood-values": {
     "title": "Valeurs sanguines",
@@ -305,8 +308,6 @@
     "blood-values-description": "Suivez les valeurs sanguines dans un diagramme.",
     "suggestions-name": "Suggestions 1-clic",
     "suggestions-description": "Ajoutez des suggestions au journal en un seul clic.",
-    "insights-name": "Insights",
-    "insights-description": "Voir des insights et des tendances sur votre nutrition.",
     "community-food-name": "Aliments communautaires",
     "community-food-description": "Partagez et découvrez des aliments de la communauté PKU."
   },
@@ -315,42 +316,6 @@
     "logs": "Journaux",
     "account": "Compte",
     "about": "À propos"
-  },
-  "insights": {
-    "title": "Insights",
-    "description": "Voir des insights et des tendances sur votre nutrition.",
-    "info": "Les insights peuvent contenir des imprécisions.",
-    "satiety-tip": "Actuellement",
-    "satiety-tip-high": "Votre apport en Phe ({phePercentage}%) est supérieur à votre apport calorique ({kcalPercentage}%).",
-    "satiety-tip-low": "Votre apport en Phe ({phePercentage}%) est inférieur à votre apport calorique ({kcalPercentage}%).",
-    "satiety-tip-text": "Votre apport en Phe est de {phePercentage}% et votre apport calorique est de {kcalPercentage}%.",
-    "previous-day": "Aujourd'hui",
-    "previous-day-text": "Hier, l'apport en Phe était de {phe} mg ({percentage}% de votre limite quotidienne).",
-    "blood-values": "Valeurs sanguines",
-    "blood-values-phe": "Votre dernière valeur de Phe était {phe} {unit}.",
-    "blood-values-tyrosine": "Votre dernière valeur de Tyrosine était {tyrosine} {unit}.",
-    "motivation": "Réalisations",
-    "streak": "Vous avez suivi votre nutrition pendant {streak} jours d'affilée.",
-    "streak-max": "Série actuelle : {streak} jours. Meilleure série : {maxStreak} jours.",
-    "streak-max-same": "Vous avez suivi votre nutrition pendant {streak} jours d'affilée.",
-    "week": "Vous avez suivi pendant 7 jours ou plus consécutifs.",
-    "keep-going": "",
-    "start-tracking": "Vous pouvez suivre votre nutrition quotidiennement pour voir vos statistiques.",
-    "diet-report": "Rapport de régime",
-    "phe-stats-average": "Au cours des 14 derniers jours (hors aujourd'hui), votre apport moyen en Phe était de {average} mg.",
-    "phe-stats-deviation": "L'écart moyen par rapport à votre limite quotidienne est de {deviation}%.",
-    "deactivated": "Actuellement indisponible",
-    "deactivated-explanation": "Les insights sont temporairement désactivés."
-  },
-  "badges": {
-    "streak-3-title": "Série de 3 Jours",
-    "streak-3-description": "Suivi pendant 3 jours consécutifs",
-    "streak-5-title": "Série de 5 Jours",
-    "streak-5-description": "Suivi pendant 5 jours consécutifs",
-    "streak-7-title": "Série de 1 Semaine",
-    "streak-7-description": "Suivi pendant 7 jours consécutifs",
-    "streak-14-title": "Série de 2 Semaines",
-    "streak-14-description": "Suivi pendant 14 jours consécutifs"
   },
   "cookie-consent": {
     "message": "Nous utilisons des cookies pour les fonctions essentielles et pour améliorer l'application. Accepter les cookies ?",

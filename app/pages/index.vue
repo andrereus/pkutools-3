@@ -8,7 +8,6 @@ import {
   LucideCalendar,
   LucideChartLine,
   LucideSparkles,
-  LucideLightbulb,
   LucideUsers
 } from 'lucide-vue-next'
 
@@ -54,12 +53,6 @@ const features = [
     description: 'features.blood-values-description',
     icon: LucideChartLine,
     route: 'blood-values'
-  },
-  {
-    name: 'features.insights-name',
-    description: 'features.insights-description',
-    icon: LucideLightbulb,
-    route: 'insights'
   },
   {
     name: 'features.suggestions-name',
