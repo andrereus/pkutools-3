@@ -14,7 +14,7 @@ import {
   getSortedRowModel,
   useVueTable
 } from '@tanstack/vue-table'
-import { h, ref, computed } from 'vue'
+import { h, ref, computed, watch } from 'vue'
 import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
@@ -43,6 +43,12 @@ const editedItem = ref({ ...defaultItem })
 
 const selection = ref('all')
 const chartRef = ref(null)
+const defaultSelectionApplied = ref(false)
+
+// Smart default: when there are many days, default to a shorter range so the chart isn't crowded
+const DAYS_THRESHOLD_THREE_MONTHS = 90
+const DAYS_THRESHOLD_ONE_MONTH = 30
+const DAYS_THRESHOLD_TWO_WEEKS = 14
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
@@ -228,7 +234,11 @@ const chartOptions = computed(() => {
       enabled: false
     },
     xaxis: {
-      type: 'datetime'
+      type: 'datetime',
+      ...(chartXAxisRange.value.min !== undefined && {
+        min: chartXAxisRange.value.min,
+        max: chartXAxisRange.value.max
+      })
     },
     yaxis: {
       min: 0
@@ -264,6 +274,43 @@ const oldestDate = computed(() => {
     const entryDate = parseISO(entry.date)
     return entryDate < oldest ? entryDate : oldest
   }, parseISO(pheDiary.value[0].date))
+})
+
+// Apply smart default selection once when diary has many days (so chart doesn't show "all" and get crowded)
+watch(
+  () => pheDiary.value.length,
+  (count) => {
+    if (defaultSelectionApplied.value || count < 2) return
+    defaultSelectionApplied.value = true
+    if (count > DAYS_THRESHOLD_THREE_MONTHS) {
+      selection.value = 'three_months'
+    } else if (count > DAYS_THRESHOLD_ONE_MONTH) {
+      selection.value = 'one_month'
+    } else if (count > DAYS_THRESHOLD_TWO_WEEKS) {
+      selection.value = 'two_weeks'
+    }
+  },
+  { immediate: true }
+)
+
+// X-axis range from current selection (so chart renders with correct range from the start)
+const chartXAxisRange = computed(() => {
+  const newest = newestDate.value
+  const sel = selection.value
+  if (sel === 'all') return {}
+  if (sel === 'one_week') {
+    return { min: subWeeks(newest, 1).getTime(), max: newest.getTime() }
+  }
+  if (sel === 'two_weeks') {
+    return { min: subWeeks(newest, 2).getTime(), max: newest.getTime() }
+  }
+  if (sel === 'one_month') {
+    return { min: subMonths(newest, 1).getTime(), max: newest.getTime() }
+  }
+  if (sel === 'three_months') {
+    return { min: subMonths(newest, 3).getTime(), max: newest.getTime() }
+  }
+  return {}
 })
 
 // Methods
@@ -694,7 +741,7 @@ defineOgImageComponent('NuxtSeo', {
       <div v-if="pheDiary.length >= 2">
         <div class="flex gap-2 mb-4">
           <button
-            v-for="(period, idx) in ['all', 'one_week', 'two_weeks', 'one_month', 'three_months']"
+            v-for="(period, idx) in ['one_week', 'two_weeks', 'one_month', 'three_months', 'all']"
             :key="idx"
             :class="[
               'px-3 py-1 text-sm rounded-md',
