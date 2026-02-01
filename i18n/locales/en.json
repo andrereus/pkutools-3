@@ -239,12 +239,12 @@
     "tier-premium-ai-desc": "Support monthly and get all features including AI.",
     "tier-premium-ai-feature-all": "All Premium features",
     "tier-premium-ai-feature-ai": "Bigger AI budget",
-    "tier-premium-ai-feature-best-model": "Best AI model",
     "tier-basic": "Trial version",
     "tier-basic-desc": "Free of charge, ad-free",
     "tier-basic-feature-1": "14 days in the diary",
     "tier-basic-feature-2": "30 blood value entries",
     "tier-basic-feature-3": "50 own foods",
+    "tier-feature-try-ai": "Try AI",
     "per-month": "/month",
     "subscribe": "Join"
   },

@@ -18,7 +18,8 @@ const tiers = computed(() => [
     features: [
       t('settings.tier-basic-feature-1'),
       t('settings.tier-basic-feature-2'),
-      t('settings.tier-basic-feature-3')
+      t('settings.tier-basic-feature-3'),
+      t('settings.tier-feature-try-ai')
     ],
     featured: false
   },
@@ -32,19 +33,19 @@ const tiers = computed(() => [
       t('settings.tier-unlimited-feature-2'),
       t('settings.tier-unlimited-feature-3'),
       t('settings.tier-unlimited-feature-5'),
-      t('settings.tier-unlimited-feature-6')
+      t('settings.tier-unlimited-feature-6'),
+      t('settings.tier-feature-try-ai')
     ],
     featured: false
   },
   {
     name: t('settings.tier-premium-ai'),
     id: 'tier-premium-ai',
-    price: '€6',
+    price: '€5',
     description: t('settings.tier-premium-ai-desc'),
     features: [
       t('settings.tier-premium-ai-feature-all'),
-      t('settings.tier-premium-ai-feature-ai'),
-      t('settings.tier-premium-ai-feature-best-model')
+      t('settings.tier-premium-ai-feature-ai')
     ],
     featured: true
   }

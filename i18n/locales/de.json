@@ -239,12 +239,12 @@
     "tier-premium-ai-desc": "Unterstütze monatlich und bekomme alle Funktionen inklusive KI.",
     "tier-premium-ai-feature-all": "Alle Premium-Funktionen",
     "tier-premium-ai-feature-ai": "Größeres KI-Budget",
-    "tier-premium-ai-feature-best-model": "Bestes KI-Modell",
     "tier-basic": "Testversion",
     "tier-basic-desc": "Kostenlos, werbefrei",
     "tier-basic-feature-1": "14 Tage im Tagebuch",
     "tier-basic-feature-2": "30 Blutwert-Einträge",
     "tier-basic-feature-3": "50 eigene Lebensmittel",
+    "tier-feature-try-ai": "KI ausprobieren",
     "per-month": "/monat",
     "subscribe": "Abonnieren"
   },

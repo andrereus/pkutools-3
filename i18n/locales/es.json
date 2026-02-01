@@ -239,12 +239,12 @@
     "tier-premium-ai-desc": "Apoya mensualmente y obtén todas las funciones incluyendo IA.",
     "tier-premium-ai-feature-all": "Todas las funciones Premium",
     "tier-premium-ai-feature-ai": "Presupuesto de IA más grande",
-    "tier-premium-ai-feature-best-model": "Mejor modelo de IA",
     "tier-basic": "Versión de prueba",
     "tier-basic-desc": "Gratis, sin publicidad",
     "tier-basic-feature-1": "14 días en el diario",
     "tier-basic-feature-2": "30 entradas de valor sanguíneo",
     "tier-basic-feature-3": "50 alimentos propios",
+    "tier-feature-try-ai": "Probar IA",
     "per-month": "/mes",
     "subscribe": "Unirme"
   },
