@@ -120,14 +120,14 @@ defineOgImageComponent('NuxtSeo', {
         <div
           class="max-w-4xl w-full rounded-xl bg-gray-900/5 dark:bg-gray-800 p-2 ring-1 ring-inset ring-gray-900/10 dark:ring-gray-700 lg:rounded-2xl lg:p-4"
         >
-          <video
-            src="/videos/pkutools-demo.mp4"
-            autoplay
-            loop
-            muted
-            playsinline
-            preload="auto"
-            class="w-full rounded-md shadow-2xl ring-1 ring-gray-900/10 dark:ring-gray-700"
+          <iframe
+            class="aspect-video w-full rounded-md shadow-2xl ring-1 ring-gray-900/10 dark:ring-gray-700"
+            src="https://www.youtube-nocookie.com/embed/IPqCGJd5VeE?si=mLtOww6nqxRKQHGh"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
           />
         </div>
       </div>
