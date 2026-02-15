@@ -126,6 +126,7 @@ export default defineEventHandler(async (event) => {
       const communityFoodRef = db.ref('communityFoods').push()
       communityKey = communityFoodRef.key
 
+      const now = Date.now()
       const communityFoodData = {
         name: foodData.name,
         icon: foodData.icon || null,
@@ -135,7 +136,8 @@ export default defineEventHandler(async (event) => {
         language,
         contributorId: userId,
         ownFoodKey,
-        createdAt: Date.now(),
+        createdAt: now,
+        updatedAt: now,
         likes: 0,
         dislikes: 0,
         score: 0,

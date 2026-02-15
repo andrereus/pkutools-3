@@ -72,6 +72,7 @@ export const CommunityFoodSchema = z.object({
   contributorId: z.string().min(1),
   ownFoodKey: z.string().min(1),
   createdAt: z.number(),
+  updatedAt: z.number().optional(), // Last update by contributor; missing on legacy records
   likes: z.number().default(0),
   dislikes: z.number().default(0),
   score: z.number().default(0),

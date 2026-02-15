@@ -111,6 +111,7 @@ export default defineEventHandler(async (event) => {
       const communityFoodRef = db.ref('communityFoods').push()
       communityKey = communityFoodRef.key
 
+      const now = Date.now()
       const communityFoodData = {
         name: data.name,
         icon: data.icon || null,
@@ -120,7 +121,8 @@ export default defineEventHandler(async (event) => {
         language,
         contributorId: userId,
         ownFoodKey: entryKey,
-        createdAt: Date.now(),
+        createdAt: now,
+        updatedAt: now,
         likes: 0,
         dislikes: 0,
         score: 0,
@@ -151,7 +153,8 @@ export default defineEventHandler(async (event) => {
           icon: data.icon || null,
           phe: data.phe,
           kcal: data.kcal,
-          note: data.note || null
+          note: data.note || null,
+          updatedAt: Date.now()
         }
 
         if (nameChanged || pheChanged || kcalChanged) {
