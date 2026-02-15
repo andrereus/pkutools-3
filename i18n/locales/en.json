@@ -366,6 +366,7 @@
     "subtitle": "Welcome to PKU Tools! Here you can set up the app and consent to data processing."
   },
   "community": {
+    "statistics": "Statistics:",
     "share": "Share with community",
     "shareLanguage": "Will be shared in {language}",
     "shared": "Shared with community",

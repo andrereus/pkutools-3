@@ -366,6 +366,7 @@
     "subtitle": "¡Bienvenido a PKU Tools! Aquí puede configurar la aplicación y dar su consentimiento para el procesamiento de datos."
   },
   "community": {
+    "statistics": "Estadísticas:",
     "share": "Compartir con la comunidad",
     "shareLanguage": "Se compartirá en {language}",
     "shared": "Compartido con la comunidad",

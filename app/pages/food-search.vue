@@ -510,6 +510,7 @@ defineOgImageComponent('NuxtSeo', {
           class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-2"
         >
           <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+            <span class="font-medium">{{ $t('community.statistics') }}</span>
             <span class="flex items-center gap-1">
               <LucideThumbsUp class="h-4 w-4 text-emerald-600" />
               {{ currentCommunityFood.likes || 0 }}
