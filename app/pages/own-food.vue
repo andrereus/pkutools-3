@@ -11,7 +11,7 @@ import {
   getSortedRowModel,
   useVueTable
 } from '@tanstack/vue-table'
-import { h, ref, computed } from 'vue'
+import { h, ref, computed, watch, onMounted } from 'vue'
 import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
@@ -21,7 +21,9 @@ const store = useStore()
 const { t, locale } = useI18n()
 const dialog = ref(null)
 const dialog2 = ref(null)
+const route = useRoute()
 const localePath = useLocalePath()
+const router = useRouter()
 const notifications = useNotifications()
 const confirm = useConfirm()
 const { isPremium } = useLicense()
@@ -264,11 +266,14 @@ const deleteItem = async () => {
 }
 
 const closeModal = () => {
-  dialog.value.closeDialog()
-  dialog2.value.closeDialog()
+  dialog.value?.closeDialog()
+  dialog2.value?.closeDialog()
   editedItem.value = { ...defaultItem }
   editedIndex.value = -1
   editedKey.value = null
+  if (route.query.edit) {
+    router.replace({ path: route.path, query: {} })
+  }
 }
 
 const save = async () => {
@@ -387,6 +392,38 @@ const addItem = (item) => {
   selectedDate.value = format(new Date(), 'yyyy-MM-dd')
   dialog2.value.openDialog()
 }
+
+// Open edit dialog for an entry by key (e.g. from food-search "Share with community")
+const openEditDialogForEntryKey = (entryKey) => {
+  const item = ownFood.value.find((f) => f['.key'] === entryKey)
+  if (!item || !dialog.value) return false
+  editedIndex.value = ownFood.value.indexOf(item)
+  editedKey.value = entryKey
+  editedItem.value = { ...item }
+  dialog.value.openDialog()
+  return true
+}
+
+// Pending ?edit=KEY from URL (set on mount, consumed when ownFood is ready)
+const pendingEditKey = ref(null)
+onMounted(() => {
+  const editKey = route.query.edit
+  if (editKey && typeof editKey === 'string') pendingEditKey.value = editKey
+})
+
+// When we have a pending edit key and ownFood has loaded, open the edit dialog
+watch(
+  () => [pendingEditKey.value, ownFood.value.length],
+  ([key, len]) => {
+    if (!key || len === 0) return
+    const opened = openEditDialogForEntryKey(key)
+    pendingEditKey.value = null
+    if (!opened && route.query.edit) {
+      router.replace({ path: route.path, query: {} })
+    }
+  },
+  { immediate: true }
+)
 
 const calculatePhe = () => {
   return Math.round((weight.value * editedItem.value.phe) / 100)

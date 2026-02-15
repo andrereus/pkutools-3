@@ -23,6 +23,7 @@ const isCommunityFood = ref(false)
 const communityFoodKey = ref(null)
 const isSharedOwnFood = ref(false)
 const ownFoodCommunityKey = ref(null)
+const selectedOwnFoodKey = ref(null)
 const advancedFood = ref(null)
 const loading = ref(false)
 const fuseInstance = ref(null)
@@ -68,6 +69,7 @@ const loadItem = (item) => {
   communityFoodKey.value = item.communityFoodKey || null
   isSharedOwnFood.value = item.isShared || false
   ownFoodCommunityKey.value = item.ownFoodCommunityKey || null
+  selectedOwnFoodKey.value = item.ownFoodKey || null
   phe.value = item.phe
   weight.value = 100
   kcalReference.value = item.kcal
@@ -142,10 +144,14 @@ const vote = async (voteValue) => {
   }
 }
 
-// Navigate to own-food page to share with community (for own, not-yet-shared foods)
+// Navigate to own-food page and open edit dialog for this item (share with community)
 const goToShareWithCommunity = () => {
+  const entryKey = selectedOwnFoodKey.value
   dialog.value?.closeDialog()
-  navigateTo(localePath('own-food'))
+  const path = entryKey
+    ? `${localePath('own-food')}?edit=${encodeURIComponent(entryKey)}`
+    : localePath('own-food')
+  navigateTo(path)
 }
 
 // Build Fuse index from cached data
@@ -163,7 +169,8 @@ const buildFuseIndex = () => {
         isOwnFood: true,
         isCommunityFood: false,
         isShared: item.shared || false,
-        ownFoodCommunityKey: item.communityKey || null
+        ownFoodCommunityKey: item.communityKey || null,
+        ownFoodKey: item['.key']
       }))
     )
     .concat(
