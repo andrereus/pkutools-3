@@ -142,6 +142,12 @@ const vote = async (voteValue) => {
   }
 }
 
+// Navigate to own-food page to share with community (for own, not-yet-shared foods)
+const goToShareWithCommunity = () => {
+  dialog.value?.closeDialog()
+  navigateTo(localePath('own-food'))
+}
+
 // Build Fuse index from cached data
 const buildFuseIndex = () => {
   if (!cachedUsdaFood.value) return
@@ -474,6 +480,21 @@ defineOgImageComponent('NuxtSeo', {
               {{ $t('community.usageCount', { count: currentCommunityFood.usageCount || 0 }) }}
             </span>
           </div>
+        </div>
+
+        <!-- Share with community CTA when own food is not shared -->
+        <div
+          v-if="isOwnFood && !isSharedOwnFood && userIsAuthenticated"
+          class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
+        >
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 text-sm font-semibold text-emerald-700 dark:text-emerald-300 shadow-xs hover:bg-emerald-100 dark:hover:bg-emerald-900/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 dark:focus-visible:outline-emerald-400 cursor-pointer"
+            @click="goToShareWithCommunity"
+          >
+            <LucideUsers class="h-4 w-4" />
+            {{ $t('community.share') }}
+          </button>
         </div>
 
         <!-- Shared own food metrics section (display only, no voting) -->
