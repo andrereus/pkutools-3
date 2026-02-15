@@ -38,6 +38,12 @@ const features = [
     route: 'phe-calculator'
   },
   {
+    name: 'features.ai-features-name',
+    description: 'features.ai-features-description',
+    icon: LucideSparkles,
+    route: 'phe-calculator'
+  },
+  {
     name: 'features.diary-name',
     description: 'features.diary-description',
     icon: LucideCalendar,
@@ -60,12 +66,6 @@ const features = [
     description: 'features.own-community-description',
     icon: LucideApple,
     route: 'own-food'
-  },
-  {
-    name: 'features.ai-features-name',
-    description: 'features.ai-features-description',
-    icon: LucideSparkles,
-    route: 'phe-calculator'
   }
 ]
 
