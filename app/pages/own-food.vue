@@ -724,6 +724,7 @@ defineOgImageComponent('NuxtSeo', {
               width="30"
               class="food-icon"
               alt="Food Icon"
+              onerror="this.src = '/images/food-icons/organic-food.svg'"
             />
           </span>
           <span
