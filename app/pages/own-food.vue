@@ -715,7 +715,10 @@ defineOgImageComponent('NuxtSeo', {
         @delete="deleteItem"
         @close="closeModal"
       >
-        <div class="flex items-center gap-2 my-1">
+        <div
+          v-if="editedIndex > -1"
+          class="flex items-center gap-2 my-1"
+        >
           <span
             v-if="editedItem.emoji"
             class="text-2xl flex-shrink-0"
@@ -738,7 +741,7 @@ defineOgImageComponent('NuxtSeo', {
           >🍽</span>
           <div class="flex gap-2">
             <SecondaryButton
-              v-if="editedIndex > -1 && !editedItem.emoji && !hasRemovedIconThisSession"
+              v-if="!editedItem.emoji && !hasRemovedIconThisSession"
               :text="$t('own-food.generate-icon')"
               :disabled="!editedItem.name?.trim() || isGeneratingEmoji"
               @click="generateIcon"
