@@ -22,6 +22,7 @@ const notifications = useNotifications()
 const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary, updateFoodItemInDiary, deleteFoodItemFromDiary, updateGettingStarted } =
   useApi()
+const { ensureEmojiForLogEntry } = useFoodEmoji()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -280,12 +281,11 @@ const deleteItem = async () => {
     notifications.success(t('diary.item-deleted'), {
       undoAction: async () => {
         try {
-          // Restore the item by adding it back via save API
-          // Pass communityFoodKey to increment usage count (will be stored in entry)
+          const restoredItem = await ensureEmojiForLogEntry(deletedItem)
           await addFoodItemToDiary({
             date: entryDate,
-            ...deletedItem,
-            communityFoodKey: deletedItem.communityFoodKey || undefined
+            ...restoredItem,
+            communityFoodKey: restoredItem.communityFoodKey || undefined
           })
         } catch (error) {
           console.error('Undo error:', error)
@@ -319,7 +319,7 @@ const save = async () => {
   const logIndex = editedIndex.value
   const entryDate = date.value
 
-  const newLogEntry = {
+  let newLogEntry = {
     name: editedItem.value.name,
     emoji: editedItem.value.emoji || null,
     icon: editedItem.value.icon || null,
@@ -339,6 +339,8 @@ const save = async () => {
   close()
 
   try {
+    newLogEntry = await ensureEmojiForLogEntry(newLogEntry)
+
     if (isEditing && entryKey && logIndex > -1) {
       // Update existing item - use update API (validates server-side with Zod)
       await updateFoodItemInDiary({
@@ -552,7 +554,7 @@ Base estimates on typical nutritional databases. Use null for unknown values. Fo
         : null
 
     // Prepare log entry
-    const logEntry = {
+    let logEntry = {
       name: sanitizedName,
       emoji:
         foodData.emoji && typeof foodData.emoji === 'string' && foodData.emoji.trim() !== ''
@@ -566,6 +568,8 @@ Base estimates on typical nutritional databases. Use null for unknown values. Fo
       kcal: kcal,
       note: note
     }
+
+    logEntry = await ensureEmojiForLogEntry(logEntry)
 
     // Check health consent before saving
     if (!store.user || store.settings.healthDataConsent !== true) {

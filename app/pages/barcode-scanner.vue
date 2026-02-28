@@ -9,6 +9,7 @@ const dialog = ref(null)
 const localePath = useLocalePath()
 const notifications = useNotifications()
 const { addFoodItemToDiary } = useApi()
+const { ensureEmojiForLogEntry } = useFoodEmoji()
 
 // Reactive state
 const loaded = ref(false)
@@ -133,7 +134,7 @@ const save = async () => {
     return
   }
 
-  const logEntry = {
+  let logEntry = {
     name: result.value.product.product_name,
     emoji: null,
     icon: null,
@@ -149,6 +150,8 @@ const save = async () => {
 
   // Use server API for all writes - validates with Zod
   try {
+    logEntry = await ensureEmojiForLogEntry(logEntry)
+
     await addFoodItemToDiary({
       date: selectedDate.value,
       ...logEntry

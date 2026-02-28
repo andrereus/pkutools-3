@@ -28,6 +28,7 @@ const notifications = useNotifications()
 const confirm = useConfirm()
 const { isPremium } = useLicense()
 const { saveOwnFood, addFoodItemToDiary, updateOwnFood, deleteOwnFood } = useApi()
+const { ensureEmojiForLogEntry } = useFoodEmoji()
 
 // Reactive state
 const search = ref('')
@@ -439,7 +440,7 @@ const add = async () => {
     return
   }
 
-  const logEntry = {
+  let logEntry = {
     name: editedItem.value.name,
     icon: editedItem.value.icon || null,
     emoji: null,
@@ -458,6 +459,8 @@ const add = async () => {
 
   // Use server API for all writes - validates with Zod
   try {
+    logEntry = await ensureEmojiForLogEntry(logEntry)
+
     await addFoodItemToDiary({
       date: selectedDate.value,
       ...logEntry,

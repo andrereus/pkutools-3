@@ -28,6 +28,7 @@ const notifications = useNotifications()
 const confirm = useConfirm()
 const { isPremium } = useLicense()
 const { addFoodItemToDiary, deleteDiaryDay, updateDiaryDay, createDiaryDay } = useApi()
+const { ensureEmojiForLogEntry } = useFoodEmoji()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -461,9 +462,10 @@ const deleteItem = async () => {
           // If it has log items, restore them one by one
           if (deletedItem.log && deletedItem.log.length > 0) {
             for (const logItem of deletedItem.log) {
+              const itemWithEmoji = await ensureEmojiForLogEntry(logItem)
               await addFoodItemToDiary({
                 date: deletedItem.date,
-                ...logItem
+                ...itemWithEmoji
               })
             }
           } else {
@@ -630,7 +632,7 @@ const saveLogEdit = async () => {
     return
   }
 
-  const updatedItem = {
+  let updatedItem = {
     name: editedLogItem.value.name,
     emoji: editedLogItem.value.emoji || null,
     icon: editedLogItem.value.icon || null,
@@ -650,6 +652,7 @@ const saveLogEdit = async () => {
   }
 
   try {
+    updatedItem = await ensureEmojiForLogEntry(updatedItem)
     if (editedLogIndex.value > -1) {
       // Update existing log item - only update local state
       // Changes will be saved when the main dialog is saved

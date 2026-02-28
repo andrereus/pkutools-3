@@ -11,6 +11,7 @@ const localePath = useLocalePath()
 const notifications = useNotifications()
 const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary } = useApi()
+const { ensureEmojiForLogEntry } = useFoodEmoji()
 
 // Reactive state
 const phe = ref(null)
@@ -360,6 +361,8 @@ const save = async () => {
 
   // Use server API for all writes - validates with Zod
   try {
+    logEntry = await ensureEmojiForLogEntry(logEntry)
+
     await addFoodItemToDiary({
       date: selectedDate.value,
       ...logEntry
