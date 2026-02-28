@@ -123,6 +123,7 @@
     "share-info": "Partagez vos aliments personnels avec la communauté pour que d'autres puissent les trouver dans la Recherche alimentaire.",
     "export-filename": "PKU Tools - Aliments personnels",
     "generate-icon": "Générer l'icône",
+    "generate-icon-limit-reached": "Limite atteinte. Réessayez plus tard.",
     "remove-icon": "Supprimer",
     "item-deleted": "Aliment supprimé",
     "delete-shared-title": "Supprimer l'aliment partagé ?",

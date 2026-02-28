@@ -37,6 +37,8 @@ const weight = ref(100)
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isSaving = ref(false)
 const isGeneratingEmoji = ref(false)
+const GENERATE_ICON_LIMIT = 2
+const generateCount = ref(0)
 
 const defaultItem = {
   name: '',
@@ -278,6 +280,7 @@ const closeModal = () => {
   editedItem.value = { ...defaultItem }
   editedIndex.value = -1
   editedKey.value = null
+  generateCount.value = 0
   if (route.query.edit) {
     router.replace({ path: route.path, query: {} })
   }
@@ -408,6 +411,7 @@ const addItem = (item) => {
   editedIndex.value = ownFood.value.indexOf(item)
   editedKey.value = item['.key']
   editedItem.value = { ...item }
+  generateCount.value = 0
   selectedDate.value = format(new Date(), 'yyyy-MM-dd')
   dialog2.value.openDialog()
 }
@@ -419,6 +423,7 @@ const openEditDialogForEntryKey = (entryKey) => {
   editedIndex.value = ownFood.value.indexOf(item)
   editedKey.value = entryKey
   editedItem.value = { ...item }
+  generateCount.value = 0
   dialog.value.openDialog()
   return true
 }
@@ -541,13 +546,14 @@ const triggerDownload = (csvContent) => {
 }
 
 const generateIcon = async () => {
-  if (!editedItem.value.name?.trim()) return
+  if (!editedItem.value.name?.trim() || generateCount.value >= GENERATE_ICON_LIMIT) return
   isGeneratingEmoji.value = true
   try {
     const emoji = await fetchEmojiForFood(editedItem.value.name)
     if (emoji) {
       editedItem.value.emoji = emoji
       editedItem.value.icon = null
+      generateCount.value += 1
     }
   } finally {
     isGeneratingEmoji.value = false
@@ -731,18 +737,26 @@ defineOgImageComponent('NuxtSeo', {
             v-else
             class="text-2xl flex-shrink-0 opacity-50"
           >🍽</span>
-          <div class="flex gap-2">
-            <SecondaryButton
-              v-if="editedIndex > -1 && !editedItem.emoji"
-              :text="$t('own-food.generate-icon')"
-              :disabled="!editedItem.name?.trim() || isGeneratingEmoji"
-              @click="generateIcon"
-            />
-            <SecondaryButton
-              v-if="editedItem.emoji"
-              :text="$t('own-food.remove-icon')"
-              @click="removeIcon"
-            />
+          <div class="flex flex-col gap-2">
+            <div class="flex gap-2">
+              <SecondaryButton
+                v-if="editedIndex > -1 && !editedItem.emoji && generateCount < GENERATE_ICON_LIMIT"
+                :text="$t('own-food.generate-icon')"
+                :disabled="!editedItem.name?.trim() || isGeneratingEmoji"
+                @click="generateIcon"
+              />
+              <SecondaryButton
+                v-if="editedItem.emoji"
+                :text="$t('own-food.remove-icon')"
+                @click="removeIcon"
+              />
+            </div>
+            <p
+              v-if="editedIndex > -1 && !editedItem.emoji && generateCount >= GENERATE_ICON_LIMIT"
+              class="text-sm text-gray-500 dark:text-gray-400"
+            >
+              {{ $t('own-food.generate-icon-limit-reached') }}
+            </p>
           </div>
         </div>
 
