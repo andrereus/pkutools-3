@@ -1,6 +1,5 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import foodIcons from '~/assets/data/food-icons-map.json'
 import Fuse from 'fuse.js'
 import { format } from 'date-fns'
 import {
@@ -28,7 +27,7 @@ const notifications = useNotifications()
 const confirm = useConfirm()
 const { isPremium } = useLicense()
 const { saveOwnFood, addFoodItemToDiary, updateOwnFood, deleteOwnFood } = useApi()
-const { ensureEmojiForLogEntry } = useFoodEmoji()
+const { fetchEmojiForFood, ensureEmojiForLogEntry } = useFoodEmoji()
 
 // Reactive state
 const search = ref('')
@@ -37,10 +36,12 @@ const editedKey = ref(null)
 const weight = ref(100)
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isSaving = ref(false)
+const isGeneratingEmoji = ref(false)
 
 const defaultItem = {
   name: '',
   icon: null,
+  emoji: null,
   phe: null,
   kcal: null,
   note: null,
@@ -101,19 +102,23 @@ const columns = [
     },
     cell: ({ row }) => {
       const item = row.original
+      const hasEmoji = item.emoji != null && item.emoji !== ''
+      const hasIcon = item.icon != null && item.icon !== ''
+      const iconOrEmoji = hasEmoji
+        ? h('span', { class: 'text-xl flex-shrink-0' }, item.emoji)
+        : hasIcon
+          ? h('img', {
+              src: `/images/food-icons/${item.icon}.svg`,
+              width: 25,
+              class: 'food-icon flex-shrink-0',
+              alt: 'Food Icon',
+              onError: (e) => {
+                e.target.src = '/images/food-icons/organic-food.svg'
+              }
+            })
+          : h('span', { class: 'text-xl flex-shrink-0 opacity-50' }, '🍽')
       return h('span', { class: 'flex items-center gap-1 min-w-0' }, [
-        h('img', {
-          src:
-            item.icon !== undefined && item.icon !== null && item.icon !== ''
-              ? `/images/food-icons/${item.icon}.svg`
-              : '/images/food-icons/organic-food.svg',
-          width: 25,
-          class: 'food-icon flex-shrink-0',
-          alt: 'Food Icon',
-          onError: (e) => {
-            e.target.src = '/images/food-icons/organic-food.svg'
-          }
-        }),
+        iconOrEmoji,
         h('span', { style: 'word-wrap: break-word; overflow-wrap: break-word;' }, item.name),
         item.shared
           ? h(
@@ -248,6 +253,7 @@ const deleteItem = async () => {
           await saveOwnFood({
             name: deletedItem.name,
             icon: deletedItem.icon || null,
+            emoji: deletedItem.emoji || null,
             phe: deletedItem.phe,
             kcal: deletedItem.kcal,
             note: deletedItem.note || null,
@@ -293,6 +299,7 @@ const save = async () => {
   const isEditing = editedIndex.value > -1
   const entryKey = editedKey.value
   const entryName = editedItem.value.name
+  const entryEmoji = editedItem.value.emoji || null
   const entryIcon = editedItem.value.icon || null
   const entryPhe = Number(editedItem.value.phe)
   const entryKcal = Number(editedItem.value.kcal) || 0
@@ -356,6 +363,7 @@ const save = async () => {
         entryKey: entryKey,
         name: entryName,
         icon: entryIcon,
+        emoji: entryEmoji,
         phe: entryPhe,
         kcal: entryKcal,
         note: entryNote,
@@ -367,11 +375,21 @@ const save = async () => {
       console.error('Update error:', error)
     }
   } else {
-    // Add new entry - use save API
+    // Add new entry - auto-generate emoji if missing, then save
     try {
+      let emoji = entryEmoji
+      if (!emoji && entryName.trim()) {
+        const withEmoji = await ensureEmojiForLogEntry({
+          name: entryName,
+          emoji: null,
+          icon: null
+        })
+        emoji = withEmoji.emoji || null
+      }
       await saveOwnFood({
         name: entryName,
-        icon: entryIcon,
+        icon: null,
+        emoji,
         phe: entryPhe,
         kcal: entryKcal,
         note: entryNote,
@@ -443,7 +461,7 @@ const add = async () => {
   let logEntry = {
     name: editedItem.value.name,
     icon: editedItem.value.icon || null,
-    emoji: null,
+    emoji: editedItem.value.emoji || null,
     pheReference: editedItem.value.phe,
     kcalReference: editedItem.value.kcal || 0,
     weight: Number(weight.value),
@@ -522,9 +540,23 @@ const triggerDownload = (csvContent) => {
   document.body.removeChild(link)
 }
 
-const setIcon = (item, close) => {
-  editedItem.value.icon = item.svg
-  close()
+const generateIcon = async () => {
+  if (!editedItem.value.name?.trim()) return
+  isGeneratingEmoji.value = true
+  try {
+    const emoji = await fetchEmojiForFood(editedItem.value.name)
+    if (emoji) {
+      editedItem.value.emoji = emoji
+      editedItem.value.icon = null
+    }
+  } finally {
+    isGeneratingEmoji.value = false
+  }
+}
+
+const removeIcon = () => {
+  editedItem.value.emoji = null
+  editedItem.value.icon = null
 }
 
 definePageMeta({
@@ -678,48 +710,40 @@ defineOgImageComponent('NuxtSeo', {
         @delete="deleteItem"
         @close="closeModal"
       >
-        <HeadlessPopover v-if="license">
-          <HeadlessPopoverButton class="my-1">
+        <div class="flex items-center gap-2 my-1">
+          <span
+            v-if="editedItem.emoji"
+            class="text-2xl flex-shrink-0"
+          >{{ editedItem.emoji }}</span>
+          <span
+            v-else-if="editedItem.icon"
+            class="flex-shrink-0"
+          >
             <img
-              v-if="editedItem.icon !== undefined && editedItem.icon !== null"
               :src="'/images/food-icons/' + editedItem.icon + '.svg'"
               width="30"
-              class="food-icon float-left"
+              class="food-icon"
               alt="Food Icon"
             />
-            <img
-              v-if="editedItem.icon === undefined || editedItem.icon === null"
-              :src="'/images/food-icons/organic-food.svg'"
-              width="30"
-              class="food-icon float-left"
-              alt="Food Icon"
+          </span>
+          <span
+            v-else
+            class="text-2xl flex-shrink-0 opacity-50"
+          >🍽</span>
+          <div class="flex gap-2">
+            <SecondaryButton
+              v-if="editedIndex > -1 && !editedItem.emoji"
+              :text="$t('own-food.generate-icon')"
+              :disabled="!editedItem.name?.trim() || isGeneratingEmoji"
+              @click="generateIcon"
             />
-            <span class="float-left my-1 ml-2 text-sm">{{ $t('own-food.choose-icon') }}</span>
-            <LucideChevronDown class="h-5 w-5 inline-block ml-2" aria-hidden="true" />
-          </HeadlessPopoverButton>
-
-          <transition
-            enter-active-class="transition ease-out duration-200"
-            enter-from-class="transform opacity-0 scale-95"
-            enter-to-class="transform opacity-100 scale-100"
-            leave-active-class="transition ease-in duration-75"
-            leave-from-class="transform opacity-100 scale-100"
-            leave-to-class="transform opacity-0 scale-95"
-          >
-            <HeadlessPopoverPanel v-slot="{ close }">
-              <span v-for="(item, index) in foodIcons" :key="index">
-                <img
-                  v-if="item.svg !== undefined"
-                  :src="'/images/food-icons/' + item.svg + '.svg'"
-                  width="35"
-                  class="food-icon pick-icon m-2"
-                  alt="Food Icon"
-                  @click="setIcon(item, close)"
-                />
-              </span>
-            </HeadlessPopoverPanel>
-          </transition>
-        </HeadlessPopover>
+            <SecondaryButton
+              v-if="editedItem.emoji"
+              :text="$t('own-food.remove-icon')"
+              @click="removeIcon"
+            />
+          </div>
+        </div>
 
         <TextInput
           v-model="editedItem.name"

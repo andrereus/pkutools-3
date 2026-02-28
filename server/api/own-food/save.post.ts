@@ -130,6 +130,7 @@ export default defineEventHandler(async (event) => {
       const communityFoodData = {
         name: foodData.name,
         icon: foodData.icon || null,
+        emoji: foodData.emoji || null,
         phe: foodData.phe,
         kcal: foodData.kcal,
         note: foodData.note || null,

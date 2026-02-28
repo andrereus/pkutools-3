@@ -166,6 +166,7 @@ const buildFuseIndex = () => {
       ownFood.value.map((item) => ({
         name: item.name,
         icon: item.icon,
+        emoji: item.emoji,
         phe: item.phe,
         kcal: item.kcal,
         note: item.note || null,
@@ -189,6 +190,7 @@ const buildFuseIndex = () => {
         .map((item) => ({
           name: item.name,
           icon: item.icon,
+          emoji: item.emoji,
           phe: item.phe,
           kcal: item.kcal,
           note: item.note || null,

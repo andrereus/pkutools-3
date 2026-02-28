@@ -45,6 +45,7 @@ export const LabValueSchema = z
 export const OwnFoodSchema = z.object({
   name: z.string().min(1, 'Food name is required').max(200, 'Food name is too long'),
   icon: z.string().nullable().optional(),
+  emoji: z.string().nullable().optional(),
   phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
   kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
   note: z.string().max(500, 'Note is too long').nullable().optional(),
@@ -65,6 +66,7 @@ export const OwnFoodSaveSchema = OwnFoodSchema.extend({
 export const CommunityFoodSchema = z.object({
   name: z.string().min(1).max(200),
   icon: z.string().nullable().optional(),
+  emoji: z.string().nullable().optional(),
   phe: z.coerce.number().nonnegative(),
   kcal: z.coerce.number().nonnegative(),
   note: z.string().max(500).nullable().optional(),

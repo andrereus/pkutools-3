@@ -115,6 +115,7 @@ export default defineEventHandler(async (event) => {
       const communityFoodData = {
         name: data.name,
         icon: data.icon || null,
+        emoji: data.emoji || null,
         phe: data.phe,
         kcal: data.kcal,
         note: data.note || null,
@@ -151,6 +152,7 @@ export default defineEventHandler(async (event) => {
         const updateData: Record<string, unknown> = {
           name: data.name,
           icon: data.icon || null,
+          emoji: data.emoji || null,
           phe: data.phe,
           kcal: data.kcal,
           note: data.note || null,

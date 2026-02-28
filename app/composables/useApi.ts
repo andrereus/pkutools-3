@@ -284,6 +284,7 @@ export const useApi = () => {
   const saveOwnFood = async (data: {
     name: string
     icon?: string | null
+    emoji?: string | null
     phe: number
     kcal: number
     note?: string | null
@@ -317,6 +318,7 @@ export const useApi = () => {
     entryKey: string
     name: string
     icon?: string | null
+    emoji?: string | null
     phe: number
     kcal: number
     note?: string | null
@@ -340,6 +342,7 @@ export const useApi = () => {
           data: {
             name: data.name,
             icon: data.icon,
+            emoji: data.emoji,
             phe: data.phe,
             note: data.note,
             kcal: data.kcal,
