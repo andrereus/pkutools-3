@@ -333,7 +333,7 @@ defineOgImageComponent('NuxtSeo', {
                 v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
                 :src="'/images/food-icons/' + item.icon + '.svg'"
                 onerror="this.src = '/images/food-icons/organic-food.svg'"
-                width="24"
+                width="25"
                 class="food-icon"
                 alt="Food Icon"
               />
@@ -343,7 +343,7 @@ defineOgImageComponent('NuxtSeo', {
                   (item.emoji === undefined || item.emoji === null)
                 "
                 :src="'/images/food-icons/organic-food.svg'"
-                width="24"
+                width="25"
                 class="food-icon"
                 alt="Food Icon"
               />

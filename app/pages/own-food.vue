@@ -110,7 +110,7 @@ const columns = [
         : hasIcon
           ? h('img', {
               src: `/images/food-icons/${item.icon}.svg`,
-              width: 24,
+              width: 25,
               class: 'food-icon flex-shrink-0',
               alt: 'Food Icon',
               onError: (e) => {
@@ -729,7 +729,7 @@ defineOgImageComponent('NuxtSeo', {
           >
             <img
               :src="'/images/food-icons/' + editedItem.icon + '.svg'"
-              width="24"
+              width="25"
               class="food-icon"
               alt="Food Icon"
               onerror="this.src = '/images/food-icons/organic-food.svg'"
