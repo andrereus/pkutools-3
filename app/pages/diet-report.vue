@@ -1036,7 +1036,7 @@ defineOgImageComponent('NuxtSeo', {
                     item.emoji !== undefined &&
                     item.emoji !== null
                   "
-                  class="ml-0.5 mr-1 text-2xl inline-block align-middle leading-none"
+                  class="ml-0.5 mr-1 text-xl inline-block align-middle leading-none"
                 >
                   {{ item.emoji }}
                 </span>
