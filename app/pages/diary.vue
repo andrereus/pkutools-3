@@ -778,7 +778,7 @@ defineOgImageComponent('NuxtSeo', {
                 v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
                 :src="'/images/food-icons/' + item.icon + '.svg'"
                 onerror="this.src = '/images/food-icons/organic-food.svg'"
-                width="25"
+                width="24"
                 class="food-icon"
                 alt="Food Icon"
               />
@@ -788,7 +788,7 @@ defineOgImageComponent('NuxtSeo', {
                   (item.emoji === undefined || item.emoji === null)
                 "
                 :src="'/images/food-icons/organic-food.svg'"
-                width="25"
+                width="24"
                 class="food-icon"
                 alt="Food Icon"
               />
@@ -798,7 +798,7 @@ defineOgImageComponent('NuxtSeo', {
                   item.emoji !== undefined &&
                   item.emoji !== null
                 "
-                class="ml-0.5 mr-1"
+                class="ml-0.5 mr-1 text-2xl inline-block align-middle leading-none"
               >
                 {{ item.emoji }}
               </span>

@@ -106,18 +106,18 @@ const columns = [
       const hasEmoji = item.emoji != null && item.emoji !== ''
       const hasIcon = item.icon != null && item.icon !== ''
       const iconOrEmoji = hasEmoji
-        ? h('span', { class: 'text-xl flex-shrink-0' }, item.emoji)
+        ? h('span', { class: 'text-2xl flex-shrink-0 inline-block align-middle leading-none' }, item.emoji)
         : hasIcon
           ? h('img', {
               src: `/images/food-icons/${item.icon}.svg`,
-              width: 25,
+              width: 24,
               class: 'food-icon flex-shrink-0',
               alt: 'Food Icon',
               onError: (e) => {
                 e.target.src = '/images/food-icons/organic-food.svg'
               }
             })
-          : h('span', { class: 'text-xl flex-shrink-0 opacity-50' }, '🍽')
+          : h('span', { class: 'text-2xl flex-shrink-0 opacity-50 inline-block align-middle leading-none' }, '🍽')
       return h('span', { class: 'flex items-center gap-1 min-w-0' }, [
         iconOrEmoji,
         h('span', { style: 'word-wrap: break-word; overflow-wrap: break-word;' }, item.name),
@@ -729,7 +729,7 @@ defineOgImageComponent('NuxtSeo', {
           >
             <img
               :src="'/images/food-icons/' + editedItem.icon + '.svg'"
-              width="30"
+              width="24"
               class="food-icon"
               alt="Food Icon"
               onerror="this.src = '/images/food-icons/organic-food.svg'"
