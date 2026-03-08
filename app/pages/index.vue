@@ -122,10 +122,18 @@ defineOgImageComponent('NuxtSeo', {
         >
           <iframe
             class="aspect-video w-full rounded-md shadow-2xl ring-1 ring-gray-900/10 dark:ring-gray-700"
-            src="https://www.youtube-nocookie.com/embed/IPqCGJd5VeE?si=mLtOww6nqxRKQHGh"
+            src="https://www.youtube-nocookie.com/embed/6Re98hV8R34?si=LhfkUHf-KxCTAV0Y"
             title="YouTube video player"
             frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allow="
+              accelerometer;
+              autoplay;
+              clipboard-write;
+              encrypted-media;
+              gyroscope;
+              picture-in-picture;
+              web-share;
+            "
             referrerpolicy="strict-origin-when-cross-origin"
             allowfullscreen
           />
