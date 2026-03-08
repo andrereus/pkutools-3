@@ -122,7 +122,7 @@ defineOgImageComponent('NuxtSeo', {
         >
           <iframe
             class="aspect-video w-full rounded-md shadow-2xl ring-1 ring-gray-900/10 dark:ring-gray-700"
-            src="https://www.youtube-nocookie.com/embed/6Re98hV8R34?si=LhfkUHf-KxCTAV0Y"
+            src="https://www.youtube-nocookie.com/embed/XUcei4Iuggc"
             title="YouTube video player"
             frameborder="0"
             allow="
