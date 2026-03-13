@@ -82,7 +82,25 @@ export default defineNuxtConfig({
     '@nuxtjs/seo'
   ],
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'firebase/app',
+        'firebase/auth',
+        'firebase/database',
+        'vue3-apexcharts',
+        'lucide-vue-next',
+        '@headlessui/vue',
+        'fuse.js',
+        'date-fns',
+        'firebase/ai',
+        'vue-qrcode-reader',
+        'date-fns/locale',
+        '@tanstack/vue-table'
+      ]
+    }
   },
   runtimeConfig: {
     // Server-side only (private)
