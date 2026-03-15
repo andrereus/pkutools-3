@@ -623,7 +623,7 @@ const handleCookieConsent = (consent) => {
             :key="item.name"
             :to="$localePath(item.route)"
             :class="[
-              'relative flex flex-col items-center justify-center flex-1 h-full mx-1 py-1 rounded-xl transition-all duration-300',
+              'relative flex flex-col items-center justify-center flex-1 h-full mx-0.5 py-1 rounded-xl transition-all duration-300',
               isTabActive(item)
                 ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
                 : 'text-gray-900 dark:text-white'
@@ -631,16 +631,12 @@ const handleCookieConsent = (consent) => {
           >
             <component
               :is="iconMap[item.icon]"
-              :class="[
-                'transition-transform duration-300',
-                isTabActive(item) ? 'h-5 w-5 scale-110' : 'h-5 w-5'
-              ]"
+              class="h-5 w-5"
               aria-hidden="true"
             />
             <span
               :class="[
-                'text-[10px] mt-0.5 font-medium transition-opacity duration-300 max-w-full truncate px-0.5',
-                isTabActive(item) ? 'font-semibold' : ''
+                'hidden'
               ]"
             >{{ $t(item.name) }}</span>
           </NuxtLink>
