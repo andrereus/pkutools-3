@@ -622,8 +622,9 @@ const handleCookieConsent = (consent) => {
             v-for="item in tabNavigation"
             :key="item.name"
             :to="$localePath(item.route)"
+            :aria-label="$t(item.name)"
             :class="[
-              'relative flex flex-col items-center justify-center flex-1 h-full mx-0.5 py-1 rounded-xl transition-all duration-300',
+              'relative flex items-center justify-center flex-1 h-full mx-0.5 rounded-xl transition-all duration-300',
               isTabActive(item)
                 ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
                 : 'text-gray-900 dark:text-white'
@@ -634,11 +635,6 @@ const handleCookieConsent = (consent) => {
               class="h-5 w-5"
               aria-hidden="true"
             />
-            <span
-              :class="[
-                'hidden'
-              ]"
-            >{{ $t(item.name) }}</span>
           </NuxtLink>
         </nav>
       </div>
@@ -704,11 +700,11 @@ const handleCookieConsent = (consent) => {
 .liquid-glass-top {
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.55) 0%,
-    rgba(255, 255, 255, 0.35) 100%
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.42) 100%
   );
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.06),
     0 1px 2px rgba(0, 0, 0, 0.04);
@@ -717,8 +713,8 @@ const handleCookieConsent = (consent) => {
 :is(.dark *) .liquid-glass-top {
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.05) 100%
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.04) 100%
   );
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.25),
