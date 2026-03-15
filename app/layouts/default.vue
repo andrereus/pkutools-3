@@ -640,7 +640,7 @@ const handleCookieConsent = (consent) => {
             <span
               :class="[
                 'text-[10px] mt-0.5 font-medium transition-opacity duration-300',
-                isTabActive(item) ? 'opacity-100' : 'opacity-70'
+                isTabActive(item) ? 'opacity-100 font-semibold' : 'opacity-70'
               ]"
             >{{ $t(item.name) }}</span>
           </NuxtLink>
@@ -764,8 +764,8 @@ const handleCookieConsent = (consent) => {
 .liquid-glass-active {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.5) 0%,
-    rgba(255, 255, 255, 0.3) 100%
+    rgba(56, 189, 248, 0.12) 0%,
+    rgba(56, 189, 248, 0.06) 100%
   );
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
@@ -773,8 +773,8 @@ const handleCookieConsent = (consent) => {
 :is(.dark *) .liquid-glass-active {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.05) 100%
+    rgba(56, 189, 248, 0.15) 0%,
+    rgba(56, 189, 248, 0.08) 100%
   );
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
