@@ -617,15 +617,15 @@ const handleCookieConsent = (consent) => {
       style="padding-bottom: env(safe-area-inset-bottom)"
     >
       <div class="flex justify-center px-4 pb-2">
-        <nav class="liquid-glass flex w-full max-w-md justify-around items-center h-14 rounded-2xl">
+        <nav class="liquid-glass flex w-full max-w-md justify-around items-center h-14 rounded-2xl p-1">
           <NuxtLink
             v-for="item in tabNavigation"
             :key="item.name"
             :to="$localePath(item.route)"
             :class="[
-              'relative flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-300 border border-transparent',
+              'relative flex flex-col items-center justify-center flex-1 h-full mx-1 py-1 rounded-xl transition-all duration-300',
               isTabActive(item)
-                ? 'liquid-glass-active text-sky-600 dark:text-sky-400 border-2! border-sky-500/60! dark:border-sky-400/50!'
+                ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
                 : 'text-gray-900 dark:text-white'
             ]"
           >
@@ -639,7 +639,7 @@ const handleCookieConsent = (consent) => {
             />
             <span
               :class="[
-                'text-[10px] mt-0.5 font-medium transition-opacity duration-300',
+                'text-[10px] mt-0.5 font-medium transition-opacity duration-300 max-w-full truncate px-0.5',
                 isTabActive(item) ? 'font-semibold' : ''
               ]"
             >{{ $t(item.name) }}</span>
