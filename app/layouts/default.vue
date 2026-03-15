@@ -623,9 +623,9 @@ const handleCookieConsent = (consent) => {
             :key="item.name"
             :to="$localePath(item.route)"
             :class="[
-              'relative flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-300',
+              'relative flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-300 border border-transparent',
               isTabActive(item)
-                ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
+                ? 'liquid-glass-active text-sky-600 dark:text-sky-400 border-sky-500/50! dark:border-sky-400/40!'
                 : 'text-gray-500 dark:text-gray-400'
             ]"
           >
@@ -643,10 +643,6 @@ const handleCookieConsent = (consent) => {
                 isTabActive(item) ? 'opacity-100 font-semibold' : 'opacity-70'
               ]"
             >{{ $t(item.name) }}</span>
-            <span
-              v-if="isTabActive(item)"
-              class="absolute -bottom-0.5 w-4 h-0.5 rounded-full bg-sky-500 dark:bg-sky-400"
-            />
           </NuxtLink>
         </nav>
       </div>
