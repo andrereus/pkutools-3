@@ -625,7 +625,7 @@ const handleCookieConsent = (consent) => {
             :class="[
               'relative flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-300 border border-transparent',
               isTabActive(item)
-                ? 'liquid-glass-active text-sky-600 dark:text-sky-400 border-sky-500/50! dark:border-sky-400/40!'
+                ? 'liquid-glass-active text-sky-600 dark:text-sky-400 border-2! border-sky-500/60! dark:border-sky-400/50!'
                 : 'text-gray-900 dark:text-white'
             ]"
           >
