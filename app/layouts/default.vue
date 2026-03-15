@@ -739,10 +739,10 @@ const handleCookieConsent = (consent) => {
   );
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 0.5px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.08),
-    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.6),
     inset 0 0 0 0.5px rgba(255, 255, 255, 0.4);
 }
@@ -754,7 +754,7 @@ const handleCookieConsent = (consent) => {
     rgba(255, 255, 255, 0.04) 50%,
     rgba(255, 255, 255, 0.06) 100%
   );
-  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
     0 1px 3px rgba(0, 0, 0, 0.2),
