@@ -643,6 +643,10 @@ const handleCookieConsent = (consent) => {
                 isTabActive(item) ? 'opacity-100 font-semibold' : 'opacity-70'
               ]"
             >{{ $t(item.name) }}</span>
+            <span
+              v-if="isTabActive(item)"
+              class="absolute -bottom-0.5 w-4 h-0.5 rounded-full bg-sky-500 dark:bg-sky-400"
+            />
           </NuxtLink>
         </nav>
       </div>
