@@ -733,18 +733,18 @@ const handleCookieConsent = (consent) => {
 .liquid-glass {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.72) 0%,
-    rgba(255, 255, 255, 0.58) 50%,
-    rgba(255, 255, 255, 0.65) 100%
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.42) 50%,
+    rgba(255, 255, 255, 0.52) 100%
   );
   backdrop-filter: blur(24px) saturate(200%);
   -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border: 0.5px solid rgba(255, 255, 255, 0.6);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.08),
     0 2px 6px rgba(0, 0, 0, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.85),
-    inset 0 0 0 0.5px rgba(255, 255, 255, 0.6);
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.5);
 }
 
 :is(.dark *) .liquid-glass {
