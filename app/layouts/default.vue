@@ -626,7 +626,7 @@ const handleCookieConsent = (consent) => {
               'relative flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-300 border border-transparent',
               isTabActive(item)
                 ? 'liquid-glass-active text-sky-600 dark:text-sky-400 border-sky-500/50! dark:border-sky-400/40!'
-                : 'text-gray-500 dark:text-gray-400'
+                : 'text-gray-900 dark:text-white'
             ]"
           >
             <component
@@ -640,7 +640,7 @@ const handleCookieConsent = (consent) => {
             <span
               :class="[
                 'text-[10px] mt-0.5 font-medium transition-opacity duration-300',
-                isTabActive(item) ? 'opacity-100 font-semibold' : 'opacity-70'
+                isTabActive(item) ? 'font-semibold' : ''
               ]"
             >{{ $t(item.name) }}</span>
           </NuxtLink>
