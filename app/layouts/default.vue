@@ -219,7 +219,7 @@ const handleCookieConsent = (consent) => {
   <div class="min-h-screen flex flex-col app-container-safe-area dark:text-white">
     <div
       as="nav"
-      class="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-gray-800/70 backdrop-blur-lg shadow-sm"
+      class="fixed top-0 left-0 right-0 z-50 liquid-glass-top"
       style="padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right)"
     >
       <div class="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8">
@@ -496,8 +496,8 @@ const handleCookieConsent = (consent) => {
             </HeadlessMenu>
           </div>
         </div>
-        <div class="border-b dark:border-gray-700" />
-        <nav class="flex py-2 w-full space-x-1 md:space-x-2" aria-label="Global">
+        <div class="hidden lg:block border-b dark:border-gray-700" />
+        <nav class="hidden lg:flex py-2 w-full space-x-1 md:space-x-2" aria-label="Global">
           <NuxtLink
             v-for="item in tabNavigation"
             :key="item.name"
@@ -528,9 +528,9 @@ const handleCookieConsent = (consent) => {
       </div>
     </div>
 
-    <div class="pb-5 lg:pb-10 grow pt-28">
+    <div class="pb-24 lg:pb-10 grow pt-20 lg:pt-28">
       <main>
-        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:py-8 lg:px-8">
           <slot />
         </div>
       </main>
@@ -611,9 +611,46 @@ const handleCookieConsent = (consent) => {
       </div>
     </footer>
 
+    <!-- Bottom navigation (mobile) -->
+    <div
+      class="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
+      style="padding-bottom: env(safe-area-inset-bottom)"
+    >
+      <div class="flex justify-center px-4 pb-2">
+        <nav class="liquid-glass flex w-full max-w-md justify-around items-center h-14 rounded-2xl">
+          <NuxtLink
+            v-for="item in tabNavigation"
+            :key="item.name"
+            :to="$localePath(item.route)"
+            :class="[
+              'relative flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-300',
+              isTabActive(item)
+                ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
+                : 'text-gray-500 dark:text-gray-400'
+            ]"
+          >
+            <component
+              :is="iconMap[item.icon]"
+              :class="[
+                'transition-transform duration-300',
+                isTabActive(item) ? 'h-5 w-5 scale-110' : 'h-5 w-5'
+              ]"
+              aria-hidden="true"
+            />
+            <span
+              :class="[
+                'text-[10px] mt-0.5 font-medium transition-opacity duration-300',
+                isTabActive(item) ? 'opacity-100' : 'opacity-70'
+              ]"
+            >{{ $t(item.name) }}</span>
+          </NuxtLink>
+        </nav>
+      </div>
+    </div>
+
     <div
       v-if="showCookieBanner"
-      class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 max-w-xl w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg rounded-xl px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+      class="fixed bottom-22 lg:bottom-4 left-1/2 transform -translate-x-1/2 z-50 max-w-xl w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg rounded-xl px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
     >
       <span class="text-gray-800 dark:text-gray-100 text-sm">
         {{ $t('cookie-consent.message') }}
@@ -665,5 +702,80 @@ const handleCookieConsent = (consent) => {
 .app-container-safe-area {
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
     env(safe-area-inset-left);
+}
+
+/* Liquid Glass - Top navigation */
+.liquid-glass-top {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.35) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+:is(.dark *) .liquid-glass-top {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* Liquid Glass - Bottom navigation */
+.liquid-glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.35) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 0.5px solid rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.4);
+}
+
+:is(.dark *) .liquid-glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.liquid-glass-active {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+:is(.dark *) .liquid-glass-active {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 </style>
