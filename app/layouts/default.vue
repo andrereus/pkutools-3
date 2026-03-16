@@ -759,7 +759,7 @@ const handleCookieConsent = (consent) => {
     rgba(56, 189, 248, 0.12) 0%,
     rgba(56, 189, 248, 0.06) 100%
   );
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.06);
 }
 
 :is(.dark *) .liquid-glass-active {
