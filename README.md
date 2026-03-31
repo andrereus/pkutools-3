@@ -63,8 +63,8 @@ pkutools-3/
 
 ### Prerequisites
 
-- Node.js 18+ (or compatible runtime)
-- npm, pnpm, yarn, or bun
+- Node.js 18+
+- pnpm 10+
 
 ### Installation
 
@@ -73,13 +73,13 @@ pkutools-3/
 2. Install Firebase CLI globally:
 
 ```bash
-npm install -g firebase-tools
+pnpm add -g firebase-tools
 ```
 
 3. Install dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 **Note**: For local development with emulators, Firebase environment variables are not required. The app should work with emulators even if the `.env` file is missing or contains placeholder values. The `.env` file is only required for production deployment or when connecting to a real Firebase project.
@@ -91,7 +91,7 @@ npm install
 Start emulators with data persistence (no Firebase config needed for local dev):
 
 ```bash
-npm run emulators:data
+pnpm emulators:data
 ```
 
 **Important**: Always use `Ctrl+C` to stop emulators and preserve data. Emulator UI at `http://localhost:4000`.
@@ -101,19 +101,19 @@ npm run emulators:data
 ### Start Development Server
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 App available at `http://localhost:3000` (automatically connects to Firebase emulators).
 
 ### Available Scripts
 
-- `npm run dev` - Development server
-- `npm run build` - Production build
-- `npm run emulators` - Firebase emulators (no data persistence)
-- `npm run emulators:data` - Firebase emulators with data persistence
-- `npm run lint` / `npm run lint:fix` - Linting
-- `npm run format:check` / `npm run format` - Check/format code
+- `pnpm dev` - Development server
+- `pnpm build` - Production build
+- `pnpm emulators` - Firebase emulators (no data persistence)
+- `pnpm emulators:data` - Firebase emulators with data persistence
+- `pnpm lint` / `pnpm lint:fix` - Linting
+- `pnpm format:check` / `pnpm format` - Check/format code
 
 ## Quality Assurance
 
@@ -121,14 +121,14 @@ App available at `http://localhost:3000` (automatically connects to Firebase emu
 - Test on multiple devices/browsers (including PWA installation)
 - Add translations for new strings in all locale files (en, de, es, fr)
 - Analytics: PostHog (respects cookie consent), Umami (privacy analytics)
-- Dependency management: Dependabot notifications, manual updates via `npm outdated`, `npm update --save`, `npm audit`
+- Dependency management: Dependabot notifications, manual updates via `pnpm outdated`, `pnpm update`, `pnpm audit`
 
 ## Production
 
 ### Build
 
 ```bash
-npm run build
+pnpm build
 ```
 
 ### Production Deployment
