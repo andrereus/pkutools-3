@@ -71,7 +71,7 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' }
   },
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   modules: [
     '@nuxt/eslint',
@@ -85,14 +85,11 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
-        '@vue/devtools-core',
-        '@vue/devtools-kit',
         'firebase/app',
         'firebase/auth',
         'firebase/database',
         'vue3-apexcharts',
         'lucide-vue-next',
-        '@headlessui/vue',
         'fuse.js',
         'date-fns',
         'firebase/ai',
