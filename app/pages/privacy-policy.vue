@@ -20,7 +20,7 @@ useSeoMeta({
   title: () => t('privacy-policy.title')
 })
 
-defineOgImageComponent('NuxtSeo', {
+defineOgImage('NuxtSeo', {
   title: () => t('privacy-policy.title') + ' - PKU Tools',
   theme: '#3498db'
 })

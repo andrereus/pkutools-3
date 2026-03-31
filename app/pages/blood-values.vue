@@ -462,7 +462,7 @@ useSeoMeta({
   description: () => t('blood-values.description')
 })
 
-defineOgImageComponent('NuxtSeo', {
+defineOgImage('NuxtSeo', {
   title: () => t('blood-values.title') + ' - PKU Tools',
   description: () => t('blood-values.description'),
   theme: '#3498db'

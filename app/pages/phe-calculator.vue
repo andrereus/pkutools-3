@@ -256,7 +256,11 @@ Base estimates on typical nutritional databases. Use null for unknown values. Fo
     }
 
     // Store explanation if provided
-    if (foodData.explanation && typeof foodData.explanation === 'string' && foodData.explanation.trim() !== '') {
+    if (
+      foodData.explanation &&
+      typeof foodData.explanation === 'string' &&
+      foodData.explanation.trim() !== ''
+    ) {
       estimationExplanation.value = foodData.explanation.trim()
     } else {
       estimationExplanation.value = null
@@ -341,7 +345,10 @@ const save = async () => {
       weight: Number(weight.value),
       phe: calculatePhe(),
       kcal: calculateKcal(),
-      note: estimationExplanation.value && estimationExplanation.value.trim() !== '' ? estimationExplanation.value.trim() : null
+      note:
+        estimationExplanation.value && estimationExplanation.value.trim() !== ''
+          ? estimationExplanation.value.trim()
+          : null
     }
   } else {
     logEntry = {
@@ -353,7 +360,10 @@ const save = async () => {
       weight: Number(weight.value),
       phe: calculatePhe(),
       kcal: calculateKcal(),
-      note: estimationExplanation.value && estimationExplanation.value.trim() !== '' ? estimationExplanation.value.trim() : null
+      note:
+        estimationExplanation.value && estimationExplanation.value.trim() !== ''
+          ? estimationExplanation.value.trim()
+          : null
     }
   }
 
@@ -394,7 +404,7 @@ useSeoMeta({
   description: () => t('phe-calculator.description')
 })
 
-defineOgImageComponent('NuxtSeo', {
+defineOgImage('NuxtSeo', {
   title: () => t('phe-calculator.title') + ' - PKU Tools',
   description: () => t('phe-calculator.description'),
   theme: '#3498db'

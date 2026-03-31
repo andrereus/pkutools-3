@@ -104,7 +104,7 @@ useSeoMeta({
   title: () => t('getting-started.title')
 })
 
-defineOgImageComponent('NuxtSeo', {
+defineOgImage('NuxtSeo', {
   title: () => t('getting-started.title') + ' - PKU Tools',
   theme: '#3498db'
 })

@@ -70,7 +70,7 @@ useSeoMeta({
   title: () => t('sign-in.title')
 })
 
-defineOgImageComponent('NuxtSeo', {
+defineOgImage('NuxtSeo', {
   title: () => t('sign-in.title') + ' - PKU Tools',
   theme: '#3498db'
 })
@@ -169,7 +169,11 @@ defineOgImageComponent('NuxtSeo', {
           <HeadlessTabPanel>
             <form @submit.prevent="signInEmailPassword">
               <EmailInput v-model="email" id-name="email" :label="$t('sign-in.email')" />
-              <PasswordInput v-model="password" id-name="password" :label="$t('sign-in.password')" />
+              <PasswordInput
+                v-model="password"
+                id-name="password"
+                :label="$t('sign-in.password')"
+              />
 
               <PrimaryButton :text="$t('sign-in.signin')" class="mt-4" type="submit" />
             </form>
@@ -186,11 +190,7 @@ defineOgImageComponent('NuxtSeo', {
                 :label="$t('sign-in.password')"
               />
 
-              <PrimaryButton
-                :text="$t('sign-in.register')"
-                class="mt-4"
-                type="submit"
-              />
+              <PrimaryButton :text="$t('sign-in.register')" class="mt-4" type="submit" />
             </form>
           </HeadlessTabPanel>
           <HeadlessTabPanel>
@@ -199,11 +199,7 @@ defineOgImageComponent('NuxtSeo', {
             <form @submit.prevent="resetPassword">
               <EmailInput v-model="email" id-name="reset-email" :label="$t('sign-in.email')" />
 
-              <PrimaryButton
-                :text="$t('sign-in.reset-password')"
-                class="mt-4"
-                type="submit"
-              />
+              <PrimaryButton :text="$t('sign-in.reset-password')" class="mt-4" type="submit" />
             </form>
           </HeadlessTabPanel>
         </HeadlessTabPanels>

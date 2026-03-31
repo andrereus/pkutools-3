@@ -106,7 +106,11 @@ const columns = [
       const hasEmoji = item.emoji != null && item.emoji !== ''
       const hasIcon = item.icon != null && item.icon !== ''
       const iconOrEmoji = hasEmoji
-        ? h('span', { class: 'text-xl flex-shrink-0 inline-block align-middle leading-none' }, item.emoji)
+        ? h(
+            'span',
+            { class: 'text-xl flex-shrink-0 inline-block align-middle leading-none' },
+            item.emoji
+          )
         : hasIcon
           ? h('img', {
               src: `/images/food-icons/${item.icon}.svg`,
@@ -117,7 +121,11 @@ const columns = [
                 e.target.src = '/images/food-icons/organic-food.svg'
               }
             })
-          : h('span', { class: 'text-xl flex-shrink-0 opacity-50 inline-block align-middle leading-none' }, '🍽')
+          : h(
+              'span',
+              { class: 'text-xl flex-shrink-0 opacity-50 inline-block align-middle leading-none' },
+              '🍽'
+            )
       return h('span', { class: 'flex items-center gap-1 min-w-0' }, [
         iconOrEmoji,
         h('span', { style: 'word-wrap: break-word; overflow-wrap: break-word;' }, item.name),
@@ -580,7 +588,7 @@ useSeoMeta({
   description: () => t('own-food.description')
 })
 
-defineOgImageComponent('NuxtSeo', {
+defineOgImage('NuxtSeo', {
   title: () => t('own-food.title') + ' - PKU Tools',
   description: () => t('own-food.description'),
   theme: '#3498db'
@@ -715,18 +723,9 @@ defineOgImageComponent('NuxtSeo', {
         @delete="deleteItem"
         @close="closeModal"
       >
-        <div
-          v-if="editedIndex > -1"
-          class="flex items-center gap-2 my-1"
-        >
-          <span
-            v-if="editedItem.emoji"
-            class="text-xl flex-shrink-0"
-          >{{ editedItem.emoji }}</span>
-          <span
-            v-else-if="editedItem.icon"
-            class="flex-shrink-0"
-          >
+        <div v-if="editedIndex > -1" class="flex items-center gap-2 my-1">
+          <span v-if="editedItem.emoji" class="text-xl flex-shrink-0">{{ editedItem.emoji }}</span>
+          <span v-else-if="editedItem.icon" class="flex-shrink-0">
             <img
               :src="'/images/food-icons/' + editedItem.icon + '.svg'"
               width="25"
@@ -735,10 +734,7 @@ defineOgImageComponent('NuxtSeo', {
               onerror="this.src = '/images/food-icons/organic-food.svg'"
             />
           </span>
-          <span
-            v-else
-            class="text-xl flex-shrink-0 opacity-50"
-          >🍽</span>
+          <span v-else class="text-xl flex-shrink-0 opacity-50">🍽</span>
           <div class="flex gap-2">
             <SecondaryButton
               v-if="!editedItem.emoji && !hasRemovedIconThisSession"
