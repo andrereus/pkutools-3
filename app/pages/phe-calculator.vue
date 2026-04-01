@@ -12,6 +12,7 @@ const notifications = useNotifications()
 const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary } = useApi()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
+const { confirm } = useConfirm()
 
 // Reactive state
 const phe = ref(null)
@@ -25,6 +26,9 @@ const select = ref('phe')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isEstimating = ref(false)
 const isSaving = ref(false)
+const imageFile = ref(null)
+const imagePreview = ref(null)
+const fileInputRef = ref(null)
 
 // Constants
 // Base estimate "credits" per day for premium users.
@@ -108,6 +112,62 @@ const factor = computed(() => {
 })
 
 // Methods
+const MAX_IMAGE_DIMENSION = 1024
+
+const resizeAndConvertToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      let { width, height } = img
+      if (width > MAX_IMAGE_DIMENSION || height > MAX_IMAGE_DIMENSION) {
+        const ratio = Math.min(MAX_IMAGE_DIMENSION / width, MAX_IMAGE_DIMENSION / height)
+        width = Math.round(width * ratio)
+        height = Math.round(height * ratio)
+      }
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, width, height)
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8)
+      resolve(dataUrl.split(',')[1])
+      URL.revokeObjectURL(img.src)
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(img.src)
+      reject(new Error('Failed to load image'))
+    }
+    img.src = URL.createObjectURL(file)
+  })
+}
+
+const onImageSelected = (event) => {
+  const file = event.target.files?.[0]
+  if (!file) return
+  if (!isPremium.value) {
+    notifications.error(t('phe-calculator.image-premium-only'))
+    if (fileInputRef.value) fileInputRef.value.value = ''
+    return
+  }
+  if (!file.type.startsWith('image/')) {
+    notifications.error(t('phe-calculator.estimate-error-invalid-image'))
+    return
+  }
+  imageFile.value = file
+  imagePreview.value = URL.createObjectURL(file)
+}
+
+const removeImage = () => {
+  if (imagePreview.value) {
+    URL.revokeObjectURL(imagePreview.value)
+  }
+  imageFile.value = null
+  imagePreview.value = null
+  if (fileInputRef.value) {
+    fileInputRef.value.value = ''
+  }
+}
+
 const calculatePhe = () => {
   if (select.value === 'phe') {
     return Math.round((weight.value * phe.value) / 100) || 0
@@ -135,9 +195,25 @@ const estimateFoodValues = async () => {
   estimationExplanation.value = null // Clear previous explanation
 
   try {
-    if (!name.value || name.value.trim() === '') {
-      notifications.error(t('phe-calculator.estimate-error-no-name'))
+    if ((!name.value || name.value.trim() === '') && !imageFile.value) {
+      notifications.error(t('phe-calculator.estimate-error-no-input'))
       return
+    }
+
+    // If an image is attached, ask user to confirm sending it to Google Gemini
+    if (imageFile.value) {
+      isEstimating.value = false // Temporarily release so UI is interactive during dialog
+      const confirmed = await confirm({
+        title: t('phe-calculator.image-confirm-title'),
+        message: t('phe-calculator.image-confirm-message'),
+        confirmLabel: t('phe-calculator.image-confirm-proceed'),
+        cancelLabel: t('common.cancel'),
+        variant: 'default'
+      })
+      if (!confirmed) {
+        return
+      }
+      isEstimating.value = true
     }
 
     // Sanitize input to prevent prompt injection
@@ -222,10 +298,16 @@ const estimateFoodValues = async () => {
     const appLanguage = languageMap[locale.value] || 'English'
 
     // Create a prompt that requests structured JSON output
-    const prompt = `Estimate nutritional values for: "${sanitizedName}"
+    const hasImage = !!imageFile.value
+    const foodDescription = sanitizedName
+      ? `for: "${sanitizedName}"`
+      : 'for the food shown in the image'
+
+    const prompt = `${hasImage ? 'Identify the food in the image and estimate' : 'Estimate'} nutritional values ${foodDescription}
 
 Return JSON with these fields:
 {
+  "name": string (identified food name in ${appLanguage}) or null,
   "phePer100g": number (phenylalanine in mg per 100g) or null,
   "kcalPer100g": number (calories in kcal per 100g) or null,
   "proteinPer100g": number (protein in g per 100g) or null,
@@ -236,7 +318,19 @@ Return JSON with these fields:
 
 Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
 
-    const result = await model.generateContent(prompt)
+    // Build content parts: text prompt + optional image
+    const contentParts = [prompt]
+    if (hasImage) {
+      const base64Data = await resizeAndConvertToBase64(imageFile.value)
+      contentParts.push({
+        inlineData: {
+          mimeType: 'image/jpeg',
+          data: base64Data
+        }
+      })
+    }
+
+    const result = await model.generateContent(contentParts)
     const response = result.response
     const text = response.text()
 
@@ -264,6 +358,11 @@ Base estimates on typical nutritional databases. Use null for unknown values. Fo
       estimationExplanation.value = foodData.explanation.trim()
     } else {
       estimationExplanation.value = null
+    }
+
+    // If image-based and no name was entered, use the identified name
+    if (hasImage && (!name.value || name.value.trim() === '') && foodData.name) {
+      name.value = foodData.name
     }
 
     // Update the form fields with estimated values
@@ -448,17 +547,53 @@ defineOgImage('NuxtSeo', {
         :label="$t('common.food-name')"
         class="flex-1 [&>div:last-child]:mb-0"
       />
-      <div class="flex items-center mt-7 h-9">
+      <div class="flex items-center gap-2 mt-7 h-9">
+        <input
+          ref="fileInputRef"
+          type="file"
+          accept="image/*"
+          capture="environment"
+          class="hidden"
+          @change="onImageSelected"
+        >
+        <button
+          type="button"
+          class="rounded-full bg-gray-200 p-1.5 text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-full flex items-center"
+          :disabled="isEstimating"
+          :title="$t('phe-calculator.add-photo')"
+          @click="isPremium ? fileInputRef?.click() : notifications.error(t('phe-calculator.image-premium-only'))"
+        >
+          <LucideCamera class="h-5 w-5" />
+        </button>
         <button
           type="button"
           class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-full flex items-center"
-          :disabled="isEstimating || !name || name.trim() === '' || remainingEstimates === 0"
+          :disabled="isEstimating || ((!name || name.trim() === '') && !imageFile) || remainingEstimates === 0"
           @click="estimateFoodValues"
         >
           <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
           <span v-else>{{ $t('phe-calculator.estimate') }}</span>
         </button>
       </div>
+    </div>
+
+    <div
+      v-if="userIsAuthenticated && imagePreview"
+      class="mt-2 relative inline-block"
+    >
+      <img
+        :src="imagePreview"
+        :alt="$t('phe-calculator.image-preview')"
+        class="h-24 w-24 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+      >
+      <button
+        type="button"
+        class="absolute -top-2 -right-2 rounded-full bg-red-500 p-0.5 text-white shadow-xs hover:bg-red-600 cursor-pointer"
+        :title="$t('phe-calculator.remove-photo')"
+        @click="removeImage"
+      >
+        <LucideX class="h-3.5 w-3.5" />
+      </button>
     </div>
 
     <div v-if="userIsAuthenticated" class="mt-1 text-xs text-gray-600 dark:text-gray-400">
