@@ -312,30 +312,30 @@ const estimateFoodValues = async () => {
 
     let prompt
     if (hasImage) {
-      prompt = `Identify all food items visible in the image and estimate their combined nutritional values.
+      prompt = `Identify the food in the image and estimate its nutritional values. If there are multiple foods, treat them as one combined meal.
 
 Return JSON with these fields:
 {
-  "name": string (identified food items as a short combined name in ${appLanguage}) or null,
-  "phePer100g": number (phenylalanine in mg per 100g of the combined meal) or null,
-  "kcalPer100g": number (calories in kcal per 100g of the combined meal) or null,
-  "proteinPer100g": number (protein in g per 100g of the combined meal) or null,
-  "servingSizeGrams": number (estimated total weight of all food visible in the image in g, based on visual size and quantity) or null,
-  "emoji": string (exactly one emoji character representing the main food) or null,
-  "explanation": string (explanation about the estimation in ${appLanguage}, maximum 140 characters) or null
+  "name": string (short descriptive name in ${appLanguage}) or null,
+  "phePer100g": number (phenylalanine in mg per 100g) or null,
+  "kcalPer100g": number (calories in kcal per 100g) or null,
+  "proteinPer100g": number (protein in g per 100g) or null,
+  "servingSizeGrams": number (estimated total weight of the visible food in g, based on visual size) or null,
+  "emoji": string (exactly one emoji character) or null,
+  "explanation": string (explanation in ${appLanguage}, maximum 140 characters) or null
 }
 
 Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
     } else {
-      prompt = `Estimate nutritional values for: "${sanitizedName}"
+      prompt = `Estimate nutritional values for: "${sanitizedName}". If multiple foods are listed, treat them as one combined meal.
 
 Return JSON with these fields:
 {
-  "name": string (identified food name in ${appLanguage}) or null,
+  "name": string (food name in ${appLanguage}) or null,
   "phePer100g": number (phenylalanine in mg per 100g) or null,
   "kcalPer100g": number (calories in kcal per 100g) or null,
   "proteinPer100g": number (protein in g per 100g) or null,
-  "servingSizeGrams": number (if a quantity or portion is mentioned in the name, convert it to grams; otherwise use a typical serving size in g) or null,
+  "servingSizeGrams": number (if a quantity or weight is mentioned, convert it to grams; otherwise use a typical serving size in g) or null,
   "emoji": string (exactly one emoji character) or null,
   "explanation": string (explanation about the estimation in ${appLanguage}, maximum 140 characters) or null
 }
@@ -572,7 +572,7 @@ defineOgImage('NuxtSeo', {
       capture="environment"
       class="hidden"
       @change="onImageSelected"
-    >
+    />
 
     <div v-if="userIsAuthenticated && !imageFile" class="flex gap-4">
       <TextInput
@@ -587,7 +587,11 @@ defineOgImage('NuxtSeo', {
           class="rounded-full bg-gray-200 p-1.5 text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-full flex items-center"
           :disabled="isEstimating"
           :title="$t('phe-calculator.add-photo')"
-          @click="isPremium ? fileInputRef?.click() : notifications.error(t('phe-calculator.image-premium-only'))"
+          @click="
+            isPremium
+              ? fileInputRef?.click()
+              : notifications.error(t('phe-calculator.image-premium-only'))
+          "
         >
           <LucideCamera class="h-5 w-5" />
         </button>
@@ -603,16 +607,13 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <div
-      v-if="userIsAuthenticated && imageFile"
-      class="flex items-end gap-4 mt-4"
-    >
+    <div v-if="userIsAuthenticated && imageFile" class="flex items-end gap-4 mt-4">
       <div class="relative">
         <img
           :src="imagePreview"
           :alt="$t('phe-calculator.image-preview')"
           class="h-24 w-24 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
-        >
+        />
         <button
           type="button"
           class="absolute -top-2 -right-2 rounded-full bg-red-500 p-0.5 text-white shadow-xs hover:bg-red-600 cursor-pointer"
