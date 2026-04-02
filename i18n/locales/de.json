@@ -91,6 +91,7 @@
     "estimate-error-no-name": "Bitte geben Sie zuerst einen Lebensmittelnamen ein",
     "estimate-error-no-input": "Bitte geben Sie einen Lebensmittelnamen ein oder fügen Sie ein Foto hinzu",
     "estimate-error-invalid-image": "Bitte wählen Sie eine gültige Bilddatei aus",
+    "estimate-error-image-too-large": "Das Bild ist zu groß. Bitte wähle ein kleineres Bild.",
     "add-photo": "Foto hinzufügen",
     "remove-photo": "Foto entfernen",
     "image-preview": "Lebensmittel-Bildvorschau",

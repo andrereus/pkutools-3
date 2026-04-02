@@ -91,6 +91,7 @@
     "estimate-error-no-name": "Please enter a food name first",
     "estimate-error-no-input": "Please enter a food name or add a photo",
     "estimate-error-invalid-image": "Please select a valid image file",
+    "estimate-error-image-too-large": "Image is too large. Please select a smaller image.",
     "add-photo": "Add photo",
     "remove-photo": "Remove photo",
     "image-preview": "Food image preview",

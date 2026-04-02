@@ -141,6 +141,8 @@ const resizeAndConvertToBase64 = (file) => {
   })
 }
 
+const MAX_IMAGE_FILE_SIZE = 15 * 1024 * 1024 // 15MB
+
 const onImageSelected = (event) => {
   const file = event.target.files?.[0]
   if (!file) return
@@ -151,8 +153,16 @@ const onImageSelected = (event) => {
   }
   if (!file.type.startsWith('image/')) {
     notifications.error(t('phe-calculator.estimate-error-invalid-image'))
+    if (fileInputRef.value) fileInputRef.value.value = ''
     return
   }
+  if (file.size > MAX_IMAGE_FILE_SIZE) {
+    notifications.error(t('phe-calculator.estimate-error-image-too-large'))
+    if (fileInputRef.value) fileInputRef.value.value = ''
+    return
+  }
+  // Image and text are mutually exclusive
+  name.value = ''
   imageFile.value = file
   imagePreview.value = URL.createObjectURL(file)
 }
@@ -299,11 +309,25 @@ const estimateFoodValues = async () => {
 
     // Create a prompt that requests structured JSON output
     const hasImage = !!imageFile.value
-    const foodDescription = sanitizedName
-      ? `for: "${sanitizedName}"`
-      : 'for the food shown in the image'
 
-    const prompt = `${hasImage ? 'Identify the food in the image and estimate' : 'Estimate'} nutritional values ${foodDescription}
+    let prompt
+    if (hasImage) {
+      prompt = `Identify all food items visible in the image and estimate their combined nutritional values.
+
+Return JSON with these fields:
+{
+  "name": string (identified food items as a short combined name in ${appLanguage}) or null,
+  "phePer100g": number (phenylalanine in mg per 100g of the combined meal) or null,
+  "kcalPer100g": number (calories in kcal per 100g of the combined meal) or null,
+  "proteinPer100g": number (protein in g per 100g of the combined meal) or null,
+  "servingSizeGrams": number (estimated total weight of all food visible in the image in g, based on visual size and quantity) or null,
+  "emoji": string (exactly one emoji character representing the main food) or null,
+  "explanation": string (explanation about the estimation in ${appLanguage}, maximum 140 characters) or null
+}
+
+Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
+    } else {
+      prompt = `Estimate nutritional values for: "${sanitizedName}"
 
 Return JSON with these fields:
 {
@@ -311,12 +335,13 @@ Return JSON with these fields:
   "phePer100g": number (phenylalanine in mg per 100g) or null,
   "kcalPer100g": number (calories in kcal per 100g) or null,
   "proteinPer100g": number (protein in g per 100g) or null,
-  "servingSizeGrams": number (typical serving size in g) or null,
+  "servingSizeGrams": number (if a quantity or portion is mentioned in the name, convert it to grams; otherwise use a typical serving size in g) or null,
   "emoji": string (exactly one emoji character) or null,
   "explanation": string (explanation about the estimation in ${appLanguage}, maximum 140 characters) or null
 }
 
 Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
+    }
 
     // Build content parts: text prompt + optional image
     const contentParts = [prompt]
@@ -360,8 +385,8 @@ Base estimates on typical nutritional databases. Use null for unknown values. Fo
       estimationExplanation.value = null
     }
 
-    // If image-based and no name was entered, use the identified name
-    if (hasImage && (!name.value || name.value.trim() === '') && foodData.name) {
+    // For image-based estimates, use the identified name
+    if (hasImage && foodData.name) {
       name.value = foodData.name
     }
 
@@ -540,7 +565,16 @@ defineOgImage('NuxtSeo', {
       <PageHeader :title="$t('phe-calculator.title')" />
     </header>
 
-    <div v-if="userIsAuthenticated" class="flex gap-4">
+    <input
+      ref="fileInputRef"
+      type="file"
+      accept="image/*"
+      capture="environment"
+      class="hidden"
+      @change="onImageSelected"
+    >
+
+    <div v-if="userIsAuthenticated && !imageFile" class="flex gap-4">
       <TextInput
         v-model="name"
         id-name="food"
@@ -548,14 +582,6 @@ defineOgImage('NuxtSeo', {
         class="flex-1 [&>div:last-child]:mb-0"
       />
       <div class="flex items-center gap-2 mt-7 h-9">
-        <input
-          ref="fileInputRef"
-          type="file"
-          accept="image/*"
-          capture="environment"
-          class="hidden"
-          @change="onImageSelected"
-        >
         <button
           type="button"
           class="rounded-full bg-gray-200 p-1.5 text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-full flex items-center"
@@ -568,7 +594,7 @@ defineOgImage('NuxtSeo', {
         <button
           type="button"
           class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-full flex items-center"
-          :disabled="isEstimating || ((!name || name.trim() === '') && !imageFile) || remainingEstimates === 0"
+          :disabled="isEstimating || !name || name.trim() === '' || remainingEstimates === 0"
           @click="estimateFoodValues"
         >
           <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
@@ -578,21 +604,32 @@ defineOgImage('NuxtSeo', {
     </div>
 
     <div
-      v-if="userIsAuthenticated && imagePreview"
-      class="mt-2 relative inline-block"
+      v-if="userIsAuthenticated && imageFile"
+      class="flex items-end gap-4 mt-4"
     >
-      <img
-        :src="imagePreview"
-        :alt="$t('phe-calculator.image-preview')"
-        class="h-24 w-24 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
-      >
+      <div class="relative">
+        <img
+          :src="imagePreview"
+          :alt="$t('phe-calculator.image-preview')"
+          class="h-24 w-24 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+        >
+        <button
+          type="button"
+          class="absolute -top-2 -right-2 rounded-full bg-red-500 p-0.5 text-white shadow-xs hover:bg-red-600 cursor-pointer"
+          :title="$t('phe-calculator.remove-photo')"
+          @click="removeImage"
+        >
+          <LucideX class="h-3.5 w-3.5" />
+        </button>
+      </div>
       <button
         type="button"
-        class="absolute -top-2 -right-2 rounded-full bg-red-500 p-0.5 text-white shadow-xs hover:bg-red-600 cursor-pointer"
-        :title="$t('phe-calculator.remove-photo')"
-        @click="removeImage"
+        class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
+        :disabled="isEstimating || remainingEstimates === 0"
+        @click="estimateFoodValues"
       >
-        <LucideX class="h-3.5 w-3.5" />
+        <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
+        <span v-else>{{ $t('phe-calculator.estimate') }}</span>
       </button>
     </div>
 
