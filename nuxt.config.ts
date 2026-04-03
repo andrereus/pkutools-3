@@ -24,7 +24,7 @@ export default defineNuxtConfig({
       ],
       style: [
         {
-          textContent: `@media(prefers-color-scheme:dark){html:not(.light) body{background-color:#030712;color:#d1d5db}}`
+          textContent: `html:not(.theme-resolved){visibility:hidden}`
         }
       ],
       script: [
@@ -40,6 +40,7 @@ export default defineNuxtConfig({
               }
             }
             updateTheme()
+            document.documentElement.classList.add('theme-resolved')
             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme)
           `,
           type: 'text/javascript'
