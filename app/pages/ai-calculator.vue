@@ -475,7 +475,10 @@ defineOgImage('NuxtSeo', {
     </div>
 
     <header>
-      <PageHeader :title="$t('ai-calculator.title')" />
+      <h2 class="text-2xl text-gray-900 dark:text-gray-300 mb-6">
+        {{ $t('ai-calculator.title') }}
+        <span class="ml-2 align-middle inline-flex items-center rounded-md bg-sky-50 px-2 py-0.5 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-600/20 dark:bg-sky-900/30 dark:text-sky-300 dark:ring-sky-500/30">Beta</span>
+      </h2>
     </header>
 
     <input
