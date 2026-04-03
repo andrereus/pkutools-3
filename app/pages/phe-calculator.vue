@@ -1,18 +1,13 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai'
-import { getApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
 import { format } from 'date-fns'
 
 const store = useStore()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
-const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary } = useApi()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
-const { confirm } = useConfirm()
 
 // Reactive state
 const phe = ref(null)
@@ -21,73 +16,12 @@ const weight = ref(null)
 const name = ref('')
 const emoji = ref(null)
 const kcalReference = ref(null)
-const estimationExplanation = ref(null)
 const select = ref('phe')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
-const isEstimating = ref(false)
 const isSaving = ref(false)
-const imageFile = ref(null)
-const imagePreview = ref(null)
-const fileInputRef = ref(null)
-
-// Constants
-// Base estimate "credits" per day for premium users.
-// Non-premium users get a lower effective limit via computed config.
-const BASE_DAILY_ESTIMATE_LIMIT = 20
-const PREMIUM_AI_DAILY_ESTIMATE_LIMIT = 100
-const FREE_USER_DAILY_ESTIMATE_LIMIT = 2
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
-const settings = computed(() => store.settings)
-// Premium+AI users can choose to use Gemini 2.5 Pro (higher quality, higher cost per estimate)
-// or stick with Gemini 2.5 Flash (more estimates). This is a simple per-session toggle.
-// Regular Premium users can only use Gemini 2.5 Flash.
-
-// Configuration for the AI model, cost per estimate and daily limit
-// estimationCount is treated as "credits used" per day.
-const estimateConfig = computed(() => {
-  // Free users: always flash model, 2 estimates/day
-  if (!isPremium.value) {
-    return {
-      model: 'gemini-2.5-flash',
-      dailyLimitCredits: FREE_USER_DAILY_ESTIMATE_LIMIT,
-      costPerEstimate: 1
-    }
-  }
-
-  // Premium+AI users: higher limits, use flash model
-  if (isPremiumAI.value) {
-    return {
-      model: 'gemini-2.5-flash',
-      dailyLimitCredits: PREMIUM_AI_DAILY_ESTIMATE_LIMIT,
-      costPerEstimate: 1
-    }
-  }
-
-  // Regular Premium users: only flash model, 20 estimates/day
-  return {
-    model: 'gemini-2.5-flash',
-    dailyLimitCredits: BASE_DAILY_ESTIMATE_LIMIT,
-    costPerEstimate: 1
-  }
-})
-
-// Human-readable daily limit in "number of estimates"
-const humanDailyEstimateLimit = computed(() => {
-  const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
-  return Math.floor(dailyLimitCredits / costPerEstimate)
-})
-
-// Remaining number of full estimates the user can make today
-const remainingEstimates = computed(() => {
-  const today = format(new Date(), 'yyyy-MM-dd')
-  const estimateDate = settings.value.estimationDate
-  const currentCount = estimateDate === today ? settings.value.estimationCount || 0 : 0
-  const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
-  const remainingCredits = Math.max(0, dailyLimitCredits - currentCount)
-  return Math.floor(remainingCredits / costPerEstimate)
-})
 
 const type = computed(() => [
   { title: t('phe-calculator.phe'), value: 'phe' },
@@ -112,72 +46,6 @@ const factor = computed(() => {
 })
 
 // Methods
-const MAX_IMAGE_DIMENSION = 1024
-
-const resizeAndConvertToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => {
-      let { width, height } = img
-      if (width > MAX_IMAGE_DIMENSION || height > MAX_IMAGE_DIMENSION) {
-        const ratio = Math.min(MAX_IMAGE_DIMENSION / width, MAX_IMAGE_DIMENSION / height)
-        width = Math.round(width * ratio)
-        height = Math.round(height * ratio)
-      }
-      const canvas = document.createElement('canvas')
-      canvas.width = width
-      canvas.height = height
-      const ctx = canvas.getContext('2d')
-      ctx.drawImage(img, 0, 0, width, height)
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.8)
-      resolve(dataUrl.split(',')[1])
-      URL.revokeObjectURL(img.src)
-    }
-    img.onerror = () => {
-      URL.revokeObjectURL(img.src)
-      reject(new Error('Failed to load image'))
-    }
-    img.src = URL.createObjectURL(file)
-  })
-}
-
-const MAX_IMAGE_FILE_SIZE = 15 * 1024 * 1024 // 15MB
-
-const onImageSelected = (event) => {
-  const file = event.target.files?.[0]
-  if (!file) return
-  if (!isPremium.value) {
-    notifications.error(t('phe-calculator.image-premium-only'))
-    if (fileInputRef.value) fileInputRef.value.value = ''
-    return
-  }
-  if (!file.type.startsWith('image/')) {
-    notifications.error(t('phe-calculator.estimate-error-invalid-image'))
-    if (fileInputRef.value) fileInputRef.value.value = ''
-    return
-  }
-  if (file.size > MAX_IMAGE_FILE_SIZE) {
-    notifications.error(t('phe-calculator.estimate-error-image-too-large'))
-    if (fileInputRef.value) fileInputRef.value.value = ''
-    return
-  }
-  // Image and text are mutually exclusive
-  name.value = ''
-  imageFile.value = file
-  imagePreview.value = URL.createObjectURL(file)
-}
-
-const removeImage = () => {
-  if (imagePreview.value) {
-    URL.revokeObjectURL(imagePreview.value)
-  }
-  imageFile.value = null
-  imagePreview.value = null
-  if (fileInputRef.value) {
-    fileInputRef.value.value = ''
-  }
-}
-
 const calculatePhe = () => {
   if (select.value === 'phe') {
     return Math.round((weight.value * phe.value) / 100) || 0
@@ -189,267 +57,6 @@ const calculatePhe = () => {
 
 const calculateKcal = () => {
   return Math.round((weight.value * kcalReference.value) / 100) || 0
-}
-
-// Note: checkDailyLimit and incrementDailyLimit are now handled server-side via /api/gemini/check
-// These functions are kept for backward compatibility but are no longer used
-
-const estimateFoodValues = async () => {
-  // Prevent multiple simultaneous requests
-  if (isEstimating.value) {
-    return
-  }
-
-  // Set loading state immediately to disable button and prevent double-clicks
-  isEstimating.value = true
-  estimationExplanation.value = null // Clear previous explanation
-
-  try {
-    if ((!name.value || name.value.trim() === '') && !imageFile.value) {
-      notifications.error(t('phe-calculator.estimate-error-no-input'))
-      return
-    }
-
-    // If an image is attached, ask user to confirm sending it to Google Gemini
-    if (imageFile.value) {
-      isEstimating.value = false // Temporarily release so UI is interactive during dialog
-      const confirmed = await confirm({
-        title: t('phe-calculator.image-confirm-title'),
-        message: t('phe-calculator.image-confirm-message'),
-        confirmLabel: t('phe-calculator.image-confirm-proceed'),
-        cancelLabel: t('common.cancel'),
-        variant: 'default'
-      })
-      if (!confirmed) {
-        return
-      }
-      isEstimating.value = true
-    }
-
-    // Sanitize input to prevent prompt injection
-    const sanitizedName = name.value
-      .trim()
-      .slice(0, 200) // Limit length
-      .replace(/"/g, '\\"') // Escape quotes to prevent breaking out of string
-      .replace(/\n/g, ' ') // Replace newlines with spaces
-      .replace(/\r/g, '') // Remove carriage returns
-      .replace(/\t/g, ' ') // Replace tabs with spaces
-      .trim() // Trim again after replacements
-
-    // Check permission via server API (checks license-based limits)
-    try {
-      const auth = getAuth()
-      const currentUser = auth.currentUser
-      if (!currentUser) {
-        notifications.error(t('phe-calculator.estimate-error-firebase'))
-        return
-      }
-
-      const token = await currentUser.getIdToken()
-      const { model: modelName } = estimateConfig.value
-
-      const response = await $fetch('/api/gemini/check', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: {
-          model: modelName
-        }
-      })
-      const checkResponse = { allowed: response.allowed, remaining: response.remaining }
-
-      if (!checkResponse.allowed) {
-        notifications.error(
-          t('phe-calculator.estimate-error-daily-limit', { limit: checkResponse.remaining })
-        )
-        return
-      }
-    } catch (error) {
-      console.error('Gemini check error:', error)
-      const err = error || {}
-      if (err.statusCode === 401) {
-        notifications.error('Authentication failed. Please sign in again.')
-      } else if (err.statusCode === 403) {
-        notifications.error(t('phe-calculator.estimate-error-daily-limit', { limit: 0 }))
-      } else {
-        notifications.error('Failed to check estimate limits. Please try again.')
-      }
-      return
-    }
-
-    let firebaseApp
-    try {
-      firebaseApp = getApp()
-    } catch {
-      notifications.error(t('phe-calculator.estimate-error-firebase'))
-      return
-    }
-
-    // Initialize the Gemini Developer API backend service
-    const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() })
-
-    // Create a GenerativeModel instance with structured output support
-    const { model: modelName } = estimateConfig.value
-    const model = getGenerativeModel(ai, {
-      model: modelName,
-      generationConfig: {
-        responseMimeType: 'application/json'
-      }
-    })
-
-    // Map locale codes to language names for the prompt
-    const languageMap = {
-      en: 'English',
-      de: 'German',
-      es: 'Spanish',
-      fr: 'French'
-    }
-    const appLanguage = languageMap[locale.value] || 'English'
-
-    // Create a prompt that requests structured JSON output
-    const hasImage = !!imageFile.value
-
-    let prompt
-    if (hasImage) {
-      prompt = `Identify the food in the image and estimate its nutritional values. If there are multiple foods, treat them as one combined meal.
-
-Return JSON with these fields:
-{
-  "name": string (short descriptive name in ${appLanguage}) or null,
-  "phePer100g": number (phenylalanine in mg per 100g) or null,
-  "kcalPer100g": number (calories in kcal per 100g) or null,
-  "proteinPer100g": number (protein in g per 100g) or null,
-  "servingSizeGrams": number (estimated total weight of the visible food in g, based on visual size) or null,
-  "emoji": string (exactly one emoji character) or null,
-  "explanation": string (explanation in ${appLanguage}, maximum 140 characters) or null
-}
-
-Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
-    } else {
-      prompt = `Estimate nutritional values for: "${sanitizedName}". If multiple foods are listed, treat them as one combined meal.
-
-Return JSON with these fields:
-{
-  "name": string (food name in ${appLanguage}) or null,
-  "phePer100g": number (phenylalanine in mg per 100g) or null,
-  "kcalPer100g": number (calories in kcal per 100g) or null,
-  "proteinPer100g": number (protein in g per 100g) or null,
-  "servingSizeGrams": number (if a quantity or weight is mentioned, convert it to grams; otherwise use a typical serving size in g) or null,
-  "emoji": string (exactly one emoji character) or null,
-  "explanation": string (explanation about the estimation in ${appLanguage}, maximum 140 characters) or null
-}
-
-Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
-    }
-
-    // Build content parts: text prompt + optional image
-    const contentParts = [prompt]
-    if (hasImage) {
-      const base64Data = await resizeAndConvertToBase64(imageFile.value)
-      contentParts.push({
-        inlineData: {
-          mimeType: 'image/jpeg',
-          data: base64Data
-        }
-      })
-    }
-
-    const result = await model.generateContent(contentParts)
-    const response = result.response
-    const text = response.text()
-
-    // Parse the JSON response
-    const jsonMatch = text.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) {
-      throw new Error('No JSON found in response')
-    }
-
-    const foodData = JSON.parse(jsonMatch[0])
-
-    // Store emoji separately if provided
-    if (foodData.emoji && typeof foodData.emoji === 'string' && foodData.emoji.trim() !== '') {
-      emoji.value = foodData.emoji.trim()
-    } else {
-      emoji.value = null
-    }
-
-    // Store explanation if provided
-    if (
-      foodData.explanation &&
-      typeof foodData.explanation === 'string' &&
-      foodData.explanation.trim() !== ''
-    ) {
-      estimationExplanation.value = foodData.explanation.trim()
-    } else {
-      estimationExplanation.value = null
-    }
-
-    // For image-based estimates, use the identified name
-    if (hasImage && foodData.name) {
-      name.value = foodData.name
-    }
-
-    // Update the form fields with estimated values
-    // Check if values are valid numbers before using them
-    if (
-      foodData.phePer100g !== null &&
-      foodData.phePer100g !== undefined &&
-      !isNaN(Number(foodData.phePer100g))
-    ) {
-      phe.value = Math.round(Number(foodData.phePer100g))
-      select.value = 'phe'
-    } else if (
-      foodData.proteinPer100g !== null &&
-      foodData.proteinPer100g !== undefined &&
-      !isNaN(Number(foodData.proteinPer100g))
-    ) {
-      protein.value = Math.round(Number(foodData.proteinPer100g) * 10) / 10 // Round to 1 decimal
-      select.value = 'other'
-    }
-
-    if (
-      foodData.kcalPer100g !== null &&
-      foodData.kcalPer100g !== undefined &&
-      !isNaN(Number(foodData.kcalPer100g))
-    ) {
-      kcalReference.value = Math.round(Number(foodData.kcalPer100g))
-    }
-
-    if (
-      foodData.servingSizeGrams !== null &&
-      foodData.servingSizeGrams !== undefined &&
-      !isNaN(Number(foodData.servingSizeGrams)) &&
-      Number(foodData.servingSizeGrams) > 0
-    ) {
-      weight.value = Math.round(Number(foodData.servingSizeGrams))
-    }
-
-    // Count was already incremented by the server in /api/gemini/check
-    // No need to increment here
-
-    notifications.success(t('phe-calculator.estimate-success'))
-  } catch (error) {
-    console.error('Error estimating food values:', error)
-
-    // Check for quota/rate limit errors
-    const errorMessage = error?.message || error?.error?.message || ''
-    const errorType = error?.type || error?.error?.type || ''
-
-    if (
-      errorType === 'RESOURCE_EXHAUSTED' ||
-      errorMessage.includes('quota') ||
-      errorMessage.includes('Quota exceeded') ||
-      errorMessage.includes('rate limit')
-    ) {
-      // Don't increment count for quota errors - the API call didn't succeed
-      notifications.error(t('phe-calculator.estimate-error-quota'))
-    } else {
-      notifications.error(t('phe-calculator.estimate-error'))
-    }
-  } finally {
-    isEstimating.value = false
-  }
 }
 
 const save = async () => {
@@ -469,10 +76,7 @@ const save = async () => {
       weight: Number(weight.value),
       phe: calculatePhe(),
       kcal: calculateKcal(),
-      note:
-        estimationExplanation.value && estimationExplanation.value.trim() !== ''
-          ? estimationExplanation.value.trim()
-          : null
+      note: null
     }
   } else {
     logEntry = {
@@ -484,10 +88,7 @@ const save = async () => {
       weight: Number(weight.value),
       phe: calculatePhe(),
       kcal: calculateKcal(),
-      note:
-        estimationExplanation.value && estimationExplanation.value.trim() !== ''
-          ? estimationExplanation.value.trim()
-          : null
+      note: null
     }
   }
 
@@ -558,6 +159,12 @@ defineOgImage('NuxtSeo', {
         >
           <LucideCalculator class="h-5 w-5" /> {{ $t('app.calculator') }}
         </NuxtLink>
+        <NuxtLink
+          :to="$localePath('ai-calculator')"
+          class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300"
+        >
+          <LucideSparkles class="h-5 w-5" /> {{ $t('app.ai-calculator') }}
+        </NuxtLink>
       </nav>
     </div>
 
@@ -565,98 +172,13 @@ defineOgImage('NuxtSeo', {
       <PageHeader :title="$t('phe-calculator.title')" />
     </header>
 
-    <input
-      ref="fileInputRef"
-      type="file"
-      accept="image/*"
-      capture="environment"
-      class="hidden"
-      @change="onImageSelected"
+    <TextInput
+      v-model="name"
+      id-name="food"
+      :label="$t('common.food-name')"
     />
 
-    <div v-if="userIsAuthenticated && !imageFile" class="flex gap-4">
-      <TextInput
-        v-model="name"
-        id-name="food"
-        :label="$t('common.food-name')"
-        class="flex-1 [&>div:last-child]:mb-0"
-      />
-      <div class="flex items-center gap-2 mt-7 h-9">
-        <button
-          type="button"
-          class="rounded-full bg-gray-200 p-1.5 text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-full flex items-center"
-          :disabled="isEstimating"
-          :title="$t('phe-calculator.add-photo')"
-          @click="
-            isPremium
-              ? fileInputRef?.click()
-              : notifications.error(t('phe-calculator.image-premium-only'))
-          "
-        >
-          <LucideCamera class="h-5 w-5" />
-        </button>
-        <button
-          type="button"
-          class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-full flex items-center"
-          :disabled="isEstimating || !name || name.trim() === '' || remainingEstimates === 0"
-          @click="estimateFoodValues"
-        >
-          <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
-          <span v-else>{{ $t('phe-calculator.estimate') }}</span>
-        </button>
-      </div>
-    </div>
-
-    <div v-if="userIsAuthenticated && imageFile" class="flex items-end gap-4 mt-4">
-      <div class="relative">
-        <img
-          :src="imagePreview"
-          :alt="$t('phe-calculator.image-preview')"
-          class="h-24 w-24 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
-        />
-        <button
-          type="button"
-          class="absolute -top-2 -right-2 rounded-full bg-red-500 p-0.5 text-white shadow-xs hover:bg-red-600 cursor-pointer"
-          :title="$t('phe-calculator.remove-photo')"
-          @click="removeImage"
-        >
-          <LucideX class="h-3.5 w-3.5" />
-        </button>
-      </div>
-      <button
-        type="button"
-        class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
-        :disabled="isEstimating || remainingEstimates === 0"
-        @click="estimateFoodValues"
-      >
-        <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
-        <span v-else>{{ $t('phe-calculator.estimate') }}</span>
-      </button>
-    </div>
-
-    <div v-if="userIsAuthenticated" class="mt-1 text-xs text-gray-600 dark:text-gray-400">
-      {{
-        $t(
-          isPremiumAI
-            ? 'phe-calculator.estimate-info-premium-ai'
-            : isPremium
-              ? 'phe-calculator.estimate-info-premium'
-              : 'phe-calculator.estimate-info',
-          {
-            limit: humanDailyEstimateLimit
-          }
-        )
-      }}
-    </div>
-
-    <div
-      v-if="userIsAuthenticated && estimationExplanation"
-      class="mt-2 text-xs text-gray-600 dark:text-gray-400 italic break-words"
-    >
-      {{ estimationExplanation }}
-    </div>
-
-    <div v-if="userIsAuthenticated" class="flex gap-4 mt-4">
+    <div v-if="userIsAuthenticated" class="flex gap-4">
       <div class="flex-1">
         <SelectMenu v-model="select" id-name="factor" :label="$t('phe-calculator.mode')">
           <option v-for="option in type" :key="option.value" :value="option.value">

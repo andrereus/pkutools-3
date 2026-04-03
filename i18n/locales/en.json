@@ -13,6 +13,7 @@
     "search": "Search",
     "scanner": "Scanner",
     "calculator": "Calculator",
+    "ai-calculator": "AI",
     "total": "total",
     "left": "left",
     "start": "Start page",
@@ -107,6 +108,15 @@
     "estimate-info-premium-ai": "Estimated values can be inaccurate or wrong. Limited to {limit} per day.",
     "use-pro-model": "Use best AI model (uses up more AI budget)",
     "use-pro-model-info": "With this option, each estimate uses more of your daily budget."
+  },
+  "ai-calculator": {
+    "title": "AI Calculator",
+    "description": "Describe your food and let AI estimate the nutritional values.",
+    "input-label": "Describe your food",
+    "input-placeholder": "Describe your food, meal, or recipe...",
+    "serving-size": "Serving size (in g)",
+    "protein-fallback-note": "Phe estimated from protein (approximate)",
+    "disclaimer": "AI estimates can be inaccurate. Always verify critical values."
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",

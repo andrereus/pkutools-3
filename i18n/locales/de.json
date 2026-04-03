@@ -13,6 +13,7 @@
     "search": "Suche",
     "scanner": "Scanner",
     "calculator": "Rechner",
+    "ai-calculator": "KI",
     "total": "gesamt",
     "left": "übrig",
     "start": "Startseite",
@@ -107,6 +108,15 @@
     "estimate-info-premium-ai": "Geschätzte Werte können ungenau oder falsch sein. Begrenzt auf {limit} pro Tag.",
     "use-pro-model": "Bestes KI-Modell verwenden (verbraucht mehr KI-Budget)",
     "use-pro-model-info": "Mit dieser Option verbraucht jede Schätzung mehr von deinem Tagesbudget."
+  },
+  "ai-calculator": {
+    "title": "KI-Rechner",
+    "description": "Beschreibe dein Essen und lass die KI die Nährwerte schätzen.",
+    "input-label": "Beschreibe dein Essen",
+    "input-placeholder": "Beschreibe dein Essen, Mahlzeit oder Rezept...",
+    "serving-size": "Portionsgröße (in g)",
+    "protein-fallback-note": "Phe aus Protein geschätzt (ungefähr)",
+    "disclaimer": "KI-Schätzungen können ungenau sein. Überprüfe wichtige Werte immer."
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",

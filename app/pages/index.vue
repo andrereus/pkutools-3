@@ -41,7 +41,7 @@ const features = [
     name: 'features.ai-features-name',
     description: 'features.ai-features-description',
     icon: LucideSparkles,
-    route: 'phe-calculator'
+    route: 'ai-calculator'
   },
   {
     name: 'features.diary-name',

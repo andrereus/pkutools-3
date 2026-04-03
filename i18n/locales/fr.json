@@ -13,6 +13,7 @@
     "search": "Recherche",
     "scanner": "Scanner",
     "calculator": "Calculateur",
+    "ai-calculator": "IA",
     "total": "total",
     "left": "restante",
     "start": "Page d'accueil",
@@ -107,6 +108,15 @@
     "estimate-info-premium-ai": "Les valeurs estimées peuvent être inexactes ou incorrectes. Limité à {limit} par jour.",
     "use-pro-model": "Utiliser le meilleur modèle d'IA (utilise davantage le budget IA)",
     "use-pro-model-info": "Avec cette option, chaque estimation utilise davantage de votre budget quotidien."
+  },
+  "ai-calculator": {
+    "title": "Calculateur IA",
+    "description": "Décrivez votre nourriture et laissez l'IA estimer les valeurs nutritionnelles.",
+    "input-label": "Décrivez votre nourriture",
+    "input-placeholder": "Décrivez votre nourriture, repas ou recette...",
+    "serving-size": "Taille de portion (en g)",
+    "protein-fallback-note": "Phe estimé à partir des protéines (approximatif)",
+    "disclaimer": "Les estimations de l'IA peuvent être inexactes. Vérifiez toujours les valeurs importantes."
   },
   "barcode-scanner": {
     "title": "Scanner de code-barres",

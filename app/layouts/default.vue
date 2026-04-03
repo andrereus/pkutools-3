@@ -19,7 +19,8 @@ import {
   LucideCalendar,
   LucideChartLine,
   LucideBot,
-  LucidePlus
+  LucidePlus,
+  LucideSparkles
 } from 'lucide-vue-next'
 
 const store = useStore()
@@ -45,6 +46,7 @@ const navigation = computed(() => {
     { name: 'food-search.title', icon: 'LucideSearch', route: 'food-search' },
     { name: 'barcode-scanner.title', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
     { name: 'phe-calculator.title', icon: 'LucideCalculator', route: 'phe-calculator' },
+    { name: 'ai-calculator.title', icon: 'LucideSparkles', route: 'ai-calculator' },
     { name: 'diary.title', icon: 'LucideCalendar', route: 'diary' },
     { name: 'diet-report.title', icon: 'LucideBook', route: 'diet-report' },
     { name: 'blood-values.title', icon: 'LucideChartLine', route: 'blood-values' },
@@ -87,7 +89,8 @@ const footerNavigation = computed(() => {
     tools: [
       { name: 'food-search.title', route: 'food-search' },
       { name: 'barcode-scanner.title', route: 'barcode-scanner' },
-      { name: 'phe-calculator.title', route: 'phe-calculator' }
+      { name: 'phe-calculator.title', route: 'phe-calculator' },
+      { name: 'ai-calculator.title', route: 'ai-calculator' }
     ],
     features: [
       { name: 'diary.title', route: 'diary' },
@@ -120,7 +123,8 @@ const isTabActive = computed(() => (item) => {
     const addTabRoutes = [
       localePath('food-search'),
       localePath('barcode-scanner'),
-      localePath('phe-calculator')
+      localePath('phe-calculator'),
+      localePath('ai-calculator')
     ]
     if (addTabRoutes.includes(route.fullPath) && addTabRoutes.includes(localePath(item.route))) {
       return true
@@ -203,7 +207,8 @@ const iconMap = {
   LucideCalendar,
   LucideChartLine,
   LucideBot,
-  LucidePlus
+  LucidePlus,
+  LucideSparkles
 }
 
 const handleCookieConsent = (consent) => {
