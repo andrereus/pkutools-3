@@ -22,11 +22,6 @@ export default defineNuxtConfig({
         { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon-180x180.png', sizes: '180x180' }
       ],
-      style: [
-        {
-          textContent: `html:not(.theme-resolved){visibility:hidden}`
-        }
-      ],
       script: [
         {
           textContent: `
@@ -40,7 +35,6 @@ export default defineNuxtConfig({
               }
             }
             updateTheme()
-            document.documentElement.classList.add('theme-resolved')
             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme)
           `,
           type: 'text/javascript'
