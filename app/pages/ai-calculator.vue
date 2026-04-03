@@ -60,11 +60,6 @@ const estimateConfig = computed(() => {
   }
 })
 
-const humanDailyEstimateLimit = computed(() => {
-  const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
-  return Math.floor(dailyLimitCredits / costPerEstimate)
-})
-
 const remainingEstimates = computed(() => {
   const today = format(new Date(), 'yyyy-MM-dd')
   const estimateDate = settings.value.estimationDate
@@ -253,17 +248,10 @@ const estimateFoodValues = async () => {
     const languageMap = { en: 'English', de: 'German', es: 'Spanish', fr: 'French' }
     const appLanguage = languageMap[locale.value] || 'English'
 
-    // Build prompt based on available inputs
     let prompt
     if (hasImage && hasText) {
-      prompt = `The user provided the following description: "${sanitizedText}". They also attached a photo of the food. Use both the description and the image to identify and estimate the nutritional values. If there are multiple foods, treat them as one combined meal.`
-    } else if (hasImage) {
-      prompt = `Identify the food in the image and estimate its nutritional values. If there are multiple foods, treat them as one combined meal.`
-    } else {
-      prompt = `Estimate nutritional values for: "${sanitizedText}". If multiple foods are listed, treat them as one combined meal.`
-    }
-
-    prompt += `
+      // Image + text description
+      prompt = `Identify the food in the image and estimate its nutritional values. Use the following description for additional context: "${sanitizedText}". If there are multiple foods, treat them as one combined meal.
 
 Return JSON with these fields:
 {
@@ -271,12 +259,45 @@ Return JSON with these fields:
   "phePer100g": number (phenylalanine in mg per 100g) or null,
   "kcalPer100g": number (calories in kcal per 100g) or null,
   "proteinPer100g": number (protein in g per 100g) or null,
-  "servingSizeGrams": number (if a quantity or weight is mentioned, convert it to grams; otherwise estimate the total weight of the described food in g, based on visual size if an image is provided) or null,
+  "servingSizeGrams": number (estimated total weight in grams) or null,
   "emoji": string (exactly one emoji character) or null,
   "explanation": string (explanation in ${appLanguage}, maximum 140 characters) or null
 }
 
 Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
+    } else if (hasImage) {
+      // Image only
+      prompt = `Identify the food in the image and estimate its nutritional values. If there are multiple foods, treat them as one combined meal.
+
+Return JSON with these fields:
+{
+  "name": string (short descriptive name in ${appLanguage}) or null,
+  "phePer100g": number (phenylalanine in mg per 100g) or null,
+  "kcalPer100g": number (calories in kcal per 100g) or null,
+  "proteinPer100g": number (protein in g per 100g) or null,
+  "servingSizeGrams": number (estimated total weight based on visual size, in grams) or null,
+  "emoji": string (exactly one emoji character) or null,
+  "explanation": string (explanation in ${appLanguage}, maximum 140 characters) or null
+}
+
+Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
+    } else {
+      // Text description only
+      prompt = `Estimate nutritional values for: "${sanitizedText}". If multiple foods are listed, treat them as one combined meal.
+
+Return JSON with these fields:
+{
+  "name": string (short descriptive name in ${appLanguage}) or null,
+  "phePer100g": number (phenylalanine in mg per 100g) or null,
+  "kcalPer100g": number (calories in kcal per 100g) or null,
+  "proteinPer100g": number (protein in g per 100g) or null,
+  "servingSizeGrams": number (if a quantity or weight is mentioned, convert it to grams; otherwise use a typical serving size in g) or null,
+  "emoji": string (exactly one emoji character) or null,
+  "explanation": string (explanation in ${appLanguage}, maximum 140 characters) or null
+}
+
+Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
+    }
 
     // Build content parts
     const contentParts = [prompt]
@@ -524,43 +545,12 @@ defineOgImage('NuxtSeo', {
         </button>
       </div>
 
-      <div class="mt-1 text-xs text-gray-600 dark:text-gray-400">
-        {{
-          $t(
-            isPremiumAI
-              ? 'phe-calculator.estimate-info-premium-ai'
-              : isPremium
-                ? 'phe-calculator.estimate-info-premium'
-                : 'phe-calculator.estimate-info',
-            { limit: humanDailyEstimateLimit }
-          )
-        }}
-      </div>
     </div>
 
     <div v-if="result" class="mt-6 rounded-lg bg-gray-50 dark:bg-gray-800/50 p-4">
-      <h2 class="text-xl font-semibold mb-3">
+      <h2 class="text-xl font-semibold mb-2">
         <span v-if="result.emoji">{{ result.emoji }} </span>{{ result.name }}
       </h2>
-
-      <p class="text-2xl mb-1">
-        <template v-if="isProteinFallback">≈</template>
-        <template v-else>=</template>
-        {{ totalPhe }} mg Phe
-      </p>
-      <p v-if="kcalReference" class="text-lg mb-2">= {{ totalKcal }} {{ $t('common.kcal') }}</p>
-
-      <div class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-        <span>{{ pheReference }} mg Phe / 100g</span>
-        <span v-if="kcalReference" class="ml-3">{{ kcalReference }} {{ $t('common.kcal-per-100g') }}</span>
-      </div>
-
-      <div
-        v-if="isProteinFallback"
-        class="text-xs text-amber-600 dark:text-amber-400 mb-2"
-      >
-        {{ $t('ai-calculator.protein-fallback-note') }}
-      </div>
 
       <div
         v-if="result.explanation"
@@ -569,19 +559,39 @@ defineOgImage('NuxtSeo', {
         {{ result.explanation }}
       </div>
 
+      <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">
+        <span>{{ pheReference }} mg Phe / 100g</span>
+        <span v-if="kcalReference" class="ml-3">{{ kcalReference }} {{ $t('common.kcal-per-100g') }}</span>
+      </div>
+
+      <div
+        v-if="isProteinFallback"
+        class="text-xs text-amber-600 dark:text-amber-400 mb-3"
+      >
+        {{ $t('ai-calculator.protein-fallback-note') }}
+      </div>
+
+      <DateInput v-model="selectedDate" id-name="date" :label="$t('common.date')" />
+
       <NumberInput
         v-model.number="weight"
         id-name="weight"
         :label="$t('ai-calculator.serving-size')"
       />
 
-      <DateInput v-model="selectedDate" id-name="date" :label="$t('common.date')" />
+      <div class="flex gap-4 my-4">
+        <span class="flex-1 text-lg">
+          <template v-if="isProteinFallback">≈</template>
+          <template v-else>=</template>
+          {{ totalPhe }} mg Phe
+        </span>
+        <span v-if="kcalReference" class="flex-1 text-lg">= {{ totalKcal }} {{ $t('common.kcal') }}</span>
+      </div>
 
       <PrimaryButton
         :text="$t('common.add')"
         :loading="isSaving"
         :loading-text="$t('common.saving')"
-        class="mt-2"
         @click="save"
       />
     </div>
