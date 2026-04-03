@@ -69,7 +69,7 @@ const tabNavigation = computed(() => {
       { name: 'app.search', icon: 'LucideSearch', route: 'food-search' },
       { name: 'app.scanner', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
       { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' },
-      { name: 'sign-in.title', icon: 'LucideLogIn', route: 'sign-in' }
+      { name: 'app.ai-calculator', icon: 'LucideSparkles', route: 'ai-calculator' }
     ]
   }
 })

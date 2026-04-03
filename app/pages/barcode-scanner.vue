@@ -193,31 +193,35 @@ defineOgImage('NuxtSeo', {
 <template>
   <div>
     <div v-if="userIsAuthenticated" class="block mb-6">
-      <nav class="flex flex-wrap gap-1 justify-center" aria-label="Tabs">
+      <nav class="flex gap-3 justify-center" aria-label="Tabs">
         <NuxtLink
           :to="$localePath('food-search')"
-          class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300"
+          :title="$t('app.search')"
+          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300"
         >
-          <LucideSearch class="h-5 w-5" /> {{ $t('app.search') }}
+          <LucideSearch class="h-5 w-5" />
         </NuxtLink>
         <NuxtLink
           :to="$localePath('barcode-scanner')"
-          class="inline-flex items-center gap-2 bg-black/5 dark:bg-white/15 text-gray-700 rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300"
+          :title="$t('app.scanner')"
+          class="bg-black/5 dark:bg-white/15 text-gray-700 rounded-md p-3 dark:text-gray-300"
           aria-current="page"
         >
-          <LucideScanBarcode class="h-5 w-5" /> {{ $t('app.scanner') }}
+          <LucideScanBarcode class="h-5 w-5" />
         </NuxtLink>
         <NuxtLink
           :to="$localePath('phe-calculator')"
-          class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300"
+          :title="$t('app.calculator')"
+          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300"
         >
-          <LucideCalculator class="h-5 w-5" /> {{ $t('app.calculator') }}
+          <LucideCalculator class="h-5 w-5" />
         </NuxtLink>
         <NuxtLink
           :to="$localePath('ai-calculator')"
-          class="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300"
+          :title="$t('app.ai-calculator')"
+          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300"
         >
-          <LucideSparkles class="h-5 w-5" /> {{ $t('app.ai-calculator') }}
+          <LucideSparkles class="h-5 w-5" />
         </NuxtLink>
       </nav>
     </div>
