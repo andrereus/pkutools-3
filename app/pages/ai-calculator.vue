@@ -551,20 +551,20 @@ defineOgImage('NuxtSeo', {
     </div>
 
     <div v-if="result" class="mt-6 rounded-lg bg-gray-50 dark:bg-gray-800/50 p-4">
-      <h2 class="text-xl font-semibold mb-2">
-        <span v-if="result.emoji">{{ result.emoji }} </span>{{ result.name }}
+      <h2 class="text-xl font-semibold mb-4">
+        <span v-if="result.emoji">{{ result.emoji }}&nbsp;</span>{{ result.name }}
       </h2>
 
       <div
         v-if="result.explanation"
-        class="text-xs text-gray-600 dark:text-gray-400 italic break-words mb-4"
+        class="text-sm text-gray-600 dark:text-gray-400 italic break-words mb-4"
       >
         {{ result.explanation }}
       </div>
 
-      <div class="text-sm text-gray-600 dark:text-gray-400 mb-1">
-        <span>{{ pheReference }} mg Phe / 100g</span>
-        <span v-if="kcalReference" class="ml-3">{{ kcalReference }} {{ $t('common.kcal-per-100g') }}</span>
+      <div class="flex gap-4 text-gray-600 dark:text-gray-400 mb-4">
+        <span class="flex-1">{{ pheReference }} {{ $t('common.mg-phe-per-100g') }}</span>
+        <span v-if="kcalReference" class="flex-1">{{ kcalReference }} {{ $t('common.kcal-per-100g') }}</span>
       </div>
 
       <div
