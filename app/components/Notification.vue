@@ -117,7 +117,8 @@ const buttonStyles = {
   <Teleport to="body">
     <div
       aria-live="assertive"
-      class="pointer-events-none fixed inset-0 z-50 flex items-end px-4 pb-20 pt-6 sm:items-start sm:p-6 lg:pb-6"
+      class="pointer-events-none fixed inset-x-0 top-0 z-50 flex items-end px-4 pb-20 pt-6 sm:items-start sm:p-6 lg:pb-6"
+      style="bottom: calc(env(safe-area-inset-bottom, 0px))"
     >
       <div class="flex w-full flex-col items-center space-y-4 sm:items-end">
         <!-- Notification panel, dynamically insert this into the live region when it needs to be displayed -->

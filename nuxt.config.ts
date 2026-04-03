@@ -22,6 +22,11 @@ export default defineNuxtConfig({
         { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon-180x180.png', sizes: '180x180' }
       ],
+      style: [
+        {
+          textContent: `@media(prefers-color-scheme:dark){html:not(.light) body{background-color:#030712;color:#d1d5db}}`
+        }
+      ],
       script: [
         {
           textContent: `
