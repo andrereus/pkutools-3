@@ -116,7 +116,7 @@
     "description": "Describe or photograph your food and let AI estimate the nutritional values.",
     "analyze-photo": "Photo",
     "input-label": "Description",
-    "input-placeholder": "Describe food ...",
+    "input-placeholder": "Describe food or meal ...",
     "serving-size": "Serving size (in g)",
     "protein-fallback-note": "Phe estimated from protein (approximate)",
     "disclaimer": "AI estimates can be inaccurate. Always verify critical values.",

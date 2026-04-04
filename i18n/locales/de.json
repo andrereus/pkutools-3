@@ -116,7 +116,7 @@
     "description": "Beschreibe oder fotografiere dein Essen und lass die KI die Nährwerte schätzen.",
     "analyze-photo": "Foto",
     "input-label": "Beschreibung",
-    "input-placeholder": "Essen beschreiben ...",
+    "input-placeholder": "Lebensmittel oder Essen beschreiben ...",
     "serving-size": "Portionsgröße (in g)",
     "protein-fallback-note": "Phe aus Protein geschätzt (ungefähr)",
     "disclaimer": "KI-Schätzungen können ungenau sein. Überprüfe wichtige Werte immer.",
