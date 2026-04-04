@@ -21,6 +21,7 @@
     "blood-values-limited": "Trial version (30 entries)",
     "own-food-limited": "Trial version (50 entries)",
     "unlimited": "Premium",
+    "unlimited-ai": "Premium + AI",
     "limit": "Entries limit reached. Support with a subscription for unlimited entries. See settings for more."
   },
   "common": {
@@ -112,12 +113,16 @@
   },
   "ai-calculator": {
     "title": "AI Calculator",
-    "description": "Describe your food and let AI estimate the nutritional values.",
+    "description": "Describe or photograph your food and let AI estimate the nutritional values.",
+    "analyze-photo": "Photo",
     "input-label": "Describe your food",
-    "input-placeholder": "Describe your food, meal, or recipe...",
+    "input-placeholder": "Describe your food or meal...",
     "serving-size": "Serving size (in g)",
     "protein-fallback-note": "Phe estimated from protein (approximate)",
-    "disclaimer": "AI estimates can be inaccurate. Always verify critical values."
+    "disclaimer": "AI estimates can be inaccurate. Always verify critical values.",
+    "trial-limit": "Trial version",
+    "premium-limit": "Premium",
+    "premium-ai-limit": "Premium + AI"
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",
@@ -220,6 +225,7 @@
   },
   "settings": {
     "title": "Settings",
+    "description": "Manage your account and app preferences.",
     "app-settings": "App Settings",
     "max-phe": "Phe tolerance per day",
     "max-kcal": "Kcal per day",
@@ -258,15 +264,17 @@
     "tier-unlimited-feature-5": "Own food icons",
     "tier-unlimited-feature-6": "CSV export (Excel)",
     "tier-premium-ai": "PKU Tools Premium + AI",
-    "tier-premium-ai-desc": "Support monthly and get all features including AI.",
+    "tier-premium-ai-desc": "Get all features and more AI budget.",
     "tier-premium-ai-feature-all": "All Premium features",
-    "tier-premium-ai-feature-ai": "Bigger AI budget",
+    "tier-premium-ai-feature-ai": "100 AI estimates/day",
     "tier-basic": "Trial version",
     "tier-basic-desc": "Free of charge, ad-free",
     "tier-basic-feature-1": "14 days in the diary",
     "tier-basic-feature-2": "30 blood value entries",
     "tier-basic-feature-3": "50 own foods",
-    "tier-feature-try-ai": "Try AI",
+    "tier-basic-feature-ai": "2 AI estimates/day",
+    "tier-unlimited-feature-ai": "20 AI estimates/day",
+    "tier-unlimited-feature-image": "AI image analysis",
     "per-month": "/month",
     "subscribe": "Join"
   },
@@ -336,8 +344,8 @@
     "community-food-description": "Share and discover foods from the PKU community.",
     "own-community-name": "Own & Community Foods",
     "own-community-description": "Save custom foods and share with the community.",
-    "ai-features-name": "AI Features",
-    "ai-features-description": "Estimate Phe and kcal with AI and quick-add foods."
+    "ai-features-name": "AI Calculator",
+    "ai-features-description": "Describe or photograph your food and let AI estimate the nutritional values."
   },
   "footer": {
     "tools": "Tools",

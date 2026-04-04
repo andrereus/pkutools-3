@@ -19,7 +19,7 @@ const tiers = computed(() => [
       t('settings.tier-basic-feature-1'),
       t('settings.tier-basic-feature-2'),
       t('settings.tier-basic-feature-3'),
-      t('settings.tier-feature-try-ai')
+      t('settings.tier-basic-feature-ai')
     ],
     featured: false
   },
@@ -34,7 +34,8 @@ const tiers = computed(() => [
       t('settings.tier-unlimited-feature-3'),
       t('settings.tier-unlimited-feature-5'),
       t('settings.tier-unlimited-feature-6'),
-      t('settings.tier-feature-try-ai')
+      t('settings.tier-unlimited-feature-ai'),
+      t('settings.tier-unlimited-feature-image')
     ],
     featured: false
   },
@@ -45,7 +46,8 @@ const tiers = computed(() => [
     description: t('settings.tier-premium-ai-desc'),
     features: [
       t('settings.tier-premium-ai-feature-all'),
-      t('settings.tier-premium-ai-feature-ai')
+      t('settings.tier-premium-ai-feature-ai'),
+      t('settings.tier-unlimited-feature-image')
     ],
     featured: true
   }

@@ -21,6 +21,7 @@
     "blood-values-limited": "Testversion (30 Einträge)",
     "own-food-limited": "Testversion (50 Einträge)",
     "unlimited": "Premium",
+    "unlimited-ai": "Premium + AI",
     "limit": "Einträge-Limit erreicht. Unterstütze mit einem Abo für unbegrenzte Einträge. Siehe Einstellungen für mehr."
   },
   "common": {
@@ -112,12 +113,16 @@
   },
   "ai-calculator": {
     "title": "KI Rechner",
-    "description": "Beschreibe dein Essen und lass die KI die Nährwerte schätzen.",
+    "description": "Beschreibe oder fotografiere dein Essen und lass die KI die Nährwerte schätzen.",
+    "analyze-photo": "Foto",
     "input-label": "Beschreibe dein Essen",
-    "input-placeholder": "Beschreibe dein Essen, Mahlzeit oder Rezept...",
+    "input-placeholder": "Beschreibe dein Essen oder deine Mahlzeit...",
     "serving-size": "Portionsgröße (in g)",
     "protein-fallback-note": "Phe aus Protein geschätzt (ungefähr)",
-    "disclaimer": "KI-Schätzungen können ungenau sein. Überprüfe wichtige Werte immer."
+    "disclaimer": "KI-Schätzungen können ungenau sein. Überprüfe wichtige Werte immer.",
+    "trial-limit": "Testversion",
+    "premium-limit": "Premium",
+    "premium-ai-limit": "Premium + AI"
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",
@@ -220,6 +225,7 @@
   },
   "settings": {
     "title": "Einstellungen",
+    "description": "Verwalte dein Konto und deine App-Einstellungen.",
     "app-settings": "App-Einstellungen",
     "max-phe": "Phe-Toleranz pro Tag",
     "max-kcal": "Kcal pro Tag",
@@ -258,15 +264,17 @@
     "tier-unlimited-feature-5": "Eigene Lebensmittel Icons",
     "tier-unlimited-feature-6": "CSV-Export (Excel)",
     "tier-premium-ai": "PKU Tools Premium + AI",
-    "tier-premium-ai-desc": "Unterstütze monatlich und bekomme alle Funktionen inklusive KI.",
+    "tier-premium-ai-desc": "Bekomme alle Funktionen und mehr KI-Budget.",
     "tier-premium-ai-feature-all": "Alle Premium-Funktionen",
-    "tier-premium-ai-feature-ai": "Größeres KI-Budget",
+    "tier-premium-ai-feature-ai": "100 KI-Schätzungen/Tag",
     "tier-basic": "Testversion",
     "tier-basic-desc": "Kostenlos, werbefrei",
     "tier-basic-feature-1": "14 Tage im Tagebuch",
     "tier-basic-feature-2": "30 Blutwert-Einträge",
     "tier-basic-feature-3": "50 eigene Lebensmittel",
-    "tier-feature-try-ai": "KI ausprobieren",
+    "tier-basic-feature-ai": "2 KI-Schätzungen/Tag",
+    "tier-unlimited-feature-ai": "20 KI-Schätzungen/Tag",
+    "tier-unlimited-feature-image": "KI-Bildanalyse",
     "per-month": "/monat",
     "subscribe": "Abonnieren"
   },
@@ -336,8 +344,8 @@
     "community-food-description": "Teile und entdecke Lebensmittel aus der PKU-Community.",
     "own-community-name": "Eigene & Community-Lebensmittel",
     "own-community-description": "Eigene Lebensmittel speichern und mit der Community teilen.",
-    "ai-features-name": "KI-Funktionen",
-    "ai-features-description": "Phe und Kalorien mit KI schätzen und Lebensmittel schnell hinzufügen."
+    "ai-features-name": "KI Rechner",
+    "ai-features-description": "Beschreibe oder fotografiere dein Essen und lass die KI die Nährwerte schätzen."
   },
   "footer": {
     "tools": "Tools",

@@ -458,31 +458,35 @@ defineOgImage('NuxtSeo', {
         <NuxtLink
           :to="$localePath('food-search')"
           :title="$t('app.search')"
-          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300"
+          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
         >
           <LucideSearch class="h-5 w-5" />
+          <span class="hidden sm:inline">{{ $t('app.search') }}</span>
         </NuxtLink>
         <NuxtLink
           :to="$localePath('barcode-scanner')"
           :title="$t('app.scanner')"
-          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300"
+          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
         >
           <LucideScanBarcode class="h-5 w-5" />
+          <span class="hidden sm:inline">{{ $t('app.scanner') }}</span>
         </NuxtLink>
         <NuxtLink
           :to="$localePath('phe-calculator')"
           :title="$t('app.calculator')"
-          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300"
+          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
         >
           <LucideCalculator class="h-5 w-5" />
+          <span class="hidden sm:inline">{{ $t('app.calculator') }}</span>
         </NuxtLink>
         <NuxtLink
           :to="$localePath('ai-calculator')"
           :title="$t('app.ai-calculator')"
-          class="bg-black/5 dark:bg-white/15 text-gray-700 rounded-md p-3 dark:text-gray-300"
+          class="bg-black/5 dark:bg-white/15 text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
           aria-current="page"
         >
           <LucideSparkles class="h-5 w-5" />
+          <span class="hidden sm:inline">{{ $t('app.ai-calculator') }}</span>
         </NuxtLink>
       </nav>
     </div>
@@ -495,6 +499,7 @@ defineOgImage('NuxtSeo', {
     </header>
 
     <div v-if="!userIsAuthenticated">
+      <p class="text-gray-600 dark:text-gray-400 mb-6">{{ $t('ai-calculator.description') }}</p>
       <SecondaryButton :text="$t('app.signin-google')" @click="signInGoogle" />
       <br />
       <NuxtLink
@@ -523,7 +528,7 @@ defineOgImage('NuxtSeo', {
         <textarea
           id="description"
           v-model="description"
-          rows="4"
+          rows="3"
           :placeholder="$t('ai-calculator.input-placeholder')"
           :disabled="isEstimating"
           class="block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
@@ -551,7 +556,7 @@ defineOgImage('NuxtSeo', {
       <div class="flex items-center gap-2 mt-3">
         <button
           type="button"
-          class="rounded-full bg-gray-200 p-1.5 text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
+          class="rounded-full bg-gray-200 px-3 py-1.5 text-sm font-semibold text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
           :disabled="isEstimating"
           :title="$t('phe-calculator.add-photo')"
           @click="
@@ -561,6 +566,7 @@ defineOgImage('NuxtSeo', {
           "
         >
           <LucideCamera class="h-5 w-5" />
+          <span class="ml-1">{{ $t('ai-calculator.analyze-photo') }}</span>
         </button>
         <button
           type="button"
@@ -626,6 +632,21 @@ defineOgImage('NuxtSeo', {
 
     <p v-if="userIsAuthenticated" class="mt-4 text-gray-600 dark:text-gray-400 italic text-sm">
       {{ $t('ai-calculator.disclaimer') }}
+    </p>
+
+    <p v-if="userIsAuthenticated && !isPremium" class="mt-6 text-sm">
+      <NuxtLink :to="$localePath('settings')">
+        <LucideBadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
+        {{ $t('ai-calculator.trial-limit') }}
+      </NuxtLink>
+    </p>
+    <p v-if="isPremium && !isPremiumAI" class="mt-6 text-sm">
+      <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
+      {{ $t('ai-calculator.premium-limit') }}
+    </p>
+    <p v-if="isPremiumAI" class="mt-6 text-sm">
+      <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
+      {{ $t('ai-calculator.premium-ai-limit') }}
     </p>
   </div>
 </template>

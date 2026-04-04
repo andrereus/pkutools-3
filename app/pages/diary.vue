@@ -16,7 +16,7 @@ const { t } = useI18n()
 const dialog2 = ref(null)
 const localePath = useLocalePath()
 const notifications = useNotifications()
-const { isPremium } = useLicense()
+const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary, updateFoodItemInDiary, deleteFoodItemFromDiary, updateGettingStarted } =
   useApi()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
@@ -383,6 +383,7 @@ defineOgImage('NuxtSeo', {
     </header>
 
     <div v-if="!userIsAuthenticated">
+      <p class="text-gray-600 dark:text-gray-400 mb-6">{{ $t('diary.description') }}</p>
       <SecondaryButton :text="$t('app.signin-google')" @click="signInGoogle" />
       <br />
       <NuxtLink
@@ -623,7 +624,7 @@ defineOgImage('NuxtSeo', {
       </p>
       <p v-if="license" class="mt-6 text-sm">
         <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
-        {{ $t('app.unlimited') }}
+        {{ isPremiumAI ? $t('app.unlimited-ai') : $t('app.unlimited') }}
       </p>
     </div>
   </div>

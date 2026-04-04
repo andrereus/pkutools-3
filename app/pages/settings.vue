@@ -319,6 +319,7 @@ defineOgImage('NuxtSeo', {
     </header>
 
     <div v-if="!userIsAuthenticated">
+      <p class="text-gray-600 dark:text-gray-400 mb-6">{{ $t('settings.description') }}</p>
       <div
         class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
       >

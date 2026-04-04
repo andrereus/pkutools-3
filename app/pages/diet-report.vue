@@ -26,7 +26,7 @@ const dialog = ref(null)
 const dialog2 = ref(null)
 const notifications = useNotifications()
 const confirm = useConfirm()
-const { isPremium } = useLicense()
+const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary, deleteDiaryDay, updateDiaryDay, createDiaryDay } = useApi()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
 
@@ -824,6 +824,7 @@ defineOgImage('NuxtSeo', {
     </header>
 
     <div v-if="!userIsAuthenticated">
+      <p class="text-gray-600 dark:text-gray-400 mb-6">{{ $t('diet-report.description') }}</p>
       <SecondaryButton :text="$t('app.signin-google')" @click="signInGoogle" />
       <br />
       <NuxtLink
@@ -1135,7 +1136,7 @@ defineOgImage('NuxtSeo', {
       </p>
       <p v-if="license" class="mt-3 text-sm">
         <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
-        {{ $t('app.unlimited') }}
+        {{ isPremiumAI ? $t('app.unlimited-ai') : $t('app.unlimited') }}
       </p>
     </div>
   </div>

@@ -21,6 +21,7 @@
     "blood-values-limited": "Versión de prueba (30 entradas)",
     "own-food-limited": "Versión de prueba (50 entradas)",
     "unlimited": "Premium",
+    "unlimited-ai": "Premium + AI",
     "limit": "Límite de entradas alcanzado. Soporte con una suscripción para entradas ilimitadas. Consulte la configuración para obtener más información."
   },
   "common": {
@@ -112,12 +113,16 @@
   },
   "ai-calculator": {
     "title": "Calculadora IA",
-    "description": "Describe tu comida y deja que la IA estime los valores nutricionales.",
+    "description": "Describe o fotografía tu comida y deja que la IA estime los valores nutricionales.",
+    "analyze-photo": "Foto",
     "input-label": "Describe tu comida",
-    "input-placeholder": "Describe tu comida, comida o receta...",
+    "input-placeholder": "Describe tu comida o plato...",
     "serving-size": "Tamaño de porción (en g)",
     "protein-fallback-note": "Phe estimado a partir de proteína (aproximado)",
-    "disclaimer": "Las estimaciones de IA pueden ser inexactas. Verifica siempre los valores importantes."
+    "disclaimer": "Las estimaciones de IA pueden ser inexactas. Verifica siempre los valores importantes.",
+    "trial-limit": "Versión de prueba",
+    "premium-limit": "Premium",
+    "premium-ai-limit": "Premium + AI"
   },
   "barcode-scanner": {
     "title": "Escáner de código de barras",
@@ -220,6 +225,7 @@
   },
   "settings": {
     "title": "Configuración",
+    "description": "Administra tu cuenta y las preferencias de la aplicación.",
     "app-settings": "Configuración de la aplicación",
     "max-phe": "Tolerancia de Phe por día",
     "max-kcal": "Kcal por día",
@@ -258,15 +264,17 @@
     "tier-unlimited-feature-5": "Iconos de alimentos propios",
     "tier-unlimited-feature-6": "Exportación CSV (Excel)",
     "tier-premium-ai": "PKU Tools Premium + AI",
-    "tier-premium-ai-desc": "Apoya mensualmente y obtén todas las funciones incluyendo IA.",
+    "tier-premium-ai-desc": "Obtén todas las funciones y más presupuesto de IA.",
     "tier-premium-ai-feature-all": "Todas las funciones Premium",
-    "tier-premium-ai-feature-ai": "Presupuesto de IA más grande",
+    "tier-premium-ai-feature-ai": "100 estimaciones IA/día",
     "tier-basic": "Versión de prueba",
     "tier-basic-desc": "Gratis, sin publicidad",
     "tier-basic-feature-1": "14 días en el diario",
     "tier-basic-feature-2": "30 entradas de valor sanguíneo",
     "tier-basic-feature-3": "50 alimentos propios",
-    "tier-feature-try-ai": "Probar IA",
+    "tier-basic-feature-ai": "2 estimaciones IA/día",
+    "tier-unlimited-feature-ai": "20 estimaciones IA/día",
+    "tier-unlimited-feature-image": "Análisis de imagen IA",
     "per-month": "/mes",
     "subscribe": "Unirme"
   },
@@ -336,8 +344,8 @@
     "community-food-description": "Comparte y descubre alimentos de la comunidad PKU.",
     "own-community-name": "Alimentos propios y de la comunidad",
     "own-community-description": "Guarda alimentos y comparte con la comunidad.",
-    "ai-features-name": "Funciones IA",
-    "ai-features-description": "Estima Phe y calorías con IA y añade alimentos rápidamente."
+    "ai-features-name": "Calculadora IA",
+    "ai-features-description": "Describe o fotografía tu comida y deja que la IA estime los valores nutricionales."
   },
   "footer": {
     "tools": "Herramientas",
