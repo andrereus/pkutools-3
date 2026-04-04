@@ -618,6 +618,9 @@ defineOgImage('NuxtSeo', {
     <p v-if="userIsAuthenticated" class="mt-4 text-gray-600 dark:text-gray-400 italic text-sm">
       {{ $t('ai-calculator.disclaimer') }}
     </p>
+    <p v-if="userIsAuthenticated" class="mt-2 text-gray-600 dark:text-gray-400 italic text-sm">
+      {{ $t('ai-calculator.disclaimer-2') }}
+    </p>
 
     <p v-if="userIsAuthenticated && !isPremium" class="mt-6 text-sm">
       <NuxtLink :to="$localePath('settings')">

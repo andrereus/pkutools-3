@@ -117,7 +117,8 @@
     "input-placeholder": "Lebensmittel oder Mahlzeit beschreiben ...",
     "serving-size": "Portionsgröße (in g)",
     "protein-fallback-note": "Phe aus Protein geschätzt (ungefähr)",
-    "disclaimer": "KI-Schätzungen können ungenau sein. Überprüfe wichtige Werte. Teile keine sensiblen Daten. Modell: Google Gemini.",
+    "disclaimer": "KI-Schätzungen können ungenau sein. Überprüfe wichtige Werte. Modell: Google Gemini.",
+    "disclaimer-2": "Teile keine sensiblen Daten.",
     "trial-limit": "Testversion",
     "premium-limit": "Premium",
     "premium-ai-limit": "Premium + AI"
