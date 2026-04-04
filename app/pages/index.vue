@@ -32,16 +32,16 @@ const features = [
     route: 'barcode-scanner'
   },
   {
-    name: 'features.calculator-name',
-    description: 'features.calculator-description',
-    icon: LucideCalculator,
-    route: 'phe-calculator'
-  },
-  {
     name: 'features.ai-features-name',
     description: 'features.ai-features-description',
     icon: LucideSparkles,
     route: 'ai-calculator'
+  },
+  {
+    name: 'features.calculator-name',
+    description: 'features.calculator-description',
+    icon: LucideCalculator,
+    route: 'phe-calculator'
   },
   {
     name: 'features.diary-name',

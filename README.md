@@ -8,8 +8,8 @@ PKU Tools is a comprehensive Progressive Web App (PWA) designed to help people w
 
 - **🔍 Food Search**: USDA-based food database with fuzzy search (multilingual support)
 - **📷 Barcode Scanner**: Scan product barcodes to lookup nutritional information
-- **📱 Phe Calculator**: Calculate Phe or convert protein to Phe (with conversion factors for fruit, vegetables, meat, and other foods)
 - **✨ AI Calculator**: Describe or photograph your food and let AI estimate the nutritional values
+- **📱 Phe Calculator**: Calculate Phe or convert protein to Phe (with conversion factors for fruit, vegetables, meat, and other foods)
 - **📅 Diary**: Daily food log with date navigation, progress bars, and smart suggestions based on eating history
 - **📖 Diet Report**: Charts and sortable tables of dietary patterns over time, plus a summary card with 14-day average Phe intake and deviation from your daily limit (CSV export)
 - **📈 Blood Values**: Track and visualize Phe and tyrosine lab results with interactive charts (export as CSV, SVG, or PNG)

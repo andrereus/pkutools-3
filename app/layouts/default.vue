@@ -45,8 +45,8 @@ const navigation = computed(() => {
     { name: 'app.start', icon: 'LucideHouse', route: 'index' },
     { name: 'food-search.title', icon: 'LucideSearch', route: 'food-search' },
     { name: 'barcode-scanner.title', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
-    { name: 'phe-calculator.title', icon: 'LucideCalculator', route: 'phe-calculator' },
     { name: 'ai-calculator.title', icon: 'LucideSparkles', route: 'ai-calculator' },
+    { name: 'phe-calculator.title', icon: 'LucideCalculator', route: 'phe-calculator' },
     { name: 'diary.title', icon: 'LucideCalendar', route: 'diary' },
     { name: 'diet-report.title', icon: 'LucideBook', route: 'diet-report' },
     { name: 'blood-values.title', icon: 'LucideChartLine', route: 'blood-values' },
@@ -68,8 +68,8 @@ const tabNavigation = computed(() => {
       { name: 'home.title', icon: 'LucideHouse', route: 'index' },
       { name: 'app.search', icon: 'LucideSearch', route: 'food-search' },
       { name: 'app.scanner', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
-      { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' },
-      { name: 'app.ai-calculator', icon: 'LucideSparkles', route: 'ai-calculator' }
+      { name: 'app.ai-calculator', icon: 'LucideSparkles', route: 'ai-calculator' },
+      { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' }
     ]
   }
 })
@@ -89,8 +89,8 @@ const footerNavigation = computed(() => {
     tools: [
       { name: 'food-search.title', route: 'food-search' },
       { name: 'barcode-scanner.title', route: 'barcode-scanner' },
-      { name: 'phe-calculator.title', route: 'phe-calculator' },
-      { name: 'ai-calculator.title', route: 'ai-calculator' }
+      { name: 'ai-calculator.title', route: 'ai-calculator' },
+      { name: 'phe-calculator.title', route: 'phe-calculator' }
     ],
     features: [
       { name: 'diary.title', route: 'diary' },

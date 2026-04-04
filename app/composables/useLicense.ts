@@ -125,7 +125,11 @@ export const useLicense = () => {
     watch(
       () => [store.user, store.settings?.license],
       () => {
-        if (!store.user || !store.settings?.license || licenseCache.value) {
+        if (!store.user) {
+          clearCache()
+          return
+        }
+        if (!store.settings?.license || licenseCache.value) {
           return
         }
         const settingsLicense = store.settings.license
