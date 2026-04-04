@@ -12,7 +12,6 @@ const notifications = useNotifications()
 const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary } = useApi()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
-const { confirm } = useConfirm()
 
 const signInGoogle = async () => {
   try {
@@ -189,20 +188,6 @@ const estimateFoodValues = async () => {
     if (!hasText && !hasImage) {
       notifications.error(t('phe-calculator.estimate-error-no-input'))
       return
-    }
-
-    // If an image is attached, ask user to confirm sending it to Google Gemini
-    if (hasImage) {
-      isEstimating.value = false
-      const confirmed = await confirm({
-        title: t('phe-calculator.image-confirm-title'),
-        message: t('phe-calculator.image-confirm-message'),
-        confirmLabel: t('phe-calculator.image-confirm-proceed'),
-        cancelLabel: t('common.cancel'),
-        variant: 'default'
-      })
-      if (!confirmed) return
-      isEstimating.value = true
     }
 
     // Sanitize text input

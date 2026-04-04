@@ -413,6 +413,9 @@ defineOgImage('NuxtSeo', {
       <p class="mt-6 text-gray-600 dark:text-gray-400 italic">
         {{ $t('food-search.search-info') }}
       </p>
+      <p class="mt-2 text-gray-600 dark:text-gray-400 italic">
+        {{ $t('food-search.search-info-2') }}
+      </p>
 
       <!-- Add food call-to-action -->
       <div
