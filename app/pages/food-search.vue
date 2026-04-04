@@ -410,10 +410,10 @@ defineOgImage('NuxtSeo', {
         </tr>
       </DataTable>
 
-      <p class="mt-6 text-gray-600 dark:text-gray-400 italic">
+      <p class="mt-6 text-gray-600 dark:text-gray-400 italic text-sm">
         {{ $t('food-search.search-info') }}
       </p>
-      <p class="mt-2 text-gray-600 dark:text-gray-400 italic">
+      <p class="mt-2 text-gray-600 dark:text-gray-400 italic text-sm">
         {{ $t('food-search.search-info-2') }}
       </p>
 

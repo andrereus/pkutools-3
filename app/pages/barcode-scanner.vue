@@ -320,7 +320,7 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <p class="mt-4 text-gray-600 dark:text-gray-400 italic">{{ $t('barcode-scanner.info') }}</p>
-    <p class="mt-2 text-gray-600 dark:text-gray-400 italic">{{ $t('barcode-scanner.info-2') }}</p>
+    <p class="mt-4 text-gray-600 dark:text-gray-400 italic text-sm">{{ $t('barcode-scanner.info') }}</p>
+    <p class="mt-2 text-gray-600 dark:text-gray-400 italic text-sm">{{ $t('barcode-scanner.info-2') }}</p>
   </div>
 </template>
