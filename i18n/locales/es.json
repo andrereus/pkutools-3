@@ -117,7 +117,7 @@
     "input-placeholder": "Describir alimento o comida (opcional)",
     "serving-size": "Peso (en g)",
     "protein-fallback-note": "Phe estimado a partir de proteína (aproximado)",
-    "disclaimer": "Las estimaciones de IA pueden ser inexactas. La Phe se verifica con la proteína para comprobar su plausibilidad. Modelo: Google Gemini.",
+    "disclaimer": "Las estimaciones pueden ser inexactas. La Phe se verifica con la proteína para comprobar su plausibilidad. Modelo: Google Gemini.",
     "disclaimer-2": "No compartas datos sensibles.",
     "trial-limit": "Versión de prueba",
     "premium-limit": "Premium",
