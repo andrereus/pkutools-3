@@ -32,7 +32,7 @@ const imagePreview = ref(null)
 const fileInputRef = ref(null)
 
 // Result state
-const result = ref(null) // { name, emoji, phePer100g, proteinPer100g, kcalPer100g, servingSizeGrams, explanation }
+const result = ref(null) // { name, emoji, phePer100g, proteinPer100g, kcalPer100g, weightInGrams, explanation }
 const weight = ref(null)
 
 // Constants
@@ -250,9 +250,9 @@ Return JSON:
   "phePer100g": number (phenylalanine in mg per 100g) or null,
   "kcalPer100g": number (calories in kcal per 100g) or null,
   "proteinPer100g": number (protein in g per 100g) or null,
-  "servingSizeGrams": number (identified combined weight or typical serving size in g) or null,
+  "weightInGrams": number (total weight or typical serving size in grams) or null,
   "emoji": string (exactly one emoji character) or null,
-  "explanation": string (max 140 characters) or null
+  "explanation": string (maximum 140 characters) or null
 }`
 
     // Build content parts
@@ -297,12 +297,12 @@ Return JSON:
         !isNaN(Number(foodData.kcalPer100g))
           ? Math.round(Number(foodData.kcalPer100g))
           : null,
-      servingSizeGrams:
-        foodData.servingSizeGrams !== null &&
-        foodData.servingSizeGrams !== undefined &&
-        !isNaN(Number(foodData.servingSizeGrams)) &&
-        Number(foodData.servingSizeGrams) > 0
-          ? Math.round(Number(foodData.servingSizeGrams))
+      weightInGrams:
+        foodData.weightInGrams !== null &&
+        foodData.weightInGrams !== undefined &&
+        !isNaN(Number(foodData.weightInGrams)) &&
+        Number(foodData.weightInGrams) > 0
+          ? Math.round(Number(foodData.weightInGrams))
           : null,
       explanation:
         foodData.explanation &&
@@ -313,7 +313,7 @@ Return JSON:
     }
 
     // Set editable weight from serving size
-    weight.value = result.value.servingSizeGrams || 100
+    weight.value = result.value.weightInGrams || 100
 
     notifications.success(t('phe-calculator.estimate-success'))
   } catch (error) {
