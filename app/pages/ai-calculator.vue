@@ -242,56 +242,18 @@ const estimateFoodValues = async () => {
     const languageMap = { en: 'English', de: 'German', es: 'Spanish', fr: 'French' }
     const appLanguage = languageMap[locale.value] || 'English'
 
-    let prompt
-    if (hasImage && hasText) {
-      // Image + text description
-      prompt = `Identify the food in the image and estimate its nutritional values. Use the following description for additional context: "${sanitizedText}". If there are multiple foods, treat them as one combined meal.
+    const prompt = `Identify the food(s) from the input and estimate nutritional values. Use ${appLanguage} for values. Use null for unknown values. Base estimates on typical nutritional databases. Cross-check that phePer100g is plausible relative to proteinPer100g.${hasText ? `\n\nInput: "${sanitizedText}"` : ''}
 
-Return JSON with these fields:
+Return JSON:
 {
-  "name": string (short descriptive name in ${appLanguage}) or null,
+  "name": string (short descriptive name) or null,
   "phePer100g": number (phenylalanine in mg per 100g) or null,
   "kcalPer100g": number (calories in kcal per 100g) or null,
   "proteinPer100g": number (protein in g per 100g) or null,
-  "servingSizeGrams": number (estimated total weight in grams) or null,
+  "servingSizeGrams": number (identified combined weight or typical serving size in g) or null,
   "emoji": string (exactly one emoji character) or null,
-  "explanation": string (explanation in ${appLanguage}, maximum 140 characters) or null
-}
-
-Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
-    } else if (hasImage) {
-      // Image only
-      prompt = `Identify the food in the image and estimate its nutritional values. If there are multiple foods, treat them as one combined meal.
-
-Return JSON with these fields:
-{
-  "name": string (short descriptive name in ${appLanguage}) or null,
-  "phePer100g": number (phenylalanine in mg per 100g) or null,
-  "kcalPer100g": number (calories in kcal per 100g) or null,
-  "proteinPer100g": number (protein in g per 100g) or null,
-  "servingSizeGrams": number (estimated total weight based on visual size, in grams) or null,
-  "emoji": string (exactly one emoji character) or null,
-  "explanation": string (explanation in ${appLanguage}, maximum 140 characters) or null
-}
-
-Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
-    } else {
-      // Text description only
-      prompt = `Estimate nutritional values for: "${sanitizedText}". If multiple foods are listed, treat them as one combined meal.
-
-Return JSON with these fields:
-{
-  "name": string (short descriptive name in ${appLanguage}) or null,
-  "phePer100g": number (phenylalanine in mg per 100g) or null,
-  "kcalPer100g": number (calories in kcal per 100g) or null,
-  "proteinPer100g": number (protein in g per 100g) or null,
-  "servingSizeGrams": number (if a quantity or weight is mentioned, convert it to grams; otherwise use a typical serving size in g) or null,
-  "emoji": string (exactly one emoji character) or null,
-  "explanation": string (explanation in ${appLanguage}, maximum 140 characters) or null
-}
-
-Base estimates on typical nutritional databases. Use null for unknown values. For processed foods, use prepared/cooked state values unless specified otherwise.`
-    }
+  "explanation": string (max 140 characters) or null
+}`
 
     // Build content parts
     const contentParts = [prompt]
@@ -479,7 +441,10 @@ defineOgImage('NuxtSeo', {
     <header>
       <h2 class="text-2xl text-gray-900 dark:text-gray-300 mb-6">
         {{ $t('ai-calculator.title') }}
-        <span class="ml-2 align-middle inline-flex items-center rounded-md bg-sky-50 px-2 py-0.5 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-600/20 dark:bg-sky-900/30 dark:text-sky-300 dark:ring-sky-500/30">Beta</span>
+        <span
+          class="ml-2 align-middle inline-flex items-center rounded-md bg-sky-50 px-2 py-0.5 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-600/20 dark:bg-sky-900/30 dark:text-sky-300 dark:ring-sky-500/30"
+          >Beta</span
+        >
       </h2>
     </header>
 
@@ -506,7 +471,10 @@ defineOgImage('NuxtSeo', {
     />
 
     <div v-if="userIsAuthenticated" class="mt-2">
-      <label for="description" class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300">
+      <label
+        for="description"
+        class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
+      >
         {{ $t('ai-calculator.input-label') }}
       </label>
       <div class="mt-1">
@@ -556,14 +524,17 @@ defineOgImage('NuxtSeo', {
         <button
           type="button"
           class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
-          :disabled="isEstimating || ((!description || description.trim() === '') && !imageFile) || remainingEstimates === 0"
+          :disabled="
+            isEstimating ||
+            ((!description || description.trim() === '') && !imageFile) ||
+            remainingEstimates === 0
+          "
           @click="estimateFoodValues"
         >
           <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
           <span v-else>{{ $t('phe-calculator.estimate') }}</span>
         </button>
       </div>
-
     </div>
 
     <div v-if="result" class="mt-6 rounded-lg bg-gray-50 dark:bg-gray-800/50 p-4">
@@ -580,13 +551,12 @@ defineOgImage('NuxtSeo', {
 
       <div class="flex gap-4 text-gray-600 dark:text-gray-400 mb-4">
         <span class="flex-1">{{ pheReference }} {{ $t('common.mg-phe-per-100g') }}</span>
-        <span v-if="kcalReference" class="flex-1">{{ kcalReference }} {{ $t('common.kcal-per-100g') }}</span>
+        <span v-if="kcalReference" class="flex-1"
+          >{{ kcalReference }} {{ $t('common.kcal-per-100g') }}</span
+        >
       </div>
 
-      <div
-        v-if="isProteinFallback"
-        class="text-xs text-amber-600 dark:text-amber-400 mb-3"
-      >
+      <div v-if="isProteinFallback" class="text-xs text-amber-600 dark:text-amber-400 mb-3">
         {{ $t('ai-calculator.protein-fallback-note') }}
       </div>
 
@@ -604,7 +574,9 @@ defineOgImage('NuxtSeo', {
           <template v-else>=</template>
           {{ totalPhe }} mg Phe
         </span>
-        <span v-if="kcalReference" class="flex-1 text-lg">= {{ totalKcal }} {{ $t('common.kcal') }}</span>
+        <span v-if="kcalReference" class="flex-1 text-lg"
+          >= {{ totalKcal }} {{ $t('common.kcal') }}</span
+        >
       </div>
 
       <PrimaryButton
