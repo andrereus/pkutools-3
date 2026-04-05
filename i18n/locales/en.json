@@ -117,7 +117,7 @@
     "input-placeholder": "Describe food or meal ...",
     "serving-size": "Serving size (in g)",
     "protein-fallback-note": "Phe estimated from protein (approximate)",
-    "disclaimer": "AI estimates can be inaccurate. Verify critical values. Model: Google Gemini.",
+    "disclaimer": "AI estimates can be inaccurate. Phe is cross-checked with protein for plausibility. Model: Google Gemini.",
     "disclaimer-2": "Don't share sensitive data.",
     "trial-limit": "Trial version",
     "premium-limit": "Premium",
