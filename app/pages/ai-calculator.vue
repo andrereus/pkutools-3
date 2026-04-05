@@ -250,7 +250,7 @@ Return JSON:
   "phePer100g": number (phenylalanine in mg per 100g) or null,
   "kcalPer100g": number (calories in kcal per 100g) or null,
   "proteinPer100g": number (protein in g per 100g) or null,
-  "weightInGrams": number (total weight or typical serving size in grams) or null,
+  "weightInGrams": number (total weight or typical serving size in g) or null,
   "emoji": string (exactly one emoji character) or null,
   "explanation": string (maximum 140 characters) or null
 }`
