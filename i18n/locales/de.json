@@ -114,7 +114,7 @@
     "description": "Beschreibe oder fotografiere dein Essen und lass die KI die Nährwerte schätzen.",
     "analyze-photo": "Foto",
     "input-label": "Beschreibung",
-    "input-placeholder": "Lebensmittel oder Mahlzeit beschreiben ...",
+    "input-placeholder": "Lebensmittel oder Mahlzeit beschreiben (optional)",
     "serving-size": "Gewicht (in g)",
     "protein-fallback-note": "Phe aus Protein geschätzt (ungefähr)",
     "disclaimer": "KI-Schätzungen können ungenau sein. Phe wird mit Eiweiß auf Plausibilität geprüft. Modell: Google Gemini.",
