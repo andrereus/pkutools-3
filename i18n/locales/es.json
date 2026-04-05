@@ -99,7 +99,7 @@
     "add-photo": "Añadir foto",
     "remove-photo": "Eliminar foto",
     "image-preview": "Vista previa de la imagen del alimento",
-    "image-premium-only": "El análisis de imágenes está disponible con Premium",
+    "image-premium-only": "El análisis de imágenes está disponible con Premium. Ver configuración para más detalles.",
     "estimate-error-firebase": "Servicio no disponible. Por favor, actualice la página e inténtelo de nuevo.",
     "estimate-error-premium": "Esta función requiere una suscripción.",
     "estimate-error-daily-limit": "Se alcanzó el límite diario de {limit} estimaciones. Por favor, inténtelo de nuevo mañana.",

@@ -99,7 +99,7 @@
     "add-photo": "Add photo",
     "remove-photo": "Remove photo",
     "image-preview": "Food image preview",
-    "image-premium-only": "Image analysis is available with Premium",
+    "image-premium-only": "Image analysis is available with Premium. See settings for details.",
     "estimate-error-firebase": "Service not available. Please refresh the page and try again.",
     "estimate-error-premium": "This feature requires a subscription.",
     "estimate-error-daily-limit": "Daily limit of {limit} estimates reached. Please try again tomorrow.",
