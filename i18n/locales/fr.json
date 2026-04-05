@@ -115,7 +115,7 @@
     "analyze-photo": "Photo",
     "input-label": "Description",
     "input-placeholder": "Décrire aliment ou repas ...",
-    "serving-size": "Taille de portion (en g)",
+    "serving-size": "Poids (en g)",
     "protein-fallback-note": "Phe estimé à partir des protéines (approximatif)",
     "disclaimer": "Les estimations de l'IA peuvent être inexactes. La Phe est vérifiée par rapport aux protéines pour la plausibilité. Modèle: Google Gemini.",
     "disclaimer-2": "Ne partagez pas de données sensibles.",
