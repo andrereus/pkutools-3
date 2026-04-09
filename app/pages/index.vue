@@ -20,6 +20,12 @@ const notifications = useNotifications()
 // Features data (8 items for even layout: short descriptions, merged Own & Community Foods, merged AI features)
 const features = [
   {
+    name: 'features.ai-features-name',
+    description: 'features.ai-features-description',
+    icon: LucideSparkles,
+    route: 'ai-calculator'
+  },
+  {
     name: 'features.search-name',
     description: 'features.search-description',
     icon: LucideSearch,
@@ -30,12 +36,6 @@ const features = [
     description: 'features.scanner-description',
     icon: LucideScanBarcode,
     route: 'barcode-scanner'
-  },
-  {
-    name: 'features.ai-features-name',
-    description: 'features.ai-features-description',
-    icon: LucideSparkles,
-    route: 'ai-calculator'
   },
   {
     name: 'features.calculator-name',

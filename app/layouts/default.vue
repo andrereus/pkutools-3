@@ -43,9 +43,9 @@ const user = computed(() => store.user)
 const navigation = computed(() => {
   return [
     { name: 'app.start', icon: 'LucideHouse', route: 'index' },
+    { name: 'ai-calculator.title', icon: 'LucideSparkles', route: 'ai-calculator' },
     { name: 'food-search.title', icon: 'LucideSearch', route: 'food-search' },
     { name: 'barcode-scanner.title', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
-    { name: 'ai-calculator.title', icon: 'LucideSparkles', route: 'ai-calculator' },
     { name: 'phe-calculator.title', icon: 'LucideCalculator', route: 'phe-calculator' },
     { name: 'diary.title', icon: 'LucideCalendar', route: 'diary' },
     { name: 'diet-report.title', icon: 'LucideBook', route: 'diet-report' },
@@ -66,9 +66,9 @@ const tabNavigation = computed(() => {
   } else {
     return [
       { name: 'home.title', icon: 'LucideHouse', route: 'index' },
+      { name: 'app.ai-calculator', icon: 'LucideSparkles', route: 'ai-calculator' },
       { name: 'app.search', icon: 'LucideSearch', route: 'food-search' },
       { name: 'app.scanner', icon: 'LucideScanBarcode', route: 'barcode-scanner' },
-      { name: 'app.ai-calculator', icon: 'LucideSparkles', route: 'ai-calculator' },
       { name: 'app.calculator', icon: 'LucideCalculator', route: 'phe-calculator' }
     ]
   }
@@ -87,9 +87,9 @@ const userNavigation = computed(() => {
 const footerNavigation = computed(() => {
   return {
     tools: [
+      { name: 'ai-calculator.title', route: 'ai-calculator' },
       { name: 'food-search.title', route: 'food-search' },
       { name: 'barcode-scanner.title', route: 'barcode-scanner' },
-      { name: 'ai-calculator.title', route: 'ai-calculator' },
       { name: 'phe-calculator.title', route: 'phe-calculator' }
     ],
     features: [

@@ -195,6 +195,14 @@ defineOgImage('NuxtSeo', {
     <div v-if="userIsAuthenticated" class="block mb-6">
       <nav class="flex gap-3 justify-center" aria-label="Tabs">
         <NuxtLink
+          :to="$localePath('ai-calculator')"
+          :title="$t('app.ai-calculator')"
+          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
+        >
+          <LucideSparkles class="h-5 w-5" />
+          <span class="hidden sm:inline">{{ $t('app.ai-calculator') }}</span>
+        </NuxtLink>
+        <NuxtLink
           :to="$localePath('food-search')"
           :title="$t('app.search')"
           class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
@@ -210,14 +218,6 @@ defineOgImage('NuxtSeo', {
         >
           <LucideScanBarcode class="h-5 w-5" />
           <span class="hidden sm:inline">{{ $t('app.scanner') }}</span>
-        </NuxtLink>
-        <NuxtLink
-          :to="$localePath('ai-calculator')"
-          :title="$t('app.ai-calculator')"
-          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
-        >
-          <LucideSparkles class="h-5 w-5" />
-          <span class="hidden sm:inline">{{ $t('app.ai-calculator') }}</span>
         </NuxtLink>
         <NuxtLink
           :to="$localePath('phe-calculator')"
