@@ -2,7 +2,7 @@
   "app": {
     "language-name": "Español",
     "description": "Aplicación nutricional para dietas bajas en fenilalanina",
-    "long-description": "Esta aplicación está dirigida a personas con fenilcetonuria. Combina calculadora, lápiz, papel y tabla nutricional.",
+    "long-description": "Esta aplicación está dirigida a personas con fenilcetonuria. Combina báscula, tabla nutricional, calculadora, lápiz y papel.",
     "signin-google": "Iniciar sesión con Google",
     "signout": "Cerrar sesión",
     "main-menu": "Menú principal",
@@ -58,7 +58,7 @@
   },
   "home": {
     "title": "Inicio",
-    "description": "Aplicación nutricional para dietas bajas en fenilalanina. Esta aplicación está dirigida a personas con fenilcetonuria. Combina calculadora, lápiz, papel y tabla nutricional.",
+    "description": "Aplicación nutricional para dietas bajas en fenilalanina. Esta aplicación está dirigida a personas con fenilcetonuria. Combina báscula, tabla nutricional, calculadora, lápiz y papel.",
     "signin": "Inicia sesión en cualquier lugar",
     "signin-desc": "Inicia sesión fácilmente en cualquier dispositivo. Los datos se sincronizan en tiempo real.",
     "install": "Instala en cualquier lugar",
@@ -111,7 +111,7 @@
   },
   "ai-calculator": {
     "title": "Calculadora IA",
-    "description": "Describe o fotografía tu comida y deja que la IA estime los valores nutricionales.",
+    "description": "Describe o fotografía tu comida y deja que la IA estime el peso y los valores nutricionales.",
     "analyze-photo": "Foto",
     "input-label": "Descripción",
     "input-placeholder": "Describir alimento o comida (opcional)",
@@ -345,7 +345,7 @@
     "own-community-name": "Alimentos propios y de la comunidad",
     "own-community-description": "Guarda alimentos y comparte con la comunidad.",
     "ai-features-name": "Calculadora IA",
-    "ai-features-description": "Describe o fotografía tu comida y deja que la IA estime los valores nutricionales."
+    "ai-features-description": "Describe o fotografía tu comida y deja que la IA estime el peso y los valores nutricionales."
   },
   "footer": {
     "tools": "Herramientas",

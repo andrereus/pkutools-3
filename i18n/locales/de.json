@@ -2,7 +2,7 @@
   "app": {
     "language-name": "Deutsch",
     "description": "Nährwert-App für phenylalaninarme Diät",
-    "long-description": "Diese App richtet sich an Menschen mit PKU. Sie kombiniert Taschenrechner, Bleistift, Papier und Nährwerttabelle.",
+    "long-description": "Diese App richtet sich an Menschen mit PKU. Sie kombiniert Waage, Nährwerttabelle, Taschenrechner, Bleistift und Papier.",
     "signin-google": "Anmelden mit Google",
     "signout": "Abmelden",
     "main-menu": "Hauptmenü",
@@ -58,7 +58,7 @@
   },
   "home": {
     "title": "Start",
-    "description": "Nährwert-App für phenylalaninarme Diät. Diese App richtet sich an Menschen mit PKU. Sie kombiniert Taschenrechner, Bleistift, Papier und Nährwerttabelle.",
+    "description": "Nährwert-App für phenylalaninarme Diät. Diese App richtet sich an Menschen mit PKU. Sie kombiniert Waage, Nährwerttabelle, Taschenrechner, Bleistift und Papier.",
     "signin": "Überall anmelden",
     "signin-desc": "Einfach auf jedem Gerät anmelden. Daten synchronisieren in Echtzeit.",
     "install": "Überall installieren",
@@ -111,7 +111,7 @@
   },
   "ai-calculator": {
     "title": "KI Rechner",
-    "description": "Beschreibe oder fotografiere dein Essen und lass die KI die Nährwerte schätzen.",
+    "description": "Beschreibe oder fotografiere dein Essen und lass die KI das Gewicht und die Nährwerte schätzen.",
     "analyze-photo": "Foto",
     "input-label": "Beschreibung",
     "input-placeholder": "Lebensmittel oder Mahlzeit beschreiben (optional)",
@@ -345,7 +345,7 @@
     "own-community-name": "Eigene & Community-Lebensmittel",
     "own-community-description": "Eigene Lebensmittel speichern und mit der Community teilen.",
     "ai-features-name": "KI Rechner",
-    "ai-features-description": "Beschreibe oder fotografiere dein Essen und lass die KI die Nährwerte schätzen."
+    "ai-features-description": "Beschreibe oder fotografiere dein Essen und lass die KI das Gewicht und die Nährwerte schätzen."
   },
   "footer": {
     "tools": "Tools",

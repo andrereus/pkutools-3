@@ -2,7 +2,7 @@
   "app": {
     "language-name": "Français",
     "description": "Application nutritionnelle pour régime pauvre en phénylalanine",
-    "long-description": "Cette application s'adresse aux personnes atteintes de PKU. Elle combine calculatrice, crayon, papier et tableau des valeurs nutritives.",
+    "long-description": "Cette application s'adresse aux personnes atteintes de PKU. Elle combine balance, tableau des valeurs nutritives, calculatrice, crayon et papier.",
     "signin-google": "Se connecter avec Google",
     "signout": "Se déconnecter",
     "main-menu": "Menu principal",
@@ -58,7 +58,7 @@
   },
   "home": {
     "title": "Accueil",
-    "description": "Application nutritionnelle pour régime pauvre en phénylalanine. Cette application s'adresse aux personnes atteintes de PKU. Elle combine calculatrice, crayon, papier et tableau des valeurs nutritives.",
+    "description": "Application nutritionnelle pour régime pauvre en phénylalanine. Cette application s'adresse aux personnes atteintes de PKU. Elle combine balance, tableau des valeurs nutritives, calculatrice, crayon et papier.",
     "signin": "Connectez-vous partout",
     "signin-desc": "Connectez-vous facilement sur n'importe quel appareil. Les données se synchronisent en temps réel.",
     "install": "Installez partout",
@@ -111,7 +111,7 @@
   },
   "ai-calculator": {
     "title": "Calculateur IA",
-    "description": "Décrivez ou photographiez votre nourriture et laissez l'IA estimer les valeurs nutritionnelles.",
+    "description": "Décrivez ou photographiez votre nourriture et laissez l'IA estimer le poids et les valeurs nutritionnelles.",
     "analyze-photo": "Photo",
     "input-label": "Description",
     "input-placeholder": "Décrire aliment ou repas (optionnel)",
@@ -345,7 +345,7 @@
     "own-community-name": "Aliments personnels et communautaires",
     "own-community-description": "Enregistrez des aliments et partagez avec la communauté.",
     "ai-features-name": "Calculateur IA",
-    "ai-features-description": "Décrivez ou photographiez votre nourriture et laissez l'IA estimer les valeurs nutritionnelles."
+    "ai-features-description": "Décrivez ou photographiez votre nourriture et laissez l'IA estimer le poids et les valeurs nutritionnelles."
   },
   "footer": {
     "tools": "Outils",
