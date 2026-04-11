@@ -59,7 +59,7 @@ const tabNavigation = computed(() => {
     return [
       { name: 'home.title', icon: 'LucideHouse', route: 'diary' },
       { name: 'diet-report.tab-title', icon: 'LucideBook', route: 'diet-report' },
-      { name: 'common.add', icon: 'LucidePlus', route: 'food-search' },
+      { name: 'common.add', icon: 'LucidePlus', route: 'ai-calculator' },
       { name: 'blood-values.tab-title', icon: 'LucideChartLine', route: 'blood-values' },
       { name: 'own-food.tab-title', icon: 'LucideApple', route: 'own-food' }
     ]
