@@ -242,7 +242,7 @@ const estimateFoodValues = async () => {
     const languageMap = { en: 'English', de: 'German', es: 'Spanish', fr: 'French' }
     const appLanguage = languageMap[locale.value] || 'English'
 
-    const prompt = `Identify the food(s) from the input and estimate nutritional values. Use ${appLanguage} for values. Use null for unknown values. Base estimates on typical nutritional databases. Cross-check that phePer100g is plausible relative to proteinPer100g.${hasText ? `\n\nInput: "${sanitizedText}"` : ''}
+    const prompt = `Identify the food(s) from the input and estimate (combined) nutritional values. Use ${appLanguage} for values. Use null for unknown values. Base estimates on typical nutritional databases. Cross-check that phePer100g is plausible relative to proteinPer100g.${hasText ? `\n\nInput: "${sanitizedText}"` : ''}
 
 Return JSON:
 {
