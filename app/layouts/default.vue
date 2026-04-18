@@ -509,22 +509,20 @@ const handleCookieConsent = (consent) => {
             :to="$localePath(item.route)"
             :class="[
               'flex-1 flex justify-center',
-              isTabActive(item)
-                ? item.icon === 'LucidePlus'
-                  ? 'group inline-flex items-center px-2 py-1 text-sm font-medium border border-sky-500 rounded-md bg-sky-50 dark:bg-sky-900 text-sky-600 dark:text-sky-300 transition'
-                  : 'group inline-flex items-center px-3 py-2 text-sm font-medium bg-gray-100 dark:bg-gray-700 rounded-md text-gray-600 dark:text-gray-300'
-                : item.icon === 'LucidePlus'
-                  ? 'group inline-flex items-center px-2 py-1 text-sm font-medium border border-sky-500 rounded-md bg-transparent text-sky-600 dark:text-sky-300 transition hover:bg-sky-50 dark:hover:bg-sky-900'
-                  : 'group inline-flex items-center px-3 py-2 text-sm font-medium hover:bg-gray-50 hover:text-gray-600 dark:hover:bg-gray-700 rounded-md text-gray-600 dark:text-gray-300'
+              'group inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-150 ease-out active:scale-95',
+              item.icon === 'LucidePlus'
+                ? isTabActive(item)
+                  ? 'bottom-nav-add liquid-glass-active text-sky-600 dark:text-sky-300'
+                  : 'bottom-nav-add text-sky-600 dark:text-sky-300'
+                : isTabActive(item)
+                  ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
+                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
             ]"
           >
             <component
               :is="iconMap[item.icon]"
-              :class="[
-                item.icon === 'LucidePlus'
-                  ? 'md:mr-3 text-sky-600 dark:text-sky-300 h-6 w-6'
-                  : 'md:mr-3 h-5 w-5 text-gray-700 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300'
-              ]"
+              :class="item.icon === 'LucidePlus' ? 'md:mr-3 h-6 w-6' : 'md:mr-3 h-5 w-5'"
+              :stroke-width="isTabActive(item) ? 2.5 : 2"
               aria-hidden="true"
             />
             <span class="hidden lg:inline-block">{{ $t(item.name) }}</span>
