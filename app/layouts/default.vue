@@ -767,7 +767,9 @@ const handleCookieConsent = (consent) => {
     rgba(56, 189, 248, 0.12) 0%,
     rgba(56, 189, 248, 0.06) 100%
   );
-  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.06);
+  box-shadow:
+    inset 0 0 0 1px rgba(14, 165, 233, 0.3),
+    inset 0 1px 0 rgba(0, 0, 0, 0.06);
 }
 
 :is(.dark *) .liquid-glass-active {
@@ -776,19 +778,21 @@ const handleCookieConsent = (consent) => {
     rgba(56, 189, 248, 0.15) 0%,
     rgba(56, 189, 248, 0.08) 100%
   );
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 0 0 1px rgba(56, 189, 248, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .bottom-nav-add {
   background-color: transparent;
-  border: 0.5px solid rgba(14, 165, 233, 0.5);
+  border: 1px solid rgba(14, 165, 233, 0.55);
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.06),
     0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 :is(.dark *) .bottom-nav-add {
-  border: 0.5px solid rgba(56, 189, 248, 0.45);
+  border: 1px solid rgba(56, 189, 248, 0.65);
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.25),
     0 1px 2px rgba(0, 0, 0, 0.15);
