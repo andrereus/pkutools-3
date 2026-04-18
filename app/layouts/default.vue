@@ -516,12 +516,12 @@ const handleCookieConsent = (consent) => {
                   : 'bottom-nav-add text-sky-600 dark:text-sky-300'
                 : isTabActive(item)
                   ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
-                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
             ]"
           >
             <component
               :is="iconMap[item.icon]"
-              :class="item.icon === 'LucidePlus' ? 'md:mr-3 h-6 w-6' : 'md:mr-3 h-5 w-5'"
+              class="md:mr-3 h-5 w-5"
               :stroke-width="isTabActive(item) ? 2.5 : 2"
               aria-hidden="true"
             />
@@ -531,7 +531,7 @@ const handleCookieConsent = (consent) => {
       </div>
     </div>
 
-    <div class="pb-24 lg:pb-10 grow pt-20 lg:pt-28">
+    <div class="pb-24 lg:pb-10 grow pt-20 lg:pt-30">
       <main>
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:py-8 lg:px-8">
           <slot />
@@ -620,7 +620,9 @@ const handleCookieConsent = (consent) => {
       style="padding-bottom: env(safe-area-inset-bottom)"
     >
       <div class="flex justify-center px-4 pb-2">
-        <nav class="liquid-glass flex w-full max-w-md justify-around items-center h-14 rounded-2xl p-1">
+        <nav
+          class="liquid-glass flex w-full max-w-md justify-around items-center h-14 rounded-2xl p-1"
+        >
           <NuxtLink
             v-for="item in tabNavigation"
             :key="item.name"
@@ -706,11 +708,7 @@ const handleCookieConsent = (consent) => {
 
 /* Liquid Glass - Top navigation */
 .liquid-glass-top {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.6) 0%,
-    rgba(255, 255, 255, 0.42) 100%
-  );
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.42) 100%);
   backdrop-filter: blur(24px) saturate(200%);
   -webkit-backdrop-filter: blur(24px) saturate(200%);
   box-shadow:
@@ -719,11 +717,7 @@ const handleCookieConsent = (consent) => {
 }
 
 :is(.dark *) .liquid-glass-top {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0.04) 100%
-  );
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.25),
     0 1px 2px rgba(0, 0, 0, 0.15);
@@ -731,11 +725,7 @@ const handleCookieConsent = (consent) => {
 
 /* Liquid Glass - Bottom navigation */
 .liquid-glass {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.6) 0%,
-    rgba(255, 255, 255, 0.42) 100%
-  );
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.42) 100%);
   backdrop-filter: blur(24px) saturate(200%);
   -webkit-backdrop-filter: blur(24px) saturate(200%);
   border: 0.5px solid rgba(255, 255, 255, 0.6);
@@ -747,11 +737,7 @@ const handleCookieConsent = (consent) => {
 }
 
 :is(.dark *) .liquid-glass {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0.04) 100%
-  );
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.3),
@@ -760,22 +746,12 @@ const handleCookieConsent = (consent) => {
 }
 
 .liquid-glass-active {
-  background: linear-gradient(
-    180deg,
-    rgba(56, 189, 248, 0.12) 0%,
-    rgba(56, 189, 248, 0.06) 100%
-  );
-  box-shadow:
-    inset 0 0 0 1px rgba(14, 165, 233, 0.3),
-    inset 0 1px 0 rgba(0, 0, 0, 0.06);
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.12) 0%, rgba(56, 189, 248, 0.06) 100%);
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.06);
 }
 
 :is(.dark *) .liquid-glass-active {
-  background: linear-gradient(
-    180deg,
-    rgba(56, 189, 248, 0.15) 0%,
-    rgba(56, 189, 248, 0.08) 100%
-  );
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0.08) 100%);
   box-shadow:
     inset 0 0 0 1px rgba(56, 189, 248, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -797,7 +773,7 @@ const handleCookieConsent = (consent) => {
 }
 
 .bottom-nav-add:hover {
-  background-color: rgba(240, 249, 255, 0.6);
+  background-color: rgba(186, 230, 253, 0.4);
 }
 
 :is(.dark *) .bottom-nav-add:hover {
@@ -805,10 +781,6 @@ const handleCookieConsent = (consent) => {
 }
 
 :is(.dark *) .bottom-nav-add:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(56, 189, 248, 0.22) 0%,
-    rgba(56, 189, 248, 0.12) 100%
-  );
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(56, 189, 248, 0.12) 100%);
 }
 </style>
