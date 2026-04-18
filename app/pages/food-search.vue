@@ -417,7 +417,7 @@ defineOgImage('NuxtSeo', {
         {{ $t('food-search.search-info-2') }}
       </p>
 
-      <!-- Add food call-to-action -->
+      <!-- Food not found call-to-action -->
       <div
         v-if="userIsAuthenticated"
         class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-lg bg-sky-50 dark:bg-sky-900/20 px-4 py-3"
@@ -425,11 +425,24 @@ defineOgImage('NuxtSeo', {
         <p class="text-sm text-gray-600 dark:text-gray-400">
           {{ $t('food-search.add-food-description') }}
         </p>
-        <SecondaryButton
-          :text="$t('food-search.add-food')"
-          class="mb-0! mr-0!"
-          @click="navigateTo(localePath('own-food'))"
-        />
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/5 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400 cursor-pointer"
+            @click="navigateTo(localePath('ai-calculator'))"
+          >
+            <LucideSparkles class="h-4 w-4" />
+            {{ $t('ai-calculator.title') }}
+          </button>
+          <button
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/5 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400 cursor-pointer"
+            @click="navigateTo(localePath('own-food'))"
+          >
+            <LucidePlus class="h-4 w-4" />
+            {{ $t('food-search.add-food') }}
+          </button>
+        </div>
       </div>
 
       <ModalDialog
