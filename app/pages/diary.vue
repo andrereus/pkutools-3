@@ -601,7 +601,12 @@ defineOgImage('NuxtSeo', {
         </div>
       </ModalDialog>
 
-      <span v-if="lastAdded.length !== 0" class="mt-3">
+      <div v-if="lastAdded.length !== 0" class="mt-3">
+        <h3
+          class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 px-1"
+        >
+          {{ $t('diary.suggestions') }}
+        </h3>
         <SecondaryButton
           v-for="(item, index) in lastAdded.slice(0, visibleItems)"
           :key="index"
@@ -614,7 +619,7 @@ defineOgImage('NuxtSeo', {
           :text="$t('diary.more')"
           @click="showMoreItems"
         />
-      </span>
+      </div>
 
       <p v-if="!license" class="mt-6 text-sm">
         <NuxtLink :to="$localePath('settings')">
