@@ -207,8 +207,8 @@
     "chart-info": "Das Diagramm wird nach dem zweiten Eintrag angezeigt.",
     "phe-stats-average": "In den letzten 14 Tagen (ohne heute) lag deine durchschnittliche Phe-Aufnahme bei {average} mg.",
     "phe-stats-deviation": "Die durchschnittliche Abweichung von deinem Tageslimit beträgt {deviation}%.",
-    "exclude-from-stats": "Diesen Tag aus der Statistik ausschließen",
-    "exclude-from-stats-hint": "Verwende dies für Tage, an denen nicht jedes Lebensmittel erfasst wurde, damit die Statistik aussagekräftig bleibt.",
+    "exclude-from-stats": "Tag aus der Statistik ausschließen",
+    "exclude-from-stats-hint": "Es wurde nicht jedes Lebensmittel erfasst.",
     "excluded-badge": "Von der Statistik ausgeschlossen"
   },
   "blood-values": {

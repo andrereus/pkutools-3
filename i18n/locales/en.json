@@ -207,8 +207,8 @@
     "chart-info": "The chart gets displayed after the second entry.",
     "phe-stats-average": "In the last 14 days (excluding today), your average Phe intake was {average} mg.",
     "phe-stats-deviation": "The average deviation from your daily limit is {deviation}%.",
-    "exclude-from-stats": "Exclude this day from the stats",
-    "exclude-from-stats-hint": "Use this for days where not every food was logged, so the stats stay accurate.",
+    "exclude-from-stats": "Exclude day from stats",
+    "exclude-from-stats-hint": "Not every food was logged.",
     "excluded-badge": "Excluded from stats"
   },
   "blood-values": {
