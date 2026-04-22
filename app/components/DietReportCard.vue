@@ -9,13 +9,14 @@ const pheDiary = computed(() => store.pheDiary)
 const showCard = computed(() => pheDiary.value.length >= 2)
 
 // Helper to get diary entries for date range
+// Excludes days the user has flagged as incomplete (excludedFromStats)
 const getDiaryEntriesForDays = (days, includeToday = false) => {
   return [...Array(days)]
     .map((_, i) => {
       const date = format(subDays(new Date(), includeToday ? i : i + 1), 'yyyy-MM-dd')
       return pheDiary.value.find((entry) => entry.date === date)
     })
-    .filter(Boolean)
+    .filter((entry) => entry && !entry.excludedFromStats)
 }
 
 // Calculate Phe statistics (average does not require maxPhe; deviation does)

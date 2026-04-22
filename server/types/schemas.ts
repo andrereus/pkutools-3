@@ -106,7 +106,8 @@ export const UpdateDaySchema = z.object({
     .optional(), // Optional date to allow date changes
   phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
   kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
-  log: z.array(DiaryEntrySchema).optional() // Optional log array to sync deletions - validate structure
+  log: z.array(DiaryEntrySchema).optional(), // Optional log array to sync deletions - validate structure
+  excludedFromStats: z.boolean().optional() // When true, day is excluded from diet report chart and stats
 })
 
 // Update food item in diary request schema

@@ -206,7 +206,10 @@
     "export-filename": "PKU Tools - Rapport sur le régime",
     "chart-info": "Le diagramme s'affiche après la deuxième entrée.",
     "phe-stats-average": "Au cours des 14 derniers jours (hors aujourd'hui), votre apport moyen en Phe était de {average} mg.",
-    "phe-stats-deviation": "L'écart moyen par rapport à votre limite quotidienne est de {deviation}%."
+    "phe-stats-deviation": "L'écart moyen par rapport à votre limite quotidienne est de {deviation}%.",
+    "exclude-from-stats": "Exclure ce jour du graphique",
+    "exclude-from-stats-hint": "Utilisez cette option pour les jours où tous les aliments n'ont pas été enregistrés, afin de préserver la fiabilité du graphique et des statistiques.",
+    "excluded-badge": "Exclu du graphique"
   },
   "blood-values": {
     "title": "Valeurs sanguines",

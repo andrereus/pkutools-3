@@ -18,7 +18,7 @@ import { h, ref, computed, watch } from 'vue'
 import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
-import { LucideStickyNote } from 'lucide-vue-next'
+import { LucideStickyNote, LucideEyeOff } from 'lucide-vue-next'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
@@ -37,7 +37,8 @@ const editedKey = ref(null)
 const defaultItem = {
   date: format(new Date(), 'yyyy-MM-dd'),
   phe: null,
-  kcal: null
+  kcal: null,
+  excludedFromStats: false
 }
 
 const editedItem = ref({ ...defaultItem })
@@ -84,7 +85,16 @@ const columns = [
       })
     },
     cell: ({ row }) => {
-      return h('div', getlocalDate(row.original.date))
+      const children = [getlocalDate(row.original.date)]
+      if (row.original.excludedFromStats) {
+        children.push(
+          h(LucideEyeOff, {
+            class: 'inline-block ml-2 h-4 w-4 text-gray-400 dark:text-gray-500 align-text-bottom',
+            title: t('diet-report.excluded-badge')
+          })
+        )
+      }
+      return h('div', children)
     },
     sortingFn: (rowA, rowB) => {
       const dateA = parseISO(rowA.original.date)
@@ -168,8 +178,8 @@ const formTitle = computed(() => {
 })
 
 const graph = computed(() => {
-  const newPheDiary = pheDiary.value
-  const chartPheDiary = newPheDiary
+  const chartPheDiary = pheDiary.value
+    .filter((obj) => !obj.excludedFromStats)
     .map((obj) => {
       return { x: obj.date, y: obj.phe }
     })
@@ -185,8 +195,8 @@ const graph = computed(() => {
 })
 
 const graphKcal = computed(() => {
-  const newPheDiary = pheDiary.value
-  const chartKcalDiary = newPheDiary
+  const chartKcalDiary = pheDiary.value
+    .filter((obj) => !obj.excludedFromStats)
     .map((obj) => {
       return { x: obj.date, y: obj.kcal }
     })
@@ -525,6 +535,7 @@ const save = async () => {
   const entryKey = editedKey.value
   const entryDate = editedItem.value.date
   const entryLog = editedItem.value.log || []
+  const entryExcluded = editedItem.value.excludedFromStats === true
 
   // Clear original state and close dialog immediately for instant feedback
   originalEditedItem.value = null
@@ -539,7 +550,8 @@ const save = async () => {
         date: entryDate,
         phe: pheValue,
         kcal: kcalValue,
-        log: entryLog
+        log: entryLog,
+        excludedFromStats: entryExcluded
       })
       notifications.success(t('common.saved'))
     } else {
@@ -995,6 +1007,29 @@ defineOgImage('NuxtSeo', {
             :label="$t('common.total-kcal')"
             class="flex-1"
           />
+        </div>
+
+        <div class="flex items-start mb-2">
+          <div class="flex h-6 items-center">
+            <input
+              id="excluded-from-stats"
+              v-model="editedItem.excludedFromStats"
+              name="excluded-from-stats"
+              type="checkbox"
+              class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
+            />
+          </div>
+          <div class="ml-3 text-sm leading-6">
+            <label
+              for="excluded-from-stats"
+              class="font-medium text-gray-900 dark:text-gray-300"
+            >
+              {{ $t('diet-report.exclude-from-stats') }}
+            </label>
+            <p class="text-gray-500 dark:text-gray-400">
+              {{ $t('diet-report.exclude-from-stats-hint') }}
+            </p>
+          </div>
         </div>
 
         <div v-if="editedItem.log" class="flex justify-between items-center -mb-3">

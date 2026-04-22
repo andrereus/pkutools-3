@@ -25,7 +25,9 @@ export default defineEventHandler(async (event) => {
     }
 
     // TypeScript: validation.data is guaranteed to exist after success check
-    const { date, phe, kcal, log } = validation.data as z.infer<typeof UpdateDaySchema>
+    const { date, phe, kcal, log, excludedFromStats } = validation.data as z.infer<
+      typeof UpdateDaySchema
+    >
 
     const db = getAdminDatabase()
     const diaryEntryRef = db.ref(`/${userId}/pheDiary/${key}`)
@@ -78,6 +80,11 @@ export default defineEventHandler(async (event) => {
       updateData.log = log
     }
     // If log is not provided, don't update log (preserve existing log structure)
+
+    if (excludedFromStats !== undefined) {
+      // Store true explicitly; clear the flag when false to keep records lean
+      updateData.excludedFromStats = excludedFromStats ? true : null
+    }
 
     await diaryEntryRef.update(updateData)
 

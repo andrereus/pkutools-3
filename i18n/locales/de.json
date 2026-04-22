@@ -206,7 +206,10 @@
     "export-filename": "PKU Tools - Diätbericht",
     "chart-info": "Das Diagramm wird nach dem zweiten Eintrag angezeigt.",
     "phe-stats-average": "In den letzten 14 Tagen (ohne heute) lag deine durchschnittliche Phe-Aufnahme bei {average} mg.",
-    "phe-stats-deviation": "Die durchschnittliche Abweichung von deinem Tageslimit beträgt {deviation}%."
+    "phe-stats-deviation": "Die durchschnittliche Abweichung von deinem Tageslimit beträgt {deviation}%.",
+    "exclude-from-stats": "Diesen Tag aus dem Diagramm ausschließen",
+    "exclude-from-stats-hint": "Verwende dies für Tage, an denen nicht jedes Lebensmittel erfasst wurde, damit Diagramm und Statistik aussagekräftig bleiben.",
+    "excluded-badge": "Vom Diagramm ausgeschlossen"
   },
   "blood-values": {
     "title": "Blutwerte",

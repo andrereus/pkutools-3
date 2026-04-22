@@ -17,8 +17,13 @@ const dialog2 = ref(null)
 const localePath = useLocalePath()
 const notifications = useNotifications()
 const { isPremium, isPremiumAI } = useLicense()
-const { addFoodItemToDiary, updateFoodItemInDiary, deleteFoodItemFromDiary, updateGettingStarted } =
-  useApi()
+const {
+  addFoodItemToDiary,
+  updateFoodItemInDiary,
+  deleteFoodItemFromDiary,
+  updateDiaryDay,
+  updateGettingStarted
+} = useApi()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
 
 // Reactive state
@@ -315,6 +320,22 @@ const save = async () => {
   }
 }
 
+const toggleExcludedFromStats = async (event) => {
+  if (!selectedDiaryEntry.value) return
+  const entry = selectedDiaryEntry.value
+  try {
+    await updateDiaryDay({
+      entryKey: entry['.key'],
+      date: entry.date,
+      phe: entry.phe ?? 0,
+      kcal: entry.kcal ?? 0,
+      excludedFromStats: event.target.checked
+    })
+  } catch (error) {
+    console.error('Toggle exclude-from-stats error:', error)
+  }
+}
+
 const prevDay = () => {
   const currentDate = parseISO(date.value)
   date.value = format(subDays(currentDate, 1), 'yyyy-MM-dd')
@@ -457,6 +478,25 @@ defineOgImage('NuxtSeo', {
             :style="{ width: `${(kcalResult * 100) / (settings?.maxKcal || 1)}%` }"
           />
         </div>
+      </div>
+
+      <!-- Exclude-from-chart toggle (only visible when a diary entry exists for this day) -->
+      <div v-if="selectedDiaryEntry" class="-mt-2 mb-6 flex items-center">
+        <input
+          id="diary-excluded-from-stats"
+          name="diary-excluded-from-stats"
+          type="checkbox"
+          :checked="!!selectedDiaryEntry.excludedFromStats"
+          class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
+          @change="toggleExcludedFromStats"
+        />
+        <label
+          for="diary-excluded-from-stats"
+          class="ml-2 text-sm text-gray-700 dark:text-gray-300"
+          :title="$t('diet-report.exclude-from-stats-hint')"
+        >
+          {{ $t('diet-report.exclude-from-stats') }}
+        </label>
       </div>
 
       <!-- Empty State -->
