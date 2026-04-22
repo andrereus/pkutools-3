@@ -1017,6 +1017,29 @@ defineOgImage('NuxtSeo', {
           />
         </div>
 
+        <div class="flex items-start mb-2">
+          <div class="flex h-6 items-center">
+            <input
+              id="excluded-from-stats"
+              v-model="editedItem.excludedFromStats"
+              name="excluded-from-stats"
+              type="checkbox"
+              class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
+            />
+          </div>
+          <div class="ml-3 text-sm leading-6">
+            <label
+              for="excluded-from-stats"
+              class="font-medium text-gray-900 dark:text-gray-300"
+            >
+              {{ $t('diet-report.exclude-from-stats') }}
+            </label>
+            <p class="text-gray-500 dark:text-gray-400">
+              {{ $t('diet-report.exclude-from-stats-hint') }}
+            </p>
+          </div>
+        </div>
+
         <div v-if="editedItem.log" class="flex justify-between items-center -mb-3">
           <h4 class="text-sm font-medium">
             {{ $t('diary.title') }}
@@ -1080,29 +1103,6 @@ defineOgImage('NuxtSeo', {
             </td>
           </tr>
         </DataTable>
-
-        <div class="flex items-start mb-2">
-          <div class="flex h-6 items-center">
-            <input
-              id="excluded-from-stats"
-              v-model="editedItem.excludedFromStats"
-              name="excluded-from-stats"
-              type="checkbox"
-              class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
-            />
-          </div>
-          <div class="ml-3 text-sm leading-6">
-            <label
-              for="excluded-from-stats"
-              class="font-medium text-gray-900 dark:text-gray-300"
-            >
-              {{ $t('diet-report.exclude-from-stats') }}
-            </label>
-            <p class="text-gray-500 dark:text-gray-400">
-              {{ $t('diet-report.exclude-from-stats-hint') }}
-            </p>
-          </div>
-        </div>
       </ModalDialog>
 
       <ModalDialog
