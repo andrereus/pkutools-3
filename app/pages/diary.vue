@@ -482,6 +482,30 @@ defineOgImage('NuxtSeo', {
         </div>
       </div>
 
+      <div v-if="selectedDiaryEntry && isPastDay" class="mb-6 flex items-start">
+        <div class="flex h-6 items-center">
+          <input
+            id="diary-excluded-from-stats"
+            name="diary-excluded-from-stats"
+            type="checkbox"
+            :checked="!!selectedDiaryEntry.excludedFromStats"
+            class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
+            @change="toggleExcludedFromStats"
+          />
+        </div>
+        <div class="ml-3 text-sm leading-6">
+          <label
+            for="diary-excluded-from-stats"
+            class="font-medium text-gray-900 dark:text-gray-300"
+          >
+            {{ $t('diet-report.exclude-from-stats') }}
+          </label>
+          <p class="text-gray-500 dark:text-gray-400">
+            {{ $t('diet-report.exclude-from-stats-hint') }}
+          </p>
+        </div>
+      </div>
+
       <!-- Empty State -->
       <div
         v-if="selectedDayLog.length === 0"
@@ -565,30 +589,6 @@ defineOgImage('NuxtSeo', {
           </td>
         </tr>
       </DataTable>
-
-      <div v-if="selectedDiaryEntry && isPastDay" class="mb-6 flex items-start">
-        <div class="flex h-6 items-center">
-          <input
-            id="diary-excluded-from-stats"
-            name="diary-excluded-from-stats"
-            type="checkbox"
-            :checked="!!selectedDiaryEntry.excludedFromStats"
-            class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
-            @change="toggleExcludedFromStats"
-          />
-        </div>
-        <div class="ml-3 text-sm leading-6">
-          <label
-            for="diary-excluded-from-stats"
-            class="font-medium text-gray-900 dark:text-gray-300"
-          >
-            {{ $t('diet-report.exclude-from-stats') }}
-          </label>
-          <p class="text-gray-500 dark:text-gray-400">
-            {{ $t('diet-report.exclude-from-stats-hint') }}
-          </p>
-        </div>
-      </div>
 
       <ModalDialog
         ref="dialog2"
