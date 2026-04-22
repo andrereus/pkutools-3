@@ -500,9 +500,6 @@ defineOgImage('NuxtSeo', {
           >
             {{ $t('diet-report.exclude-from-stats') }}
           </label>
-          <p class="text-gray-500 dark:text-gray-400">
-            {{ $t('diet-report.exclude-from-stats-hint') }}
-          </p>
         </div>
       </div>
 
