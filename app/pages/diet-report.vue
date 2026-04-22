@@ -729,7 +729,7 @@ const exportAllFoodItems = async () => {
 
     pheDiary.value.forEach((diaryEntry) => {
       const date = formatISO(parseISO(diaryEntry.date), { representation: 'date' })
-      const excluded = diaryEntry.excludedFromStats ? 'true' : 'false'
+      const excluded = diaryEntry.excludedFromStats ? 'Yes' : 'No'
       if (diaryEntry.log && diaryEntry.log.length > 0) {
         diaryEntry.log.forEach((logEntry) => {
           const row =
@@ -764,7 +764,7 @@ const exportDailyPheTotals = async () => {
 
     pheDiary.value.forEach((diaryEntry) => {
       const date = formatISO(parseISO(diaryEntry.date), { representation: 'date' })
-      const excluded = diaryEntry.excludedFromStats ? 'true' : 'false'
+      const excluded = diaryEntry.excludedFromStats ? 'Yes' : 'No'
       const row =
         [
           escapeCSV(date),
