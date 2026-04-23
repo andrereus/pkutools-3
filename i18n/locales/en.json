@@ -113,7 +113,7 @@
     "title": "AI Calculator",
     "description": "Describe or photograph your food and let AI estimate the weight and nutritional values.",
     "analyze-photo": "Photo",
-    "input-label": "Description",
+    "input-label": "Food",
     "input-placeholder": "Describe food or meal (optional)",
     "serving-size": "Weight (in g)",
     "protein-fallback-note": "Phe estimated from protein (approximate)",

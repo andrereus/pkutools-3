@@ -113,7 +113,7 @@
     "title": "Calculateur IA",
     "description": "Décrivez ou photographiez votre nourriture et laissez l'IA estimer le poids et les valeurs nutritionnelles.",
     "analyze-photo": "Photo",
-    "input-label": "Description",
+    "input-label": "Aliment",
     "input-placeholder": "Décrire aliment ou repas (optionnel)",
     "serving-size": "Poids (en g)",
     "protein-fallback-note": "Phe estimé à partir des protéines (approximatif)",

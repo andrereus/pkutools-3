@@ -113,7 +113,7 @@
     "title": "KI Rechner",
     "description": "Beschreibe oder fotografiere dein Essen und lass die KI das Gewicht und die Nährwerte schätzen.",
     "analyze-photo": "Foto",
-    "input-label": "Beschreibung",
+    "input-label": "Lebensmittel",
     "input-placeholder": "Lebensmittel oder Mahlzeit beschreiben (optional)",
     "serving-size": "Gewicht (in g)",
     "protein-fallback-note": "Phe aus Protein geschätzt (ungefähr)",
