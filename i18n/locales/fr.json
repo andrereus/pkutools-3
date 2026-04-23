@@ -207,8 +207,8 @@
     "chart-info": "Le diagramme s'affiche après la deuxième entrée.",
     "phe-stats-average": "Au cours des 14 derniers jours (hors aujourd'hui), votre apport moyen en Phe était de {average} mg.",
     "phe-stats-deviation": "L'écart moyen par rapport à votre limite quotidienne est de {deviation}%.",
-    "exclude-from-stats": "Exclure le jour des statistiques (tous les aliments n'ont pas été enregistrés)",
-    "excluded-badge": "Exclu des statistiques"
+    "day-incomplete": "Jour incomplet (masquer des statistiques)",
+    "incomplete-badge": "Incomplet"
   },
   "blood-values": {
     "title": "Valeurs sanguines",

@@ -207,8 +207,8 @@
     "chart-info": "El diagrama se muestra después de la segunda entrada.",
     "phe-stats-average": "En los últimos 14 días (sin contar hoy), tu ingesta promedio de Phe fue de {average} mg.",
     "phe-stats-deviation": "La desviación promedio de tu límite diario es de {deviation}%.",
-    "exclude-from-stats": "Excluir día de las estadísticas (no se registró toda la comida)",
-    "excluded-badge": "Excluido de las estadísticas"
+    "day-incomplete": "Día incompleto (ocultar de las estadísticas)",
+    "incomplete-badge": "Incompleto"
   },
   "blood-values": {
     "title": "Valores de sangre",

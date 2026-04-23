@@ -84,7 +84,7 @@ export const useApi = () => {
     phe: number
     kcal: number
     log?: Array<unknown>
-    excludedFromStats?: boolean
+    incomplete?: boolean
   }): Promise<{ success: boolean; key?: string; updated?: boolean }> => {
     try {
       const token = await getAuthToken()
@@ -101,7 +101,7 @@ export const useApi = () => {
             phe: data.phe,
             kcal: data.kcal,
             log: data.log,
-            excludedFromStats: data.excludedFromStats
+            incomplete: data.incomplete
           }
         }
       )

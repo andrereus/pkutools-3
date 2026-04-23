@@ -139,8 +139,6 @@ const selectedDiaryEntry = computed(
   () => pheDiary.value.find((entry) => entry.date === date.value) || null
 )
 
-const isPastDay = computed(() => date.value < format(new Date(), 'yyyy-MM-dd'))
-
 const pheResult = computed(() => {
   return selectedDayLog.value.reduce((sum, item) => sum + item.phe, 0)
 })
@@ -322,7 +320,7 @@ const save = async () => {
   }
 }
 
-const toggleExcludedFromStats = async (event) => {
+const toggleIncomplete = async (event) => {
   if (!selectedDiaryEntry.value) return
   const entry = selectedDiaryEntry.value
   try {
@@ -331,10 +329,10 @@ const toggleExcludedFromStats = async (event) => {
       date: entry.date,
       phe: entry.phe ?? 0,
       kcal: entry.kcal ?? 0,
-      excludedFromStats: event.target.checked
+      incomplete: event.target.checked
     })
   } catch (error) {
-    console.error('Toggle exclude-from-stats error:', error)
+    console.error('Toggle incomplete error:', error)
   }
 }
 
@@ -479,27 +477,6 @@ defineOgImage('NuxtSeo', {
             class="bg-sky-500 h-full rounded-md"
             :style="{ width: `${(kcalResult * 100) / (settings?.maxKcal || 1)}%` }"
           />
-        </div>
-      </div>
-
-      <div v-if="selectedDiaryEntry && isPastDay" class="mb-6 flex items-start">
-        <div class="flex h-6 items-center">
-          <input
-            id="diary-excluded-from-stats"
-            name="diary-excluded-from-stats"
-            type="checkbox"
-            :checked="!!selectedDiaryEntry.excludedFromStats"
-            class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
-            @change="toggleExcludedFromStats"
-          />
-        </div>
-        <div class="ml-3 text-sm leading-6">
-          <label
-            for="diary-excluded-from-stats"
-            class="font-medium text-gray-900 dark:text-gray-300"
-          >
-            {{ $t('diet-report.exclude-from-stats') }}
-          </label>
         </div>
       </div>
 
@@ -663,6 +640,27 @@ defineOgImage('NuxtSeo', {
           :text="$t('diary.more')"
           @click="showMoreItems"
         />
+      </div>
+
+      <div v-if="selectedDiaryEntry" class="mt-6 flex items-start">
+        <div class="flex h-6 items-center">
+          <input
+            id="diary-day-incomplete"
+            name="diary-day-incomplete"
+            type="checkbox"
+            :checked="!!selectedDiaryEntry.incomplete"
+            class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
+            @change="toggleIncomplete"
+          />
+        </div>
+        <div class="ml-3 text-sm leading-6">
+          <label
+            for="diary-day-incomplete"
+            class="font-medium text-gray-900 dark:text-gray-300"
+          >
+            {{ $t('diet-report.day-incomplete') }}
+          </label>
+        </div>
       </div>
 
       <p v-if="!license" class="mt-6 text-sm">

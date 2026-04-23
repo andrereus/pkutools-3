@@ -107,7 +107,7 @@ export const UpdateDaySchema = z.object({
   phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
   kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
   log: z.array(DiaryEntrySchema).optional(), // Optional log array to sync deletions - validate structure
-  excludedFromStats: z.boolean().optional() // When true, day is excluded from diet report chart and stats
+  incomplete: z.boolean().optional() // When true, the day is flagged as incomplete (not every food was logged) and hidden from chart + stats
 })
 
 // Update food item in diary request schema

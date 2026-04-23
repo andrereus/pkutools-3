@@ -38,7 +38,7 @@ const defaultItem = {
   date: format(new Date(), 'yyyy-MM-dd'),
   phe: null,
   kcal: null,
-  excludedFromStats: false
+  incomplete: false
 }
 
 const editedItem = ref({ ...defaultItem })
@@ -86,11 +86,11 @@ const columns = [
     },
     cell: ({ row }) => {
       const children = [getlocalDate(row.original.date)]
-      if (row.original.excludedFromStats) {
+      if (row.original.incomplete) {
         children.push(
           h(LucideEyeOff, {
             class: 'inline-block ml-2 h-4 w-4 text-gray-400 dark:text-gray-500 align-text-bottom',
-            title: t('diet-report.excluded-badge')
+            title: t('diet-report.incomplete-badge')
           })
         )
       }
@@ -177,10 +177,10 @@ const formTitle = computed(() => {
   return editedIndex.value === -1 ? t('common.add') : t('common.edit')
 })
 
-const includedDiary = computed(() => pheDiary.value.filter((obj) => !obj.excludedFromStats))
+const completeDiary = computed(() => pheDiary.value.filter((obj) => !obj.incomplete))
 
 const graph = computed(() => {
-  const chartPheDiary = includedDiary.value
+  const chartPheDiary = completeDiary.value
     .map((obj) => {
       return { x: obj.date, y: obj.phe }
     })
@@ -196,7 +196,7 @@ const graph = computed(() => {
 })
 
 const graphKcal = computed(() => {
-  const chartKcalDiary = includedDiary.value
+  const chartKcalDiary = completeDiary.value
     .map((obj) => {
       return { x: obj.date, y: obj.kcal }
     })
@@ -368,24 +368,24 @@ const chartOptionsKcal = computed(() => {
 })
 
 const newestDate = computed(() => {
-  if (!includedDiary.value.length) return new Date()
-  return includedDiary.value.reduce((newest, entry) => {
+  if (!completeDiary.value.length) return new Date()
+  return completeDiary.value.reduce((newest, entry) => {
     const entryDate = parseISO(entry.date)
     return entryDate > newest ? entryDate : newest
-  }, parseISO(includedDiary.value[0].date))
+  }, parseISO(completeDiary.value[0].date))
 })
 
 const oldestDate = computed(() => {
-  if (!includedDiary.value.length) return new Date()
-  return includedDiary.value.reduce((oldest, entry) => {
+  if (!completeDiary.value.length) return new Date()
+  return completeDiary.value.reduce((oldest, entry) => {
     const entryDate = parseISO(entry.date)
     return entryDate < oldest ? entryDate : oldest
-  }, parseISO(includedDiary.value[0].date))
+  }, parseISO(completeDiary.value[0].date))
 })
 
 // Span of the data in days (so we use date range, not entry count, when someone doesn't log every day)
 const dateRangeSpanInDays = computed(() => {
-  if (!includedDiary.value.length || includedDiary.value.length < 2) return 0
+  if (!completeDiary.value.length || completeDiary.value.length < 2) return 0
   return differenceInDays(newestDate.value, oldestDate.value)
 })
 
@@ -535,7 +535,7 @@ const save = async () => {
   const entryKey = editedKey.value
   const entryDate = editedItem.value.date
   const entryLog = editedItem.value.log || []
-  const entryExcluded = editedItem.value.excludedFromStats === true
+  const entryIncomplete = editedItem.value.incomplete === true
 
   // Clear original state and close dialog immediately for instant feedback
   originalEditedItem.value = null
@@ -551,7 +551,7 @@ const save = async () => {
         phe: pheValue,
         kcal: kcalValue,
         log: entryLog,
-        excludedFromStats: entryExcluded
+        incomplete: entryIncomplete
       })
       notifications.success(t('common.saved'))
     } else {
@@ -725,11 +725,11 @@ const exportAllFoodItems = async () => {
   })
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
-    csvContent += 'Date,Name,Weight,Phe,Kcal,Note,Excluded\n'
+    csvContent += 'Date,Name,Weight,Phe,Kcal,Note,Incomplete\n'
 
     pheDiary.value.forEach((diaryEntry) => {
       const date = formatISO(parseISO(diaryEntry.date), { representation: 'date' })
-      const excluded = diaryEntry.excludedFromStats ? 'Yes' : 'No'
+      const incomplete = diaryEntry.incomplete ? 'Yes' : 'No'
       if (diaryEntry.log && diaryEntry.log.length > 0) {
         diaryEntry.log.forEach((logEntry) => {
           const row =
@@ -740,7 +740,7 @@ const exportAllFoodItems = async () => {
               escapeCSV(logEntry.phe),
               escapeCSV(logEntry.kcal),
               escapeCSV(logEntry.note || ''),
-              escapeCSV(excluded)
+              escapeCSV(incomplete)
             ].join(',') + '\n'
           csvContent += row
         })
@@ -760,17 +760,17 @@ const exportDailyPheTotals = async () => {
   })
   if (r === true) {
     let csvContent = 'data:text/csv;charset=utf-8,'
-    csvContent += 'Date,Total Phe,Total Kcal,Excluded\n'
+    csvContent += 'Date,Total Phe,Total Kcal,Incomplete\n'
 
     pheDiary.value.forEach((diaryEntry) => {
       const date = formatISO(parseISO(diaryEntry.date), { representation: 'date' })
-      const excluded = diaryEntry.excludedFromStats ? 'Yes' : 'No'
+      const incomplete = diaryEntry.incomplete ? 'Yes' : 'No'
       const row =
         [
           escapeCSV(date),
           escapeCSV(diaryEntry.phe),
           escapeCSV(diaryEntry.kcal),
-          escapeCSV(excluded)
+          escapeCSV(incomplete)
         ].join(',') + '\n'
       csvContent += row
     })
@@ -1017,26 +1017,6 @@ defineOgImage('NuxtSeo', {
           />
         </div>
 
-        <div class="flex items-start mb-2">
-          <div class="flex h-6 items-center">
-            <input
-              id="excluded-from-stats"
-              v-model="editedItem.excludedFromStats"
-              name="excluded-from-stats"
-              type="checkbox"
-              class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
-            />
-          </div>
-          <div class="ml-3 text-sm leading-6">
-            <label
-              for="excluded-from-stats"
-              class="font-medium text-gray-900 dark:text-gray-300"
-            >
-              {{ $t('diet-report.exclude-from-stats') }}
-            </label>
-          </div>
-        </div>
-
         <div v-if="editedItem.log" class="flex justify-between items-center -mb-3">
           <h4 class="text-sm font-medium">
             {{ $t('diary.title') }}
@@ -1100,6 +1080,26 @@ defineOgImage('NuxtSeo', {
             </td>
           </tr>
         </DataTable>
+
+        <div class="flex items-start mb-2">
+          <div class="flex h-6 items-center">
+            <input
+              id="day-incomplete"
+              v-model="editedItem.incomplete"
+              name="day-incomplete"
+              type="checkbox"
+              class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
+            />
+          </div>
+          <div class="ml-3 text-sm leading-6">
+            <label
+              for="day-incomplete"
+              class="font-medium text-gray-900 dark:text-gray-300"
+            >
+              {{ $t('diet-report.day-incomplete') }}
+            </label>
+          </div>
+        </div>
       </ModalDialog>
 
       <ModalDialog
