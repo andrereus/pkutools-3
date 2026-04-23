@@ -124,7 +124,7 @@
     "premium-ai-limit": "Premium + AI",
     "correct": "Corriger",
     "correct-title": "Corriger l'estimation",
-    "correct-description": "Indiquez à l'IA ce qui n'allait pas et l'estimation sera refaite.",
+    "correct-description": "Indiquez à l'IA ce qui ne va pas et l'estimation sera refaite.",
     "re-estimate": "Ré-estimer"
   },
   "barcode-scanner": {

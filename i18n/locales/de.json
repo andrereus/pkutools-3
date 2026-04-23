@@ -124,7 +124,7 @@
     "premium-ai-limit": "Premium + AI",
     "correct": "Korrigieren",
     "correct-title": "Schätzung korrigieren",
-    "correct-description": "Teile der KI mit, was falsch war, und die Schätzung wird wiederholt.",
+    "correct-description": "Teile der KI mit, was falsch ist, und die Schätzung wird wiederholt.",
     "re-estimate": "Neu schätzen"
   },
   "barcode-scanner": {
