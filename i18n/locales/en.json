@@ -121,7 +121,11 @@
     "disclaimer-2": "Don't share sensitive data.",
     "trial-limit": "Trial version",
     "premium-limit": "Premium",
-    "premium-ai-limit": "Premium + AI"
+    "premium-ai-limit": "Premium + AI",
+    "correct": "Correct",
+    "correct-title": "Correct estimate",
+    "correct-description": "Tell the AI what was wrong and the estimate will be redone.",
+    "re-estimate": "Re-estimate"
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",

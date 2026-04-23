@@ -121,7 +121,11 @@
     "disclaimer-2": "No compartas datos sensibles.",
     "trial-limit": "Versión de prueba",
     "premium-limit": "Premium",
-    "premium-ai-limit": "Premium + AI"
+    "premium-ai-limit": "Premium + AI",
+    "correct": "Corregir",
+    "correct-title": "Corregir estimación",
+    "correct-description": "Indica a la IA qué estaba mal y se volverá a estimar.",
+    "re-estimate": "Volver a estimar"
   },
   "barcode-scanner": {
     "title": "Escáner de código de barras",

@@ -121,7 +121,11 @@
     "disclaimer-2": "Teile keine sensiblen Daten.",
     "trial-limit": "Testversion",
     "premium-limit": "Premium",
-    "premium-ai-limit": "Premium + AI"
+    "premium-ai-limit": "Premium + AI",
+    "correct": "Korrigieren",
+    "correct-title": "Schätzung korrigieren",
+    "correct-description": "Teile der KI mit, was falsch war, und die Schätzung wird wiederholt.",
+    "re-estimate": "Neu schätzen"
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",

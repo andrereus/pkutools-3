@@ -30,6 +30,8 @@ const isSaving = ref(false)
 const imageFile = ref(null)
 const imagePreview = ref(null)
 const fileInputRef = ref(null)
+const correctionDialog = ref(null)
+const correctionHint = ref('')
 
 // Result state
 const result = ref(null) // { name, emoji, phePer100g, proteinPer100g, kcalPer100g, weightInGrams, explanation }
@@ -175,10 +177,21 @@ const removeImage = () => {
   }
 }
 
+const sanitizePromptInput = (value) =>
+  (value || '')
+    .trim()
+    .slice(0, 500)
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, ' ')
+    .replace(/\r/g, '')
+    .replace(/\t/g, ' ')
+    .trim()
+
 const estimateFoodValues = async () => {
   if (isEstimating.value) return
 
   isEstimating.value = true
+  const previousResult = result.value
   result.value = null
 
   try {
@@ -190,15 +203,9 @@ const estimateFoodValues = async () => {
       return
     }
 
-    // Sanitize text input
-    const sanitizedText = description.value
-      .trim()
-      .slice(0, 500)
-      .replace(/"/g, '\\"')
-      .replace(/\n/g, ' ')
-      .replace(/\r/g, '')
-      .replace(/\t/g, ' ')
-      .trim()
+    const sanitizedText = sanitizePromptInput(description.value)
+    const sanitizedCorrection = sanitizePromptInput(correctionHint.value)
+    const hasCorrection = sanitizedCorrection !== '' && previousResult !== null
 
     // Check permission via server API
     const auth = getAuth()
@@ -242,7 +249,9 @@ const estimateFoodValues = async () => {
     const languageMap = { en: 'English', de: 'German', es: 'Spanish', fr: 'French' }
     const appLanguage = languageMap[locale.value] || 'English'
 
-    const prompt = `Identify the food(s) and estimate (combined) nutritional values. Consider all provided inputs together (text description and/or image). Use ${appLanguage} for values. Use null for unknown values. Base estimates on typical nutritional databases. Cross-check that phePer100g is plausible relative to proteinPer100g.${hasText ? `\n\nText description: "${sanitizedText}"` : ''}
+    const previousEstimate = hasCorrection ? JSON.stringify(previousResult) : ''
+
+    const prompt = `Identify the food(s) and estimate (combined) nutritional values. Consider all provided inputs together (text description and/or image). Use ${appLanguage} for values. Use null for unknown values. Base estimates on typical nutritional databases. Cross-check that phePer100g is plausible relative to proteinPer100g.${hasText ? `\n\nText description: "${sanitizedText}"` : ''}${hasCorrection ? `\n\nPrevious estimate: ${previousEstimate}\nUser correction: "${sanitizedCorrection}"` : ''}
 
 Return JSON:
 {
@@ -315,6 +324,9 @@ Return JSON:
     // Set editable weight from serving size
     weight.value = result.value.weightInGrams || 100
 
+    // Clear correction hint after a successful re-estimate
+    correctionHint.value = ''
+
     notifications.success(t('phe-calculator.estimate-success'))
   } catch (error) {
     console.error('Error estimating food values:', error)
@@ -335,6 +347,17 @@ Return JSON:
   } finally {
     isEstimating.value = false
   }
+}
+
+const openCorrectionDialog = () => {
+  correctionHint.value = ''
+  correctionDialog.value?.openDialog()
+}
+
+const submitCorrection = async () => {
+  if (!correctionHint.value || correctionHint.value.trim() === '') return
+  correctionDialog.value?.closeDialog()
+  await estimateFoodValues()
 }
 
 const save = async () => {
@@ -534,9 +557,21 @@ defineOgImage('NuxtSeo', {
     </div>
 
     <div v-if="result" class="mt-6 rounded-lg bg-gray-50 dark:bg-gray-800/50 p-4">
-      <h2 class="text-xl font-semibold mb-4">
-        <span v-if="result.emoji">{{ result.emoji }}&nbsp;</span>{{ result.name }}
-      </h2>
+      <div class="flex items-start justify-between gap-3 mb-4">
+        <h2 class="text-xl font-semibold">
+          <span v-if="result.emoji">{{ result.emoji }}&nbsp;</span>{{ result.name }}
+        </h2>
+        <button
+          type="button"
+          class="shrink-0 inline-flex items-center gap-1 rounded-full bg-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          :disabled="isEstimating || remainingEstimates === 0"
+          :title="$t('ai-calculator.correct-title')"
+          @click="openCorrectionDialog"
+        >
+          <LucidePencil class="h-4 w-4" />
+          <span>{{ $t('ai-calculator.correct') }}</span>
+        </button>
+      </div>
 
       <div
         v-if="result.explanation"
@@ -582,6 +617,31 @@ defineOgImage('NuxtSeo', {
         @click="save"
       />
     </div>
+
+    <ModalDialog
+      ref="correctionDialog"
+      :title="$t('ai-calculator.correct-title')"
+      :buttons="[
+        {
+          label: $t('ai-calculator.re-estimate'),
+          type: 'submit',
+          visible: true
+        },
+        { label: $t('common.cancel'), type: 'simpleClose', visible: true }
+      ]"
+      :loading="isEstimating"
+      @submit="submitCorrection"
+    >
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+        {{ $t('ai-calculator.correct-description') }}
+      </p>
+      <textarea
+        v-model="correctionHint"
+        rows="3"
+        :disabled="isEstimating"
+        class="block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+      />
+    </ModalDialog>
 
     <p v-if="userIsAuthenticated" class="mt-4 text-gray-600 dark:text-gray-400 italic text-sm">
       {{ $t('ai-calculator.disclaimer') }}
