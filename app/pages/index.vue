@@ -277,7 +277,7 @@ defineOgImage('NuxtSeo', {
     </div>
 
     <div
-      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20"
+      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 pt-14 sm:pt-20 pb-8 sm:pb-10"
     >
       <div class="mx-auto max-w-3xl px-6 lg:px-8 text-center">
         <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
@@ -308,7 +308,7 @@ defineOgImage('NuxtSeo', {
     </div>
 
     <div
-      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20"
+      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 pt-8 sm:pt-10 pb-14 sm:pb-20"
     >
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
         <div class="grid items-center gap-10 lg:grid-cols-2">
