@@ -1,6 +1,6 @@
 # PKU Tools
 
-PKU Tools is a comprehensive Progressive Web App (PWA) designed to help people with Phenylketonuria (PKU) manage their low-phenylalanine diet. It combines a scale, nutritional table, calculator, pencil and paper into a single, easy-to-use application.
+PKU Tools is an All-in-One Nutrition App for PKU — a Progressive Web App (PWA) designed to help people with Phenylketonuria manage their low-phenylalanine diet. It combines a scale, nutritional table, calculator, pencil and paper into a single, easy-to-use application.
 
 ## Features
 

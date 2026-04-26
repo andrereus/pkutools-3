@@ -1,7 +1,7 @@
 {
   "app": {
     "language-name": "Français",
-    "description": "Application nutritionnelle pour régime pauvre en phénylalanine",
+    "description": "Application nutritionnelle tout-en-un pour la PKU",
     "long-description": "Cette application s'adresse aux personnes atteintes de PKU. Elle combine balance, tableau des valeurs nutritives, calculatrice, crayon et papier.",
     "signin-google": "Se connecter avec Google",
     "signout": "Se déconnecter",
@@ -58,7 +58,7 @@
   },
   "home": {
     "title": "Accueil",
-    "description": "Application nutritionnelle pour régime pauvre en phénylalanine. Cette application s'adresse aux personnes atteintes de PKU. Elle combine balance, tableau des valeurs nutritives, calculatrice, crayon et papier.",
+    "description": "Application nutritionnelle tout-en-un pour la PKU",
     "signin": "Connectez-vous partout",
     "signin-desc": "Connectez-vous facilement sur n'importe quel appareil. Les données se synchronisent en temps réel.",
     "install": "Installez partout",

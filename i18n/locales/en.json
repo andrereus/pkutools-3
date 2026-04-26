@@ -1,7 +1,7 @@
 {
   "app": {
     "language-name": "English",
-    "description": "Nutrition app for low-phenylalanine diets",
+    "description": "All-in-One Nutrition App for PKU",
     "long-description": "This app is intended for people with PKU. It combines a scale, nutritional table, calculator, pencil and paper.",
     "signin-google": "Sign in with Google",
     "signout": "Sign out",
@@ -58,7 +58,7 @@
   },
   "home": {
     "title": "Home",
-    "description": "Nutrition app for low-phenylalanine diets. This app is intended for people with PKU. It combines a scale, nutritional table, calculator, pencil and paper.",
+    "description": "All-in-One Nutrition App for PKU",
     "signin": "Sign in everywhere",
     "signin-desc": "Easily sign in on any device. Data syncs in real time.",
     "install": "Install everywhere",

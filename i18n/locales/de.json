@@ -1,7 +1,7 @@
 {
   "app": {
     "language-name": "Deutsch",
-    "description": "Nährwert-App für phenylalaninarme Diät",
+    "description": "All-in-One Nährwert-App für PKU",
     "long-description": "Diese App richtet sich an Menschen mit PKU. Sie kombiniert Waage, Nährwerttabelle, Taschenrechner, Bleistift und Papier.",
     "signin-google": "Anmelden mit Google",
     "signout": "Abmelden",
@@ -58,7 +58,7 @@
   },
   "home": {
     "title": "Start",
-    "description": "Nährwert-App für phenylalaninarme Diät. Diese App richtet sich an Menschen mit PKU. Sie kombiniert Waage, Nährwerttabelle, Taschenrechner, Bleistift und Papier.",
+    "description": "All-in-One Nährwert-App für PKU",
     "signin": "Überall anmelden",
     "signin-desc": "Einfach auf jedem Gerät anmelden. Daten synchronisieren in Echtzeit.",
     "install": "Überall installieren",

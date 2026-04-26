@@ -11,8 +11,7 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0, viewport-fit=cover' },
         {
           name: 'description',
-          content:
-            'Nutrition app for low-phenylalanine diets. This app is intended for people with PKU.'
+          content: 'All-in-One Nutrition App for PKU'
         },
         { name: 'theme-color', content: '#3498db' },
         { name: 'google', content: 'notranslate' }
@@ -131,8 +130,7 @@ export default defineNuxtConfig({
   site: {
     url: 'https://pkutools.com',
     name: 'PKU Tools',
-    description:
-      'Nutrition app for low-phenylalanine diets. This app is intended for people with PKU.'
+    description: 'All-in-One Nutrition App for PKU'
   },
   schemaOrg: {
     identity: defineOrganization({

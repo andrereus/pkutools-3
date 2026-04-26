@@ -1,7 +1,7 @@
 {
   "app": {
     "language-name": "Español",
-    "description": "Aplicación nutricional para dietas bajas en fenilalanina",
+    "description": "Aplicación nutricional todo en uno para PKU",
     "long-description": "Esta aplicación está dirigida a personas con fenilcetonuria. Combina báscula, tabla nutricional, calculadora, lápiz y papel.",
     "signin-google": "Iniciar sesión con Google",
     "signout": "Cerrar sesión",
@@ -58,7 +58,7 @@
   },
   "home": {
     "title": "Inicio",
-    "description": "Aplicación nutricional para dietas bajas en fenilalanina. Esta aplicación está dirigida a personas con fenilcetonuria. Combina báscula, tabla nutricional, calculadora, lápiz y papel.",
+    "description": "Aplicación nutricional todo en uno para PKU",
     "signin": "Inicia sesión en cualquier lugar",
     "signin-desc": "Inicia sesión fácilmente en cualquier dispositivo. Los datos se sincronizan en tiempo real.",
     "install": "Instala en cualquier lugar",

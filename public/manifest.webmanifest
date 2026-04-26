@@ -6,7 +6,7 @@
   "background_color": "#3498db",
   "lang": "en",
   "scope": "/",
-  "description": "Nutrition app for low-phenylalanine diets. This app is intended for people with PKU.",
+  "description": "All-in-One Nutrition App for PKU",
   "theme_color": "#3498db",
   "icons": [
     { "src": "pwa-64x64.png", "sizes": "64x64", "type": "image/png" },
