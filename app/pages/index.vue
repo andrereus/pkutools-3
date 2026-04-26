@@ -124,7 +124,7 @@ defineOgImage('NuxtSeo', {
 
 <template>
   <div>
-    <div class="pt-3 pb-6 sm:py-8">
+    <div class="pt-3 pb-12 sm:pt-8 sm:pb-16">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto max-w-2xl lg:text-center">
           <p
@@ -392,7 +392,7 @@ defineOgImage('NuxtSeo', {
     </div>
 
     <div
-      class="w-screen ml-[calc(50%-50vw)] bg-sky-50 dark:bg-sky-950/40 pt-14 sm:pt-20 pb-10 sm:pb-12"
+      class="w-screen ml-[calc(50%-50vw)] bg-sky-50 dark:bg-sky-900/40 pt-14 sm:pt-20 pb-10 sm:pb-12"
     >
       <div class="mx-auto max-w-2xl px-6 lg:px-8 text-center">
         <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
@@ -422,7 +422,7 @@ defineOgImage('NuxtSeo', {
     </div>
 
     <div
-      class="w-screen ml-[calc(50%-50vw)] bg-sky-50 dark:bg-sky-950/40 pt-10 sm:pt-12 pb-14 sm:pb-20"
+      class="w-screen ml-[calc(50%-50vw)] bg-sky-50 dark:bg-sky-900/40 pt-10 sm:pt-12 pb-14 sm:pb-20"
     >
       <div class="mx-auto max-w-2xl px-6 lg:px-8 text-center">
         <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
