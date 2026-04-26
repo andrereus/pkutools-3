@@ -236,8 +236,8 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <div class="pt-10 sm:pt-14 pb-10 sm:pb-14 px-6 lg:px-8">
-      <div class="mx-auto max-w-5xl">
+    <div class="pt-10 sm:pt-14 pb-10 sm:pb-14">
+      <div class="mx-auto max-w-5xl px-6 lg:px-8">
         <div class="grid items-center gap-10 lg:grid-cols-2">
           <div class="text-center lg:text-left">
             <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
@@ -279,29 +279,33 @@ defineOgImage('NuxtSeo', {
     <div
       class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 pt-14 sm:pt-20 pb-8 sm:pb-10"
     >
-      <div class="mx-auto max-w-3xl px-6 lg:px-8 text-center">
-        <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
-          {{ $t('home.diet-mgmt') }}
-        </h2>
-        <p class="mx-auto mt-4 max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-300">
-          {{ $t('home.diet-mgmt-desc') }}
-        </p>
-        <div
-          class="mt-8 mx-auto max-w-md rounded-2xl bg-gray-50 dark:bg-gray-800/60 p-5 sm:p-6 ring-1 ring-gray-900/5 dark:ring-white/10 text-left"
-        >
-          <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-            <LucideSparkles class="h-4 w-4 text-amber-400" aria-hidden="true" />
-            <span>{{ $t('home.diet-mgmt-suggestions') }}</span>
+      <div class="mx-auto max-w-5xl px-6 lg:px-8">
+        <div class="grid items-center gap-10 lg:grid-cols-2">
+          <div class="text-center lg:text-left">
+            <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+              {{ $t('home.diet-mgmt') }}
+            </h2>
+            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
+              {{ $t('home.diet-mgmt-desc') }}
+            </p>
           </div>
-          <div class="mt-3 flex flex-wrap gap-2">
-            <button
-              v-for="entry in suggestionsDemo"
-              :key="entry.nameKey"
-              type="button"
-              class="rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer"
-            >
-              {{ entry.weight }}g {{ $t(entry.nameKey) }}
-            </button>
+          <div
+            class="mx-auto w-full max-w-md rounded-2xl bg-gray-50 dark:bg-gray-800/60 p-5 sm:p-6 ring-1 ring-gray-900/5 dark:ring-white/10 text-left"
+          >
+            <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <LucideSparkles class="h-4 w-4 text-amber-400" aria-hidden="true" />
+              <span>{{ $t('home.diet-mgmt-suggestions') }}</span>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <button
+                v-for="entry in suggestionsDemo"
+                :key="entry.nameKey"
+                type="button"
+                class="rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer"
+              >
+                {{ entry.weight }}g {{ $t(entry.nameKey) }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
