@@ -9,8 +9,29 @@ import {
   LucideCalendar,
   LucideChartLine,
   LucideSparkles,
-  LucideUsers
+  LucideCamera,
+  LucideArrowRight
 } from 'lucide-vue-next'
+
+const pheTools = [
+  { name: 'home.phe-anywhere-ai', icon: LucideSparkles, route: 'ai-calculator' },
+  { name: 'home.phe-anywhere-search', icon: LucideSearch, route: 'food-search' },
+  { name: 'home.phe-anywhere-scanner', icon: LucideScanBarcode, route: 'barcode-scanner' },
+  { name: 'home.phe-anywhere-calculator', icon: LucideCalculator, route: 'phe-calculator' }
+]
+
+const suggestionsDemo = [
+  { nameKey: 'home.diet-mgmt-food-1', weight: 50 },
+  { nameKey: 'home.diet-mgmt-food-2', weight: 100 },
+  { nameKey: 'home.diet-mgmt-food-3', weight: 200 }
+]
+
+const overviewDiaryTotal = 320
+const overviewDiaryLimit = 400
+const overviewDietBars = [180, 240, 310, 280, 350, 290, 320]
+const overviewDietMax = 400
+const overviewBlood = [380, 350, 330, 295, 270]
+const overviewBloodMax = 400
 
 const store = useStore()
 const { t } = useI18n()
@@ -167,8 +188,213 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <div class="pt-10 sm:pt-14 pb-8 sm:pb-12 px-6 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl text-center">
+    <div
+      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20"
+    >
+      <div class="mx-auto max-w-5xl px-6 lg:px-8">
+        <div class="grid items-center gap-10 lg:grid-cols-2">
+          <div class="order-2 lg:order-1">
+            <div
+              class="relative mx-auto max-w-sm rounded-2xl bg-linear-to-br from-sky-500/10 to-indigo-500/10 dark:from-sky-400/10 dark:to-indigo-400/10 p-6 ring-1 ring-inset ring-sky-500/20 dark:ring-sky-400/20"
+            >
+              <div class="flex items-center justify-between gap-3">
+                <div
+                  class="grid h-20 w-20 shrink-0 grid-cols-2 grid-rows-2 gap-1.5 place-items-center rounded-xl bg-white dark:bg-gray-900 p-2 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10"
+                >
+                  <component
+                    :is="tool.icon"
+                    v-for="tool in pheTools"
+                    :key="tool.name"
+                    class="h-6 w-6 text-sky-500"
+                    aria-hidden="true"
+                  />
+                </div>
+                <LucideArrowRight class="h-6 w-6 text-gray-400 shrink-0" aria-hidden="true" />
+                <div
+                  class="flex h-20 flex-1 items-center justify-center rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10 relative"
+                >
+                  <span class="text-lg font-bold text-gray-900 dark:text-white">
+                    {{ $t('home.phe-anywhere-badge') }}
+                  </span>
+                  <LucideSparkles
+                    class="absolute -top-2 -right-2 h-5 w-5 text-amber-400"
+                    aria-hidden="true"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="order-1 lg:order-2 text-center lg:text-left">
+            <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+              {{ $t('home.phe-anywhere') }}
+            </h2>
+            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
+              {{ $t('home.phe-anywhere-desc') }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-10 sm:pt-14 pb-10 sm:pb-14 px-6 lg:px-8">
+      <div class="mx-auto max-w-5xl">
+        <div class="grid items-center gap-10 lg:grid-cols-2">
+          <div class="text-center lg:text-left">
+            <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+              {{ $t('home.weight-photo') }}
+            </h2>
+            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
+              {{ $t('home.weight-photo-desc') }}
+            </p>
+          </div>
+          <div>
+            <div
+              class="relative mx-auto max-w-sm rounded-2xl bg-linear-to-br from-emerald-500/10 to-sky-500/10 dark:from-emerald-400/10 dark:to-sky-400/10 p-6 ring-1 ring-inset ring-emerald-500/20 dark:ring-emerald-400/20"
+            >
+              <div class="flex items-center justify-between gap-3">
+                <div
+                  class="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10"
+                >
+                  <LucideCamera class="h-9 w-9 text-gray-700 dark:text-gray-200" aria-hidden="true" />
+                </div>
+                <LucideArrowRight class="h-6 w-6 text-gray-400 shrink-0" aria-hidden="true" />
+                <div
+                  class="flex h-20 flex-1 items-center justify-center rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10 relative"
+                >
+                  <span class="text-xl font-bold text-gray-900 dark:text-white">
+                    {{ $t('home.weight-photo-badge') }}
+                  </span>
+                  <LucideSparkles
+                    class="absolute -top-2 -right-2 h-5 w-5 text-amber-400"
+                    aria-hidden="true"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20"
+    >
+      <div class="mx-auto max-w-3xl px-6 lg:px-8 text-center">
+        <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+          {{ $t('home.diet-mgmt') }}
+        </h2>
+        <p class="mx-auto mt-4 max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-300">
+          {{ $t('home.diet-mgmt-desc') }}
+        </p>
+        <div
+          class="mt-8 mx-auto max-w-md rounded-2xl bg-gray-50 dark:bg-gray-800/60 p-5 sm:p-6 ring-1 ring-gray-900/5 dark:ring-white/10 text-left"
+        >
+          <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            <LucideSparkles class="h-4 w-4 text-amber-400" aria-hidden="true" />
+            <span>{{ $t('home.diet-mgmt-suggestions') }}</span>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <button
+              v-for="entry in suggestionsDemo"
+              :key="entry.nameKey"
+              type="button"
+              class="rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer"
+            >
+              {{ entry.weight }}g {{ $t(entry.nameKey) }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20"
+    >
+      <div class="mx-auto max-w-5xl px-6 lg:px-8">
+        <div class="grid items-center gap-10 lg:grid-cols-2">
+          <div class="order-2 lg:order-1">
+            <div
+              class="relative mx-auto max-w-md rounded-2xl bg-gray-50 dark:bg-gray-800/60 p-5 sm:p-6 ring-1 ring-gray-900/5 dark:ring-white/10"
+            >
+              <div class="space-y-3">
+                <div
+                  class="flex items-center gap-3 rounded-lg bg-white dark:bg-gray-900 px-3 py-3 ring-1 ring-gray-900/5 dark:ring-white/5"
+                >
+                  <LucideCalendar class="h-5 w-5 shrink-0 text-sky-500" aria-hidden="true" />
+                  <span class="text-sm font-medium text-gray-900 dark:text-white shrink-0">
+                    {{ $t('diary.title') }}
+                  </span>
+                  <div class="flex-1 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                    <div
+                      class="h-full rounded-full bg-sky-500"
+                      :style="{ width: (overviewDiaryTotal / overviewDiaryLimit * 100) + '%' }"
+                    />
+                  </div>
+                  <span class="text-xs font-medium text-gray-500 dark:text-gray-400 shrink-0 tabular-nums">
+                    {{ overviewDiaryTotal }}/{{ overviewDiaryLimit }}
+                  </span>
+                </div>
+
+                <div
+                  class="flex items-center gap-3 rounded-lg bg-white dark:bg-gray-900 px-3 py-3 ring-1 ring-gray-900/5 dark:ring-white/5"
+                >
+                  <LucideBook class="h-5 w-5 shrink-0 text-sky-500" aria-hidden="true" />
+                  <span class="text-sm font-medium text-gray-900 dark:text-white shrink-0">
+                    {{ $t('diet-report.title') }}
+                  </span>
+                  <div class="flex flex-1 items-end gap-1 h-7">
+                    <div
+                      v-for="(bar, i) in overviewDietBars"
+                      :key="i"
+                      class="flex-1 rounded-sm bg-sky-400 dark:bg-sky-500"
+                      :style="{ height: (bar / overviewDietMax * 100) + '%' }"
+                    />
+                  </div>
+                </div>
+
+                <div
+                  class="flex items-center gap-3 rounded-lg bg-white dark:bg-gray-900 px-3 py-3 ring-1 ring-gray-900/5 dark:ring-white/5"
+                >
+                  <LucideChartLine class="h-5 w-5 shrink-0 text-sky-500" aria-hidden="true" />
+                  <span class="text-sm font-medium text-gray-900 dark:text-white shrink-0">
+                    {{ $t('blood-values.title') }}
+                  </span>
+                  <svg
+                    viewBox="0 0 100 28"
+                    class="h-7 flex-1"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                  >
+                    <polyline
+                      :points="overviewBlood.map((v, i) => `${(i / (overviewBlood.length - 1)) * 100},${28 - (v / overviewBloodMax) * 24}`).join(' ')"
+                      fill="none"
+                      stroke="rgb(14 165 233)"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      vector-effect="non-scaling-stroke"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="order-1 lg:order-2 text-center lg:text-left">
+            <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+              {{ $t('home.insights') }}
+            </h2>
+            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
+              {{ $t('home.insights-desc') }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="w-screen ml-[calc(50%-50vw)] bg-sky-50 dark:bg-sky-950/40 pt-14 sm:pt-20 pb-10 sm:pb-12"
+    >
+      <div class="mx-auto max-w-2xl px-6 lg:px-8 text-center">
         <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
           {{ $t('home.signin') }}
         </h2>
@@ -195,8 +421,10 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <div class="pt-8 sm:pt-12 pb-8 sm:pb-12 px-6 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl text-center">
+    <div
+      class="w-screen ml-[calc(50%-50vw)] bg-sky-50 dark:bg-sky-950/40 pt-10 sm:pt-12 pb-14 sm:pb-20"
+    >
+      <div class="mx-auto max-w-2xl px-6 lg:px-8 text-center">
         <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
           {{ $t('home.install') }}
         </h2>
@@ -221,11 +449,17 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <TiersCard class="pt-2" />
+    <div
+      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20"
+    >
+      <div class="mx-auto max-w-5xl px-6 lg:px-8">
+        <TiersCard />
+      </div>
+    </div>
 
-    <div class="pt-8 sm:pt-12 pb-8 sm:pb-12 px-6 sm:px-6 lg:px-8">
+    <div class="pt-14 sm:pt-20 pb-8 sm:pb-12 px-6 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-2xl text-center">
-        <p class="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-300">
+        <p class="mx-auto max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-300">
           {{ $t('home.about-description') }}
         </p>
         <div class="mt-6 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
