@@ -65,6 +65,7 @@ pkutools-3/
 
 - Node.js 18+
 - pnpm 10+
+- Infisical CLI
 
 ### Installation
 
@@ -82,7 +83,15 @@ pnpm add -g firebase-tools
 pnpm install
 ```
 
-**Note**: For local development with emulators, Firebase environment variables are not required. The app should work with emulators even if the `.env` file is missing or contains placeholder values. The `.env` file is only required for production deployment or when connecting to a real Firebase project.
+4. Log in to Infisical (required for `pnpm dev`, which runs `infisical run -- nuxt dev`):
+
+```bash
+infisical login
+```
+
+The workspace is configured in `.infisical.json`. Environment variables are injected at runtime — no local `.env` file is needed for development.
+
+**Note**: For local development with Firebase emulators, real Firebase credentials are not required. The app works with emulators even if Infisical values are empty or placeholders. Real credentials are only required for production deployment or when connecting to a real Firebase project.
 
 ## Development
 
