@@ -339,7 +339,7 @@ const deleteItem = async () => {
           })
         } catch (error) {
           console.error('Undo error:', error)
-          notifications.error('Failed to restore item. Please add it manually.')
+          notifications.error(t('errors.restore-failed'))
         }
       },
       undoLabel: t('common.undo')

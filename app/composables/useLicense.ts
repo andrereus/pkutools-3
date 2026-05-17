@@ -14,6 +14,10 @@ const isInitializing = ref(false)
 export const useLicense = () => {
   const notifications = useNotifications()
   const store = useStore()
+  // Use the global $i18n so the composable can be invoked from event handlers
+  // (outside of a setup() scope), where useI18n() throws.
+  const { $i18n } = useNuxtApp()
+  const t = (key: string) => $i18n.t(key)
 
   const validateLicense = async (
     licenseKey: string
@@ -62,7 +66,7 @@ export const useLicense = () => {
       return response
     } catch (error: unknown) {
       console.error('License validation error:', error)
-      notifications.error('Failed to validate license. Please try again.')
+      notifications.error(t('errors.validate-license-failed'))
       throw error
     }
   }

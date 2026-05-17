@@ -489,7 +489,7 @@ const deleteItem = async () => {
           }
         } catch (error) {
           console.error('Undo error:', error)
-          notifications.error('Failed to restore entry. Please add it manually.')
+          notifications.error(t('errors.restore-entry-failed'))
         }
       },
       undoLabel: t('common.undo')
@@ -683,7 +683,7 @@ const saveLogEdit = async () => {
       // Add new log item - only update local state
       // Changes will be saved when the main dialog is saved
       if (!editedKey.value) {
-        notifications.error('No entry selected. Please edit an entry first.')
+        notifications.error(t('errors.no-entry-selected'))
         return
       }
 
@@ -704,7 +704,7 @@ const saveLogEdit = async () => {
   } catch (error) {
     // Error handling
     console.error('Save log edit error:', error)
-    notifications.error('Failed to save log item. Please try again.')
+    notifications.error(t('errors.save-log-failed'))
   }
 }
 
