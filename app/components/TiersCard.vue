@@ -32,7 +32,6 @@ const tiers = computed(() => [
       t('settings.tier-unlimited-feature-1'),
       t('settings.tier-unlimited-feature-2'),
       t('settings.tier-unlimited-feature-3'),
-      t('settings.tier-unlimited-feature-5'),
       t('settings.tier-unlimited-feature-6'),
       t('settings.tier-unlimited-feature-ai'),
       t('settings.tier-unlimited-feature-image')
