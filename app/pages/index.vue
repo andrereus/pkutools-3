@@ -111,7 +111,7 @@ watch(userIsAuthenticated, (newVal) => {
 })
 
 useSeoMeta({
-  title: () => t('home.title') + ' - PKU Tools',
+  title: () => t('home.title'),
   description: () => t('home.description')
 })
 
@@ -188,7 +188,9 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <div class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20">
+    <div
+      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20"
+    >
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
         <div class="grid items-center gap-10 lg:grid-cols-2">
           <div class="order-2 lg:order-1">
@@ -253,10 +255,7 @@ defineOgImage('NuxtSeo', {
                 <div
                   class="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10"
                 >
-                  <LucideCamera
-                    class="h-9 w-9 text-gray-700 dark:text-gray-200"
-                    aria-hidden="true"
-                  />
+                  <LucideCamera class="h-9 w-9 text-gray-700 dark:text-gray-200" aria-hidden="true" />
                 </div>
                 <LucideArrowRight class="h-6 w-6 text-gray-400 shrink-0" aria-hidden="true" />
                 <div
@@ -293,9 +292,7 @@ defineOgImage('NuxtSeo', {
           <div
             class="mx-auto w-full max-w-md rounded-2xl bg-gray-50 dark:bg-gray-800/60 p-5 sm:p-6 ring-1 ring-gray-900/5 dark:ring-white/10 text-left"
           >
-            <div
-              class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
-            >
+            <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
               <LucideSparkles class="h-4 w-4 text-amber-400" aria-hidden="true" />
               <span>{{ $t('home.diet-mgmt-suggestions') }}</span>
             </div>
@@ -331,17 +328,13 @@ defineOgImage('NuxtSeo', {
                   <span class="text-sm font-medium text-gray-900 dark:text-white shrink-0">
                     {{ $t('diary.title') }}
                   </span>
-                  <div
-                    class="flex-1 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden"
-                  >
+                  <div class="flex-1 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
                     <div
                       class="h-full rounded-full bg-sky-500"
-                      :style="{ width: (overviewDiaryTotal / overviewDiaryLimit) * 100 + '%' }"
+                      :style="{ width: (overviewDiaryTotal / overviewDiaryLimit * 100) + '%' }"
                     />
                   </div>
-                  <span
-                    class="text-xs font-medium text-gray-500 dark:text-gray-400 shrink-0 tabular-nums"
-                  >
+                  <span class="text-xs font-medium text-gray-500 dark:text-gray-400 shrink-0 tabular-nums">
                     {{ overviewDiaryTotal }}/{{ overviewDiaryLimit }}
                   </span>
                 </div>
@@ -358,7 +351,7 @@ defineOgImage('NuxtSeo', {
                       v-for="(bar, i) in overviewDietBars"
                       :key="i"
                       class="flex-1 rounded-sm bg-sky-400 dark:bg-sky-500"
-                      :style="{ height: (bar / overviewDietMax) * 100 + '%' }"
+                      :style="{ height: (bar / overviewDietMax * 100) + '%' }"
                     />
                   </div>
                 </div>
@@ -377,14 +370,7 @@ defineOgImage('NuxtSeo', {
                     aria-hidden="true"
                   >
                     <polyline
-                      :points="
-                        overviewBlood
-                          .map(
-                            (v, i) =>
-                              `${(i / (overviewBlood.length - 1)) * 100},${28 - (v / overviewBloodMax) * 24}`
-                          )
-                          .join(' ')
-                      "
+                      :points="overviewBlood.map((v, i) => `${(i / (overviewBlood.length - 1)) * 100},${28 - (v / overviewBloodMax) * 24}`).join(' ')"
                       fill="none"
                       stroke="rgb(14 165 233)"
                       stroke-width="1.5"
@@ -467,7 +453,9 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <div class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20">
+    <div
+      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20"
+    >
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
         <TiersCard />
       </div>
