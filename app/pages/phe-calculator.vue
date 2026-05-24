@@ -181,6 +181,7 @@ defineOgImage('NuxtSeo', {
     </header>
 
     <TextInput
+      v-if="userIsAuthenticated"
       v-model="name"
       id-name="food"
       :label="$t('common.food-name')"
