@@ -82,7 +82,16 @@
     "insights": "Gardez tout en vue",
     "insights-desc": "Journal, rapport diététique et valeurs sanguines — toutes vos données PKU clairement en un seul endroit.",
     "about-description": "Par le développeur de l'une des premières applications PKU pour Android \"Phe Rechner\", ainsi que du \"PKU Manager\". Également introduction du scanner de code-barres et de la calculatrice IA spécifiquement pour la PKU. Développement de PKU Apps depuis 2013.",
-    "social": "Reste au courant"
+    "innovation": "Innovation depuis 2013",
+    "social": "Reste au courant",
+    "trust": "Open source, indépendant et privé",
+    "trust-open": "Open source",
+    "trust-open-desc": "Chacun peut contribuer.",
+    "trust-open-link": "Voir sur GitHub",
+    "trust-independent": "Indépendant",
+    "trust-independent-desc": "Par et pour les personnes PKU.",
+    "trust-private": "Confidentialité",
+    "trust-private-desc": "Vos données de santé restent les vôtres."
   },
   "food-search": {
     "title": "Recherche alimentaire",

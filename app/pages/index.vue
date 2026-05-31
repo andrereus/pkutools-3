@@ -10,7 +10,10 @@ import {
   LucideChartLine,
   LucideSparkles,
   LucideCamera,
-  LucideArrowRight
+  LucideArrowRight,
+  LucideGithub,
+  LucideHeart,
+  LucideShieldCheck
 } from 'lucide-vue-next'
 
 const pheTools = [
@@ -188,9 +191,7 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <div
-      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20"
-    >
+    <div class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20">
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
         <div class="grid items-center gap-10 lg:grid-cols-2">
           <div class="order-2 lg:order-1">
@@ -255,7 +256,10 @@ defineOgImage('NuxtSeo', {
                 <div
                   class="flex h-20 w-20 shrink-0 items-center justify-center rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10"
                 >
-                  <LucideCamera class="h-9 w-9 text-gray-700 dark:text-gray-200" aria-hidden="true" />
+                  <LucideCamera
+                    class="h-9 w-9 text-gray-700 dark:text-gray-200"
+                    aria-hidden="true"
+                  />
                 </div>
                 <LucideArrowRight class="h-6 w-6 text-gray-400 shrink-0" aria-hidden="true" />
                 <div
@@ -292,7 +296,9 @@ defineOgImage('NuxtSeo', {
           <div
             class="mx-auto w-full max-w-md rounded-2xl bg-gray-50 dark:bg-gray-800/60 p-5 sm:p-6 ring-1 ring-gray-900/5 dark:ring-white/10 text-left"
           >
-            <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            <div
+              class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+            >
               <LucideSparkles class="h-4 w-4 text-amber-400" aria-hidden="true" />
               <span>{{ $t('home.diet-mgmt-suggestions') }}</span>
             </div>
@@ -328,13 +334,17 @@ defineOgImage('NuxtSeo', {
                   <span class="text-sm font-medium text-gray-900 dark:text-white shrink-0">
                     {{ $t('diary.title') }}
                   </span>
-                  <div class="flex-1 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                  <div
+                    class="flex-1 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden"
+                  >
                     <div
                       class="h-full rounded-full bg-sky-500"
-                      :style="{ width: (overviewDiaryTotal / overviewDiaryLimit * 100) + '%' }"
+                      :style="{ width: (overviewDiaryTotal / overviewDiaryLimit) * 100 + '%' }"
                     />
                   </div>
-                  <span class="text-xs font-medium text-gray-500 dark:text-gray-400 shrink-0 tabular-nums">
+                  <span
+                    class="text-xs font-medium text-gray-500 dark:text-gray-400 shrink-0 tabular-nums"
+                  >
                     {{ overviewDiaryTotal }}/{{ overviewDiaryLimit }}
                   </span>
                 </div>
@@ -351,7 +361,7 @@ defineOgImage('NuxtSeo', {
                       v-for="(bar, i) in overviewDietBars"
                       :key="i"
                       class="flex-1 rounded-sm bg-sky-400 dark:bg-sky-500"
-                      :style="{ height: (bar / overviewDietMax * 100) + '%' }"
+                      :style="{ height: (bar / overviewDietMax) * 100 + '%' }"
                     />
                   </div>
                 </div>
@@ -370,7 +380,14 @@ defineOgImage('NuxtSeo', {
                     aria-hidden="true"
                   >
                     <polyline
-                      :points="overviewBlood.map((v, i) => `${(i / (overviewBlood.length - 1)) * 100},${28 - (v / overviewBloodMax) * 24}`).join(' ')"
+                      :points="
+                        overviewBlood
+                          .map(
+                            (v, i) =>
+                              `${(i / (overviewBlood.length - 1)) * 100},${28 - (v / overviewBloodMax) * 24}`
+                          )
+                          .join(' ')
+                      "
                       fill="none"
                       stroke="rgb(14 165 233)"
                       stroke-width="1.5"
@@ -453,29 +470,73 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <div
-      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20"
-    >
+    <div class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20">
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
         <TiersCard />
       </div>
     </div>
 
-    <div class="pt-14 sm:pt-20 pb-8 sm:pb-12 px-6 sm:px-6 lg:px-8">
+    <div class="pt-14 sm:pt-20 pb-8 sm:pb-12 px-6 lg:px-8">
+      <div class="mx-auto max-w-5xl">
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+            {{ $t('home.trust') }}
+          </h2>
+        </div>
+        <div class="mx-auto mt-12 grid max-w-xl grid-cols-1 gap-10 sm:max-w-none sm:grid-cols-3">
+          <div class="text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-sky-500">
+              <LucideGithub class="h-7 w-7 text-white" aria-hidden="true" />
+            </div>
+            <h3 class="mt-5 text-base font-semibold leading-7 text-gray-900 dark:text-white">
+              {{ $t('home.trust-open') }}
+            </h3>
+            <p class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-300">
+              {{ $t('home.trust-open-desc') }}
+            </p>
+            <a
+              href="https://github.com/andrereus/pkutools-3"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-sky-500 hover:text-sky-600"
+            >
+              {{ $t('home.trust-open-link') }} <span aria-hidden="true">→</span>
+            </a>
+          </div>
+          <div class="text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-sky-500">
+              <LucideHeart class="h-7 w-7 text-white" aria-hidden="true" />
+            </div>
+            <h3 class="mt-5 text-base font-semibold leading-7 text-gray-900 dark:text-white">
+              {{ $t('home.trust-independent') }}
+            </h3>
+            <p class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-300">
+              {{ $t('home.trust-independent-desc') }}
+            </p>
+          </div>
+          <div class="text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-sky-500">
+              <LucideShieldCheck class="h-7 w-7 text-white" aria-hidden="true" />
+            </div>
+            <h3 class="mt-5 text-base font-semibold leading-7 text-gray-900 dark:text-white">
+              {{ $t('home.trust-private') }}
+            </h3>
+            <p class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-300">
+              {{ $t('home.trust-private-desc') }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-8 sm:pt-12 pb-8 sm:pb-12 px-6 lg:px-8">
       <div class="mx-auto max-w-2xl text-center">
-        <p class="mx-auto max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-300">
+        <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+          {{ $t('home.innovation') }}
+        </h2>
+        <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
           {{ $t('home.about-description') }}
         </p>
-        <div class="mt-6 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <a href="https://ko-fi.com/M4M0GIVPI" target="_blank"
-            ><img
-              height="36"
-              style="border: 0px; height: 36px"
-              src="https://storage.ko-fi.com/cdn/kofi5.png?v=6"
-              border="0"
-              alt="Buy Me a Coffee at ko-fi.com"
-          /></a>
-        </div>
       </div>
     </div>
 
