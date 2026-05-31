@@ -13,7 +13,8 @@ import {
   LucideArrowRight,
   LucideGithub,
   LucideHeart,
-  LucideShieldCheck
+  LucideShieldCheck,
+  LucidePlay
 } from 'lucide-vue-next'
 
 const pheTools = [
@@ -34,7 +35,16 @@ const overviewDiaryLimit = 400
 const overviewDietBars = [180, 240, 310, 280, 350, 290, 320]
 const overviewDietMax = 400
 const overviewBlood = [380, 350, 330, 295, 270]
-const overviewBloodMax = 400
+// Normalise to the data's own min/max so the trend fills the chart height.
+const overviewBloodMin = Math.min(...overviewBlood)
+const overviewBloodMax = Math.max(...overviewBlood)
+const overviewBloodPoints = overviewBlood
+  .map((v, i) => {
+    const x = (i / (overviewBlood.length - 1)) * 100
+    const y = 4 + (1 - (v - overviewBloodMin) / (overviewBloodMax - overviewBloodMin)) * 20
+    return `${x},${y}`
+  })
+  .join(' ')
 
 const store = useStore()
 const { t } = useI18n()
@@ -79,7 +89,8 @@ const features = [
     name: 'features.diary-name',
     description: 'features.diary-description',
     icon: LucideCalendar,
-    iconBg: 'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
+    iconBg:
+      'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
     iconColor: 'text-emerald-600 dark:text-emerald-400',
     route: 'diary'
   },
@@ -87,7 +98,8 @@ const features = [
     name: 'features.diet-report-name',
     description: 'features.diet-report-description',
     icon: LucideBook,
-    iconBg: 'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
+    iconBg:
+      'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
     iconColor: 'text-emerald-600 dark:text-emerald-400',
     route: 'diet-report'
   },
@@ -95,7 +107,8 @@ const features = [
     name: 'features.blood-values-name',
     description: 'features.blood-values-description',
     icon: LucideChartLine,
-    iconBg: 'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
+    iconBg:
+      'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
     iconColor: 'text-emerald-600 dark:text-emerald-400',
     route: 'blood-values'
   },
@@ -103,7 +116,8 @@ const features = [
     name: 'features.own-community-name',
     description: 'features.own-community-description',
     icon: LucideApple,
-    iconBg: 'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
+    iconBg:
+      'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
     iconColor: 'text-emerald-600 dark:text-emerald-400',
     route: 'own-food'
   }
@@ -130,12 +144,16 @@ watch(userIsAuthenticated, (newVal) => {
 })
 
 useSeoMeta({
-  title: () => t('home.title'),
+  // Resolves via the site's global title template to e.g.
+  // "All-in-One Nutrition App for PKU <sep> PKU Tools" — using the site's own
+  // separator so it stays consistent with every other page, and including both
+  // the key phrase and the brand (better for SEO than the brand alone).
+  title: () => t('app.description'),
   description: () => t('home.description')
 })
 
 defineOgImage('NuxtSeo', {
-  title: () => t('home.title') + ' - PKU Tools',
+  title: 'PKU Tools',
   description: () => t('home.description'),
   theme: '#3498db'
 })
@@ -146,38 +164,29 @@ defineOgImage('NuxtSeo', {
     <div class="pt-3 pb-12 sm:pt-8 sm:pb-16">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto max-w-2xl lg:text-center">
-          <p
+          <h1
             class="mt-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl"
           >
             {{ $t('app.description') }}
-          </p>
+          </h1>
           <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
             {{ $t('app.long-description') }}
           </p>
         </div>
       </div>
-      <div class="mt-10 flex justify-center sm:mt-12">
-        <div
-          class="max-w-4xl w-full rounded-xl bg-gray-900/5 dark:bg-gray-800 p-2 ring-1 ring-inset ring-gray-900/10 dark:ring-gray-700 lg:rounded-2xl lg:p-4"
+      <div class="mt-10 flex justify-center px-6 sm:mt-12 lg:px-8">
+        <AppDemo />
+      </div>
+      <div class="mt-6 flex justify-center px-6">
+        <a
+          href="https://www.youtube.com/watch?v=XUcei4Iuggc"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-full bg-black/5 px-4 py-2 text-sm font-semibold text-gray-900 shadow-xs hover:bg-black/10 dark:bg-white/15 dark:text-gray-300 dark:hover:bg-white/10"
         >
-          <iframe
-            class="aspect-video w-full rounded-md shadow-2xl ring-1 ring-gray-900/10 dark:ring-gray-700"
-            src="https://www.youtube-nocookie.com/embed/XUcei4Iuggc"
-            title="YouTube video player"
-            frameborder="0"
-            allow="
-              accelerometer;
-              autoplay;
-              clipboard-write;
-              encrypted-media;
-              gyroscope;
-              picture-in-picture;
-              web-share;
-            "
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
-          />
-        </div>
+          <LucidePlay class="h-4 w-4" aria-hidden="true" />
+          {{ $t('home.see-in-action') }}
+        </a>
       </div>
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto mt-14 max-w-2xl sm:mt-16 lg:max-w-4xl">
@@ -402,14 +411,7 @@ defineOgImage('NuxtSeo', {
                     aria-hidden="true"
                   >
                     <polyline
-                      :points="
-                        overviewBlood
-                          .map(
-                            (v, i) =>
-                              `${(i / (overviewBlood.length - 1)) * 100},${28 - (v / overviewBloodMax) * 24}`
-                          )
-                          .join(' ')
-                      "
+                      :points="overviewBloodPoints"
                       fill="none"
                       stroke="rgb(14 165 233)"
                       stroke-width="1.5"
@@ -507,8 +509,8 @@ defineOgImage('NuxtSeo', {
         </div>
         <div class="mx-auto mt-12 grid max-w-xl grid-cols-1 gap-10 sm:max-w-none sm:grid-cols-3">
           <div class="text-center">
-            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-sky-500">
-              <LucideGithub class="h-7 w-7 text-white" aria-hidden="true" />
+            <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500">
+              <LucideGithub class="h-6 w-6 text-white" aria-hidden="true" />
             </div>
             <h3 class="mt-5 text-base font-semibold leading-7 text-gray-900 dark:text-white">
               {{ $t('home.trust-open') }}
@@ -526,8 +528,8 @@ defineOgImage('NuxtSeo', {
             </a>
           </div>
           <div class="text-center">
-            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-sky-500">
-              <LucideHeart class="h-7 w-7 text-white" aria-hidden="true" />
+            <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500">
+              <LucideHeart class="h-6 w-6 text-white" aria-hidden="true" />
             </div>
             <h3 class="mt-5 text-base font-semibold leading-7 text-gray-900 dark:text-white">
               {{ $t('home.trust-independent') }}
@@ -537,8 +539,8 @@ defineOgImage('NuxtSeo', {
             </p>
           </div>
           <div class="text-center">
-            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-sky-500">
-              <LucideShieldCheck class="h-7 w-7 text-white" aria-hidden="true" />
+            <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500">
+              <LucideShieldCheck class="h-6 w-6 text-white" aria-hidden="true" />
             </div>
             <h3 class="mt-5 text-base font-semibold leading-7 text-gray-900 dark:text-white">
               {{ $t('home.trust-private') }}
