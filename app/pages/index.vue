@@ -47,48 +47,64 @@ const features = [
     name: 'features.ai-features-name',
     description: 'features.ai-features-description',
     icon: LucideSparkles,
+    iconBg: 'bg-sky-100 dark:bg-sky-400/10 ring-1 ring-inset ring-sky-600/20 dark:ring-sky-400/20',
+    iconColor: 'text-sky-600 dark:text-sky-400',
     route: 'ai-calculator'
   },
   {
     name: 'features.search-name',
     description: 'features.search-description',
     icon: LucideSearch,
+    iconBg: 'bg-sky-100 dark:bg-sky-400/10 ring-1 ring-inset ring-sky-600/20 dark:ring-sky-400/20',
+    iconColor: 'text-sky-600 dark:text-sky-400',
     route: 'food-search'
   },
   {
     name: 'features.scanner-name',
     description: 'features.scanner-description',
     icon: LucideScanBarcode,
+    iconBg: 'bg-sky-100 dark:bg-sky-400/10 ring-1 ring-inset ring-sky-600/20 dark:ring-sky-400/20',
+    iconColor: 'text-sky-600 dark:text-sky-400',
     route: 'barcode-scanner'
   },
   {
     name: 'features.calculator-name',
     description: 'features.calculator-description',
     icon: LucideCalculator,
+    iconBg: 'bg-sky-100 dark:bg-sky-400/10 ring-1 ring-inset ring-sky-600/20 dark:ring-sky-400/20',
+    iconColor: 'text-sky-600 dark:text-sky-400',
     route: 'phe-calculator'
   },
   {
     name: 'features.diary-name',
     description: 'features.diary-description',
     icon: LucideCalendar,
+    iconBg: 'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
     route: 'diary'
   },
   {
     name: 'features.diet-report-name',
     description: 'features.diet-report-description',
     icon: LucideBook,
+    iconBg: 'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
     route: 'diet-report'
   },
   {
     name: 'features.blood-values-name',
     description: 'features.blood-values-description',
     icon: LucideChartLine,
+    iconBg: 'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
     route: 'blood-values'
   },
   {
     name: 'features.own-community-name',
     description: 'features.own-community-description',
     icon: LucideApple,
+    iconBg: 'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
     route: 'own-food'
   }
 ]
@@ -176,9 +192,15 @@ defineOgImage('NuxtSeo', {
             >
               <dt class="text-base font-semibold leading-7 text-gray-900 dark:text-white">
                 <div
-                  class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500"
+                  class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-lg"
+                  :class="feature.iconBg"
                 >
-                  <component :is="feature.icon" class="h-6 w-6 text-white" aria-hidden="true" />
+                  <component
+                    :is="feature.icon"
+                    class="h-6 w-6"
+                    :class="feature.iconColor"
+                    aria-hidden="true"
+                  />
                 </div>
                 {{ $t(feature.name) }}
               </dt>
