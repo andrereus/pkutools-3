@@ -7,7 +7,7 @@ import { checkPremiumStatus, checkPremiumAIStatus } from '../../utils/license'
 // Constants for limits
 const BASE_DAILY_ESTIMATE_LIMIT = 20
 const PREMIUM_AI_DAILY_ESTIMATE_LIMIT = 100
-const FREE_USER_DAILY_ESTIMATE_LIMIT = 2
+const FREE_USER_DAILY_ESTIMATE_LIMIT = 3
 
 export default defineEventHandler(async (event) => {
   try {
