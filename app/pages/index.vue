@@ -45,6 +45,7 @@ const overviewBloodPoints = overviewBlood
     return `${x},${y}`
   })
   .join(' ')
+const overviewBloodArea = `${overviewBloodPoints} 100,28 0,28`
 
 const store = useStore()
 const { t } = useI18n()
@@ -57,68 +58,64 @@ const features = [
     name: 'features.ai-features-name',
     description: 'features.ai-features-description',
     icon: LucideSparkles,
-    iconBg: 'bg-sky-100 dark:bg-sky-400/10 ring-1 ring-inset ring-sky-600/20 dark:ring-sky-400/20',
-    iconColor: 'text-sky-600 dark:text-sky-400',
+    iconBg: 'bg-sky-500',
+    iconColor: 'text-white',
     route: 'ai-calculator'
   },
   {
     name: 'features.search-name',
     description: 'features.search-description',
     icon: LucideSearch,
-    iconBg: 'bg-sky-100 dark:bg-sky-400/10 ring-1 ring-inset ring-sky-600/20 dark:ring-sky-400/20',
-    iconColor: 'text-sky-600 dark:text-sky-400',
+    iconBg: 'bg-sky-500',
+    iconColor: 'text-white',
     route: 'food-search'
   },
   {
     name: 'features.scanner-name',
     description: 'features.scanner-description',
     icon: LucideScanBarcode,
-    iconBg: 'bg-sky-100 dark:bg-sky-400/10 ring-1 ring-inset ring-sky-600/20 dark:ring-sky-400/20',
-    iconColor: 'text-sky-600 dark:text-sky-400',
+    iconBg: 'bg-sky-500',
+    iconColor: 'text-white',
     route: 'barcode-scanner'
   },
   {
     name: 'features.calculator-name',
     description: 'features.calculator-description',
     icon: LucideCalculator,
-    iconBg: 'bg-sky-100 dark:bg-sky-400/10 ring-1 ring-inset ring-sky-600/20 dark:ring-sky-400/20',
-    iconColor: 'text-sky-600 dark:text-sky-400',
+    iconBg: 'bg-sky-500',
+    iconColor: 'text-white',
     route: 'phe-calculator'
   },
   {
     name: 'features.diary-name',
     description: 'features.diary-description',
     icon: LucideCalendar,
-    iconBg:
-      'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
-    iconColor: 'text-emerald-600 dark:text-emerald-400',
+    iconBg: 'bg-teal-500',
+    iconColor: 'text-white',
     route: 'diary'
   },
   {
     name: 'features.diet-report-name',
     description: 'features.diet-report-description',
     icon: LucideBook,
-    iconBg:
-      'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
-    iconColor: 'text-emerald-600 dark:text-emerald-400',
+    iconBg: 'bg-teal-500',
+    iconColor: 'text-white',
     route: 'diet-report'
   },
   {
     name: 'features.blood-values-name',
     description: 'features.blood-values-description',
     icon: LucideChartLine,
-    iconBg:
-      'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
-    iconColor: 'text-emerald-600 dark:text-emerald-400',
+    iconBg: 'bg-teal-500',
+    iconColor: 'text-white',
     route: 'blood-values'
   },
   {
     name: 'features.own-community-name',
     description: 'features.own-community-description',
     icon: LucideApple,
-    iconBg:
-      'bg-emerald-100 dark:bg-emerald-400/10 ring-1 ring-inset ring-emerald-600/20 dark:ring-emerald-400/20',
-    iconColor: 'text-emerald-600 dark:text-emerald-400',
+    iconBg: 'bg-teal-500',
+    iconColor: 'text-white',
     route: 'own-food'
   }
 ]
@@ -182,7 +179,7 @@ defineOgImage('NuxtSeo', {
           href="https://www.youtube.com/watch?v=XUcei4Iuggc"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-gray-500 ring-1 ring-inset ring-gray-200 transition-colors hover:text-gray-900 hover:ring-gray-300 dark:text-gray-400 dark:ring-white/10 dark:hover:text-gray-200 dark:hover:ring-white/20"
+          class="inline-flex items-center gap-2 rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
         >
           <LucidePlay class="h-4 w-4" aria-hidden="true" />
           {{ $t('home.see-in-action') }}
@@ -268,7 +265,7 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <div class="pt-10 sm:pt-14 pb-10 sm:pb-14">
+    <div class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 pt-10 sm:pt-14 pb-10 sm:pb-14">
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
         <div class="grid items-center gap-10 lg:grid-cols-2">
           <div class="text-center lg:text-left">
@@ -410,6 +407,13 @@ defineOgImage('NuxtSeo', {
                     preserveAspectRatio="none"
                     aria-hidden="true"
                   >
+                    <defs>
+                      <linearGradient id="overview-blood-grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="rgb(14 165 233)" stop-opacity="0.25" />
+                        <stop offset="100%" stop-color="rgb(14 165 233)" stop-opacity="0" />
+                      </linearGradient>
+                    </defs>
+                    <polygon :points="overviewBloodArea" fill="url(#overview-blood-grad)" />
                     <polyline
                       :points="overviewBloodPoints"
                       fill="none"
@@ -439,69 +443,7 @@ defineOgImage('NuxtSeo', {
     <div
       class="w-screen ml-[calc(50%-50vw)] bg-sky-50 dark:bg-sky-900/40 pt-14 sm:pt-20 pb-10 sm:pb-12"
     >
-      <div class="mx-auto max-w-2xl px-6 lg:px-8 text-center">
-        <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
-          {{ $t('home.signin') }}
-        </h2>
-        <p class="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-300">
-          {{ $t('home.signin-desc') }}
-        </p>
-        <div
-          v-if="!userIsAuthenticated"
-          class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
-        >
-          <a
-            class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 cursor-pointer"
-            @click.prevent="signInGoogle"
-          >
-            {{ $t('app.signin-google') }}
-          </a>
-          <NuxtLink
-            :to="$localePath('sign-in')"
-            class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500"
-          >
-            {{ $t('sign-in.signin-with-email') }}
-          </NuxtLink>
-        </div>
-      </div>
-    </div>
-
-    <div
-      class="w-screen ml-[calc(50%-50vw)] bg-sky-50 dark:bg-sky-900/40 pt-10 sm:pt-12 pb-14 sm:pb-20"
-    >
-      <div class="mx-auto max-w-2xl px-6 lg:px-8 text-center">
-        <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
-          {{ $t('home.install') }}
-        </h2>
-        <p class="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-300">
-          {{ $t('home.install-desc') }}
-        </p>
-        <div class="mt-6 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <a href="https://play.google.com/store/apps/details?id=com.pkutools.twa" target="_blank">
-            <img
-              alt="Get it on Google Play"
-              src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-              class="inline-block w-28 align-middle"
-            />
-          </a>
-          <NuxtLink
-            :to="$localePath('help')"
-            class="rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
-          >
-            {{ $t('app.install') }} <span aria-hidden="true">→</span>
-          </NuxtLink>
-        </div>
-      </div>
-    </div>
-
-    <div class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20">
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
-        <TiersCard />
-      </div>
-    </div>
-
-    <div class="pt-14 sm:pt-20 pb-8 sm:pb-12 px-6 lg:px-8">
-      <div class="mx-auto max-w-5xl">
         <div class="mx-auto max-w-2xl text-center">
           <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
             {{ $t('home.trust') }}
@@ -548,24 +490,89 @@ defineOgImage('NuxtSeo', {
             <p class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-300">
               {{ $t('home.trust-private-desc') }}
             </p>
+            <NuxtLink
+              :to="$localePath('privacy-policy')"
+              class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-sky-500 hover:text-sky-600"
+            >
+              {{ $t('home.trust-private-link') }} <span aria-hidden="true">→</span>
+            </NuxtLink>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="pt-8 sm:pt-12 pb-8 sm:pb-12 px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl text-center">
-        <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
-          {{ $t('home.innovation') }}
-        </h2>
-        <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
+    <div
+      class="w-screen ml-[calc(50%-50vw)] bg-sky-50 dark:bg-sky-900/40 pt-10 sm:pt-12 pb-14 sm:pb-20"
+    >
+      <div class="mx-auto max-w-2xl px-6 lg:px-8 text-center">
+        <p class="text-lg leading-8 text-gray-600 dark:text-gray-300">
           {{ $t('home.about-description') }}
         </p>
       </div>
     </div>
 
-    <div class="pt-8 sm:pt-12 pb-8 sm:pb-12 px-6 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl text-center">
+    <div class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20">
+      <div class="mx-auto max-w-5xl px-6 lg:px-8">
+        <TiersCard />
+      </div>
+    </div>
+
+    <div class="pt-14 sm:pt-20 pb-10 sm:pb-12">
+      <div class="mx-auto max-w-2xl px-6 lg:px-8 text-center">
+        <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+          {{ $t('home.signin') }}
+        </h2>
+        <p class="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-300">
+          {{ $t('home.signin-desc') }}
+        </p>
+        <div
+          v-if="!userIsAuthenticated"
+          class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+        >
+          <a
+            class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 cursor-pointer"
+            @click.prevent="signInGoogle"
+          >
+            {{ $t('app.signin-google') }}
+          </a>
+          <NuxtLink
+            :to="$localePath('sign-in')"
+            class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500"
+          >
+            {{ $t('sign-in.signin-with-email') }}
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-10 sm:pt-12 pb-10 sm:pb-12">
+      <div class="mx-auto max-w-2xl px-6 lg:px-8 text-center">
+        <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+          {{ $t('home.install') }}
+        </h2>
+        <p class="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-300">
+          {{ $t('home.install-desc') }}
+        </p>
+        <div class="mt-6 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+          <a href="https://play.google.com/store/apps/details?id=com.pkutools.twa" target="_blank">
+            <img
+              alt="Get it on Google Play"
+              src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+              class="inline-block w-28 align-middle"
+            />
+          </a>
+          <NuxtLink
+            :to="$localePath('help')"
+            class="rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
+          >
+            {{ $t('app.install') }} <span aria-hidden="true">→</span>
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-10 sm:pt-12 pb-8 sm:pb-10">
+      <div class="mx-auto max-w-2xl px-6 lg:px-8 text-center">
         <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
           {{ $t('home.social') }}
         </h2>
@@ -573,7 +580,8 @@ defineOgImage('NuxtSeo', {
           <a
             href="https://www.facebook.com/pkutools"
             target="_blank"
-            class="text-gray-600 hover:text-gray-800"
+            rel="noopener noreferrer"
+            class="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
           >
             <span class="sr-only">Facebook</span>
             <svg fill="currentColor" viewBox="0 0 24 24" class="size-8" aria-hidden="true">
@@ -587,7 +595,8 @@ defineOgImage('NuxtSeo', {
           <a
             href="https://www.youtube.com/@pkutools"
             target="_blank"
-            class="text-gray-600 hover:text-gray-800"
+            rel="noopener noreferrer"
+            class="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
           >
             <span class="sr-only">YouTube</span>
             <svg fill="currentColor" viewBox="0 0 24 24" class="size-8" aria-hidden="true">

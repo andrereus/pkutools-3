@@ -84,7 +84,6 @@
     "demo-today": "Today",
     "see-in-action": "Watch video",
     "about-description": "From the developer of one of the first PKU apps for Android \"Phe Rechner\", as well as \"PKU Manager\". Likewise introduction of the barcode scanner and AI calculator specifically for PKU. Development of PKU apps since 2013.",
-    "innovation": "Innovation since 2013",
     "social": "Stay up to date",
     "trust": "Open source, independent & private",
     "trust-open": "Open source",
@@ -93,7 +92,8 @@
     "trust-independent": "Independent",
     "trust-independent-desc": "By and for people with PKU.",
     "trust-private": "Privacy",
-    "trust-private-desc": "Your health data stays yours."
+    "trust-private-desc": "Your health data stays yours.",
+    "trust-private-link": "Privacy policy"
   },
   "food-search": {
     "title": "Food Search",

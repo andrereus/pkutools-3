@@ -70,7 +70,7 @@ const tiers = computed(() => [
           : tierIdx === tiers.length - 1
             ? 'rounded-t-xl sm:rounded-b-none lg:rounded-tl-none lg:rounded-bl-none lg:rounded-tr-xl lg:rounded-br-xl'
             : '',
-        'rounded-xl p-8 ring-1 ring-gray-200 dark:ring-gray-800'
+        'rounded-xl p-8 ring-1 ring-gray-200 dark:ring-gray-700'
       ]"
     >
       <h3
@@ -85,14 +85,14 @@ const tiers = computed(() => [
         }}</span>
         <span
           v-if="tier.id === 'tier-unlimited' || tier.id === 'tier-premium-ai'"
-          class="text-gray-500 text-base"
+          class="text-gray-500 dark:text-gray-400 text-base"
           >{{ $t('settings.per-month') }}</span
         >
       </p>
-      <p :class="[tier.featured ? '' : '', 'text-gray-500 mt-4 text-base/7']">
+      <p :class="[tier.featured ? '' : '', 'text-gray-500 dark:text-gray-400 mt-4 text-base/7']">
         {{ tier.description }}
       </p>
-      <ul role="list" :class="[tier.featured ? '' : '', 'text-gray-500 mt-4 space-y-1 text-sm/6']">
+      <ul role="list" :class="[tier.featured ? '' : '', 'text-gray-500 dark:text-gray-400 mt-4 space-y-1 text-sm/6']">
         <li v-for="feature in tier.features" :key="feature" class="flex gap-x-2">
           <LucideCheck
             :class="[tier.featured ? '' : '', 'text-sky-500 h-6 w-5 flex-none']"

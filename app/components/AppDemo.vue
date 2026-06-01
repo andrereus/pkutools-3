@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="relative mx-auto w-full max-w-64 md:max-w-2xl">
+  <div class="relative mx-auto w-full max-w-72 md:max-w-184">
     <!-- soft gradient backdrop for depth -->
     <div
       class="absolute -inset-2 -z-10 rounded-[2.5rem] bg-linear-to-br from-sky-500/8 to-emerald-500/8 blur-lg dark:from-sky-400/8 dark:to-emerald-400/8"
@@ -165,7 +165,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Scene area (fixed height to avoid layout shift) -->
-        <div class="relative h-80 px-5 py-4">
+        <div class="relative h-94 px-5 py-4 md:h-80">
           <Transition name="demo-scene" mode="out-in">
             <div :key="scene" class="h-full">
               <!-- SCENE 0: Search & add -->
@@ -274,7 +274,7 @@ onBeforeUnmount(() => {
               </div>
 
               <!-- SCENE 2: Insights -->
-              <div v-else class="flex h-full flex-col justify-center gap-3">
+              <div v-else class="flex h-full flex-col gap-3">
                 <div
                   class="rounded-xl bg-gray-50 px-3 py-3 ring-1 ring-gray-900/5 dark:bg-gray-800/60 dark:ring-white/10"
                 >
