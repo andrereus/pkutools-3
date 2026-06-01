@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="relative mx-auto w-full max-w-68 md:max-w-180">
+  <div class="relative mx-auto w-full max-w-66 md:max-w-180">
     <!-- soft gradient backdrop for depth -->
     <div
       class="absolute -inset-2 -z-10 rounded-[2.5rem] bg-linear-to-br from-sky-500/8 to-emerald-500/8 blur-lg dark:from-sky-400/8 dark:to-emerald-400/8"
