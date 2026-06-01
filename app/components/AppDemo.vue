@@ -24,7 +24,7 @@ const { t } = useI18n()
 // Numbers are illustrative sample data.
 const scene = ref(0)
 const sceneCount = 3
-const durations = [4000, 4000, 4000]
+const durations = [3600, 3600, 3600]
 let sceneTimer = null
 let typeTimer = null
 let typeStartTimer = null
