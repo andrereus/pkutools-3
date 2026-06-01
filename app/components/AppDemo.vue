@@ -24,7 +24,7 @@ const { t } = useI18n()
 // Numbers are illustrative sample data.
 const scene = ref(0)
 const sceneCount = 3
-const durations = [3600, 3200, 3400]
+const durations = [4500, 4500, 4500]
 let sceneTimer = null
 let typeTimer = null
 let typeStartTimer = null
@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="relative mx-auto w-full max-w-66 md:max-w-180">
+  <div class="relative mx-auto w-full max-w-66 md:max-w-180" aria-hidden="true">
     <!-- soft gradient backdrop for depth -->
     <div
       class="absolute -inset-2 -z-10 rounded-[2.5rem] bg-linear-to-br from-sky-500/8 to-emerald-500/8 blur-lg dark:from-sky-400/8 dark:to-emerald-400/8"
