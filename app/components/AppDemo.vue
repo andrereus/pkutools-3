@@ -392,20 +392,23 @@ onBeforeUnmount(() => {
   animation: demo-tap 1s ease-out 1.9s 2;
 }
 
-/* Added item drops into the diary */
+/* Added item drops into the diary during the last part of the bar fill, landing
+   just as the total completes (~1.05s) — the moment the new food is added */
 .demo-item {
-  animation: demo-drop 0.5s ease-out 0.2s both;
+  animation: demo-drop 0.45s ease-out 0.6s both;
 }
 
-/* Daily total bar fills */
+/* Daily total bar starts already mostly filled (the first food is logged) and fills
+   the short remainder as the new food is added — synced with the item drop and "+13 mg"
+   chip. easeOutExpo fill — launches fast with an even longer, softer tail. */
 .demo-bar {
   transform-origin: left;
-  animation: demo-fill 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+  animation: demo-fill 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
 }
 
-/* Floating "+13 mg" chip */
+/* Floating "+13 mg" chip rises together with the food as it's added */
 .demo-chip {
-  animation: demo-float 1.4s ease-out 0.6s both;
+  animation: demo-float 1.3s ease-out 0.6s both;
 }
 
 /* Diet-report bars grow (per-bar delay set inline) */
@@ -478,7 +481,7 @@ onBeforeUnmount(() => {
 
 @keyframes demo-fill {
   from {
-    transform: scaleX(0);
+    transform: scaleX(0.7);
   }
   to {
     transform: scaleX(1);
