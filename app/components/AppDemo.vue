@@ -387,15 +387,16 @@ onBeforeUnmount(() => {
   animation: demo-rise 0.5s ease-out 1.1s both;
 }
 
-/* Tap feedback on the add button */
+/* Tap feedback on the add button — a firm press, a bounce overshoot, and a
+   wide ripple so the "add" action reads clearly as the scene's key moment */
 .demo-add {
-  animation: demo-tap 1s ease-out 1.9s 2;
+  animation: demo-tap 1s cubic-bezier(0.22, 1, 0.36, 1) 1.9s 2;
 }
 
 /* Added item drops into the diary during the last part of the bar fill, landing
-   just as the total completes (~1.05s) — the moment the new food is added */
+   just as the total completes (~1.2s) — the moment the new food is added */
 .demo-item {
-  animation: demo-drop 0.45s ease-out 0.6s both;
+  animation: demo-drop 0.6s ease-out 0.6s both;
 }
 
 /* Daily total bar starts already mostly filled (the first food is logged) and fills
@@ -403,12 +404,12 @@ onBeforeUnmount(() => {
    chip. easeOutExpo fill — launches fast with an even longer, softer tail. */
 .demo-bar {
   transform-origin: left;
-  animation: demo-fill 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
+  animation: demo-fill 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both;
 }
 
 /* Floating "+13 mg" chip rises together with the food as it's added */
 .demo-chip {
-  animation: demo-float 1.3s ease-out 0.6s both;
+  animation: demo-float 1.7s ease-out 0.6s both;
 }
 
 /* Diet-report bars grow (per-bar delay set inline) */
@@ -454,17 +455,20 @@ onBeforeUnmount(() => {
 }
 
 @keyframes demo-tap {
-  0%,
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.6);
+  }
+  22% {
+    transform: scale(0.82);
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.6);
+  }
+  55% {
+    transform: scale(1.15);
+  }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.45);
-  }
-  30% {
-    transform: scale(0.9);
-  }
-  60% {
-    transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(14, 165, 233, 0);
+    box-shadow: 0 0 0 16px rgba(14, 165, 233, 0);
   }
 }
 
