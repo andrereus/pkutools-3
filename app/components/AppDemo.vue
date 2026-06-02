@@ -4,6 +4,7 @@ import {
   LucideSearch,
   LucideScanBarcode,
   LucideCalculator,
+  LucideCamera,
   LucidePlus,
   LucideChevronLeft,
   LucideChevronRight,
@@ -16,7 +17,7 @@ import {
 const { t } = useI18n()
 
 // Scripted hero demo — loops through three scenes like a short product video:
-//   0) search + type a food + add it
+//   0) AI calculator: type a food in plain language, estimate, add it
 //   1) the food lands in the diary and the daily Phe total updates
 //   2) the charts (diet report + blood values) fill in
 // Each scene's internal motion is CSS, replayed every loop via the :key remount.
@@ -24,12 +25,15 @@ const { t } = useI18n()
 // Numbers are illustrative sample data.
 const scene = ref(0)
 const sceneCount = 3
-const durations = [3200, 3600, 3600]
+const durations = [6000, 3600, 3600]
 let sceneTimer = null
 let typeTimer = null
 let typeStartTimer = null
 let reduced = false
 
+// What the user types into the AI calculator (plain-language food description);
+// the AI resolves it to `query` (the named food) which then flows into the diary.
+const aiPrompt = computed(() => t('home.demo-ai-prompt'))
 const query = computed(() => t('home.diet-mgmt-food-2'))
 const typed = ref('')
 
@@ -55,13 +59,13 @@ const bloodArea = `${bloodLine} 100,32 0,32`
 const runTyping = () => {
   clearInterval(typeTimer)
   typed.value = ''
-  const full = query.value
+  const full = aiPrompt.value
   let i = 0
   typeTimer = setInterval(() => {
     typed.value = full.slice(0, i + 1)
     i += 1
     if (i >= full.length) clearInterval(typeTimer)
-  }, 130)
+  }, 110)
 }
 
 const advance = () => {
@@ -81,7 +85,7 @@ onMounted(() => {
   reduced = !!window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   if (reduced) {
     scene.value = 1
-    typed.value = query.value
+    typed.value = aiPrompt.value
     return
   }
   runTyping()
@@ -168,16 +172,16 @@ onBeforeUnmount(() => {
         <div class="relative h-94 px-5 py-4 md:h-80">
           <Transition name="demo-scene" mode="out-in">
             <div :key="scene" class="h-full">
-              <!-- SCENE 0: Search & add -->
+              <!-- SCENE 0: AI calculator — describe a food, estimate, add -->
               <div v-if="scene === 0" class="flex h-full flex-col">
-                <!-- Tools tabs above the search bar, like the app's food-search page -->
+                <!-- Tools tabs, like the app's AI-calculator page (AI tab active) -->
                 <nav class="mb-4 flex justify-center gap-2" aria-label="Tabs">
-                  <span class="rounded-md p-2 text-gray-500 dark:text-gray-300">
-                    <LucideSparkles class="h-4 w-4" aria-hidden="true" />
-                  </span>
                   <span
                     class="rounded-md bg-black/5 p-2 text-gray-700 dark:bg-white/15 dark:text-gray-300"
                   >
+                    <LucideSparkles class="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <span class="rounded-md p-2 text-gray-500 dark:text-gray-300">
                     <LucideSearch class="h-4 w-4" aria-hidden="true" />
                   </span>
                   <span class="rounded-md p-2 text-gray-500 dark:text-gray-300">
@@ -187,13 +191,32 @@ onBeforeUnmount(() => {
                     <LucideCalculator class="h-4 w-4" aria-hidden="true" />
                   </span>
                 </nav>
-                <div
-                  class="flex items-center gap-2 rounded-xl bg-gray-100 px-3 py-2.5 dark:bg-gray-800"
-                >
-                  <LucideSearch class="h-4 w-4 shrink-0 text-gray-400" aria-hidden="true" />
+
+                <!-- Plain-language input (the AI calculator's textarea) -->
+                <div class="min-h-14 rounded-xl bg-gray-100 px-3 py-2.5 dark:bg-gray-800">
                   <span class="text-sm text-gray-900 dark:text-white">{{ typed }}</span>
-                  <span class="demo-caret h-4 w-px bg-sky-500" aria-hidden="true" />
+                  <span
+                    class="demo-caret ml-px inline-block h-4 w-px translate-y-0.5 bg-sky-500"
+                    aria-hidden="true"
+                  />
                 </div>
+
+                <!-- Photo + Calculate actions -->
+                <div class="mt-3 flex items-center gap-2">
+                  <span
+                    class="inline-flex items-center gap-1 rounded-full bg-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                  >
+                    <LucideCamera class="h-4 w-4" aria-hidden="true" />
+                    {{ $t('ai-calculator.analyze-photo') }}
+                  </span>
+                  <span
+                    class="demo-estimate inline-flex items-center justify-center rounded-full bg-sky-500 px-3 py-1.5 text-xs font-semibold text-white"
+                  >
+                    {{ $t('home.demo-calculate') }}
+                  </span>
+                </div>
+
+                <!-- AI result row (rises in after the estimate) -->
                 <div
                   class="demo-result mt-4 flex items-center gap-3 rounded-xl bg-white px-3 py-3 ring-1 ring-gray-900/5 dark:bg-gray-800/60 dark:ring-white/10"
                 >
@@ -225,10 +248,11 @@ onBeforeUnmount(() => {
                   </span>
                   <LucideChevronRight class="h-5 w-5 text-gray-400" aria-hidden="true" />
                 </div>
-                <div class="relative mt-5 md:mt-3">
-                  <span
-                    class="demo-chip absolute -top-4 right-0 text-xs font-bold text-emerald-500"
-                  >
+                <!-- Daily total in the diary's gray summary box -->
+                <div
+                  class="relative mt-5 rounded-md bg-gray-50 px-3 py-3 shadow-inner md:mt-3 dark:bg-gray-800/60"
+                >
+                  <span class="demo-chip absolute -top-2 right-3 text-xs font-bold text-emerald-500">
                     +13 mg
                   </span>
                   <div class="flex items-baseline justify-between">
@@ -237,11 +261,11 @@ onBeforeUnmount(() => {
                     >
                       Phe
                     </span>
-                    <span class="text-sm font-bold tabular-nums text-gray-900 dark:text-white">
+                    <span class="text-sm font-medium tabular-nums text-gray-900 dark:text-white">
                       266 / 400 mg
                     </span>
                   </div>
-                  <div class="mt-1.5 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                  <div class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                     <div class="demo-bar h-full rounded-full bg-sky-500" style="width: 66%" />
                   </div>
                 </div>
@@ -382,15 +406,21 @@ onBeforeUnmount(() => {
   animation: demo-blink 1s steps(1) infinite;
 }
 
-/* Search result row appears after the query is typed */
+/* AI result card snaps in right after the Calculate tap, then holds long enough
+   to read the values before the scene advances */
 .demo-result {
-  animation: demo-rise 0.5s ease-out 1.1s both;
+  animation: demo-rise 0.5s ease-out 2.6s both;
+}
+
+/* Calculate button: a single firm press */
+.demo-estimate {
+  animation: demo-tap 0.9s cubic-bezier(0.22, 1, 0.36, 1) 2.2s 1;
 }
 
 /* Tap feedback on the add button — a firm press, a bounce overshoot, and a
    wide ripple so the "add" action reads clearly as the scene's key moment */
 .demo-add {
-  animation: demo-tap 1s cubic-bezier(0.22, 1, 0.36, 1) 1.9s 2;
+  animation: demo-tap 1s cubic-bezier(0.22, 1, 0.36, 1) 4s 1;
 }
 
 /* Added item drops into the diary during the last part of the bar fill, landing
@@ -541,6 +571,7 @@ onBeforeUnmount(() => {
   .demo-scene-leave-active,
   .demo-caret,
   .demo-result,
+  .demo-estimate,
   .demo-add,
   .demo-item,
   .demo-bar,
