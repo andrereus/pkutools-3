@@ -250,7 +250,7 @@ onBeforeUnmount(() => {
                 </div>
                 <!-- Daily total in the diary's gray summary box -->
                 <div
-                  class="relative mt-5 rounded-md bg-gray-50 px-3 py-3 shadow-inner md:mt-3 dark:bg-gray-800/60"
+                  class="relative mt-3 rounded-md bg-gray-50 px-3 py-3 shadow-inner dark:bg-gray-800/60"
                 >
                   <span class="demo-chip absolute -top-2 right-3 text-xs font-bold text-emerald-500">
                     +13 mg
