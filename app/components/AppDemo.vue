@@ -25,7 +25,7 @@ const { t } = useI18n()
 // Numbers are illustrative sample data.
 const scene = ref(0)
 const sceneCount = 3
-const durations = [6000, 3600, 3600]
+const durations = [5400, 4000, 4000]
 let sceneTimer = null
 let typeTimer = null
 let typeStartTimer = null
@@ -252,7 +252,9 @@ onBeforeUnmount(() => {
                 <div
                   class="relative mt-3 rounded-md bg-gray-50 px-3 py-3 shadow-inner dark:bg-gray-800/60"
                 >
-                  <span class="demo-chip absolute -top-2 right-3 text-xs font-bold text-emerald-500">
+                  <span
+                    class="demo-chip absolute -top-2 right-3 text-xs font-bold text-emerald-500"
+                  >
                     +13 mg
                   </span>
                   <div class="flex items-baseline justify-between">
@@ -265,7 +267,9 @@ onBeforeUnmount(() => {
                       266 / 400 mg
                     </span>
                   </div>
-                  <div class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                  <div
+                    class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700"
+                  >
                     <div class="demo-bar h-full rounded-full bg-sky-500" style="width: 66%" />
                   </div>
                 </div>
@@ -406,10 +410,10 @@ onBeforeUnmount(() => {
   animation: demo-blink 1s steps(1) infinite;
 }
 
-/* AI result card snaps in right after the Calculate tap, then holds long enough
+/* AI result card rises in a beat after the Calculate tap, then holds long enough
    to read the values before the scene advances */
 .demo-result {
-  animation: demo-rise 0.5s ease-out 2.6s both;
+  animation: demo-rise 0.5s ease-out 3s both;
 }
 
 /* Calculate button: a single firm press */
@@ -420,7 +424,7 @@ onBeforeUnmount(() => {
 /* Tap feedback on the add button — a firm press, a bounce overshoot, and a
    wide ripple so the "add" action reads clearly as the scene's key moment */
 .demo-add {
-  animation: demo-tap 1s cubic-bezier(0.22, 1, 0.36, 1) 4s 1;
+  animation: demo-tap 1s cubic-bezier(0.22, 1, 0.36, 1) 4.4s 1;
 }
 
 /* Added item drops into the diary during the last part of the bar fill, landing
