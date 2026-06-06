@@ -268,19 +268,19 @@ defineOgImage('NuxtSeo', {
           </p>
         </div>
         <div
-          class="mx-auto mt-10 max-w-2xl overflow-hidden rounded-2xl shadow-sm ring-1 ring-gray-900/8 dark:ring-white/10"
+          class="mt-10 -mx-6 overflow-hidden shadow-sm ring-1 ring-gray-900/8 dark:ring-white/10 sm:mx-auto sm:max-w-2xl sm:rounded-2xl"
         >
           <div
             class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 bg-gray-50 px-4 py-3 dark:bg-gray-800/60 sm:px-6"
           >
             <span
-              class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+              class="min-w-0 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
             >
               {{ $t('home.compare-before') }}
             </span>
             <span class="w-5" aria-hidden="true" />
             <span
-              class="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400"
+              class="min-w-0 text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400"
             >
               {{ $t('home.compare-after') }}
             </span>
@@ -292,17 +292,19 @@ defineOgImage('NuxtSeo', {
               :to="$localePath(row.route)"
               class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-white/5 sm:px-6"
             >
-              <div class="flex items-center gap-3">
+              <div class="flex min-w-0 items-center gap-2 sm:gap-3">
                 <span
-                  class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800"
+                  class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 sm:h-9 sm:w-9"
                 >
                   <component
                     :is="row.beforeIcon"
-                    class="h-5 w-5 text-gray-400 dark:text-gray-500"
+                    class="h-4 w-4 text-gray-400 dark:text-gray-500 sm:h-5 sm:w-5"
                     aria-hidden="true"
                   />
                 </span>
-                <span class="text-sm font-medium leading-tight text-gray-500 dark:text-gray-400">
+                <span
+                  class="min-w-0 text-sm font-medium leading-tight text-gray-500 dark:text-gray-400"
+                >
                   {{ $t(row.before) }}
                 </span>
               </div>
@@ -313,13 +315,19 @@ defineOgImage('NuxtSeo', {
                 />
                 <span class="sr-only">{{ $t('home.compare-replaced') }}</span>
               </span>
-              <div class="flex items-center gap-3">
+              <div class="flex min-w-0 items-center gap-2 sm:gap-3">
                 <span
-                  class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-500"
+                  class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sky-500 sm:h-9 sm:w-9"
                 >
-                  <component :is="row.afterIcon" class="h-5 w-5 text-white" aria-hidden="true" />
+                  <component
+                    :is="row.afterIcon"
+                    class="h-4 w-4 text-white sm:h-5 sm:w-5"
+                    aria-hidden="true"
+                  />
                 </span>
-                <span class="text-sm font-semibold leading-tight text-gray-900 dark:text-white">
+                <span
+                  class="min-w-0 text-sm font-semibold leading-tight text-gray-900 dark:text-white"
+                >
                   {{ $t(row.after) }}
                 </span>
               </div>
