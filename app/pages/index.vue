@@ -3,13 +3,18 @@ import { useStore } from '../../stores/index'
 import {
   LucideSearch,
   LucideCalculator,
+  LucideBrain,
   LucideScanBarcode,
   LucideApple,
   LucideBook,
+  LucideBookOpen,
   LucideCalendar,
   LucideChartLine,
   LucideSparkles,
   LucideCamera,
+  LucideScale,
+  LucidePencilLine,
+  LucidePlus,
   LucideArrowRight,
   LucideGithub,
   LucideHeart,
@@ -28,6 +33,39 @@ const suggestionsDemo = [
   { nameKey: 'home.diet-mgmt-food-1', weight: 50 },
   { nameKey: 'home.diet-mgmt-food-2', weight: 100 },
   { nameKey: 'home.diet-mgmt-food-3', weight: 200 }
+]
+
+// Before/after: each manual tool of the PKU routine and the in-app action that
+// replaces it. Left side renders muted, right side in the app's accent colour.
+const compareRows = [
+  {
+    before: 'home.compare-scale',
+    beforeIcon: LucideScale,
+    after: 'home.compare-scale-app',
+    afterIcon: LucideCamera,
+    route: 'ai-calculator'
+  },
+  {
+    before: 'home.compare-table',
+    beforeIcon: LucideBookOpen,
+    after: 'home.compare-table-app',
+    afterIcon: LucideSearch,
+    route: 'food-search'
+  },
+  {
+    before: 'home.compare-calc',
+    beforeIcon: LucideBrain,
+    after: 'home.compare-calc-app',
+    afterIcon: LucideCalculator,
+    route: 'phe-calculator'
+  },
+  {
+    before: 'home.compare-paper',
+    beforeIcon: LucidePencilLine,
+    after: 'home.compare-paper-app',
+    afterIcon: LucidePlus,
+    route: 'diary'
+  }
 ]
 
 const overviewDiaryTotal = 320
@@ -215,6 +253,78 @@ defineOgImage('NuxtSeo', {
               </dd>
             </NuxtLink>
           </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 py-14 sm:py-20">
+      <div class="mx-auto max-w-5xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+            {{ $t('home.compare') }}
+          </h2>
+          <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
+            {{ $t('home.compare-desc') }}
+          </p>
+        </div>
+        <div
+          class="mx-auto mt-10 max-w-2xl overflow-hidden rounded-2xl shadow-sm ring-1 ring-gray-900/8 dark:ring-white/10"
+        >
+          <div
+            class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 bg-gray-50 px-4 py-3 dark:bg-gray-800/60 sm:px-6"
+          >
+            <span
+              class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+            >
+              {{ $t('home.compare-before') }}
+            </span>
+            <span class="w-5" aria-hidden="true" />
+            <span
+              class="text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400"
+            >
+              {{ $t('home.compare-after') }}
+            </span>
+          </div>
+          <div class="divide-y divide-gray-100 dark:divide-white/10">
+            <NuxtLink
+              v-for="row in compareRows"
+              :key="row.before"
+              :to="$localePath(row.route)"
+              class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-white/5 sm:px-6"
+            >
+              <div class="flex items-center gap-3">
+                <span
+                  class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800"
+                >
+                  <component
+                    :is="row.beforeIcon"
+                    class="h-5 w-5 text-gray-400 dark:text-gray-500"
+                    aria-hidden="true"
+                  />
+                </span>
+                <span class="text-sm font-medium leading-tight text-gray-500 dark:text-gray-400">
+                  {{ $t(row.before) }}
+                </span>
+              </div>
+              <span class="flex items-center justify-center">
+                <LucideArrowRight
+                  class="h-5 w-5 shrink-0 text-gray-300 dark:text-gray-600"
+                  aria-hidden="true"
+                />
+                <span class="sr-only">{{ $t('home.compare-replaced') }}</span>
+              </span>
+              <div class="flex items-center gap-3">
+                <span
+                  class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-500"
+                >
+                  <component :is="row.afterIcon" class="h-5 w-5 text-white" aria-hidden="true" />
+                </span>
+                <span class="text-sm font-semibold leading-tight text-gray-900 dark:text-white">
+                  {{ $t(row.after) }}
+                </span>
+              </div>
+            </NuxtLink>
+          </div>
         </div>
       </div>
     </div>
