@@ -340,7 +340,7 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <PageHeader :title="$t('getting-started.title')" class="mb-4" />
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('getting-started.title') }}</h3>
         <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ $t('getting-started.subtitle') }}
         </p>
@@ -351,7 +351,7 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <PageHeader :title="$t('health-consent.title')" class="mb-4" />
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('health-consent.title') }}</h3>
         <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ $t('health-consent.subtitle') }}
         </p>
@@ -399,7 +399,7 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <PageHeader :title="$t('health-consent.email-consent-title')" class="mb-4" />
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('health-consent.email-consent-title') }}</h3>
         <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ $t('health-consent.email-consent-subtitle') }}
         </p>
@@ -444,7 +444,7 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <PageHeader :title="$t('settings.app-settings')" class="mb-4" />
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('settings.app-settings') }}</h3>
         <NumberInput
           v-model.number="settings.maxPhe"
           id-name="max-phe"
@@ -489,10 +489,10 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <PageHeader title="PKU Tools Premium" class="mb-4" />
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">PKU Tools Premium</h3>
         <TiersCard align="left" class="mb-6" />
 
-        <PageHeader :title="$t('settings.license-heading')" class="mb-4" />
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('settings.license-heading') }}</h3>
         <TextInput
           v-model="settings.license"
           id-name="license"
@@ -506,7 +506,7 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <PageHeader :title="$t('settings.change-username')" class="mb-4" />
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('settings.change-username') }}</h3>
         <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ $t('settings.change-username-info') }}
         </p>
@@ -523,7 +523,7 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <PageHeader :title="$t('settings.change-password')" class="mb-4" />
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('settings.change-password') }}</h3>
         <p class="text-gray-600 dark:text-gray-400">
           {{ $t('settings.change-password-info') }}
         </p>
@@ -533,7 +533,7 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <PageHeader :title="$t('settings.reset-heading')" class="mb-4" />
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('settings.reset-heading') }}</h3>
         <div class="space-y-3">
           <SecondaryButton :text="$t('settings.reset-diary')" @click="resetDiary" />
           <SecondaryButton :text="$t('settings.reset-blood-values')" @click="resetLabValues" />
@@ -545,7 +545,7 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-red-50 dark:bg-red-900/20 p-6 shadow-sm ring-1 ring-red-200 dark:ring-red-800 mb-8"
       >
-        <PageHeader :title="$t('settings.delete-account')" class="mb-4" />
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('settings.delete-account') }}</h3>
         <p class="mb-4 text-red-700 dark:text-red-300">
           {{ $t('settings.delete-account-info') }}
         </p>
