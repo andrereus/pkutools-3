@@ -341,7 +341,7 @@ defineOgImage('NuxtSeo', {
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader :title="$t('getting-started.title')" class="mb-4" />
-        <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+        <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ $t('getting-started.subtitle') }}
         </p>
         <SecondaryButton :text="$t('health-consent.reopen-onboarding')" @click="reopenOnboarding" />
@@ -352,7 +352,7 @@ defineOgImage('NuxtSeo', {
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader :title="$t('health-consent.title')" class="mb-4" />
-        <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+        <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ $t('health-consent.subtitle') }}
         </p>
         <div
@@ -400,7 +400,7 @@ defineOgImage('NuxtSeo', {
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader :title="$t('health-consent.email-consent-title')" class="mb-4" />
-        <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+        <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ $t('health-consent.email-consent-subtitle') }}
         </p>
         <div
@@ -507,7 +507,7 @@ defineOgImage('NuxtSeo', {
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader :title="$t('settings.change-username')" class="mb-4" />
-        <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+        <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ $t('settings.change-username-info') }}
         </p>
         <TextInput
@@ -524,7 +524,7 @@ defineOgImage('NuxtSeo', {
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader :title="$t('settings.change-password')" class="mb-4" />
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+        <p class="text-gray-600 dark:text-gray-400">
           {{ $t('settings.change-password-info') }}
         </p>
       </div>
@@ -546,7 +546,7 @@ defineOgImage('NuxtSeo', {
         class="rounded-xl bg-red-50 dark:bg-red-900/20 p-6 shadow-sm ring-1 ring-red-200 dark:ring-red-800 mb-8"
       >
         <PageHeader :title="$t('settings.delete-account')" class="mb-4" />
-        <p class="mb-4 text-sm text-red-700 dark:text-red-300">
+        <p class="mb-4 text-red-700 dark:text-red-300">
           {{ $t('settings.delete-account-info') }}
         </p>
         <SecondaryButton :text="$t('settings.delete-account')" @click="handleDeleteAccount" />
