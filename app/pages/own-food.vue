@@ -14,7 +14,7 @@ import { h, ref, computed, watch, onMounted } from 'vue'
 import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
-import { LucideStickyNote, LucideUsers, LucideThumbsUp, LucideThumbsDown } from 'lucide-vue-next'
+import { LucideStickyNote, LucideUsers, LucideThumbsUp, LucideThumbsDown } from '@lucide/vue'
 
 const store = useStore()
 const { t, locale } = useI18n()

@@ -21,7 +21,7 @@ import {
   LucideBot,
   LucidePlus,
   LucideSparkles
-} from 'lucide-vue-next'
+} from '@lucide/vue'
 
 const store = useStore()
 const { t, locale, locales, setLocale } = useI18n()

@@ -94,7 +94,6 @@ export default defineNuxtConfig({
         'firebase/auth',
         'firebase/database',
         'vue3-apexcharts',
-        'lucide-vue-next',
         'fuse.js',
         'date-fns',
         'firebase/ai',

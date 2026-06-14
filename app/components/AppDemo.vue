@@ -12,7 +12,7 @@ import {
   LucideWifi,
   LucideCircleUser,
   LucideCircleCheck
-} from 'lucide-vue-next'
+} from '@lucide/vue'
 
 const { t } = useI18n()
 

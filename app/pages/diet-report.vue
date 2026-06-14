@@ -18,7 +18,7 @@ import { h, ref, computed, watch } from 'vue'
 import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
-import { LucideStickyNote, LucideEyeOff } from 'lucide-vue-next'
+import { LucideStickyNote, LucideEyeOff } from '@lucide/vue'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
@@ -1092,10 +1092,7 @@ defineOgImage('NuxtSeo', {
             />
           </div>
           <div class="ml-3 text-sm leading-6">
-            <label
-              for="day-incomplete"
-              class="font-medium text-gray-900 dark:text-gray-300"
-            >
+            <label for="day-incomplete" class="font-medium text-gray-900 dark:text-gray-300">
               {{ $t('diet-report.day-incomplete') }}
             </label>
           </div>

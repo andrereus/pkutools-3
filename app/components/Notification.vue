@@ -1,5 +1,5 @@
 <script setup>
-import { LucideX } from 'lucide-vue-next'
+import { LucideX } from '@lucide/vue'
 
 const props = defineProps({
   show: {

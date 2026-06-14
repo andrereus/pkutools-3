@@ -16,11 +16,11 @@ import {
   LucidePencilLine,
   LucidePlus,
   LucideArrowRight,
-  LucideGithub,
+  LucideCode,
   LucideHeart,
   LucideShieldCheck,
   LucidePlay
-} from 'lucide-vue-next'
+} from '@lucide/vue'
 
 const pheTools = [
   { name: 'home.phe-anywhere-ai', icon: LucideSparkles, route: 'ai-calculator' },
@@ -383,7 +383,9 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <div class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 pt-10 sm:pt-14 pb-10 sm:pb-14">
+    <div
+      class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 pt-10 sm:pt-14 pb-10 sm:pb-14"
+    >
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
         <div class="grid items-center gap-10 lg:grid-cols-2">
           <div class="text-center lg:text-left">
@@ -570,7 +572,7 @@ defineOgImage('NuxtSeo', {
         <div class="mx-auto mt-12 grid max-w-xl grid-cols-1 gap-10 sm:max-w-none sm:grid-cols-3">
           <div class="text-center">
             <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500">
-              <LucideGithub class="h-6 w-6 text-white" aria-hidden="true" />
+              <LucideCode class="h-6 w-6 text-white" aria-hidden="true" />
             </div>
             <h3 class="mt-5 text-base font-semibold leading-7 text-gray-900 dark:text-white">
               {{ $t('home.trust-open') }}

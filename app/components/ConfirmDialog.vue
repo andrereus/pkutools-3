@@ -70,7 +70,7 @@
 
 <script setup>
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import { LucideAlertTriangle, LucideInfo } from 'lucide-vue-next'
+import { LucideAlertTriangle, LucideInfo } from '@lucide/vue'
 
 const props = defineProps({
   show: {
