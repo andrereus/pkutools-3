@@ -1018,7 +1018,7 @@ defineOgImage('NuxtSeo', {
         </div>
 
         <div v-if="editedItem.log" class="flex justify-between items-center -mb-3">
-          <h4 class="text-sm font-medium">
+          <h4 class="text-sm font-medium text-gray-900 dark:text-white">
             {{ $t('diary.title') }}
           </h4>
           <SecondaryButton :text="$t('common.add')" class="mr-0! mb-0!" @click="openAddLogItem" />

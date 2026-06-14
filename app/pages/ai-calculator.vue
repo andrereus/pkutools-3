@@ -563,7 +563,7 @@ defineOgImage('NuxtSeo', {
       class="mt-6 rounded-xl bg-white dark:bg-gray-900 p-4 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
     >
       <div class="flex items-start justify-between gap-3 mb-4">
-        <h2 class="text-xl font-semibold">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
           <span v-if="result.emoji">{{ result.emoji }}&nbsp;</span>{{ result.name }}
         </h2>
         <button

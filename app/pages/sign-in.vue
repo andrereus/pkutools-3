@@ -79,7 +79,7 @@ defineOgImage('NuxtSeo', {
 <template>
   <div class="max-w-2xl">
     <div v-if="userIsAuthenticated">
-      <h2 class="text-lg text-gray-900 dark:text-white mb-6">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
         <LucideBadgeCheck class="h-6 w-6 text-sky-500 inline-block ml-2 mr-1" aria-hidden="true" />
         {{ $t('sign-in.signedin') }}
       </h2>
@@ -122,7 +122,7 @@ defineOgImage('NuxtSeo', {
         </div>
       </div>
 
-      <h2 class="text-lg text-gray-900 dark:text-white mb-6">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
         {{ $t('sign-in.signin-with-email') }}
       </h2>
 

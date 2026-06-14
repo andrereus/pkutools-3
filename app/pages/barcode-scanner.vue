@@ -262,7 +262,9 @@ defineOgImage('NuxtSeo', {
         class="my-6"
       />
 
-      <h2 class="text-2xl mt-3 mb-1">{{ result.product.product_name }}</h2>
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mt-3 mb-1">
+        {{ result.product.product_name }}
+      </h2>
 
       <!-- Do not remove -->
       <p v-if="code !== ''" class="text-sm mb-6">Code: {{ code }}</p>
