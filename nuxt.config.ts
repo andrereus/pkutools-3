@@ -64,7 +64,7 @@ export default defineNuxtConfig({
         class: 'h-full notranslate'
       },
       bodyAttrs: {
-        class: 'h-full bg-gray-50 dark:bg-gray-950'
+        class: 'h-full bg-gray-50 dark:bg-gray-950 antialiased'
       }
     },
     pageTransition: { name: 'page', mode: 'out-in' }
@@ -78,8 +78,14 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     'nuxt-lucide-icons',
     'nuxt-headlessui',
-    '@nuxtjs/seo'
+    '@nuxtjs/seo',
+    '@nuxt/fonts'
   ],
+  fonts: {
+    defaults: {
+      weights: [400, 500, 600, 700]
+    }
+  },
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
