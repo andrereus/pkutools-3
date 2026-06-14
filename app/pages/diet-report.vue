@@ -277,7 +277,7 @@ const chartOptions = computed(() => {
         {
           y: settings.value.maxPhe || 0,
           borderWidth: 2,
-          borderColor: '#3498db',
+          borderColor: '#0ea5e9',
           strokeDashArray: 6
         }
       ]
@@ -285,7 +285,7 @@ const chartOptions = computed(() => {
     theme: {
       mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
     },
-    colors: ['#3498db']
+    colors: ['#0ea5e9']
   }
 })
 
@@ -355,7 +355,7 @@ const chartOptionsKcal = computed(() => {
         {
           y: settings.value.maxKcal || 0,
           borderWidth: 2,
-          borderColor: '#e67e22',
+          borderColor: '#d97706',
           strokeDashArray: 6
         }
       ]
@@ -363,7 +363,7 @@ const chartOptionsKcal = computed(() => {
     theme: {
       mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
     },
-    colors: ['#e67e22']
+    colors: ['#d97706']
   }
 })
 
@@ -833,7 +833,7 @@ useSeoMeta({
 defineOgImage('NuxtSeo', {
   title: () => t('diet-report.title') + ' - PKU Tools',
   description: () => t('diet-report.description'),
-  theme: '#3498db'
+  theme: '#0ea5e9'
 })
 </script>
 
@@ -865,7 +865,7 @@ defineOgImage('NuxtSeo', {
             v-for="(period, idx) in ['one_week', 'two_weeks', 'one_month', 'three_months', 'all']"
             :key="idx"
             :class="[
-              'px-3 py-1 text-sm rounded-md',
+              'px-3 py-1 text-sm rounded-lg',
               selection === period
                 ? 'bg-black/5 dark:bg-white/15'
                 : 'text-gray-700 dark:text-gray-300'
@@ -921,7 +921,7 @@ defineOgImage('NuxtSeo', {
           <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <div
-                class="overflow-hidden shadow-sm ring-1 ring-gray-300 dark:ring-gray-800 ring-opacity-5 sm:rounded-lg"
+                class="overflow-hidden shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 sm:rounded-xl"
               >
                 <table class="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
                   <thead class="bg-gray-50 dark:bg-gray-950">
@@ -1148,7 +1148,7 @@ defineOgImage('NuxtSeo', {
               name="note"
               rows="3"
               :placeholder="$t('diary.note-placeholder')"
-              class="block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+              class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
             />
           </div>
         </div>

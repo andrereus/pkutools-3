@@ -166,6 +166,7 @@
     "trial-limit": "Version d'essai",
     "premium-limit": "Premium",
     "premium-ai-limit": "Premium + AI",
+    "estimates-per-day": "{count} estimations/jour",
     "correct": "Corriger",
     "correct-title": "Corriger l'estimation",
     "correct-description": "Indique à l'IA ce qui ne va pas et l'estimation sera refaite.",

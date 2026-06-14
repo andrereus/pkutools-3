@@ -134,7 +134,7 @@ const columns = [
               'span',
               {
                 class:
-                  'inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 ml-2 flex-shrink-0',
+                  'inline-flex items-center rounded-full bg-teal-100 px-2 py-1 text-xs font-medium text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 ml-2 flex-shrink-0',
                 title: t('community.shared')
               },
               [h(LucideUsers, { class: 'h-3.5 w-3.5' })]
@@ -591,7 +591,7 @@ useSeoMeta({
 defineOgImage('NuxtSeo', {
   title: () => t('own-food.title') + ' - PKU Tools',
   description: () => t('own-food.description'),
-  theme: '#3498db'
+  theme: '#0ea5e9'
 })
 </script>
 
@@ -616,8 +616,9 @@ defineOgImage('NuxtSeo', {
 
     <div v-if="userIsAuthenticated">
       <!-- Info about sharing with community -->
-      <div class="mb-6 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 px-4 py-3">
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+      <div class="mb-6 flex items-start gap-2.5 rounded-lg bg-teal-50 dark:bg-teal-900/20 px-4 py-3 ring-1 ring-inset ring-teal-600/15 dark:ring-teal-400/15">
+        <LucideInfo class="mt-0.5 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-400" aria-hidden="true" />
+        <p class="text-sm text-teal-800 dark:text-teal-200">
           {{ $t('own-food.share-info') }}
         </p>
       </div>
@@ -635,7 +636,7 @@ defineOgImage('NuxtSeo', {
             name="search"
             :placeholder="$t('food-search.search')"
             autocomplete="off"
-            class="block w-full rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+            class="block w-full rounded-lg border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
           />
         </div>
       </div>
@@ -645,7 +646,7 @@ defineOgImage('NuxtSeo', {
           <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
               <div
-                class="overflow-hidden shadow-sm ring-1 ring-gray-300 dark:ring-gray-800 ring-opacity-5 sm:rounded-lg"
+                class="overflow-hidden shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 sm:rounded-xl"
               >
                 <table class="w-full divide-y divide-gray-300 dark:divide-gray-600">
                   <thead class="bg-gray-50 dark:bg-gray-950">
@@ -784,7 +785,7 @@ defineOgImage('NuxtSeo', {
               name="note"
               rows="3"
               :placeholder="$t('diary.note-placeholder')"
-              class="block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+              class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
             />
           </div>
         </div>
@@ -818,7 +819,7 @@ defineOgImage('NuxtSeo', {
           >
             <span class="font-medium">{{ $t('community.statistics') }}</span>
             <span class="flex items-center gap-1">
-              <LucideThumbsUp class="h-4 w-4 text-emerald-600" />
+              <LucideThumbsUp class="h-4 w-4 text-teal-600" />
               {{ editedCommunityFood.likes || 0 }}
             </span>
             <span class="flex items-center gap-1">
@@ -877,7 +878,7 @@ defineOgImage('NuxtSeo', {
         >
           <button
             type="button"
-            class="inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 text-sm font-semibold text-emerald-700 dark:text-emerald-300 shadow-xs hover:bg-emerald-100 dark:hover:bg-emerald-900/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 dark:focus-visible:outline-emerald-400 cursor-pointer"
+            class="inline-flex items-center gap-2 rounded-full bg-teal-50 dark:bg-teal-900/40 px-4 py-2 text-sm font-semibold text-teal-700 dark:text-teal-300 shadow-xs ring-1 ring-inset ring-teal-600/20 dark:ring-teal-400/20 hover:bg-teal-100 dark:hover:bg-teal-900/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 dark:focus-visible:outline-teal-400 cursor-pointer"
             @click="editItem()"
           >
             <LucideUsers class="h-4 w-4" />
@@ -892,7 +893,7 @@ defineOgImage('NuxtSeo', {
         >
           <span class="font-medium">{{ $t('community.statistics') }}</span>
           <span class="flex items-center gap-1">
-            <LucideThumbsUp class="h-4 w-4 text-emerald-600" />
+            <LucideThumbsUp class="h-4 w-4 text-teal-600" />
             {{ editedCommunityFood.likes || 0 }}
           </span>
           <span class="flex items-center gap-1">

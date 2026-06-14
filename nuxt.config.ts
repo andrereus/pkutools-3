@@ -13,7 +13,7 @@ export default defineNuxtConfig({
           name: 'description',
           content: 'All-in-One Nutrition App for PKU'
         },
-        { name: 'theme-color', content: '#3498db' },
+        { name: 'theme-color', content: '#0ea5e9' },
         { name: 'google', content: 'notranslate' }
       ],
       link: [

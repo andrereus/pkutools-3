@@ -393,7 +393,7 @@ useSeoMeta({
 defineOgImage('NuxtSeo', {
   title: () => t('diary.title') + ' - PKU Tools',
   description: () => t('diary.description'),
-  theme: '#3498db'
+  theme: '#0ea5e9'
 })
 </script>
 
@@ -429,7 +429,7 @@ defineOgImage('NuxtSeo', {
           v-model="date"
           type="date"
           name="date"
-          class="flex-1 block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+          class="flex-1 block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
         />
         <button
           class="p-1 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
@@ -439,7 +439,7 @@ defineOgImage('NuxtSeo', {
         </button>
       </div>
 
-      <div class="mb-6 py-3 px-3 bg-gray-100 dark:bg-gray-900 rounded-md shadow-inner">
+      <div class="mb-6 py-3 px-3 bg-gray-100 dark:bg-gray-900 rounded-xl shadow-inner">
         <div class="text-sm flex justify-between">
           <span>{{ pheResult }} Phe {{ $t('app.total') }}</span>
           <span v-if="settings?.maxPhe"
@@ -452,10 +452,10 @@ defineOgImage('NuxtSeo', {
           }}</NuxtLink>
         </div>
         <div
-          class="relative w-full bg-gray-200 dark:bg-gray-800 rounded-md overflow-hidden h-1 mt-2"
+          class="relative w-full bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden h-1 mt-2"
         >
           <div
-            class="bg-sky-500 h-full rounded-md"
+            class="bg-sky-500 h-full rounded-full"
             :style="{ width: `${(pheResult * 100) / (settings?.maxPhe || 1)}%` }"
           />
         </div>
@@ -471,10 +471,10 @@ defineOgImage('NuxtSeo', {
           }}</NuxtLink>
         </div>
         <div
-          class="relative w-full bg-gray-200 dark:bg-gray-800 rounded-md overflow-hidden h-1 mt-2"
+          class="relative w-full bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden h-1 mt-2"
         >
           <div
-            class="bg-sky-500 h-full rounded-md"
+            class="bg-sky-500 h-full rounded-full"
             :style="{ width: `${(kcalResult * 100) / (settings?.maxKcal || 1)}%` }"
           />
         </div>
@@ -616,7 +616,7 @@ defineOgImage('NuxtSeo', {
               name="note"
               rows="3"
               :placeholder="$t('diary.note-placeholder')"
-              class="block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+              class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
             />
           </div>
         </div>

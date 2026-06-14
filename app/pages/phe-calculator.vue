@@ -132,7 +132,7 @@ useSeoMeta({
 defineOgImage('NuxtSeo', {
   title: () => t('phe-calculator.title') + ' - PKU Tools',
   description: () => t('phe-calculator.description'),
-  theme: '#3498db'
+  theme: '#0ea5e9'
 })
 </script>
 
@@ -143,7 +143,7 @@ defineOgImage('NuxtSeo', {
         <NuxtLink
           :to="$localePath('ai-calculator')"
           :title="$t('app.ai-calculator')"
-          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
+          class="text-gray-500 hover:text-gray-700 rounded-xl p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
         >
           <LucideSparkles class="h-5 w-5" />
           <span class="hidden sm:inline">{{ $t('app.ai-calculator') }}</span>
@@ -151,7 +151,7 @@ defineOgImage('NuxtSeo', {
         <NuxtLink
           :to="$localePath('food-search')"
           :title="$t('app.search')"
-          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
+          class="text-gray-500 hover:text-gray-700 rounded-xl p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
         >
           <LucideSearch class="h-5 w-5" />
           <span class="hidden sm:inline">{{ $t('app.search') }}</span>
@@ -159,7 +159,7 @@ defineOgImage('NuxtSeo', {
         <NuxtLink
           :to="$localePath('barcode-scanner')"
           :title="$t('app.scanner')"
-          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
+          class="text-gray-500 hover:text-gray-700 rounded-xl p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
         >
           <LucideScanBarcode class="h-5 w-5" />
           <span class="hidden sm:inline">{{ $t('app.scanner') }}</span>
@@ -167,7 +167,7 @@ defineOgImage('NuxtSeo', {
         <NuxtLink
           :to="$localePath('phe-calculator')"
           :title="$t('app.calculator')"
-          class="bg-black/5 dark:bg-white/15 text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
+          class="bg-black/5 dark:bg-white/15 text-gray-700 rounded-xl p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
           aria-current="page"
         >
           <LucideCalculator class="h-5 w-5" />

@@ -166,6 +166,7 @@
     "trial-limit": "Testversion",
     "premium-limit": "Premium",
     "premium-ai-limit": "Premium + AI",
+    "estimates-per-day": "{count} Schätzungen/Tag",
     "correct": "Korrigieren",
     "correct-title": "Schätzung korrigieren",
     "correct-description": "Teile der KI mit, was falsch ist, und die Schätzung wird wiederholt.",

@@ -72,14 +72,14 @@ useSeoMeta({
 
 defineOgImage('NuxtSeo', {
   title: () => t('sign-in.title') + ' - PKU Tools',
-  theme: '#3498db'
+  theme: '#0ea5e9'
 })
 </script>
 
 <template>
   <div class="max-w-2xl">
     <div v-if="userIsAuthenticated">
-      <h2 class="text-lg text-gray-900 dark:text-gray-300 mb-6">
+      <h2 class="text-lg text-gray-900 dark:text-white mb-6">
         <LucideBadgeCheck class="h-6 w-6 text-sky-500 inline-block ml-2 mr-1" aria-hidden="true" />
         {{ $t('sign-in.signedin') }}
       </h2>
@@ -87,7 +87,7 @@ defineOgImage('NuxtSeo', {
 
     <div v-if="!userIsAuthenticated">
       <a
-        class="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent cursor-pointer my-4"
+        class="flex w-full items-center justify-center gap-3 rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent cursor-pointer my-4"
         @click.prevent="signInGoogle"
       >
         <svg class="h-5 w-5" aria-hidden="true" viewBox="0 0 24 24">
@@ -122,7 +122,7 @@ defineOgImage('NuxtSeo', {
         </div>
       </div>
 
-      <h2 class="text-lg text-gray-900 dark:text-gray-300 mb-6">
+      <h2 class="text-lg text-gray-900 dark:text-white mb-6">
         {{ $t('sign-in.signin-with-email') }}
       </h2>
 
@@ -131,7 +131,7 @@ defineOgImage('NuxtSeo', {
           <HeadlessTab v-slot="{ selected }">
             <button
               :class="[
-                'rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300 cursor-pointer',
+                'rounded-lg px-3 py-2 text-sm font-medium dark:text-gray-300 cursor-pointer',
                 selected
                   ? 'bg-black/5 dark:bg-white/15 text-gray-700'
                   : 'text-gray-500 hover:text-gray-700'
@@ -143,7 +143,7 @@ defineOgImage('NuxtSeo', {
           <HeadlessTab v-slot="{ selected }">
             <button
               :class="[
-                'rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300 cursor-pointer',
+                'rounded-lg px-3 py-2 text-sm font-medium dark:text-gray-300 cursor-pointer',
                 selected
                   ? 'bg-black/5 dark:bg-white/15 text-gray-700'
                   : 'text-gray-500 hover:text-gray-700'
@@ -155,7 +155,7 @@ defineOgImage('NuxtSeo', {
           <HeadlessTab v-slot="{ selected }">
             <button
               :class="[
-                'rounded-md px-3 py-2 text-sm font-medium dark:text-gray-300 cursor-pointer',
+                'rounded-lg px-3 py-2 text-sm font-medium dark:text-gray-300 cursor-pointer',
                 selected
                   ? 'bg-black/5 dark:bg-white/15 text-gray-700'
                   : 'text-gray-500 hover:text-gray-700'

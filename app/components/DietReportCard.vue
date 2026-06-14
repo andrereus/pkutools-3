@@ -44,7 +44,10 @@ const pheStats = computed(() => {
 </script>
 
 <template>
-  <div v-if="showCard" class="overflow-hidden rounded-lg bg-white dark:bg-gray-900 shadow-sm">
+  <div
+    v-if="showCard"
+    class="overflow-hidden rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
+  >
     <div class="px-4 py-5 sm:p-6">
       <div class="flex items-center gap-3 font-medium mb-2">
         <LucideBook class="h-5 w-5" />

@@ -22,7 +22,7 @@ useSeoMeta({
 
 defineOgImage('NuxtSeo', {
   title: () => t('privacy-policy.title') + ' - PKU Tools',
-  theme: '#3498db'
+  theme: '#0ea5e9'
 })
 </script>
 

@@ -103,7 +103,7 @@ onBeforeUnmount(() => {
   <div class="relative mx-auto w-full max-w-66 md:max-w-180" aria-hidden="true">
     <!-- soft gradient backdrop for depth -->
     <div
-      class="absolute -inset-2 -z-10 rounded-[2.5rem] bg-linear-to-br from-sky-500/8 to-emerald-500/8 blur-lg dark:from-sky-400/8 dark:to-emerald-400/8"
+      class="absolute -inset-2 -z-10 rounded-[2.5rem] bg-linear-to-br from-sky-500/8 to-teal-500/8 blur-lg dark:from-sky-400/8 dark:to-teal-400/8"
       aria-hidden="true"
     />
 
@@ -148,7 +148,7 @@ onBeforeUnmount(() => {
         >
           <span class="h-3 w-3 rounded-full bg-red-400/80" aria-hidden="true" />
           <span class="h-3 w-3 rounded-full bg-amber-400/80" aria-hidden="true" />
-          <span class="h-3 w-3 rounded-full bg-emerald-400/80" aria-hidden="true" />
+          <span class="h-3 w-3 rounded-full bg-teal-400/80" aria-hidden="true" />
           <div
             class="ml-3 flex flex-1 items-center justify-center gap-1.5 rounded-md bg-white px-3 py-1 ring-1 ring-gray-900/5 dark:bg-gray-900 dark:ring-white/10"
           >
@@ -253,7 +253,7 @@ onBeforeUnmount(() => {
                   class="relative mt-3 rounded-md bg-gray-50 px-3 py-3 shadow-inner dark:bg-gray-800/60"
                 >
                   <span
-                    class="demo-chip absolute -top-2 right-3 text-xs font-bold text-emerald-500"
+                    class="demo-chip absolute -top-2 right-3 text-xs font-bold text-teal-500"
                   >
                     +13 mg
                   </span>
@@ -288,7 +288,7 @@ onBeforeUnmount(() => {
                     >
                   </div>
                   <div
-                    class="demo-item flex items-center gap-3 rounded-xl bg-emerald-50 px-3 py-2.5 ring-1 ring-emerald-600/10 dark:bg-emerald-400/10 dark:ring-emerald-400/20"
+                    class="demo-item flex items-center gap-3 rounded-xl bg-teal-50 px-3 py-2.5 ring-1 ring-teal-600/10 dark:bg-teal-400/10 dark:ring-teal-400/20"
                   >
                     <span class="text-lg" aria-hidden="true">{{ appleEmoji }}</span>
                     <span class="flex-1 truncate text-sm font-medium text-gray-900 dark:text-white">
@@ -311,7 +311,7 @@ onBeforeUnmount(() => {
                       {{ $t('diet-report.title') }}
                     </span>
                     <LucideCircleCheck
-                      class="demo-check demo-check-diet h-5 w-5 text-emerald-500"
+                      class="demo-check demo-check-diet h-5 w-5 text-teal-500"
                       aria-hidden="true"
                     />
                   </div>
@@ -335,7 +335,7 @@ onBeforeUnmount(() => {
                       {{ $t('blood-values.title') }}
                     </span>
                     <LucideCircleCheck
-                      class="demo-check h-5 w-5 text-emerald-500"
+                      class="demo-check h-5 w-5 text-teal-500"
                       aria-hidden="true"
                     />
                   </div>

@@ -249,7 +249,7 @@ const handleCookieConsent = (consent) => {
                 leave-to-class="transform opacity-0 scale-95"
               >
                 <HeadlessMenuItems
-                  class="absolute left-0 z-10 mt-4 w-64 origin-top-left rounded-md bg-white py-1 shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700"
+                  class="absolute left-0 z-10 mt-4 w-64 origin-top-left overflow-hidden rounded-xl bg-white py-1 shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700"
                 >
                   <HeadlessMenuItem
                     v-for="item in navigation"
@@ -318,7 +318,7 @@ const handleCookieConsent = (consent) => {
                 leave-to-class="transform opacity-0 scale-95"
               >
                 <HeadlessMenuItems
-                  class="absolute right-0 z-10 mt-4 w-40 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700"
+                  class="absolute right-0 z-10 mt-4 w-40 origin-top-right overflow-hidden rounded-xl bg-white py-1 shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700"
                 >
                   <HeadlessMenuItem
                     v-for="localeItem in locales"
@@ -379,7 +379,7 @@ const handleCookieConsent = (consent) => {
                 leave-to-class="transform opacity-0 scale-95"
               >
                 <HeadlessMenuItems
-                  class="absolute right-0 z-10 mt-4 w-64 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700 dark:divide-gray-700"
+                  class="absolute right-0 z-10 mt-4 w-64 origin-top-right divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700 dark:divide-gray-700"
                 >
                   <div class="py-1">
                     <HeadlessMenuItem v-if="!userIsAuthenticated" v-slot="{ active, close }">
@@ -509,7 +509,7 @@ const handleCookieConsent = (consent) => {
             :to="$localePath(item.route)"
             :class="[
               'flex-1 flex justify-center',
-              'group inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-150 ease-out active:scale-95',
+              'group inline-flex items-center px-3 py-2 text-sm font-medium rounded-xl transition-all duration-150 ease-out active:scale-95',
               item.icon === 'LucidePlus'
                 ? isTabActive(item)
                   ? 'bottom-nav-add liquid-glass-active text-sky-600 dark:text-sky-300'

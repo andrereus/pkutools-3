@@ -308,7 +308,7 @@ useSeoMeta({
 
 defineOgImage('NuxtSeo', {
   title: () => t('settings.title') + ' - PKU Tools',
-  theme: '#3498db'
+  theme: '#0ea5e9'
 })
 </script>
 
@@ -321,7 +321,7 @@ defineOgImage('NuxtSeo', {
     <div v-if="!userIsAuthenticated">
       <p class="text-gray-600 dark:text-gray-400 mb-6">{{ $t('settings.description') }}</p>
       <div
-        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <SecondaryButton :text="$t('app.signin-google')" @click="signInGoogle" />
         <br />
@@ -338,7 +338,7 @@ defineOgImage('NuxtSeo', {
     <div v-if="userIsAuthenticated">
       <!-- Getting Started Section -->
       <div
-        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader :title="$t('getting-started.title')" class="mb-4" />
         <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
@@ -349,7 +349,7 @@ defineOgImage('NuxtSeo', {
 
       <!-- Health Data Consent Section -->
       <div
-        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader :title="$t('health-consent.title')" class="mb-4" />
         <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
@@ -357,27 +357,27 @@ defineOgImage('NuxtSeo', {
         </p>
         <div
           v-if="store.settings.healthDataConsent === true"
-          class="rounded-lg bg-green-50 p-4 dark:bg-green-900/20 mb-4"
+          class="rounded-lg bg-teal-50 p-4 dark:bg-teal-900/20 mb-4"
         >
           <div class="flex items-center">
-            <LucideCheckCircle class="h-5 w-5 text-green-600 dark:text-green-400 mr-2" />
-            <span class="text-sm font-medium text-green-800 dark:text-green-200">
+            <LucideCheckCircle class="h-5 w-5 text-teal-600 dark:text-teal-400 mr-2" />
+            <span class="text-sm font-medium text-teal-800 dark:text-teal-200">
               {{ $t('health-consent.consent-given') }}
             </span>
           </div>
-          <p class="mt-2 text-xs text-green-700 dark:text-green-300">
+          <p class="mt-2 text-xs text-teal-700 dark:text-teal-300">
             {{ $t('health-consent.consent-date') }}:
             {{ formatConsentDate(settings.healthDataConsentDate) }}
           </p>
         </div>
-        <div v-else class="rounded-lg bg-yellow-50 p-4 dark:bg-yellow-900/20 mb-4">
+        <div v-else class="rounded-lg bg-amber-50 p-4 dark:bg-amber-900/20 mb-4">
           <div class="flex items-center">
-            <LucideAlertTriangle class="h-5 w-5 text-yellow-600 dark:text-yellow-400 mr-2" />
-            <span class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+            <LucideAlertTriangle class="h-5 w-5 text-amber-600 dark:text-amber-400 mr-2" />
+            <span class="text-sm font-medium text-amber-800 dark:text-amber-200">
               {{ $t('health-consent.no-consent-status') }}
             </span>
           </div>
-          <p class="mt-2 text-xs text-yellow-700 dark:text-yellow-300">
+          <p class="mt-2 text-xs text-amber-700 dark:text-amber-300">
             {{ $t('health-consent.no-consent-explanation') }}
           </p>
         </div>
@@ -397,7 +397,7 @@ defineOgImage('NuxtSeo', {
 
       <!-- Email Notifications Section -->
       <div
-        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader :title="$t('health-consent.email-consent-title')" class="mb-4" />
         <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
@@ -405,15 +405,15 @@ defineOgImage('NuxtSeo', {
         </p>
         <div
           v-if="settings.emailConsent"
-          class="rounded-lg bg-green-50 p-4 dark:bg-green-900/20 mb-4"
+          class="rounded-lg bg-teal-50 p-4 dark:bg-teal-900/20 mb-4"
         >
           <div class="flex items-center">
-            <LucideCheckCircle class="h-5 w-5 text-green-600 dark:text-green-400 mr-2" />
-            <span class="text-sm font-medium text-green-800 dark:text-green-200">
+            <LucideCheckCircle class="h-5 w-5 text-teal-600 dark:text-teal-400 mr-2" />
+            <span class="text-sm font-medium text-teal-800 dark:text-teal-200">
               {{ $t('health-consent.email-consent-given') }}
             </span>
           </div>
-          <p class="mt-2 text-xs text-green-700 dark:text-green-300">
+          <p class="mt-2 text-xs text-teal-700 dark:text-teal-300">
             {{ $t('health-consent.email-consent-date') }}:
             {{ formatConsentDate(settings.emailConsentDate) }}
           </p>
@@ -442,7 +442,7 @@ defineOgImage('NuxtSeo', {
 
       <!-- App Settings Section -->
       <div
-        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader :title="$t('settings.app-settings')" class="mb-4" />
         <NumberInput
@@ -487,7 +487,7 @@ defineOgImage('NuxtSeo', {
 
       <!-- Premium & License Section -->
       <div
-        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader title="PKU Tools Premium" class="mb-4" />
         <TiersCard align="left" class="mb-6" />
@@ -504,7 +504,7 @@ defineOgImage('NuxtSeo', {
 
       <!-- Username Section -->
       <div
-        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader :title="$t('settings.change-username')" class="mb-4" />
         <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
@@ -521,7 +521,7 @@ defineOgImage('NuxtSeo', {
 
       <!-- Account Management Section -->
       <div
-        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader :title="$t('settings.change-password')" class="mb-4" />
         <p class="text-sm text-gray-600 dark:text-gray-400">
@@ -531,7 +531,7 @@ defineOgImage('NuxtSeo', {
 
       <!-- Data Management Section -->
       <div
-        class="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700 mb-8"
+        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
         <PageHeader :title="$t('settings.reset-heading')" class="mb-4" />
         <div class="space-y-3">
@@ -543,7 +543,7 @@ defineOgImage('NuxtSeo', {
 
       <!-- Account Deletion Section -->
       <div
-        class="bg-red-50 dark:bg-red-900/20 rounded-lg p-6 shadow-sm border border-red-200 dark:border-red-800 mb-8"
+        class="rounded-xl bg-red-50 dark:bg-red-900/20 p-6 shadow-sm ring-1 ring-red-200 dark:ring-red-800 mb-8"
       >
         <PageHeader :title="$t('settings.delete-account')" class="mb-4" />
         <p class="mb-4 text-sm text-red-700 dark:text-red-300">

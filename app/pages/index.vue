@@ -190,7 +190,7 @@ useSeoMeta({
 defineOgImage('NuxtSeo', {
   title: 'PKU Tools',
   description: () => t('home.description'),
-  theme: '#3498db'
+  theme: '#0ea5e9'
 })
 </script>
 
@@ -342,7 +342,7 @@ defineOgImage('NuxtSeo', {
         <div class="grid items-center gap-10 lg:grid-cols-2">
           <div class="order-2 lg:order-1">
             <div
-              class="relative mx-auto max-w-sm rounded-2xl bg-linear-to-br from-sky-500/10 to-indigo-500/10 dark:from-sky-400/10 dark:to-indigo-400/10 p-6 ring-1 ring-inset ring-sky-500/20 dark:ring-sky-400/20"
+              class="relative mx-auto max-w-sm rounded-2xl bg-linear-to-br from-sky-500/10 to-teal-500/10 dark:from-sky-400/10 dark:to-teal-400/10 p-6 ring-1 ring-inset ring-sky-500/20 dark:ring-sky-400/20"
             >
               <div class="flex items-center justify-between gap-3">
                 <div
@@ -398,7 +398,7 @@ defineOgImage('NuxtSeo', {
           </div>
           <div>
             <div
-              class="relative mx-auto max-w-sm rounded-2xl bg-linear-to-br from-emerald-500/10 to-sky-500/10 dark:from-emerald-400/10 dark:to-sky-400/10 p-6 ring-1 ring-inset ring-emerald-500/20 dark:ring-emerald-400/20"
+              class="relative mx-auto max-w-sm rounded-2xl bg-linear-to-br from-teal-500/10 to-sky-500/10 dark:from-teal-400/10 dark:to-sky-400/10 p-6 ring-1 ring-inset ring-teal-500/20 dark:ring-teal-400/20"
             >
               <div class="flex items-center justify-between gap-3">
                 <div

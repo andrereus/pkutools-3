@@ -40,7 +40,7 @@ const weight = ref(null)
 // Constants
 const BASE_DAILY_ESTIMATE_LIMIT = 20
 const PREMIUM_AI_DAILY_ESTIMATE_LIMIT = 100
-const FREE_USER_DAILY_ESTIMATE_LIMIT = 2
+const FREE_USER_DAILY_ESTIMATE_LIMIT = 3
 const MAX_IMAGE_DIMENSION = 1024
 const MAX_IMAGE_FILE_SIZE = 15 * 1024 * 1024 // 15MB
 
@@ -77,6 +77,12 @@ const remainingEstimates = computed(() => {
   const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
   const remainingCredits = Math.max(0, dailyLimitCredits - currentCount)
   return Math.floor(remainingCredits / costPerEstimate)
+})
+
+// Total estimates available per day for the current tier (not the remaining count)
+const dailyEstimateLimit = computed(() => {
+  const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
+  return Math.floor(dailyLimitCredits / costPerEstimate)
 })
 
 // Computed Phe: use phePer100g directly, or fall back to protein × 50
@@ -417,7 +423,7 @@ useSeoMeta({
 defineOgImage('NuxtSeo', {
   title: () => t('ai-calculator.title') + ' - PKU Tools',
   description: () => t('ai-calculator.description'),
-  theme: '#3498db'
+  theme: '#0ea5e9'
 })
 </script>
 
@@ -428,7 +434,7 @@ defineOgImage('NuxtSeo', {
         <NuxtLink
           :to="$localePath('ai-calculator')"
           :title="$t('app.ai-calculator')"
-          class="bg-black/5 dark:bg-white/15 text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
+          class="bg-black/5 dark:bg-white/15 text-gray-700 rounded-xl p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
           aria-current="page"
         >
           <LucideSparkles class="h-5 w-5" />
@@ -437,7 +443,7 @@ defineOgImage('NuxtSeo', {
         <NuxtLink
           :to="$localePath('food-search')"
           :title="$t('app.search')"
-          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
+          class="text-gray-500 hover:text-gray-700 rounded-xl p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
         >
           <LucideSearch class="h-5 w-5" />
           <span class="hidden sm:inline">{{ $t('app.search') }}</span>
@@ -445,7 +451,7 @@ defineOgImage('NuxtSeo', {
         <NuxtLink
           :to="$localePath('barcode-scanner')"
           :title="$t('app.scanner')"
-          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
+          class="text-gray-500 hover:text-gray-700 rounded-xl p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
         >
           <LucideScanBarcode class="h-5 w-5" />
           <span class="hidden sm:inline">{{ $t('app.scanner') }}</span>
@@ -453,7 +459,7 @@ defineOgImage('NuxtSeo', {
         <NuxtLink
           :to="$localePath('phe-calculator')"
           :title="$t('app.calculator')"
-          class="text-gray-500 hover:text-gray-700 rounded-md p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
+          class="text-gray-500 hover:text-gray-700 rounded-xl p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
         >
           <LucideCalculator class="h-5 w-5" />
           <span class="hidden sm:inline">{{ $t('app.calculator') }}</span>
@@ -461,11 +467,7 @@ defineOgImage('NuxtSeo', {
       </nav>
     </div>
 
-    <header>
-      <h2 class="text-2xl text-gray-900 dark:text-gray-300 mb-6">
-        {{ $t('ai-calculator.title') }}
-      </h2>
-    </header>
+    <PageHeader :title="$t('ai-calculator.title')" />
 
     <div v-if="!userIsAuthenticated">
       <p class="text-gray-600 dark:text-gray-400 mb-6">{{ $t('ai-calculator.description') }}</p>
@@ -503,7 +505,7 @@ defineOgImage('NuxtSeo', {
           rows="3"
           :placeholder="$t('ai-calculator.input-placeholder')"
           :disabled="isEstimating"
-          class="block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+          class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
         />
       </div>
 
@@ -556,7 +558,10 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <div v-if="result" class="mt-6 rounded-lg bg-gray-50 dark:bg-gray-800/50 p-4">
+    <div
+      v-if="result"
+      class="mt-6 rounded-xl bg-white dark:bg-gray-900 p-4 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
+    >
       <div class="flex items-start justify-between gap-3 mb-4">
         <h2 class="text-xl font-semibold">
           <span v-if="result.emoji">{{ result.emoji }}&nbsp;</span>{{ result.name }}
@@ -639,7 +644,7 @@ defineOgImage('NuxtSeo', {
         v-model="correctionHint"
         rows="3"
         :disabled="isEstimating"
-        class="block w-full rounded-md border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+        class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
       />
     </ModalDialog>
 
@@ -653,12 +658,12 @@ defineOgImage('NuxtSeo', {
     <p v-if="userIsAuthenticated && !isPremium" class="mt-6 text-sm">
       <NuxtLink :to="$localePath('settings')">
         <LucideBadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
-        {{ $t('ai-calculator.trial-limit') }}
+        {{ $t('ai-calculator.trial-limit') }} ({{ $t('ai-calculator.estimates-per-day', { count: dailyEstimateLimit }) }})
       </NuxtLink>
     </p>
     <p v-if="isPremium && !isPremiumAI" class="mt-6 text-sm">
       <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
-      {{ $t('ai-calculator.premium-limit') }}
+      {{ $t('ai-calculator.premium-limit') }} ({{ $t('ai-calculator.estimates-per-day', { count: dailyEstimateLimit }) }})
     </p>
     <p v-if="isPremiumAI" class="mt-6 text-sm">
       <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />

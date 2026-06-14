@@ -95,20 +95,20 @@ onUnmounted(() => {
 
 // Type-specific styling
 const typeStyles = {
-  info: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-l-4 border-indigo-500',
+  info: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-l-4 border-gray-400 dark:border-gray-500',
   success: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-l-4 border-sky-500',
   error: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-l-4 border-red-500',
-  warning: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-l-4 border-yellow-500'
+  warning: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-l-4 border-amber-500'
 }
 
 const buttonStyles = {
-  info: 'bg-white dark:bg-gray-800 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300',
+  info: 'bg-white dark:bg-gray-800 text-gray-600 hover:text-gray-500 dark:text-gray-400 dark:hover:text-gray-300',
   success:
     'bg-white dark:bg-gray-800 text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300',
   error:
     'bg-white dark:bg-gray-800 text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300',
   warning:
-    'bg-white dark:bg-gray-800 text-yellow-600 hover:text-yellow-500 dark:text-yellow-400 dark:hover:text-yellow-300'
+    'bg-white dark:bg-gray-800 text-amber-600 hover:text-amber-500 dark:text-amber-400 dark:hover:text-amber-300'
 }
 </script>
 
@@ -133,7 +133,7 @@ const buttonStyles = {
           <div
             v-if="show"
             :class="[
-              'pointer-events-auto w-full max-w-sm rounded-lg shadow-xl ring-1 ring-black/10 dark:ring-white/20',
+              'pointer-events-auto w-full max-w-sm rounded-xl shadow-xl ring-1 ring-black/10 dark:ring-white/20',
               typeStyles[type]
             ]"
           >
@@ -147,7 +147,7 @@ const buttonStyles = {
                     v-if="undoAction"
                     type="button"
                     :class="[
-                      'ml-3 shrink-0 rounded-full px-3 py-1.5 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 cursor-pointer',
+                      'ml-3 shrink-0 rounded-full px-3 py-1.5 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 cursor-pointer',
                       buttonStyles[type]
                     ]"
                     @click="handleUndo"
@@ -158,7 +158,7 @@ const buttonStyles = {
                 <div class="ml-4 flex shrink-0">
                   <button
                     type="button"
-                    class="inline-flex rounded-full p-1 text-gray-400 hover:text-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:hover:text-white dark:focus-visible:outline-indigo-500 cursor-pointer"
+                    class="inline-flex rounded-full p-1 text-gray-400 hover:text-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 dark:hover:text-white dark:focus-visible:outline-sky-500 cursor-pointer"
                     @click="handleClose"
                   >
                     <span class="sr-only">Close</span>
