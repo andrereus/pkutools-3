@@ -111,7 +111,7 @@ defineOgImage('NuxtSeo', {
 </script>
 
 <template>
-  <div class="max-w-2xl mx-auto px-4 py-8">
+  <div class="max-w-2xl mx-auto px-2 py-4">
     <header class="text-center mb-8">
       <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
         {{ $t('getting-started.title') }}
