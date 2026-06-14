@@ -6,7 +6,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: Lexend, sans-serif;
+  --font-sans: Inter, sans-serif;
 }
 
 /*
