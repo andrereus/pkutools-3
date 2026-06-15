@@ -29,6 +29,9 @@ export default defineEventHandler(async (event) => {
     if (validation.data.labUnit !== undefined) {
       updateData.labUnit = validation.data.labUnit
     }
+    if (validation.data.progressStyle !== undefined) {
+      updateData.progressStyle = validation.data.progressStyle
+    }
     if (validation.data.license !== undefined) {
       updateData.license = validation.data.license ?? null
     }

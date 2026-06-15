@@ -22,7 +22,8 @@ const {
   updateFoodItemInDiary,
   deleteFoodItemFromDiary,
   updateDiaryDay,
-  updateGettingStarted
+  updateGettingStarted,
+  updateSettings
 } = useApi()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
 
@@ -146,6 +147,109 @@ const pheResult = computed(() => {
 const kcalResult = computed(() => {
   return selectedDayLog.value.reduce((sum, item) => sum + (Number(item.kcal) || 0), 0)
 })
+
+// Progress display style: 'bars' (default) or 'circles' (radial charts)
+const progressStyle = computed(() => settings.value?.progressStyle || 'circles')
+
+const phePercent = computed(() =>
+  settings.value?.maxPhe ? Math.round((pheResult.value * 100) / settings.value.maxPhe) : 0
+)
+const kcalPercent = computed(() =>
+  settings.value?.maxKcal ? Math.round((kcalResult.value * 100) / settings.value.maxKcal) : 0
+)
+
+// Radial bar options shared by both circles, themed for the current color mode.
+// When over budget the track shows the full sky ring (100% reached) and the
+// overage continues on top in red, so the circle conveys how far past the limit.
+const buildCircleOptions = (label, percent, size) => {
+  const dark =
+    typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+  const over = percent > 100
+  const small = size < 96
+  const sky = '#0ea5e9'
+  // Over-budget overage colour: a darker shade of the same sky, used in both
+  // light and dark mode. The full sky ring + darker overage on top reads as
+  // "over budget" consistently.
+  const overColor = '#0369a1'
+  return {
+    chart: {
+      type: 'radialBar',
+      background: 'transparent',
+      offsetY: 0
+    },
+    plotOptions: {
+      radialBar: {
+        // Smaller hollow on phones keeps the ring band thick on the small circle.
+        hollow: { size: small ? '46%' : '56%' },
+        track: { background: over ? sky : dark ? '#374151' : '#e5e7eb' },
+        dataLabels: {
+          // Metric name comes from the caption below the chart, so only the
+          // percentage is shown in the centre (vertically centred).
+          name: { show: false },
+          value: {
+            offsetY: small ? 5 : 6,
+            fontSize: small ? '14px' : '17px',
+            fontWeight: 600,
+            color: dark ? '#f3f4f6' : '#111827',
+            formatter: () => `${percent}%`
+          }
+        }
+      }
+    },
+    labels: [label],
+    colors: [over ? overColor : sky],
+    // Solid fill so the ring matches the app's sky exactly (radialBar otherwise
+    // applies a subtle gradient that darkens the colour).
+    fill: { type: 'solid' },
+    stroke: { lineCap: 'round' },
+    theme: { mode: dark ? 'dark' : 'light' }
+  }
+}
+
+// Arc length to draw: under budget shows the actual %, over budget shows just
+// the overage (0–100) layered on top of the full sky track.
+const circleSeries = (percent) => (percent > 100 ? Math.min(percent - 100, 100) : percent)
+
+const pheCircleOptions = computed(() =>
+  buildCircleOptions(t('common.phe'), phePercent.value, circleSize.value)
+)
+const kcalCircleOptions = computed(() =>
+  buildCircleOptions(t('common.kcal'), kcalPercent.value, circleSize.value)
+)
+const pheCircleSeries = computed(() => circleSeries(phePercent.value))
+const kcalCircleSeries = computed(() => circleSeries(kcalPercent.value))
+
+// Circle diameter: smaller on phones so the two circles + their labels still fit
+// side by side, larger on wider screens. ApexCharts takes a fixed pixel size, so
+// we drive it from a media query rather than CSS.
+const circleSize = ref(
+  typeof window !== 'undefined' && !window.matchMedia('(min-width: 640px)').matches ? 88 : 92
+)
+let circleMq = null
+const applyCircleSize = () => {
+  if (circleMq) circleSize.value = circleMq.matches ? 92 : 88
+}
+onMounted(() => {
+  circleMq = window.matchMedia('(min-width: 640px)')
+  applyCircleSize()
+  circleMq.addEventListener('change', applyCircleSize)
+})
+onUnmounted(() => {
+  if (circleMq) circleMq.removeEventListener('change', applyCircleSize)
+})
+
+const setProgressStyle = async (style) => {
+  if (progressStyle.value === style || !store.user) return
+  const previous = store.settings.progressStyle
+  // Optimistic update for instant feedback; Firebase binding keeps it in sync
+  store.settings.progressStyle = style
+  try {
+    await updateSettings({ progressStyle: style })
+  } catch (error) {
+    store.settings.progressStyle = previous
+    console.error('Update progress style error:', error)
+  }
+}
 
 const lastAdded = computed(() => {
   // Get the food items from the last diary entries that have a log
@@ -320,7 +424,7 @@ const save = async () => {
   }
 }
 
-const toggleIncomplete = async (event) => {
+const toggleIncomplete = async () => {
   if (!selectedDiaryEntry.value) return
   const entry = selectedDiaryEntry.value
   try {
@@ -329,7 +433,7 @@ const toggleIncomplete = async (event) => {
       date: entry.date,
       phe: entry.phe ?? 0,
       kcal: entry.kcal ?? 0,
-      incomplete: event.target.checked
+      incomplete: !entry.incomplete
     })
   } catch (error) {
     console.error('Toggle incomplete error:', error)
@@ -344,6 +448,12 @@ const prevDay = () => {
 const nextDay = () => {
   const currentDate = parseISO(date.value)
   date.value = format(addDays(currentDate, 1), 'yyyy-MM-dd')
+}
+
+const isToday = computed(() => date.value === format(new Date(), 'yyyy-MM-dd'))
+
+const goToday = () => {
+  date.value = format(new Date(), 'yyyy-MM-dd')
 }
 
 // Watchers
@@ -439,46 +549,169 @@ defineOgImage('NuxtSeo', {
         >
           <LucideChevronRight class="h-6 w-6" aria-hidden="true" />
         </button>
+        <button
+          :disabled="isToday"
+          class="rounded-lg bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 disabled:cursor-default disabled:opacity-40 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+          @click="goToday"
+        >
+          {{ $t('common.today') }}
+        </button>
       </div>
 
-      <div class="mb-6 py-3 px-3 bg-gray-100 dark:bg-gray-900 rounded-xl shadow-inner">
-        <div class="text-sm flex justify-between">
-          <span>{{ pheResult }} Phe {{ $t('app.total') }}</span>
-          <span v-if="settings?.maxPhe"
-            >{{ settings.maxPhe - pheResult }} Phe {{ $t('app.left') }} ({{
-              Math.round(((pheResult * 100) / settings.maxPhe - 100) * -1)
-            }}%)</span
+      <div class="relative mb-6 py-3 px-3 bg-gray-100 dark:bg-gray-900 rounded-xl shadow-inner">
+        <!-- Header: label + view toggle (progress bars vs. circles) -->
+        <div class="flex items-center justify-between mb-2">
+          <h2
+            class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
           >
-          <NuxtLink v-if="!settings?.maxPhe" :to="$localePath('settings')">{{
-            $t('diary.set-phe')
-          }}</NuxtLink>
+            {{ $t('diary.progress') }}
+          </h2>
+          <div class="inline-flex rounded-lg bg-black/5 dark:bg-white/10 p-0.5">
+            <button
+              type="button"
+              :aria-label="$t('diary.progress-bars')"
+              :title="$t('diary.progress-bars')"
+              :aria-pressed="progressStyle === 'bars'"
+              class="rounded-md p-1.5 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+              :class="
+                progressStyle === 'bars'
+                  ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+              "
+              @click="setProgressStyle('bars')"
+            >
+              <LucideAlignJustify class="h-4 w-4" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              :aria-label="$t('diary.progress-circles')"
+              :title="$t('diary.progress-circles')"
+              :aria-pressed="progressStyle === 'circles'"
+              class="rounded-md p-1.5 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+              :class="
+                progressStyle === 'circles'
+                  ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+              "
+              @click="setProgressStyle('circles')"
+            >
+              <LucideCircleGauge class="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
         </div>
-        <div
-          class="relative w-full bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden h-1 mt-2"
-        >
+
+        <!-- Circles view -->
+        <div v-if="progressStyle === 'circles'" class="grid grid-cols-2 gap-2">
+          <div class="flex items-center gap-2 sm:justify-center sm:gap-6">
+            <template v-if="settings?.maxPhe">
+              <ClientOnly>
+                <apexchart
+                  :key="`phe-${phePercent}-${circleSize}`"
+                  type="radialBar"
+                  :width="circleSize"
+                  :height="circleSize"
+                  :options="pheCircleOptions"
+                  :series="[pheCircleSeries]"
+                />
+                <template #fallback>
+                  <div class="h-22 w-22 sm:h-23 sm:w-23" />
+                </template>
+              </ClientOnly>
+              <div class="min-w-0 sm:w-24">
+                <p class="text-sm font-medium leading-tight text-gray-900 dark:text-gray-300">
+                  Phe
+                </p>
+                <p class="text-xs leading-tight text-gray-500 dark:text-gray-400">
+                  {{ pheResult }} / {{ settings.maxPhe }}
+                </p>
+              </div>
+            </template>
+            <NuxtLink
+              v-else
+              class="text-xs font-medium text-sky-600 hover:underline dark:text-sky-400"
+              :to="$localePath('settings')"
+              >{{ $t('diary.set-phe') }}</NuxtLink
+            >
+          </div>
+          <div class="flex items-center gap-2 sm:justify-center sm:gap-6">
+            <template v-if="settings?.maxKcal">
+              <ClientOnly>
+                <apexchart
+                  :key="`kcal-${kcalPercent}-${circleSize}`"
+                  type="radialBar"
+                  :width="circleSize"
+                  :height="circleSize"
+                  :options="kcalCircleOptions"
+                  :series="[kcalCircleSeries]"
+                />
+                <template #fallback>
+                  <div class="h-22 w-22 sm:h-23 sm:w-23" />
+                </template>
+              </ClientOnly>
+              <div class="min-w-0 sm:w-24">
+                <p class="text-sm font-medium leading-tight text-gray-900 dark:text-gray-300">
+                  {{ $t('common.kcal') }}
+                </p>
+                <p class="text-xs leading-tight text-gray-500 dark:text-gray-400">
+                  {{ kcalResult }} / {{ settings.maxKcal }}
+                </p>
+              </div>
+            </template>
+            <NuxtLink
+              v-else
+              class="text-xs font-medium text-sky-600 hover:underline dark:text-sky-400"
+              :to="$localePath('settings')"
+              >{{ $t('diary.set-kcal') }}</NuxtLink
+            >
+          </div>
+        </div>
+
+        <!-- Bars view -->
+        <div v-else class="py-2">
+          <div class="text-sm flex justify-between">
+            <span>{{ pheResult }} Phe {{ $t('app.total') }}</span>
+            <span v-if="settings?.maxPhe"
+              >{{ settings.maxPhe - pheResult }} Phe {{ $t('app.left') }} ({{
+                Math.round(((pheResult * 100) / settings.maxPhe - 100) * -1)
+              }}%)</span
+            >
+            <NuxtLink
+              v-if="!settings?.maxPhe"
+              class="font-medium text-sky-600 hover:underline dark:text-sky-400"
+              :to="$localePath('settings')"
+              >{{ $t('diary.set-phe') }}</NuxtLink
+            >
+          </div>
           <div
-            class="bg-sky-500 h-full rounded-full transition-[width] duration-500 ease-out"
-            :style="{ width: `${(pheResult * 100) / (settings?.maxPhe || 1)}%` }"
-          />
-        </div>
-        <div class="text-sm flex justify-between mt-2">
-          <span>{{ kcalResult }} {{ $t('common.kcal') }} {{ $t('app.total') }}</span>
-          <span v-if="settings?.maxKcal"
-            >{{ settings.maxKcal - kcalResult }} {{ $t('common.kcal') }} {{ $t('app.left') }} ({{
-              Math.round(((kcalResult * 100) / settings.maxKcal - 100) * -1)
-            }}%)</span
+            class="relative w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden h-1 mt-2"
           >
-          <NuxtLink v-if="!settings?.maxKcal" :to="$localePath('settings')">{{
-            $t('diary.set-kcal')
-          }}</NuxtLink>
-        </div>
-        <div
-          class="relative w-full bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden h-1 mt-2"
-        >
+            <div
+              class="bg-sky-500 h-full rounded-full transition-[width] duration-500 ease-out"
+              :style="{ width: `${(pheResult * 100) / (settings?.maxPhe || 1)}%` }"
+            />
+          </div>
+          <div class="text-sm flex justify-between mt-2">
+            <span>{{ kcalResult }} {{ $t('common.kcal') }} {{ $t('app.total') }}</span>
+            <span v-if="settings?.maxKcal"
+              >{{ settings.maxKcal - kcalResult }} {{ $t('common.kcal') }} {{ $t('app.left') }} ({{
+                Math.round(((kcalResult * 100) / settings.maxKcal - 100) * -1)
+              }}%)</span
+            >
+            <NuxtLink
+              v-if="!settings?.maxKcal"
+              class="font-medium text-sky-600 hover:underline dark:text-sky-400"
+              :to="$localePath('settings')"
+              >{{ $t('diary.set-kcal') }}</NuxtLink
+            >
+          </div>
           <div
-            class="bg-sky-500 h-full rounded-full transition-[width] duration-500 ease-out"
-            :style="{ width: `${(kcalResult * 100) / (settings?.maxKcal || 1)}%` }"
-          />
+            class="relative w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden h-1 mt-2"
+          >
+            <div
+              class="bg-sky-500 h-full rounded-full transition-[width] duration-500 ease-out"
+              :style="{ width: `${(kcalResult * 100) / (settings?.maxKcal || 1)}%` }"
+            />
+          </div>
         </div>
       </div>
 
@@ -644,22 +877,34 @@ defineOgImage('NuxtSeo', {
         />
       </div>
 
-      <div v-if="selectedDiaryEntry" class="mt-6 flex items-start">
-        <div class="flex h-6 items-center">
-          <input
-            id="diary-day-incomplete"
-            name="diary-day-incomplete"
-            type="checkbox"
-            :checked="!!selectedDiaryEntry.incomplete"
-            class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
-            @change="toggleIncomplete"
+      <div v-if="selectedDiaryEntry" class="mt-6 flex items-center">
+        <button
+          id="diary-day-incomplete"
+          type="button"
+          role="switch"
+          :aria-checked="!!selectedDiaryEntry.incomplete"
+          aria-labelledby="diary-day-incomplete-label"
+          :class="[
+            !!selectedDiaryEntry.incomplete ? 'bg-sky-600' : 'bg-gray-200 dark:bg-gray-700',
+            'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600'
+          ]"
+          @click="toggleIncomplete"
+        >
+          <span
+            aria-hidden="true"
+            :class="[
+              !!selectedDiaryEntry.incomplete ? 'translate-x-4' : 'translate-x-0',
+              'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+            ]"
           />
-        </div>
-        <div class="ml-3 text-sm leading-6">
-          <label for="diary-day-incomplete" class="font-medium text-gray-900 dark:text-gray-300">
-            {{ $t('diet-report.day-incomplete') }}
-          </label>
-        </div>
+        </button>
+        <span
+          id="diary-day-incomplete-label"
+          class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
+          @click="toggleIncomplete"
+        >
+          {{ $t('diet-report.day-incomplete') }}
+        </span>
       </div>
 
       <p v-if="!license" class="mt-6 text-sm">

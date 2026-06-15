@@ -151,6 +151,7 @@ export const SettingsUpdateSchema = z.object({
   maxPhe: z.coerce.number().nonnegative('Max Phe must be non-negative').nullable().optional(),
   maxKcal: z.coerce.number().nonnegative('Max Kcal must be non-negative').nullable().optional(),
   labUnit: z.enum(['mgdl', 'umoll']).optional(),
+  progressStyle: z.enum(['bars', 'circles']).optional(),
   license: z.string().nullable().optional()
 })
 

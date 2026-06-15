@@ -16,6 +16,7 @@ const defaultSettings = {
   maxPhe: null,
   maxKcal: null,
   labUnit: 'mgdl',
+  progressStyle: 'circles',
   license: null,
   healthDataConsent: false,
   healthDataConsentDate: null,

@@ -389,6 +389,7 @@ export const useApi = () => {
     maxPhe?: number | null
     maxKcal?: number | null
     labUnit?: 'mgdl' | 'umoll'
+    progressStyle?: 'bars' | 'circles'
     license?: string | null
   }): Promise<{ success: boolean }> => {
     try {

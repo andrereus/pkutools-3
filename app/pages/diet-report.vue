@@ -1081,21 +1081,34 @@ defineOgImage('NuxtSeo', {
           </tr>
         </DataTable>
 
-        <div class="flex items-start mb-2">
-          <div class="flex h-6 items-center">
-            <input
-              id="day-incomplete"
-              v-model="editedItem.incomplete"
-              name="day-incomplete"
-              type="checkbox"
-              class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
+        <div class="flex items-center mb-2">
+          <button
+            id="day-incomplete"
+            type="button"
+            role="switch"
+            :aria-checked="!!editedItem.incomplete"
+            aria-labelledby="day-incomplete-label"
+            :class="[
+              editedItem.incomplete ? 'bg-sky-600' : 'bg-gray-200 dark:bg-gray-700',
+              'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600'
+            ]"
+            @click="editedItem.incomplete = !editedItem.incomplete"
+          >
+            <span
+              aria-hidden="true"
+              :class="[
+                editedItem.incomplete ? 'translate-x-4' : 'translate-x-0',
+                'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+              ]"
             />
-          </div>
-          <div class="ml-3 text-sm leading-6">
-            <label for="day-incomplete" class="font-medium text-gray-900 dark:text-gray-300">
-              {{ $t('diet-report.day-incomplete') }}
-            </label>
-          </div>
+          </button>
+          <span
+            id="day-incomplete-label"
+            class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
+            @click="editedItem.incomplete = !editedItem.incomplete"
+          >
+            {{ $t('diet-report.day-incomplete') }}
+          </span>
         </div>
       </ModalDialog>
 
