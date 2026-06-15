@@ -27,6 +27,23 @@ const confirm = useConfirm()
 const { isPremium, isPremiumAI } = useLicense()
 const { saveLabValue, updateLabValue, deleteLabValue } = useApi()
 
+// Reactive dark-mode flag so the charts (incl. the toolbar menu) re-theme when
+// the theme is toggled, instead of only after a page refresh.
+const isDark = ref(
+  typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+)
+let themeObserver = null
+onMounted(() => {
+  const root = document.documentElement
+  themeObserver = new MutationObserver(() => {
+    isDark.value = root.classList.contains('dark')
+  })
+  themeObserver.observe(root, { attributes: true, attributeFilter: ['class'] })
+})
+onUnmounted(() => {
+  themeObserver?.disconnect()
+})
+
 // Reactive state
 const editedIndex = ref(-1)
 const editedKey = ref(null)
@@ -233,7 +250,7 @@ const chartOptions = computed(() => {
       min: 0
     },
     theme: {
-      mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+      mode: isDark.value ? 'dark' : 'light'
     },
     colors: ['#0ea5e9']
   }
@@ -290,7 +307,7 @@ const chartOptionsTyrosine = computed(() => {
       min: 0
     },
     theme: {
-      mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+      mode: isDark.value ? 'dark' : 'light'
     },
     colors: ['#d97706']
   }
@@ -497,6 +514,7 @@ defineOgImage('NuxtSeo', {
             {{ $t('blood-values.phe-header') }}
           </p>
           <apexchart
+            :key="`phe-${isDark}`"
             type="area"
             height="250"
             :options="chartOptions"
@@ -507,6 +525,7 @@ defineOgImage('NuxtSeo', {
             {{ $t('blood-values.tyrosine-header') }}
           </p>
           <apexchart
+            :key="`tyrosine-${isDark}`"
             type="area"
             height="250"
             :options="chartOptionsTyrosine"

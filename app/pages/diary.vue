@@ -165,12 +165,18 @@ const kcalPercent = computed(() =>
 const pheRemaining = computed(() => (settings.value?.maxPhe ?? 0) - pheResult.value)
 const kcalRemaining = computed(() => (settings.value?.maxKcal ?? 0) - kcalResult.value)
 
+// Reactive dark-mode flag (kept in sync with the <html> class by an observer in
+// onMounted). Reading the DOM class directly inside the options isn't reactive,
+// so without this the rings wouldn't re-theme until a page refresh.
+const isDark = ref(
+  typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+)
+
 // Radial bar options shared by both circles, themed for the current color mode.
 // When over budget the track shows the full sky ring (100% reached) and the
 // overage continues on top in a darker sky, conveying how far past the limit.
 const buildCircleOptions = (label, percent, size) => {
-  const dark =
-    typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+  const dark = isDark.value
   const over = percent > 100
   const small = size < 96
   const sky = '#0ea5e9'
@@ -236,13 +242,21 @@ let circleMq = null
 const applyCircleSize = () => {
   if (circleMq) circleSize.value = circleMq.matches ? 92 : 88
 }
+let themeObserver = null
 onMounted(() => {
   circleMq = window.matchMedia('(min-width: 640px)')
   applyCircleSize()
   circleMq.addEventListener('change', applyCircleSize)
+
+  const root = document.documentElement
+  themeObserver = new MutationObserver(() => {
+    isDark.value = root.classList.contains('dark')
+  })
+  themeObserver.observe(root, { attributes: true, attributeFilter: ['class'] })
 })
 onUnmounted(() => {
   if (circleMq) circleMq.removeEventListener('change', applyCircleSize)
+  themeObserver?.disconnect()
 })
 
 const setProgressStyle = (style) => {
@@ -615,7 +629,7 @@ defineOgImage('NuxtSeo', {
             <template v-if="settings?.maxPhe">
               <ClientOnly>
                 <apexchart
-                  :key="`phe-${phePercent}-${circleSize}`"
+                  :key="`phe-${phePercent}-${circleSize}-${isDark}`"
                   type="radialBar"
                   :width="circleSize"
                   :height="circleSize"
@@ -646,7 +660,7 @@ defineOgImage('NuxtSeo', {
             <template v-if="settings?.maxKcal">
               <ClientOnly>
                 <apexchart
-                  :key="`kcal-${kcalPercent}-${circleSize}`"
+                  :key="`kcal-${kcalPercent}-${circleSize}-${isDark}`"
                   type="radialBar"
                   :width="circleSize"
                   :height="circleSize"

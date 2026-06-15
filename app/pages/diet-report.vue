@@ -46,6 +46,23 @@ const editedItem = ref({ ...defaultItem })
 const selection = ref('all')
 const chartRef = ref(null)
 const chartRefKcal = ref(null)
+
+// Reactive dark-mode flag so the charts (incl. the toolbar menu) re-theme when
+// the theme is toggled, instead of only after a page refresh.
+const isDark = ref(
+  typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
+)
+let themeObserver = null
+onMounted(() => {
+  const root = document.documentElement
+  themeObserver = new MutationObserver(() => {
+    isDark.value = root.classList.contains('dark')
+  })
+  themeObserver.observe(root, { attributes: true, attributeFilter: ['class'] })
+})
+onUnmounted(() => {
+  themeObserver?.disconnect()
+})
 const defaultSelectionApplied = ref(false)
 
 // Smart default: when there are many days, default to a shorter range so the chart isn't crowded
@@ -283,7 +300,7 @@ const chartOptions = computed(() => {
       ]
     },
     theme: {
-      mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+      mode: isDark.value ? 'dark' : 'light'
     },
     colors: ['#0ea5e9']
   }
@@ -361,7 +378,7 @@ const chartOptionsKcal = computed(() => {
       ]
     },
     theme: {
-      mode: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+      mode: isDark.value ? 'dark' : 'light'
     },
     colors: ['#d97706']
   }
@@ -892,6 +909,7 @@ defineOgImage('NuxtSeo', {
           </p>
           <apexchart
             ref="chartRef"
+            :key="`phe-${isDark}`"
             type="area"
             height="250"
             :options="chartOptions"
@@ -903,6 +921,7 @@ defineOgImage('NuxtSeo', {
           </p>
           <apexchart
             ref="chartRefKcal"
+            :key="`kcal-${isDark}`"
             type="area"
             height="250"
             :options="chartOptionsKcal"
