@@ -22,8 +22,7 @@ const {
   updateFoodItemInDiary,
   deleteFoodItemFromDiary,
   updateDiaryDay,
-  updateGettingStarted,
-  updateSettings
+  updateGettingStarted
 } = useApi()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
 
@@ -148,8 +147,12 @@ const kcalResult = computed(() => {
   return selectedDayLog.value.reduce((sum, item) => sum + (Number(item.kcal) || 0), 0)
 })
 
-// Progress display style: 'bars' (default) or 'circles' (radial charts)
-const progressStyle = computed(() => settings.value?.progressStyle || 'circles')
+// Progress display style. `viewStyle` is a transient per-visit override that can
+// be toggled freely without changing the saved preference; while it's null the
+// view follows the saved default (settings.progressStyle), which is set in
+// Settings. Re-entering the diary remounts this page, so the default shows first.
+const viewStyle = ref(null)
+const progressStyle = computed(() => viewStyle.value ?? settings.value?.progressStyle ?? 'circles')
 
 const phePercent = computed(() =>
   settings.value?.maxPhe ? Math.round((pheResult.value * 100) / settings.value.maxPhe) : 0
@@ -242,17 +245,9 @@ onUnmounted(() => {
   if (circleMq) circleMq.removeEventListener('change', applyCircleSize)
 })
 
-const setProgressStyle = async (style) => {
-  if (progressStyle.value === style || !store.user) return
-  const previous = store.settings.progressStyle
-  // Optimistic update for instant feedback; Firebase binding keeps it in sync
-  store.settings.progressStyle = style
-  try {
-    await updateSettings({ progressStyle: style })
-  } catch (error) {
-    store.settings.progressStyle = previous
-    console.error('Update progress style error:', error)
-  }
+const setProgressStyle = (style) => {
+  // Transient: only changes what's shown this visit, not the saved default.
+  viewStyle.value = style
 }
 
 const lastAdded = computed(() => {
@@ -570,37 +565,47 @@ defineOgImage('NuxtSeo', {
           >
             {{ $t('diary.progress') }}
           </h2>
-          <div class="inline-flex rounded-lg bg-black/5 dark:bg-white/10 p-0.5">
-            <button
-              type="button"
-              :aria-label="$t('diary.progress-bars')"
-              :title="$t('diary.progress-bars')"
-              :aria-pressed="progressStyle === 'bars'"
-              class="rounded-md p-1.5 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
-              :class="
-                progressStyle === 'bars'
-                  ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-              "
-              @click="setProgressStyle('bars')"
+          <div class="flex items-center gap-2">
+            <div class="inline-flex rounded-lg bg-black/5 dark:bg-white/10 p-0.5">
+              <button
+                type="button"
+                :aria-label="$t('diary.progress-circles')"
+                :title="$t('diary.progress-circles')"
+                :aria-pressed="progressStyle === 'circles'"
+                class="rounded-md p-1.5 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+                :class="
+                  progressStyle === 'circles'
+                    ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                "
+                @click="setProgressStyle('circles')"
+              >
+                <LucideCircleGauge class="h-4 w-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                :aria-label="$t('diary.progress-bars')"
+                :title="$t('diary.progress-bars')"
+                :aria-pressed="progressStyle === 'bars'"
+                class="rounded-md p-1.5 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+                :class="
+                  progressStyle === 'bars'
+                    ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                "
+                @click="setProgressStyle('bars')"
+              >
+                <LucideAlignJustify class="h-4 w-4" aria-hidden="true" />
+              </button>
+            </div>
+            <NuxtLink
+              :to="$localePath('settings')"
+              :aria-label="$t('settings.title')"
+              :title="$t('settings.title')"
+              class="rounded-md p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
             >
-              <LucideAlignJustify class="h-4 w-4" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              :aria-label="$t('diary.progress-circles')"
-              :title="$t('diary.progress-circles')"
-              :aria-pressed="progressStyle === 'circles'"
-              class="rounded-md p-1.5 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
-              :class="
-                progressStyle === 'circles'
-                  ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-              "
-              @click="setProgressStyle('circles')"
-            >
-              <LucideCircleGauge class="h-4 w-4" aria-hidden="true" />
-            </button>
+              <LucideSettings class="h-4 w-4" aria-hidden="true" />
+            </NuxtLink>
           </div>
         </div>
 

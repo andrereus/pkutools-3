@@ -46,6 +46,11 @@ const unitOptions = computed(() => [
   { title: 'µmol/L', value: 'umoll' }
 ])
 
+const progressStyleOptions = computed(() => [
+  { title: t('settings.progress-style-circles'), value: 'circles' },
+  { title: t('settings.progress-style-bars'), value: 'bars' }
+])
+
 // Methods
 const { handleError } = useErrorHandler()
 
@@ -67,7 +72,8 @@ const save = async () => {
     await updateSettings({
       maxPhe: settings.value.maxPhe || 0,
       maxKcal: settings.value.maxKcal || 0,
-      labUnit: settings.value.labUnit
+      labUnit: settings.value.labUnit,
+      progressStyle: settings.value.progressStyle
     })
     notifications.success(t('settings.saved'))
   } catch (error) {
@@ -340,7 +346,9 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('getting-started.title') }}</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          {{ $t('getting-started.title') }}
+        </h3>
         <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ $t('getting-started.subtitle') }}
         </p>
@@ -351,7 +359,9 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('health-consent.title') }}</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          {{ $t('health-consent.title') }}
+        </h3>
         <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ $t('health-consent.subtitle') }}
         </p>
@@ -399,7 +409,9 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('health-consent.email-consent-title') }}</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          {{ $t('health-consent.email-consent-title') }}
+        </h3>
         <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ $t('health-consent.email-consent-subtitle') }}
         </p>
@@ -444,7 +456,9 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('settings.app-settings') }}</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          {{ $t('settings.app-settings') }}
+        </h3>
         <NumberInput
           v-model.number="settings.maxPhe"
           id-name="max-phe"
@@ -471,6 +485,17 @@ defineOgImage('NuxtSeo', {
         </SelectMenu>
 
         <SelectMenu
+          v-model="settings.progressStyle"
+          id-name="progress-style"
+          :label="$t('settings.progress-style')"
+          class="mb-4"
+        >
+          <option v-for="option in progressStyleOptions" :key="option.value" :value="option.value">
+            {{ option.title }}
+          </option>
+        </SelectMenu>
+
+        <SelectMenu
           v-model="selectedTheme"
           id-name="theme-select"
           :label="$t('settings.theme')"
@@ -492,7 +517,9 @@ defineOgImage('NuxtSeo', {
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">PKU Tools Premium</h3>
         <TiersCard align="left" class="mb-6" />
 
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('settings.license-heading') }}</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          {{ $t('settings.license-heading') }}
+        </h3>
         <TextInput
           v-model="settings.license"
           id-name="license"
@@ -506,7 +533,9 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('settings.change-username') }}</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          {{ $t('settings.change-username') }}
+        </h3>
         <p class="mb-4 text-gray-600 dark:text-gray-400">
           {{ $t('settings.change-username-info') }}
         </p>
@@ -523,7 +552,9 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('settings.change-password') }}</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          {{ $t('settings.change-password') }}
+        </h3>
         <p class="text-gray-600 dark:text-gray-400">
           {{ $t('settings.change-password-info') }}
         </p>
@@ -533,7 +564,9 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('settings.reset-heading') }}</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          {{ $t('settings.reset-heading') }}
+        </h3>
         <div class="space-y-3">
           <SecondaryButton :text="$t('settings.reset-diary')" @click="resetDiary" />
           <SecondaryButton :text="$t('settings.reset-blood-values')" @click="resetLabValues" />
@@ -545,7 +578,9 @@ defineOgImage('NuxtSeo', {
       <div
         class="rounded-xl bg-red-50 dark:bg-red-900/20 p-6 shadow-sm ring-1 ring-red-200 dark:ring-red-800 mb-8"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('settings.delete-account') }}</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+          {{ $t('settings.delete-account') }}
+        </h3>
         <p class="mb-4 text-red-700 dark:text-red-300">
           {{ $t('settings.delete-account-info') }}
         </p>
