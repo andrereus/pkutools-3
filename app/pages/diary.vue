@@ -158,9 +158,13 @@ const kcalPercent = computed(() =>
   settings.value?.maxKcal ? Math.round((kcalResult.value * 100) / settings.value.maxKcal) : 0
 )
 
+// Amount still left (positive) or over the limit (negative) for the circle captions
+const pheRemaining = computed(() => (settings.value?.maxPhe ?? 0) - pheResult.value)
+const kcalRemaining = computed(() => (settings.value?.maxKcal ?? 0) - kcalResult.value)
+
 // Radial bar options shared by both circles, themed for the current color mode.
 // When over budget the track shows the full sky ring (100% reached) and the
-// overage continues on top in red, so the circle conveys how far past the limit.
+// overage continues on top in a darker sky, conveying how far past the limit.
 const buildCircleOptions = (label, percent, size) => {
   const dark =
     typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
@@ -619,10 +623,10 @@ defineOgImage('NuxtSeo', {
               </ClientOnly>
               <div class="min-w-0 sm:w-24">
                 <p class="text-sm font-medium leading-tight text-gray-900 dark:text-gray-300">
-                  Phe
+                  {{ Math.abs(pheRemaining) }} Phe
                 </p>
-                <p class="text-xs leading-tight text-gray-500 dark:text-gray-400">
-                  {{ pheResult }} / {{ settings.maxPhe }}
+                <p class="text-sm font-medium leading-tight text-gray-500 dark:text-gray-400">
+                  {{ pheRemaining < 0 ? $t('app.over') : $t('app.left') }}
                 </p>
               </div>
             </template>
@@ -650,10 +654,10 @@ defineOgImage('NuxtSeo', {
               </ClientOnly>
               <div class="min-w-0 sm:w-24">
                 <p class="text-sm font-medium leading-tight text-gray-900 dark:text-gray-300">
-                  {{ $t('common.kcal') }}
+                  {{ Math.abs(kcalRemaining) }} {{ $t('common.kcal') }}
                 </p>
-                <p class="text-xs leading-tight text-gray-500 dark:text-gray-400">
-                  {{ kcalResult }} / {{ settings.maxKcal }}
+                <p class="text-sm font-medium leading-tight text-gray-500 dark:text-gray-400">
+                  {{ kcalRemaining < 0 ? $t('app.over') : $t('app.left') }}
                 </p>
               </div>
             </template>
@@ -671,9 +675,8 @@ defineOgImage('NuxtSeo', {
           <div class="text-sm flex justify-between">
             <span>{{ pheResult }} Phe {{ $t('app.total') }}</span>
             <span v-if="settings?.maxPhe"
-              >{{ settings.maxPhe - pheResult }} Phe {{ $t('app.left') }} ({{
-                Math.round(((pheResult * 100) / settings.maxPhe - 100) * -1)
-              }}%)</span
+              >{{ Math.abs(pheRemaining) }} Phe
+              {{ pheRemaining < 0 ? $t('app.over') : $t('app.left') }}</span
             >
             <NuxtLink
               v-if="!settings?.maxPhe"
@@ -693,9 +696,8 @@ defineOgImage('NuxtSeo', {
           <div class="text-sm flex justify-between mt-2">
             <span>{{ kcalResult }} {{ $t('common.kcal') }} {{ $t('app.total') }}</span>
             <span v-if="settings?.maxKcal"
-              >{{ settings.maxKcal - kcalResult }} {{ $t('common.kcal') }} {{ $t('app.left') }} ({{
-                Math.round(((kcalResult * 100) / settings.maxKcal - 100) * -1)
-              }}%)</span
+              >{{ Math.abs(kcalRemaining) }} {{ $t('common.kcal') }}
+              {{ kcalRemaining < 0 ? $t('app.over') : $t('app.left') }}</span
             >
             <NuxtLink
               v-if="!settings?.maxKcal"
