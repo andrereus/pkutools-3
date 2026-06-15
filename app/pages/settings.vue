@@ -338,6 +338,17 @@ defineOgImage('NuxtSeo', {
         >
           {{ $t('sign-in.signin-with-email') }}
         </NuxtLink>
+        <SelectMenu
+          v-model="selectedTheme"
+          id-name="theme-select"
+          :label="$t('settings.theme')"
+          class="mt-6"
+          @change="handleThemeChange"
+        >
+          <option v-for="option in themeOptions" :key="option.value" :value="option.value">
+            {{ option.title }}
+          </option>
+        </SelectMenu>
       </div>
     </div>
 

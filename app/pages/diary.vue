@@ -611,7 +611,7 @@ defineOgImage('NuxtSeo', {
 
         <!-- Circles view -->
         <div v-if="progressStyle === 'circles'" class="grid grid-cols-2 gap-2">
-          <div class="flex items-center gap-2 sm:justify-center sm:gap-6">
+          <div class="flex items-center gap-2 max-[400px]:gap-0 sm:justify-center sm:gap-6">
             <template v-if="settings?.maxPhe">
               <ClientOnly>
                 <apexchart
@@ -642,7 +642,7 @@ defineOgImage('NuxtSeo', {
               >{{ $t('diary.set-phe') }}</NuxtLink
             >
           </div>
-          <div class="flex items-center gap-2 sm:justify-center sm:gap-6">
+          <div class="flex items-center gap-2 max-[400px]:gap-0 sm:justify-center sm:gap-6">
             <template v-if="settings?.maxKcal">
               <ClientOnly>
                 <apexchart
