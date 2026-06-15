@@ -528,6 +528,13 @@ defineOgImage('NuxtSeo', {
     <div v-if="userIsAuthenticated">
       <div class="flex justify-between items-center gap-4 mb-6">
         <button
+          :disabled="isToday"
+          class="rounded-lg bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 disabled:cursor-default disabled:opacity-40 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+          @click="goToday"
+        >
+          {{ $t('common.today') }}
+        </button>
+        <button
           :aria-label="$t('common.previous')"
           class="p-1 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
           @click="prevDay"
@@ -547,13 +554,6 @@ defineOgImage('NuxtSeo', {
           @click="nextDay"
         >
           <LucideChevronRight class="h-6 w-6" aria-hidden="true" />
-        </button>
-        <button
-          :disabled="isToday"
-          class="rounded-lg bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/10 disabled:cursor-default disabled:opacity-40 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
-          @click="goToday"
-        >
-          {{ $t('common.today') }}
         </button>
       </div>
 
