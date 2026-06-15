@@ -25,9 +25,15 @@ defineProps(['headers'])
                 </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+            <TransitionGroup
+              tag="tbody"
+              class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900"
+              enter-active-class="transition duration-300 ease-out"
+              enter-from-class="opacity-0 translate-y-1"
+              enter-to-class="opacity-100 translate-y-0"
+            >
               <slot />
-            </tbody>
+            </TransitionGroup>
           </table>
         </div>
       </div>

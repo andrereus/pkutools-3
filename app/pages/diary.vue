@@ -457,7 +457,7 @@ defineOgImage('NuxtSeo', {
           class="relative w-full bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden h-1 mt-2"
         >
           <div
-            class="bg-sky-500 h-full rounded-full"
+            class="bg-sky-500 h-full rounded-full transition-[width] duration-500 ease-out"
             :style="{ width: `${(pheResult * 100) / (settings?.maxPhe || 1)}%` }"
           />
         </div>
@@ -476,7 +476,7 @@ defineOgImage('NuxtSeo', {
           class="relative w-full bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden h-1 mt-2"
         >
           <div
-            class="bg-sky-500 h-full rounded-full"
+            class="bg-sky-500 h-full rounded-full transition-[width] duration-500 ease-out"
             :style="{ width: `${(kcalResult * 100) / (settings?.maxKcal || 1)}%` }"
           />
         </div>
