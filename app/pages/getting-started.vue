@@ -113,7 +113,9 @@ defineOgImage('NuxtSeo', {
 <template>
   <div class="max-w-2xl mx-auto px-2 py-4">
     <header class="text-center mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+      <h1
+        class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl mb-4"
+      >
         {{ $t('getting-started.title') }}
       </h1>
       <p class="text-lg text-gray-600 dark:text-gray-400">
@@ -125,7 +127,7 @@ defineOgImage('NuxtSeo', {
     <div
       class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
     >
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
         {{ $t('health-consent.title') }}
       </h2>
 

@@ -419,6 +419,7 @@ defineOgImage('NuxtSeo', {
     <div v-if="userIsAuthenticated">
       <div class="flex justify-between items-center gap-4 mb-6">
         <button
+          :aria-label="$t('common.previous')"
           class="p-1 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
           @click="prevDay"
         >
@@ -432,6 +433,7 @@ defineOgImage('NuxtSeo', {
           class="flex-1 block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
         />
         <button
+          :aria-label="$t('common.next')"
           class="p-1 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
           @click="nextDay"
         >
@@ -490,14 +492,14 @@ defineOgImage('NuxtSeo', {
           class="h-8 w-8 text-sky-500 dark:text-sky-400 mb-4"
           aria-hidden="true"
         />
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
           <template v-if="userName">
             {{ $t(selectedGreeting.greeting, { name: userName }) }}
           </template>
           <template v-else>
             {{ $t(selectedGreeting.greeting, { name: $t('diary.empty-state.friend') }) }}
           </template>
-        </h3>
+        </h2>
         <p class="text-sm text-gray-600 dark:text-gray-400 max-w-md">
           {{ $t(selectedGreeting.message) }}
         </p>

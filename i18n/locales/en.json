@@ -52,6 +52,10 @@
     "optional": "Optional",
     "date": "Date",
     "undo": "Undo",
+    "previous": "Previous",
+    "next": "Next",
+    "show-password": "Show password",
+    "hide-password": "Hide password",
     "no-entries": "No entries",
     "page": "Page",
     "of": "of"

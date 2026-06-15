@@ -35,7 +35,9 @@ defineOgImage('NuxtSeo', {
     <!-- prettier-ignore -->
     <p class="mb-8">{{ $t("help.contact-me") }} {{ part1 }}@<span class="hidden">null</span>{{ part2 }}.{{ part3 }}</p>
 
-    <PageHeader :title="$t('help.install')" class="mt-6" />
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6 mt-6">
+      {{ $t('help.install') }}
+    </h2>
 
     <p>{{ $t('help.install-p1') }}</p>
     <br />

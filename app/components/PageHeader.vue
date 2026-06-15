@@ -3,7 +3,7 @@ defineProps(['title'])
 </script>
 
 <template>
-  <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+  <h1 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
     {{ title }}
-  </h2>
+  </h1>
 </template>

@@ -520,6 +520,7 @@ defineOgImage('NuxtSeo', {
             type="button"
             class="absolute -top-2 -right-2 rounded-full bg-red-500 p-0.5 text-white shadow-xs hover:bg-red-600 cursor-pointer"
             :title="$t('phe-calculator.remove-photo')"
+            :aria-label="$t('phe-calculator.remove-photo')"
             @click="removeImage"
           >
             <LucideX class="h-3.5 w-3.5" />

@@ -204,7 +204,7 @@ defineOgImage('NuxtSeo', {
           >
             {{ $t('app.description') }}
           </h1>
-          <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
+          <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400">
             {{ $t('app.long-description') }}
           </p>
         </div>
@@ -248,7 +248,7 @@ defineOgImage('NuxtSeo', {
                 </div>
                 {{ $t(feature.name) }}
               </dt>
-              <dd class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-300">
+              <dd class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-400">
                 {{ $t(feature.description) }}
               </dd>
             </NuxtLink>
@@ -263,7 +263,7 @@ defineOgImage('NuxtSeo', {
           <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
             {{ $t('home.compare') }}
           </h2>
-          <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
+          <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-400">
             {{ $t('home.compare-desc') }}
           </p>
         </div>
@@ -375,7 +375,7 @@ defineOgImage('NuxtSeo', {
             <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
               {{ $t('home.phe-anywhere') }}
             </h2>
-            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
+            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-400">
               {{ $t('home.phe-anywhere-desc') }}
             </p>
           </div>
@@ -392,7 +392,7 @@ defineOgImage('NuxtSeo', {
             <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
               {{ $t('home.weight-photo') }}
             </h2>
-            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
+            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-400">
               {{ $t('home.weight-photo-desc') }}
             </p>
           </div>
@@ -437,7 +437,7 @@ defineOgImage('NuxtSeo', {
             <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
               {{ $t('home.diet-mgmt') }}
             </h2>
-            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
+            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-400">
               {{ $t('home.diet-mgmt-desc') }}
             </p>
           </div>
@@ -552,7 +552,7 @@ defineOgImage('NuxtSeo', {
             <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
               {{ $t('home.insights') }}
             </h2>
-            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-300">
+            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-400">
               {{ $t('home.insights-desc') }}
             </p>
           </div>
@@ -577,7 +577,7 @@ defineOgImage('NuxtSeo', {
             <h3 class="mt-5 text-base font-semibold leading-7 text-gray-900 dark:text-white">
               {{ $t('home.trust-open') }}
             </h3>
-            <p class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-300">
+            <p class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-400">
               {{ $t('home.trust-open-desc') }}
             </p>
             <a
@@ -596,7 +596,7 @@ defineOgImage('NuxtSeo', {
             <h3 class="mt-5 text-base font-semibold leading-7 text-gray-900 dark:text-white">
               {{ $t('home.trust-independent') }}
             </h3>
-            <p class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-300">
+            <p class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-400">
               {{ $t('home.trust-independent-desc') }}
             </p>
           </div>
@@ -607,7 +607,7 @@ defineOgImage('NuxtSeo', {
             <h3 class="mt-5 text-base font-semibold leading-7 text-gray-900 dark:text-white">
               {{ $t('home.trust-private') }}
             </h3>
-            <p class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-300">
+            <p class="mt-2 text-base leading-7 text-gray-600 dark:text-gray-400">
               {{ $t('home.trust-private-desc') }}
             </p>
             <NuxtLink
@@ -625,7 +625,7 @@ defineOgImage('NuxtSeo', {
       class="w-screen ml-[calc(50%-50vw)] bg-sky-50 dark:bg-sky-900/40 pt-10 sm:pt-12 pb-14 sm:pb-20"
     >
       <div class="mx-auto max-w-2xl px-6 lg:px-8 text-center">
-        <p class="text-lg leading-8 text-gray-600 dark:text-gray-300">
+        <p class="text-lg leading-8 text-gray-600 dark:text-gray-400">
           {{ $t('home.about-description') }}
         </p>
       </div>
@@ -642,7 +642,7 @@ defineOgImage('NuxtSeo', {
         <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
           {{ $t('home.signin') }}
         </h2>
-        <p class="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-300">
+        <p class="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-400">
           {{ $t('home.signin-desc') }}
         </p>
         <div
@@ -670,7 +670,7 @@ defineOgImage('NuxtSeo', {
         <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
           {{ $t('home.install') }}
         </h2>
-        <p class="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-300">
+        <p class="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-600 dark:text-gray-400">
           {{ $t('home.install-desc') }}
         </p>
         <div class="mt-6 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">

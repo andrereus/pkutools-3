@@ -52,6 +52,10 @@
     "optional": "En option",
     "date": "Date",
     "undo": "Annuler",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "show-password": "Afficher le mot de passe",
+    "hide-password": "Masquer le mot de passe",
     "no-entries": "Aucune entrée",
     "page": "Page",
     "of": "de"

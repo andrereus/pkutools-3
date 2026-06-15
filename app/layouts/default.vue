@@ -249,7 +249,7 @@ const handleCookieConsent = (consent) => {
                 leave-to-class="transform opacity-0 scale-95"
               >
                 <HeadlessMenuItems
-                  class="absolute left-0 z-10 mt-4 w-64 origin-top-left overflow-hidden rounded-xl bg-white py-1 shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700"
+                  class="absolute left-0 z-10 mt-4 w-64 origin-top-left overflow-hidden rounded-xl bg-white py-1 shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-900 dark:ring-gray-700"
                 >
                   <HeadlessMenuItem
                     v-for="item in navigation"
@@ -318,7 +318,7 @@ const handleCookieConsent = (consent) => {
                 leave-to-class="transform opacity-0 scale-95"
               >
                 <HeadlessMenuItems
-                  class="absolute right-0 z-10 mt-4 w-40 origin-top-right overflow-hidden rounded-xl bg-white py-1 shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700"
+                  class="absolute right-0 z-10 mt-4 w-40 origin-top-right overflow-hidden rounded-xl bg-white py-1 shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-900 dark:ring-gray-700"
                 >
                   <HeadlessMenuItem
                     v-for="localeItem in locales"
@@ -379,7 +379,7 @@ const handleCookieConsent = (consent) => {
                 leave-to-class="transform opacity-0 scale-95"
               >
                 <HeadlessMenuItems
-                  class="absolute right-0 z-10 mt-4 w-64 origin-top-right divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-800 dark:ring-gray-700 dark:divide-gray-700"
+                  class="absolute right-0 z-10 mt-4 w-64 origin-top-right divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-gray-300 focus:outline-hidden dark:bg-gray-900 dark:ring-gray-700 dark:divide-gray-700"
                 >
                   <div class="py-1">
                     <HeadlessMenuItem v-if="!userIsAuthenticated" v-slot="{ active, close }">
@@ -539,7 +539,7 @@ const handleCookieConsent = (consent) => {
       </main>
     </div>
 
-    <footer class="bg-white dark:bg-gray-800 hidden xl:block">
+    <footer class="bg-white dark:bg-gray-900 hidden xl:block">
       <div class="mx-auto max-w-7xl px-6 py-12 sm:py-12 lg:px-8 lg:py-12">
         <div class="xl:grid xl:grid-cols-3 xl:gap-8">
           <NuxtLink
@@ -652,7 +652,7 @@ const handleCookieConsent = (consent) => {
 
     <div
       v-if="showCookieBanner"
-      class="fixed bottom-22 lg:bottom-4 left-1/2 transform -translate-x-1/2 z-50 max-w-xl w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg rounded-xl px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+      class="fixed bottom-22 lg:bottom-4 left-1/2 transform -translate-x-1/2 z-50 max-w-xl w-full bg-white dark:bg-gray-900 ring-1 ring-gray-200 dark:ring-gray-700 shadow-lg rounded-xl px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
     >
       <span class="text-gray-800 dark:text-gray-100 text-sm">
         {{ $t('cookie-consent.message') }}

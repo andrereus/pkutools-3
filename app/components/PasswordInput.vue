@@ -40,13 +40,16 @@ watch(model, () => {
           spellcheck="false"
           @blur="validatePassword"
         />
-        <div
-          class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+        <button
+          type="button"
+          :aria-label="showPassword ? t('common.hide-password') : t('common.show-password')"
+          :aria-pressed="showPassword"
+          class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
           @click="showPassword = !showPassword"
         >
           <LucideEye v-if="showPassword" class="h-5 w-5 text-gray-400" aria-hidden="true" />
           <LucideEyeOff v-else class="h-5 w-5 text-gray-400" aria-hidden="true" />
-        </div>
+        </button>
       </div>
       <p v-if="errorMessage" class="text-red-600 text-sm mt-1.5">{{ errorMessage }}</p>
     </div>
