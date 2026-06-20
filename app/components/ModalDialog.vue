@@ -19,6 +19,9 @@ const emit = defineEmits(['close', 'edit', 'submit', 'delete'])
 // reactive flag so nuxt-headlessui can drive the open/close transitions.
 const show = ref(false)
 const errorMessage = ref('')
+// Neutral initial-focus target so headlessui doesn't autofocus the first input
+// (often a date picker, which pops the keyboard/picker on mobile).
+const initialFocusRef = ref(null)
 const notifications = useNotifications()
 let unregisterSink = null
 
@@ -96,7 +99,11 @@ function handleButtonClick(buttonType) {
 
 <template>
   <HeadlessTransitionRoot as="template" :show="show">
-    <HeadlessDialog class="relative z-60 dark:text-white" @close="handleDismiss">
+    <HeadlessDialog
+      class="relative z-60 dark:text-white"
+      :initial-focus="initialFocusRef"
+      @close="handleDismiss"
+    >
       <HeadlessTransitionChild
         as="template"
         enter="ease-out duration-300"
@@ -110,22 +117,20 @@ function handleButtonClick(buttonType) {
       </HeadlessTransitionChild>
 
       <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div
-          class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
-        >
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
           <HeadlessTransitionChild
             as="template"
             enter="ease-out duration-300"
-            enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            enter-to="opacity-100 translate-y-0 sm:scale-100"
+            enter-from="opacity-0 scale-95"
+            enter-to="opacity-100 scale-100"
             leave="ease-in duration-200"
-            leave-from="opacity-100 translate-y-0 sm:scale-100"
-            leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            leave-from="opacity-100 scale-100"
+            leave-to="opacity-0 scale-95"
           >
             <HeadlessDialogPanel
               class="relative transform overflow-hidden rounded-xl bg-white dark:bg-gray-900 px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 w-full max-w-md sm:max-w-lg sm:p-6"
             >
-              <div>
+              <div ref="initialFocusRef" tabindex="-1" class="focus:outline-none">
                 <div>
                   <HeadlessDialogTitle
                     as="h3"
