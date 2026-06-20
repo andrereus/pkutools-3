@@ -378,13 +378,15 @@ const close = () => {
   editedKey.value = null
 }
 
+const isSaving = ref(false)
+
 const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
   }
 
-  // Capture state before closing (needed to determine if editing or adding)
+  // Capture state (needed to determine if editing or adding)
   const isEditing = selectedDiaryEntry.value && editedIndex.value > -1
   const entryKey = selectedDiaryEntry.value?.['.key']
   const logIndex = editedIndex.value
@@ -406,34 +408,34 @@ const save = async () => {
     communityFoodKey: editedItem.value.communityFoodKey || null
   }
 
-  // Close dialog immediately for instant feedback
-  close()
-
+  isSaving.value = true
   try {
     newLogEntry = await ensureEmojiForLogEntry(newLogEntry)
 
     if (isEditing && entryKey && logIndex > -1) {
-      // Update existing item - use update API (validates server-side with Zod)
+      // Update existing item - validates server-side with Zod
       await updateFoodItemInDiary({
         entryKey: entryKey,
         logIndex: logIndex,
         entry: newLogEntry
       })
-      notifications.success(t('common.saved'))
     } else {
-      // Add new item - use save API (validates server-side with Zod)
-      // If communityFoodKey exists, pass it to track usage count
+      // Add new item - validates server-side with Zod
       await addFoodItemToDiary({
         date: entryDate,
         ...newLogEntry,
         // Pass communityFoodKey to increment usage count (will be stored in entry)
         communityFoodKey: newLogEntry.communityFoodKey || undefined
       })
-      notifications.success(t('common.saved'))
     }
+    notifications.success(t('common.saved'))
+    // Close only on success so the user's input is preserved when it fails
+    close()
   } catch (error) {
-    // Error handling is done in useApi composable
+    // Error shown by useApi composable; dialog stays open to fix the input
     console.error('Save error:', error)
+  } finally {
+    isSaving.value = false
   }
 }
 
@@ -823,6 +825,7 @@ defineOgImage('NuxtSeo', {
       <ModalDialog
         ref="dialog2"
         :title="formTitle"
+        :loading="isSaving"
         :buttons="[
           { label: $t('common.save'), type: 'submit', visible: true },
           { label: $t('common.delete'), type: 'delete', visible: editedIndex !== -1 },

@@ -1,64 +1,51 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
 import { LabValueUpdateSchema } from '../../types/schemas'
-import { handleServerError } from '../../utils/error-handler'
-import { getAuthenticatedUser } from '../../utils/auth'
-import { formatValidationError } from '../../utils/validation'
+import { defineAuthedHandler } from '../../utils/handler'
+import { validateBody } from '../../utils/validation'
 
-export default defineEventHandler(async (event) => {
-  try {
-    const userId = await getAuthenticatedUser(event)
-    const body = await readBody(event)
+export default defineAuthedHandler(async ({ event, userId }) => {
+  const { entryKey, data } = await validateBody(event, LabValueUpdateSchema)
 
-    // Validate input
-    const validation = LabValueUpdateSchema.safeParse(body)
-    if (!validation.success) {
-      formatValidationError(validation.error)
-    }
+  const db = getAdminDatabase()
+  const labValueRef = db.ref(`/${userId}/labValues/${entryKey}`)
+  const labValueSnapshot = await labValueRef.once('value')
+  const labValue = labValueSnapshot.val()
 
-    const { entryKey, data } = validation.data
+  if (!labValue) {
+    throw createError({
+      statusCode: 404,
+      message: 'Lab value entry not found'
+    })
+  }
 
-    const db = getAdminDatabase()
-    const labValueRef = db.ref(`/${userId}/labValues/${entryKey}`)
-    const labValueSnapshot = await labValueRef.once('value')
-    const labValue = labValueSnapshot.val()
+  // Check for duplicate date if date is being changed
+  if (data.date && data.date !== labValue.date) {
+    const duplicatesSnapshot = await db
+      .ref(`/${userId}/labValues`)
+      .orderByChild('date')
+      .equalTo(data.date)
+      .once('value')
 
-    if (!labValue) {
-      throw createError({
-        statusCode: 404,
-        message: 'Lab value entry not found'
-      })
-    }
-
-    // Check for duplicate date if date is being changed
-    if (data.date && data.date !== labValue.date) {
-      const duplicatesSnapshot = await db.ref(`/${userId}/labValues`)
-        .orderByChild('date')
-        .equalTo(data.date)
-        .once('value')
-
-      // Check if another entry with this date already exists (excluding current entry)
-      if (duplicatesSnapshot.exists()) {
-        const duplicates = duplicatesSnapshot.val()
-        for (const key of Object.keys(duplicates)) {
-          if (key !== entryKey) {
-            throw createError({
-              statusCode: 409,
-              message: 'An entry with this date already exists. Please edit the existing entry instead.'
-            })
-          }
+    // Check if another entry with this date already exists (excluding current entry)
+    if (duplicatesSnapshot.exists()) {
+      const duplicates = duplicatesSnapshot.val()
+      for (const key of Object.keys(duplicates)) {
+        if (key !== entryKey) {
+          throw createError({
+            statusCode: 409,
+            message:
+              'An entry with this date already exists. Please edit the existing entry instead.'
+          })
         }
       }
     }
+  }
 
-    // Update the entry
-    await labValueRef.update(data)
+  // Update the entry
+  await labValueRef.update(data)
 
-    return {
-      success: true,
-      key: entryKey
-    }
-  } catch (error: unknown) {
-    handleServerError(error)
+  return {
+    success: true,
+    key: entryKey
   }
 })
-

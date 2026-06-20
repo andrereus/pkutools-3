@@ -61,25 +61,24 @@ export const OwnFoodSaveSchema = OwnFoodSchema.extend({
 // Community Food Schemas
 // ============================================================================
 
-// Community food schema (for validation when creating/updating)
-// Note: hidden status is computed from score (score < -3), not stored
-export const CommunityFoodSchema = z.object({
-  name: z.string().min(1).max(200),
-  icon: z.string().nullable().optional(),
-  emoji: z.string().nullable().optional(),
-  phe: z.coerce.number().nonnegative(),
-  kcal: z.coerce.number().nonnegative(),
-  note: z.string().max(500).nullable().optional(),
-  language: z.enum(['en', 'de', 'es', 'fr']),
-  contributorId: z.string().min(1),
-  ownFoodKey: z.string().min(1),
-  createdAt: z.number(),
-  updatedAt: z.number().optional(), // Last update by contributor; missing on legacy records
-  likes: z.number().default(0),
-  dislikes: z.number().default(0),
-  score: z.number().default(0),
-  usageCount: z.number().default(0)
-})
+// Community food record shape, written to `communityFoods/<key>`.
+// Intentionally NOT a Zod schema: these records are assembled server-side (in
+// own-food save/update) from already-validated own-food input plus trusted
+// server values, so there is no separate trust boundary to re-validate here.
+// Kept as documentation of the stored shape:
+//   name           string (1–200)
+//   icon           string | null
+//   emoji          string | null
+//   phe            number >= 0
+//   kcal           number >= 0
+//   note           string (<= 500) | null
+//   language       'en' | 'de' | 'es' | 'fr'   (server-computed)
+//   contributorId  string                       (verified userId)
+//   ownFoodKey     string                       (server push key)
+//   createdAt      number                       (Date.now())
+//   updatedAt      number?                       (missing on legacy records)
+//   likes / dislikes / score / usageCount  number  (start at 0)
+// Hidden status is computed from score (score < -3), not stored.
 
 // Vote schema for community foods
 export const CommunityVoteSchema = z.object({

@@ -1,24 +1,16 @@
 import { getAdminDatabase, getAdminAuth } from '../../utils/firebase-admin'
-import { handleServerError } from '../../utils/error-handler'
-import { getAuthenticatedUser } from '../../utils/auth'
+import { defineAuthedHandler } from '../../utils/handler'
 
-export default defineEventHandler(async (event) => {
-  try {
-    const userId = await getAuthenticatedUser(event)
+export default defineAuthedHandler(async ({ userId }) => {
+  const db = getAdminDatabase()
+  const auth = getAdminAuth()
 
-    const db = getAdminDatabase()
-    const auth = getAdminAuth()
+  // Delete all user data from database
+  const userDataRef = db.ref(`/${userId}`)
+  await userDataRef.remove()
 
-    // Delete all user data from database
-    const userDataRef = db.ref(`/${userId}`)
-    await userDataRef.remove()
+  // Delete the user account from Firebase Auth
+  await auth.deleteUser(userId)
 
-    // Delete the user account from Firebase Auth
-    await auth.deleteUser(userId)
-
-    return { success: true }
-  } catch (error: unknown) {
-    handleServerError(error)
-  }
+  return { success: true }
 })
-

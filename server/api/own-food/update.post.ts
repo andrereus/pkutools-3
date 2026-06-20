@@ -1,15 +1,12 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
 import { OwnFoodUpdateSchema } from '../../types/schemas'
-import { handleServerError } from '../../utils/error-handler'
-import { getAuthenticatedUser } from '../../utils/auth'
-import { formatValidationError } from '../../utils/validation'
+import { defineAuthedHandler } from '../../utils/handler'
+import { validateBody } from '../../utils/validation'
 import { isCommunityFoodHidden } from '../../utils/community-food'
+import type { H3Event } from 'h3'
 
 // Helper to get user's language from request body or Accept-Language header (fallback)
-function getLanguage(
-  event: Parameters<typeof defineEventHandler>[0] extends (e: infer E) => unknown ? E : never,
-  bodyLocale?: string
-): 'en' | 'de' | 'es' | 'fr' {
+function getLanguage(event: H3Event, bodyLocale?: string): 'en' | 'de' | 'es' | 'fr' {
   // Prefer locale from request body (from frontend i18n)
   if (bodyLocale && ['en', 'de', 'es', 'fr'].includes(bodyLocale)) {
     return bodyLocale as 'en' | 'de' | 'es' | 'fr'
@@ -63,126 +60,113 @@ async function checkDuplicateCommunityFood(
   return false
 }
 
-export default defineEventHandler(async (event) => {
-  try {
-    const userId = await getAuthenticatedUser(event)
-    const body = await readBody(event)
+export default defineAuthedHandler(async ({ event, userId }) => {
+  const { entryKey, locale, data } = await validateBody(event, OwnFoodUpdateSchema)
 
-    // Validate input
-    const validation = OwnFoodUpdateSchema.safeParse(body)
-    if (!validation.success) {
-      formatValidationError(validation.error)
-    }
+  const db = getAdminDatabase()
+  const ownFoodRef = db.ref(`/${userId}/ownFood/${entryKey}`)
+  const ownFoodSnapshot = await ownFoodRef.once('value')
+  const ownFood = ownFoodSnapshot.val()
 
-    const { entryKey, locale, data } = validation.data
+  if (!ownFood) {
+    throw createError({
+      statusCode: 404,
+      message: 'Own food entry not found'
+    })
+  }
 
-    const db = getAdminDatabase()
-    const ownFoodRef = db.ref(`/${userId}/ownFood/${entryKey}`)
-    const ownFoodSnapshot = await ownFoodRef.once('value')
-    const ownFood = ownFoodSnapshot.val()
+  const wasShared = ownFood.shared === true
+  const willBeShared = data.shared === true
+  const existingCommunityKey = ownFood.communityKey || null
 
-    if (!ownFood) {
+  let communityKey: string | null = existingCommunityKey
+
+  // Handle sharing state changes
+  if (!wasShared && willBeShared) {
+    // Newly sharing - create community food entry
+    const language = getLanguage(event, locale)
+
+    // Check for duplicates
+    const isDuplicate = await checkDuplicateCommunityFood(db, data.name, data.phe, language)
+    if (isDuplicate) {
       throw createError({
-        statusCode: 404,
-        message: 'Own food entry not found'
+        statusCode: 409,
+        message: 'A similar food already exists in the community database'
       })
     }
 
-    const wasShared = ownFood.shared === true
-    const willBeShared = data.shared === true
-    const existingCommunityKey = ownFood.communityKey || null
+    const communityFoodRef = db.ref('communityFoods').push()
+    communityKey = communityFoodRef.key
 
-    let communityKey: string | null = existingCommunityKey
+    const now = Date.now()
+    const communityFoodData = {
+      name: data.name,
+      icon: data.icon || null,
+      emoji: data.emoji || null,
+      phe: data.phe,
+      kcal: data.kcal,
+      note: data.note || null,
+      language,
+      contributorId: userId,
+      ownFoodKey: entryKey,
+      createdAt: now,
+      updatedAt: now,
+      likes: 0,
+      dislikes: 0,
+      score: 0,
+      usageCount: 0
+    }
 
-    // Handle sharing state changes
-    if (!wasShared && willBeShared) {
-      // Newly sharing - create community food entry
-      const language = getLanguage(event, locale)
+    await communityFoodRef.set(communityFoodData)
+  } else if (wasShared && !willBeShared) {
+    // Unsharing - remove community food entry (voterIds deleted automatically as child)
+    if (existingCommunityKey) {
+      await db.ref(`communityFoods/${existingCommunityKey}`).remove()
+    }
+    communityKey = null
+  } else if (wasShared && willBeShared && existingCommunityKey) {
+    // Still shared - update community food entry
+    const communityFoodRef = db.ref(`communityFoods/${existingCommunityKey}`)
+    const communityFoodSnapshot = await communityFoodRef.once('value')
+    const existingCommunityFood = communityFoodSnapshot.val()
 
-      // Check for duplicates
-      const isDuplicate = await checkDuplicateCommunityFood(db, data.name, data.phe, language)
-      if (isDuplicate) {
-        throw createError({
-          statusCode: 409,
-          message: 'A similar food already exists in the community database'
-        })
-      }
+    if (existingCommunityFood) {
+      // Check if name, phe or kcal changed - reset votes if so
+      const nameChanged = existingCommunityFood.name !== data.name
+      const pheChanged = existingCommunityFood.phe !== data.phe
+      const kcalChanged = existingCommunityFood.kcal !== data.kcal
 
-      const communityFoodRef = db.ref('communityFoods').push()
-      communityKey = communityFoodRef.key
-
-      const now = Date.now()
-      const communityFoodData = {
+      const updateData: Record<string, unknown> = {
         name: data.name,
         icon: data.icon || null,
         emoji: data.emoji || null,
         phe: data.phe,
         kcal: data.kcal,
         note: data.note || null,
-        language,
-        contributorId: userId,
-        ownFoodKey: entryKey,
-        createdAt: now,
-        updatedAt: now,
-        likes: 0,
-        dislikes: 0,
-        score: 0,
-        usageCount: 0
+        updatedAt: Date.now()
       }
 
-      await communityFoodRef.set(communityFoodData)
-    } else if (wasShared && !willBeShared) {
-      // Unsharing - remove community food entry (voterIds deleted automatically as child)
-      if (existingCommunityKey) {
-        await db.ref(`communityFoods/${existingCommunityKey}`).remove()
+      if (nameChanged || pheChanged || kcalChanged) {
+        // Reset votes when name or nutritional values change
+        updateData.likes = 0
+        updateData.dislikes = 0
+        updateData.score = 0
+        updateData.voterIds = null // Clear all votes
       }
-      communityKey = null
-    } else if (wasShared && willBeShared && existingCommunityKey) {
-      // Still shared - update community food entry
-      const communityFoodRef = db.ref(`communityFoods/${existingCommunityKey}`)
-      const communityFoodSnapshot = await communityFoodRef.once('value')
-      const existingCommunityFood = communityFoodSnapshot.val()
 
-      if (existingCommunityFood) {
-        // Check if name, phe or kcal changed - reset votes if so
-        const nameChanged = existingCommunityFood.name !== data.name
-        const pheChanged = existingCommunityFood.phe !== data.phe
-        const kcalChanged = existingCommunityFood.kcal !== data.kcal
-
-        const updateData: Record<string, unknown> = {
-          name: data.name,
-          icon: data.icon || null,
-          emoji: data.emoji || null,
-          phe: data.phe,
-          kcal: data.kcal,
-          note: data.note || null,
-          updatedAt: Date.now()
-        }
-
-        if (nameChanged || pheChanged || kcalChanged) {
-          // Reset votes when name or nutritional values change
-          updateData.likes = 0
-          updateData.dislikes = 0
-          updateData.score = 0
-          updateData.voterIds = null // Clear all votes
-        }
-
-        await communityFoodRef.update(updateData)
-      }
+      await communityFoodRef.update(updateData)
     }
+  }
 
-    // Update the own food entry
-    await ownFoodRef.update({
-      ...data,
-      communityKey
-    })
+  // Update the own food entry
+  await ownFoodRef.update({
+    ...data,
+    communityKey
+  })
 
-    return {
-      success: true,
-      key: entryKey,
-      communityKey
-    }
-  } catch (error: unknown) {
-    handleServerError(error)
+  return {
+    success: true,
+    key: entryKey,
+    communityKey
   }
 })

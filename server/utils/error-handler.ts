@@ -27,4 +27,3 @@ export function handleServerError(error: unknown): never {
     message: 'Internal server error'
   })
 }
-

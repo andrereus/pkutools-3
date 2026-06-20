@@ -374,55 +374,53 @@ const close = () => {
   editedKey.value = null
 }
 
+const isSaving = ref(false)
+
 const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
   }
 
-  // Check limit before closing (for better UX)
+  // Check limit before saving (for better UX)
   if (editedIndex.value === -1 && labValues.value.length >= 30 && !isPremium.value) {
     notifications.error(t('app.limit'))
     return
   }
 
-  // Capture state before closing (needed to determine if editing or adding)
+  // Capture state (needed to determine if editing or adding)
   const isEditing = editedIndex.value > -1
   const entryKey = editedKey.value
   const entryDate = editedItem.value.date
   const entryPhe = editedItem.value.phe ? Number(editedItem.value.phe) : null
   const entryTyrosine = editedItem.value.tyrosine ? Number(editedItem.value.tyrosine) : null
 
-  // Close dialog immediately for instant feedback
-  close()
-
-  if (isEditing && entryKey) {
-    // Update existing entry - use update API (validates server-side with Zod)
-    try {
+  isSaving.value = true
+  try {
+    if (isEditing && entryKey) {
+      // Update existing entry - validates server-side with Zod
       await updateLabValue({
         entryKey: entryKey,
         date: entryDate,
         phe: entryPhe,
         tyrosine: entryTyrosine
       })
-      notifications.success(t('common.saved'))
-    } catch (error) {
-      // Error handling is done in useApi composable
-      console.error('Update error:', error)
-    }
-  } else {
-    // Add new entry - use save API
-    try {
+    } else {
+      // Add new entry
       await saveLabValue({
         date: entryDate,
         phe: entryPhe,
         tyrosine: entryTyrosine
       })
-      notifications.success(t('common.saved'))
-    } catch (error) {
-      // Error handling is done in useApi composable
-      console.error('Save error:', error)
     }
+    notifications.success(t('common.saved'))
+    // Close only on success so the user's input is preserved when it fails
+    close()
+  } catch (error) {
+    // Error shown by useApi composable; dialog stays open to fix the input
+    console.error('Save error:', error)
+  } finally {
+    isSaving.value = false
   }
 }
 
@@ -610,6 +608,7 @@ defineOgImage('NuxtSeo', {
       <ModalDialog
         ref="dialog"
         :title="formTitle"
+        :loading="isSaving"
         :buttons="[
           { label: $t('common.save'), type: 'submit', visible: true },
           { label: $t('common.delete'), type: 'delete', visible: editedIndex !== -1 },

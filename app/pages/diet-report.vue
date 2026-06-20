@@ -531,6 +531,8 @@ const close = () => {
   editedKey.value = null
 }
 
+const isSaving = ref(false)
+
 const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
@@ -547,17 +549,14 @@ const save = async () => {
   const kcalValue =
     editedItem.value.kcal != null && editedItem.value.kcal !== '' && !isNaN(kcalNum) ? kcalNum : 0
 
-  // Capture state before closing (needed to determine if editing or creating)
+  // Capture state (needed to determine if editing or creating)
   const isEditing = editedIndex.value > -1
   const entryKey = editedKey.value
   const entryDate = editedItem.value.date
   const entryLog = editedItem.value.log || []
   const entryIncomplete = editedItem.value.incomplete === true
 
-  // Clear original state and close dialog immediately for instant feedback
-  originalEditedItem.value = null
-  close()
-
+  isSaving.value = true
   try {
     if (isEditing && entryKey) {
       // Update existing diary entry totals, date, and log items
@@ -570,7 +569,6 @@ const save = async () => {
         log: entryLog,
         incomplete: entryIncomplete
       })
-      notifications.success(t('common.saved'))
     } else {
       // Create a new day entry (not a food item)
       // This always creates a new diary entry, even if a day with the same date already exists
@@ -579,11 +577,16 @@ const save = async () => {
         phe: pheValue,
         kcal: kcalValue
       })
-      notifications.success(t('common.saved'))
     }
+    notifications.success(t('common.saved'))
+    // Close only on success so the user's input is preserved when it fails
+    originalEditedItem.value = null
+    close()
   } catch (error) {
-    // Error handling is done in useApi composable
+    // Error shown by useApi composable; dialog stays open to fix the input
     console.error('Save error:', error)
+  } finally {
+    isSaving.value = false
   }
 }
 
@@ -1010,6 +1013,7 @@ defineOgImage('NuxtSeo', {
       <ModalDialog
         ref="dialog"
         :title="formTitle"
+        :loading="isSaving"
         :buttons="[
           { label: $t('common.save'), type: 'submit', visible: true },
           { label: $t('common.delete'), type: 'delete', visible: editedIndex !== -1 },

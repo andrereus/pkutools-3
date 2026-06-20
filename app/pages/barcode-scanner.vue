@@ -236,7 +236,12 @@ defineOgImage('NuxtSeo', {
 
     <PrimaryButton :text="$t('barcode-scanner.scan-barcode')" class="mt-2" @click="openDialog" />
 
-    <SimpleDialog ref="dialog" :title="$t('barcode-scanner.scan-barcode')" @close="cancel">
+    <ModalDialog
+      ref="dialog"
+      :title="$t('barcode-scanner.scan-barcode')"
+      :buttons="[{ type: 'close', label: $t('common.cancel') }]"
+      @close="cancel"
+    >
       <p v-if="loaded === false">{{ $t('barcode-scanner.please-wait') }}</p>
 
       <!-- Do not remove -->
@@ -251,7 +256,7 @@ defineOgImage('NuxtSeo', {
         @detect="onDetect"
         @error="onError"
       />
-    </SimpleDialog>
+    </ModalDialog>
 
     <div v-if="result">
       <img
@@ -322,7 +327,11 @@ defineOgImage('NuxtSeo', {
       </div>
     </div>
 
-    <p class="mt-4 text-gray-600 dark:text-gray-400 italic text-sm">{{ $t('barcode-scanner.info') }}</p>
-    <p class="mt-2 text-gray-600 dark:text-gray-400 italic text-sm">{{ $t('barcode-scanner.info-2') }}</p>
+    <p class="mt-4 text-gray-600 dark:text-gray-400 italic text-sm">
+      {{ $t('barcode-scanner.info') }}
+    </p>
+    <p class="mt-2 text-gray-600 dark:text-gray-400 italic text-sm">
+      {{ $t('barcode-scanner.info-2') }}
+    </p>
   </div>
 </template>

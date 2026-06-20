@@ -1,4 +1,5 @@
-import type { ZodError } from 'zod'
+import type { ZodError, ZodType } from 'zod'
+import type { H3Event } from 'h3'
 
 /**
  * Formats Zod validation errors into a user-friendly error message
@@ -18,4 +19,14 @@ export function formatValidationError(error: ZodError): never {
     message: `Validation failed: ${errorMessages}`,
     data: error.issues
   })
+}
+
+// Reads the request body and validates it against a Zod schema, throwing the
+// shared translated 400 on failure. Returns the typed, parsed data.
+export async function validateBody<T>(event: H3Event, schema: ZodType<T>): Promise<T> {
+  const validation = schema.safeParse(await readBody(event))
+  if (!validation.success) {
+    formatValidationError(validation.error)
+  }
+  return validation.data
 }

@@ -1,75 +1,4 @@
-<template>
-  <TransitionRoot as="template" :show="show">
-    <Dialog class="relative z-60" @close="handleCancel">
-      <TransitionChild
-        as="template"
-        enter="ease-out duration-300"
-        enter-from="opacity-0"
-        enter-to="opacity-100"
-        leave="ease-in duration-200"
-        leave-from="opacity-100"
-        leave-to="opacity-0"
-      >
-        <div class="fixed inset-0 bg-gray-500/75 transition-opacity dark:bg-gray-900/50" />
-      </TransitionChild>
-
-      <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-        <div
-          class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
-        >
-          <TransitionChild
-            as="template"
-            enter="ease-out duration-300"
-            enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            enter-to="opacity-100 translate-y-0 sm:scale-100"
-            leave="ease-in duration-200"
-            leave-from="opacity-100 translate-y-0 sm:scale-100"
-            leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          >
-            <DialogPanel
-              class="relative transform overflow-hidden rounded-xl bg-white dark:bg-gray-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
-            >
-              <div class="sm:flex sm:items-start">
-                <div :class="iconContainerClass">
-                  <component :is="iconComponent" :class="iconClass" aria-hidden="true" />
-                </div>
-                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                  <DialogTitle
-                    as="h3"
-                    class="text-base font-semibold text-gray-900 dark:text-white"
-                  >
-                    {{ title }}
-                  </DialogTitle>
-                  <div v-if="message" class="mt-2">
-                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                      {{ message }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="mt-5 sm:mt-4 flex flex-row-reverse gap-3">
-                <button type="button" :class="confirmButtonClass" @click="handleConfirm">
-                  {{ confirmLabel }}
-                </button>
-                <button
-                  type="button"
-                  class="inline-flex flex-1 sm:flex-none sm:w-auto justify-center rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:bg-white/10 dark:text-white dark:shadow-none dark:ring-white/5 dark:hover:bg-white/20 dark:focus-visible:outline-gray-400"
-                  @click="handleCancel"
-                  ref="cancelButtonRef"
-                >
-                  {{ cancelLabel }}
-                </button>
-              </div>
-            </DialogPanel>
-          </TransitionChild>
-        </div>
-      </div>
-    </Dialog>
-  </TransitionRoot>
-</template>
-
 <script setup>
-import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { LucideAlertTriangle, LucideInfo } from '@lucide/vue'
 
 const props = defineProps({
@@ -83,7 +12,7 @@ const props = defineProps({
   },
   message: {
     type: String,
-    required: false
+    default: undefined
   },
   confirmLabel: {
     type: String,
@@ -134,3 +63,73 @@ const handleCancel = () => {
   emit('cancel')
 }
 </script>
+
+<template>
+  <HeadlessTransitionRoot as="template" :show="show">
+    <HeadlessDialog class="relative z-60" @close="handleCancel">
+      <HeadlessTransitionChild
+        as="template"
+        enter="ease-out duration-300"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="ease-in duration-200"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-gray-500/75 transition-opacity dark:bg-black/70" />
+      </HeadlessTransitionChild>
+
+      <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div
+          class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+        >
+          <HeadlessTransitionChild
+            as="template"
+            enter="ease-out duration-300"
+            enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            enter-to="opacity-100 translate-y-0 sm:scale-100"
+            leave="ease-in duration-200"
+            leave-from="opacity-100 translate-y-0 sm:scale-100"
+            leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+          >
+            <HeadlessDialogPanel
+              class="relative transform overflow-hidden rounded-xl bg-white dark:bg-gray-900 px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+            >
+              <div class="sm:flex sm:items-start">
+                <div :class="iconContainerClass">
+                  <component :is="iconComponent" :class="iconClass" aria-hidden="true" />
+                </div>
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                  <HeadlessDialogTitle
+                    as="h3"
+                    class="text-base font-semibold text-gray-900 dark:text-white"
+                  >
+                    {{ title }}
+                  </HeadlessDialogTitle>
+                  <div v-if="message" class="mt-2">
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      {{ message }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-5 sm:mt-4 flex flex-row-reverse gap-3">
+                <button type="button" :class="confirmButtonClass" @click="handleConfirm">
+                  {{ confirmLabel }}
+                </button>
+                <button
+                  ref="cancelButtonRef"
+                  type="button"
+                  class="inline-flex flex-1 sm:flex-none sm:w-auto justify-center rounded-full bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:bg-white/10 dark:text-white dark:shadow-none dark:ring-white/5 dark:hover:bg-white/20 dark:focus-visible:outline-gray-400"
+                  @click="handleCancel"
+                >
+                  {{ cancelLabel }}
+                </button>
+              </div>
+            </HeadlessDialogPanel>
+          </HeadlessTransitionChild>
+        </div>
+      </div>
+    </HeadlessDialog>
+  </HeadlessTransitionRoot>
+</template>

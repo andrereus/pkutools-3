@@ -17,34 +17,41 @@ export const useApi = () => {
     return await user.getIdToken()
   }
 
-  // ============================================================================
-  // Diary Operations
-  // ============================================================================
-
-  const createDiaryDay = async (data: {
-    date: string
-    phe: number
-    kcal: number
-  }): Promise<{ success: boolean; key?: string }> => {
+  // Authenticated $fetch: attaches the bearer token and routes failures through
+  // the shared error handler. Body is omitted entirely when undefined (DELETEs).
+  const request = async <T>(
+    url: string,
+    label: string,
+    method: 'POST' | 'PUT' | 'DELETE',
+    body?: unknown
+  ): Promise<T> => {
     try {
       const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; key: string }>('/api/diary/days', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      })
-
-      return response
+      // Cast: $fetch maps internal routes to TypedInternalResponse; T is the
+      // caller-declared shape and is what every endpoint actually returns.
+      return (await $fetch<T>(url, {
+        method,
+        headers: { Authorization: `Bearer ${token}` },
+        ...(body !== undefined ? { body } : {})
+      })) as T
     } catch (error: unknown) {
-      errorHandler.handleError(error, 'Create diary day')
+      errorHandler.handleError(error, label)
       throw error
     }
   }
 
-  const addFoodItemToDiary = async (data: {
+  // ============================================================================
+  // Diary Operations
+  // ============================================================================
+
+  const createDiaryDay = (data: {
+    date: string
+    phe: number
+    kcal: number
+  }): Promise<{ success: boolean; key?: string }> =>
+    request('/api/diary/days', 'Create diary day', 'POST', data)
+
+  const addFoodItemToDiary = (data: {
     date?: string
     name: string
     emoji?: string | null
@@ -56,64 +63,26 @@ export const useApi = () => {
     kcal: number
     note?: string | null
     communityFoodKey?: string | null // Optional: tracks usage count and stored in diary entry
-  }): Promise<{ success: boolean; key?: string; updated?: boolean }> => {
-    try {
-      const token = await getAuthToken()
+  }): Promise<{ success: boolean; key?: string; updated?: boolean }> =>
+    request('/api/diary/food-items', 'Add food item to diary', 'POST', data)
 
-      const response = await $fetch<{ success: boolean; key: string; updated?: boolean }>(
-        '/api/diary/food-items',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: data
-        }
-      )
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Add food item to diary')
-      throw error
-    }
-  }
-
-  const updateDiaryDay = async (data: {
+  const updateDiaryDay = (data: {
     entryKey: string
     date?: string
     phe: number
     kcal: number
     log?: Array<unknown>
     incomplete?: boolean
-  }): Promise<{ success: boolean; key?: string; updated?: boolean }> => {
-    try {
-      const token = await getAuthToken()
+  }): Promise<{ success: boolean; key?: string; updated?: boolean }> =>
+    request(`/api/diary/days/${data.entryKey}`, 'Update diary day', 'PUT', {
+      date: data.date,
+      phe: data.phe,
+      kcal: data.kcal,
+      log: data.log,
+      incomplete: data.incomplete
+    })
 
-      const response = await $fetch<{ success: boolean; key: string; updated: boolean }>(
-        `/api/diary/days/${data.entryKey}`,
-        {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: {
-            date: data.date,
-            phe: data.phe,
-            kcal: data.kcal,
-            log: data.log,
-            incomplete: data.incomplete
-          }
-        }
-      )
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Update diary day')
-      throw error
-    }
-  }
-
-  const updateFoodItemInDiary = async (data: {
+  const updateFoodItemInDiary = (data: {
     entryKey: string
     logIndex: number
     entry: {
@@ -127,163 +96,59 @@ export const useApi = () => {
       kcal: number
       note?: string | null
     }
-  }): Promise<{ success: boolean; key?: string }> => {
-    try {
-      const token = await getAuthToken()
+  }): Promise<{ success: boolean; key?: string }> =>
+    request(`/api/diary/food-items/${data.entryKey}`, 'Update food item in diary', 'PUT', {
+      logIndex: data.logIndex,
+      entry: data.entry
+    })
 
-      const response = await $fetch<{ success: boolean; key: string }>(
-        `/api/diary/food-items/${data.entryKey}`,
-        {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: {
-            logIndex: data.logIndex,
-            entry: data.entry
-          }
-        }
-      )
+  const deleteDiaryDay = (entryKey: string): Promise<{ success: boolean; key?: string }> =>
+    request(`/api/diary/days/${entryKey}`, 'Delete diary day', 'DELETE')
 
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Update food item in diary')
-      throw error
-    }
-  }
-
-  const deleteDiaryDay = async (entryKey: string): Promise<{ success: boolean; key?: string }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; key: string }>(
-        `/api/diary/days/${entryKey}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Delete diary day')
-      throw error
-    }
-  }
-
-  const deleteFoodItemFromDiary = async (data: {
+  const deleteFoodItemFromDiary = (data: {
     entryKey: string
     logIndex: number
-  }): Promise<{ success: boolean; key?: string; deletedLogIndex?: number }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; key: string; deletedLogIndex: number }>(
-        `/api/diary/food-items/${data.entryKey}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: {
-            logIndex: data.logIndex
-          }
-        }
-      )
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Delete food item from diary')
-      throw error
-    }
-  }
+  }): Promise<{ success: boolean; key?: string; deletedLogIndex?: number }> =>
+    request(`/api/diary/food-items/${data.entryKey}`, 'Delete food item from diary', 'DELETE', {
+      logIndex: data.logIndex
+    })
 
   // ============================================================================
   // Lab Values Operations
   // ============================================================================
 
-  const saveLabValue = async (data: {
+  const saveLabValue = (data: {
     date: string
     phe?: number | null
     tyrosine?: number | null
-  }): Promise<{ success: boolean; key?: string }> => {
-    try {
-      const token = await getAuthToken()
+  }): Promise<{ success: boolean; key?: string }> =>
+    request('/api/lab-values/save', 'Save lab value', 'POST', data)
 
-      const response = await $fetch<{ success: boolean; key: string }>('/api/lab-values/save', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Save lab value')
-      throw error
-    }
-  }
-
-  const updateLabValue = async (data: {
+  const updateLabValue = (data: {
     entryKey: string
     date: string
     phe?: number | null
     tyrosine?: number | null
-  }): Promise<{ success: boolean; key?: string }> => {
-    try {
-      const token = await getAuthToken()
+  }): Promise<{ success: boolean; key?: string }> =>
+    request('/api/lab-values/update', 'Update lab value', 'POST', {
+      entryKey: data.entryKey,
+      data: {
+        date: data.date,
+        phe: data.phe,
+        tyrosine: data.tyrosine
+      }
+    })
 
-      const response = await $fetch<{ success: boolean; key: string }>('/api/lab-values/update', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: {
-          entryKey: data.entryKey,
-          data: {
-            date: data.date,
-            phe: data.phe,
-            tyrosine: data.tyrosine
-          }
-        }
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Update lab value')
-      throw error
-    }
-  }
-
-  const deleteLabValue = async (data: {
+  const deleteLabValue = (data: {
     entryKey: string
-  }): Promise<{ success: boolean; key?: string }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; key: string }>('/api/lab-values/delete', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Delete lab value')
-      throw error
-    }
-  }
+  }): Promise<{ success: boolean; key?: string }> =>
+    request('/api/lab-values/delete', 'Delete lab value', 'POST', data)
 
   // ============================================================================
   // Own Food Operations
   // ============================================================================
 
-  const saveOwnFood = async (data: {
+  const saveOwnFood = (data: {
     name: string
     icon?: string | null
     emoji?: string | null
@@ -291,32 +156,10 @@ export const useApi = () => {
     kcal: number
     note?: string | null
     shared?: boolean
-  }): Promise<{ success: boolean; key?: string; communityKey?: string }> => {
-    try {
-      const token = await getAuthToken()
+  }): Promise<{ success: boolean; key?: string; communityKey?: string }> =>
+    request('/api/own-food/save', 'Save own food', 'POST', { ...data, locale: locale.value })
 
-      const response = await $fetch<{ success: boolean; key: string; communityKey?: string }>(
-        '/api/own-food/save',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-          body: {
-            ...data,
-            locale: locale.value
-          }
-        }
-      )
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Save own food')
-      throw error
-    }
-  }
-
-  const updateOwnFood = async (data: {
+  const updateOwnFood = (data: {
     entryKey: string
     name: string
     icon?: string | null
@@ -325,176 +168,59 @@ export const useApi = () => {
     kcal: number
     note?: string | null
     shared?: boolean
-  }): Promise<{ success: boolean; key?: string; communityKey?: string | null }> => {
-    try {
-      const token = await getAuthToken()
+  }): Promise<{ success: boolean; key?: string; communityKey?: string | null }> =>
+    request('/api/own-food/update', 'Update own food', 'POST', {
+      entryKey: data.entryKey,
+      locale: locale.value,
+      data: {
+        name: data.name,
+        icon: data.icon,
+        emoji: data.emoji,
+        phe: data.phe,
+        note: data.note,
+        kcal: data.kcal,
+        shared: data.shared
+      }
+    })
 
-      const response = await $fetch<{
-        success: boolean
-        key: string
-        communityKey?: string | null
-      }>('/api/own-food/update', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: {
-          entryKey: data.entryKey,
-          locale: locale.value,
-          data: {
-            name: data.name,
-            icon: data.icon,
-            emoji: data.emoji,
-            phe: data.phe,
-            note: data.note,
-            kcal: data.kcal,
-            shared: data.shared
-          }
-        }
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Update own food')
-      throw error
-    }
-  }
-
-  const deleteOwnFood = async (data: {
-    entryKey: string
-  }): Promise<{ success: boolean; key?: string }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean; key: string }>('/api/own-food/delete', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Delete own food')
-      throw error
-    }
-  }
+  const deleteOwnFood = (data: { entryKey: string }): Promise<{ success: boolean; key?: string }> =>
+    request('/api/own-food/delete', 'Delete own food', 'POST', data)
 
   // ============================================================================
   // Settings Operations
   // ============================================================================
 
-  const updateSettings = async (data: {
+  const updateSettings = (data: {
     maxPhe?: number | null
     maxKcal?: number | null
     labUnit?: 'mgdl' | 'umoll'
     progressStyle?: 'bars' | 'circles'
     license?: string | null
-  }): Promise<{ success: boolean }> => {
-    try {
-      const token = await getAuthToken()
+  }): Promise<{ success: boolean }> =>
+    request('/api/settings/update', 'Update settings', 'POST', data)
 
-      const response = await $fetch<{ success: boolean }>('/api/settings/update', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Update settings')
-      throw error
-    }
-  }
-
-  const updateConsent = async (data: {
+  const updateConsent = (data: {
     healthDataConsent?: boolean
     emailConsent?: boolean
-  }): Promise<{ success: boolean }> => {
-    try {
-      const token = await getAuthToken()
+  }): Promise<{ success: boolean }> =>
+    request('/api/settings/consent', 'Update consent', 'POST', data)
 
-      const response = await $fetch<{ success: boolean }>('/api/settings/consent', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      })
+  const updateGettingStarted = (completed: boolean): Promise<{ success: boolean }> =>
+    request('/api/settings/getting-started', 'Update getting started', 'POST', { completed })
 
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Update consent')
-      throw error
-    }
-  }
-
-  const updateGettingStarted = async (completed: boolean): Promise<{ success: boolean }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean }>('/api/settings/getting-started', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: { completed }
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Update getting started')
-      throw error
-    }
-  }
-
-  const resetData = async (
+  const resetData = (
     type: 'diary' | 'labValues' | 'ownFood'
-  ): Promise<{ success: boolean; type: string }> => {
-    try {
-      const token = await getAuthToken()
+  ): Promise<{ success: boolean; type: string }> =>
+    request('/api/settings/reset', 'Reset data', 'POST', { type })
 
-      const response = await $fetch<{ success: boolean; type: string }>('/api/settings/reset', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: { type }
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Reset data')
-      throw error
-    }
-  }
-
-  const deleteAccount = async (): Promise<{ success: boolean }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{ success: boolean }>('/api/settings/delete-account', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Delete account')
-      throw error
-    }
-  }
+  const deleteAccount = (): Promise<{ success: boolean }> =>
+    request('/api/settings/delete-account', 'Delete account', 'POST')
 
   // ============================================================================
   // Community Food Operations
   // ============================================================================
 
-  const voteCommunityFood = async (data: {
+  const voteCommunityFood = (data: {
     communityFoodKey: string
     vote: 1 | -1
   }): Promise<{
@@ -503,30 +229,7 @@ export const useApi = () => {
     dislikes: number
     score: number
     hidden: boolean
-  }> => {
-    try {
-      const token = await getAuthToken()
-
-      const response = await $fetch<{
-        success: boolean
-        likes: number
-        dislikes: number
-        score: number
-        hidden: boolean
-      }>('/api/community-food/vote', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: data
-      })
-
-      return response
-    } catch (error: unknown) {
-      errorHandler.handleError(error, 'Vote community food')
-      throw error
-    }
-  }
+  }> => request('/api/community-food/vote', 'Vote community food', 'POST', data)
 
   // ============================================================================
   // Return

@@ -1,109 +1,95 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
 import { CommunityVoteSchema } from '../../types/schemas'
-import { handleServerError } from '../../utils/error-handler'
-import { getAuthenticatedUser } from '../../utils/auth'
-import { formatValidationError } from '../../utils/validation'
+import { defineAuthedHandler } from '../../utils/handler'
+import { validateBody } from '../../utils/validation'
 import { isCommunityFoodHidden } from '../../utils/community-food'
 
-export default defineEventHandler(async (event) => {
-  try {
-    const userId = await getAuthenticatedUser(event)
-    const body = await readBody(event)
+export default defineAuthedHandler(async ({ event, userId }) => {
+  const { communityFoodKey, vote } = await validateBody(event, CommunityVoteSchema)
 
-    // Validate input
-    const validation = CommunityVoteSchema.safeParse(body)
-    if (!validation.success) {
-      formatValidationError(validation.error)
-    }
+  const db = getAdminDatabase()
 
-    const { communityFoodKey, vote } = validation.data
+  // Get the community food to verify it exists and get contributor
+  const communityFoodRef = db.ref(`communityFoods/${communityFoodKey}`)
+  const communityFoodSnapshot = await communityFoodRef.once('value')
+  const communityFood = communityFoodSnapshot.val()
 
-    const db = getAdminDatabase()
+  if (!communityFood) {
+    throw createError({
+      statusCode: 404,
+      message: 'Community food not found'
+    })
+  }
 
-    // Get the community food to verify it exists and get contributor
-    const communityFoodRef = db.ref(`communityFoods/${communityFoodKey}`)
-    const communityFoodSnapshot = await communityFoodRef.once('value')
-    const communityFood = communityFoodSnapshot.val()
+  // Prevent users from voting on their own foods
+  if (communityFood.contributorId === userId) {
+    throw createError({
+      statusCode: 403,
+      message: 'Cannot vote on your own food'
+    })
+  }
 
-    if (!communityFood) {
-      throw createError({
-        statusCode: 404,
-        message: 'Community food not found'
-      })
-    }
+  // Get user's existing vote from voterIds on the community food
+  const voterRef = db.ref(`communityFoods/${communityFoodKey}/voterIds/${userId}`)
+  const existingVoteSnapshot = await voterRef.once('value')
+  const existingVote = existingVoteSnapshot.val() // Will be 1, -1, or null
 
-    // Prevent users from voting on their own foods
-    if (communityFood.contributorId === userId) {
-      throw createError({
-        statusCode: 403,
-        message: 'Cannot vote on your own food'
-      })
-    }
+  let likeDelta = 0
+  let dislikeDelta = 0
 
-    // Get user's existing vote from voterIds on the community food
-    const voterRef = db.ref(`communityFoods/${communityFoodKey}/voterIds/${userId}`)
-    const existingVoteSnapshot = await voterRef.once('value')
-    const existingVote = existingVoteSnapshot.val() // Will be 1, -1, or null
+  if (existingVote !== null) {
+    if (existingVote === vote) {
+      // Same vote - toggle off (remove vote)
+      await voterRef.remove()
 
-    let likeDelta = 0
-    let dislikeDelta = 0
-
-    if (existingVote !== null) {
-      if (existingVote === vote) {
-        // Same vote - toggle off (remove vote)
-        await voterRef.remove()
-
-        if (vote === 1) {
-          likeDelta = -1
-        } else {
-          dislikeDelta = -1
-        }
+      if (vote === 1) {
+        likeDelta = -1
       } else {
-        // Different vote - switch vote
-        await voterRef.set(vote)
-
-        if (vote === 1) {
-          // Switching from dislike to like
-          likeDelta = 1
-          dislikeDelta = -1
-        } else {
-          // Switching from like to dislike
-          likeDelta = -1
-          dislikeDelta = 1
-        }
+        dislikeDelta = -1
       }
     } else {
-      // New vote - store the vote value (1 or -1)
+      // Different vote - switch vote
       await voterRef.set(vote)
 
       if (vote === 1) {
+        // Switching from dislike to like
         likeDelta = 1
+        dislikeDelta = -1
       } else {
+        // Switching from like to dislike
+        likeDelta = -1
         dislikeDelta = 1
       }
     }
+  } else {
+    // New vote - store the vote value (1 or -1)
+    await voterRef.set(vote)
 
-    // Update community food vote counts atomically
-    const newLikes = Math.max(0, (communityFood.likes || 0) + likeDelta)
-    const newDislikes = Math.max(0, (communityFood.dislikes || 0) + dislikeDelta)
-    const newScore = newLikes - newDislikes
-
-    const updateData: Record<string, unknown> = {
-      likes: newLikes,
-      dislikes: newDislikes,
-      score: newScore
+    if (vote === 1) {
+      likeDelta = 1
+    } else {
+      dislikeDelta = 1
     }
+  }
 
-    await communityFoodRef.update(updateData)
+  // Update community food vote counts atomically
+  const newLikes = Math.max(0, (communityFood.likes || 0) + likeDelta)
+  const newDislikes = Math.max(0, (communityFood.dislikes || 0) + dislikeDelta)
+  const newScore = newLikes - newDislikes
 
-    return {
-      success: true,
-      likes: newLikes,
-      dislikes: newDislikes,
-      score: newScore,
-      hidden: isCommunityFoodHidden(newScore)
-    }
-  } catch (error: unknown) {
-    handleServerError(error)
+  const updateData: Record<string, unknown> = {
+    likes: newLikes,
+    dislikes: newDislikes,
+    score: newScore
+  }
+
+  await communityFoodRef.update(updateData)
+
+  return {
+    success: true,
+    likes: newLikes,
+    dislikes: newDislikes,
+    score: newScore,
+    hidden: isCommunityFoodHidden(newScore)
   }
 })

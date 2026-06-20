@@ -10,16 +10,16 @@ const notification = ref<NotificationOptions | null>(null)
 const showNotification = ref(false)
 let cleanupTimeout: ReturnType<typeof setTimeout> | null = null
 
-// Helper function to close all open dialogs
-// Used for error notifications to ensure critical errors are visible even when dialogs are open
-const closeOpenDialogs = () => {
-  if (typeof document !== 'undefined') {
-    const openDialogs = document.querySelectorAll('dialog[open]')
-    openDialogs.forEach((dialog) => {
-      if (dialog instanceof HTMLDialogElement) {
-        dialog.close()
-      }
-    })
+// Inline error sinks: an open dialog registers one so error notifications render
+// inside the dialog (where the failed action is) instead of as a toast over it.
+// A stack handles nested dialogs — the topmost (last opened) wins.
+const errorSinks: Array<(message: string) => void> = []
+
+const registerErrorSink = (sink: (message: string) => void): (() => void) => {
+  errorSinks.push(sink)
+  return () => {
+    const index = errorSinks.lastIndexOf(sink)
+    if (index !== -1) errorSinks.splice(index, 1)
   }
 }
 
@@ -52,8 +52,12 @@ const success = (message: string, options?: Omit<NotificationOptions, 'message' 
 }
 
 const error = (message: string, options?: Omit<NotificationOptions, 'message' | 'type'>) => {
-  // Close any open dialogs when showing a critical error notification
-  closeOpenDialogs()
+  // If a dialog is open, show the error inline within it rather than over it.
+  const sink = errorSinks[errorSinks.length - 1]
+  if (sink) {
+    sink(message)
+    return
+  }
   notify({ ...options, message, type: 'error' })
 }
 
@@ -74,6 +78,7 @@ export const useNotifications = () => {
     error,
     warning,
     info,
-    close
+    close,
+    registerErrorSink
   }
 }

@@ -1,16 +1,13 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
 import { OwnFoodSaveSchema } from '../../types/schemas'
-import { handleServerError } from '../../utils/error-handler'
-import { getAuthenticatedUser } from '../../utils/auth'
-import { formatValidationError } from '../../utils/validation'
+import { defineAuthedHandler } from '../../utils/handler'
+import { validateBody } from '../../utils/validation'
 import { checkPremiumStatus } from '../../utils/license'
 import { isCommunityFoodHidden } from '../../utils/community-food'
+import type { H3Event } from 'h3'
 
 // Helper to get user's language from request body or Accept-Language header (fallback)
-function getLanguage(
-  event: Parameters<typeof defineEventHandler>[0] extends (e: infer E) => unknown ? E : never,
-  bodyLocale?: string
-): 'en' | 'de' | 'es' | 'fr' {
+function getLanguage(event: H3Event, bodyLocale?: string): 'en' | 'de' | 'es' | 'fr' {
   // Prefer locale from request body (from frontend i18n)
   if (bodyLocale && ['en', 'de', 'es', 'fr'].includes(bodyLocale)) {
     return bodyLocale as 'en' | 'de' | 'es' | 'fr'
@@ -62,116 +59,99 @@ async function checkDuplicateCommunityFood(
   return false
 }
 
-export default defineEventHandler(async (event) => {
-  try {
-    const userId = await getAuthenticatedUser(event)
-    const body = await readBody(event)
+export default defineAuthedHandler(async ({ event, userId }) => {
+  const { locale, ...foodData } = await validateBody(event, OwnFoodSaveSchema)
 
-    // Validate input with Zod schema
-    const validation = OwnFoodSaveSchema.safeParse(body)
-    if (!validation.success) {
-      formatValidationError(validation.error)
-    }
+  const db = getAdminDatabase()
+  const isPremium = await checkPremiumStatus(userId)
+  const ownFoodRef = db.ref(`/${userId}/ownFood`)
 
-    const db = getAdminDatabase()
-    const isPremium = await checkPremiumStatus(userId)
-    const ownFoodRef = db.ref(`/${userId}/ownFood`)
+  // Check limit based on premium status (shared foods don't count towards limit)
+  if (!isPremium) {
+    const ownFoodSnapshot = await ownFoodRef.once('value')
+    const foods = ownFoodSnapshot.val()
 
-    // Check limit based on premium status (shared foods don't count towards limit)
-    if (!isPremium) {
-      const ownFoodSnapshot = await ownFoodRef.once('value')
-      const foods = ownFoodSnapshot.val()
+    if (foods) {
+      // Count only non-shared foods
+      const nonSharedCount = Object.values(foods).filter(
+        (food: unknown) => !(food as { shared?: boolean }).shared
+      ).length
 
-      if (foods) {
-        // Count only non-shared foods
-        const nonSharedCount = Object.values(foods).filter(
-          (food: unknown) => !(food as { shared?: boolean }).shared
-        ).length
-
-        if (nonSharedCount >= 50) {
-          throw createError({
-            statusCode: 403,
-            message: 'Own food limit reached. Upgrade to premium for unlimited entries.'
-          })
-        }
-      }
-    }
-
-    const { locale, ...foodData } = validation.data
-    let communityKey: string | null = null
-
-    // If sharing to community, create community food entry
-    if (foodData.shared) {
-      const language = getLanguage(event, locale)
-
-      // Check for duplicates
-      const isDuplicate = await checkDuplicateCommunityFood(
-        db,
-        foodData.name,
-        foodData.phe,
-        language
-      )
-      if (isDuplicate) {
+      if (nonSharedCount >= 50) {
         throw createError({
-          statusCode: 409,
-          message: 'A similar food already exists in the community database'
+          statusCode: 403,
+          message: 'Own food limit reached. Upgrade to premium for unlimited entries.'
         })
       }
+    }
+  }
 
-      // Create the own food entry first to get the key
-      const newOwnFoodRef = ownFoodRef.push()
-      const ownFoodKey = newOwnFoodRef.key!
+  let communityKey: string | null
 
-      // Create community food entry
-      const communityFoodRef = db.ref('communityFoods').push()
-      communityKey = communityFoodRef.key
+  // If sharing to community, create community food entry
+  if (foodData.shared) {
+    const language = getLanguage(event, locale)
 
-      const now = Date.now()
-      const communityFoodData = {
-        name: foodData.name,
-        icon: foodData.icon || null,
-        emoji: foodData.emoji || null,
-        phe: foodData.phe,
-        kcal: foodData.kcal,
-        note: foodData.note || null,
-        language,
-        contributorId: userId,
-        ownFoodKey,
-        createdAt: now,
-        updatedAt: now,
-        likes: 0,
-        dislikes: 0,
-        score: 0,
-        usageCount: 0
-      }
-
-      await communityFoodRef.set(communityFoodData)
-
-      // Save own food with community key reference
-      await newOwnFoodRef.set({
-        ...foodData,
-        communityKey
+    // Check for duplicates
+    const isDuplicate = await checkDuplicateCommunityFood(db, foodData.name, foodData.phe, language)
+    if (isDuplicate) {
+      throw createError({
+        statusCode: 409,
+        message: 'A similar food already exists in the community database'
       })
-
-      return {
-        success: true,
-        key: ownFoodKey,
-        communityKey
-      }
     }
 
-    // Not shared - just save the own food
-    const newRef = ownFoodRef.push()
-    await newRef.set({
+    // Create the own food entry first to get the key
+    const newOwnFoodRef = ownFoodRef.push()
+    const ownFoodKey = newOwnFoodRef.key!
+
+    // Create community food entry
+    const communityFoodRef = db.ref('communityFoods').push()
+    communityKey = communityFoodRef.key
+
+    const now = Date.now()
+    const communityFoodData = {
+      name: foodData.name,
+      icon: foodData.icon || null,
+      emoji: foodData.emoji || null,
+      phe: foodData.phe,
+      kcal: foodData.kcal,
+      note: foodData.note || null,
+      language,
+      contributorId: userId,
+      ownFoodKey,
+      createdAt: now,
+      updatedAt: now,
+      likes: 0,
+      dislikes: 0,
+      score: 0,
+      usageCount: 0
+    }
+
+    await communityFoodRef.set(communityFoodData)
+
+    // Save own food with community key reference
+    await newOwnFoodRef.set({
       ...foodData,
-      communityKey: null
+      communityKey
     })
 
     return {
       success: true,
-      key: newRef.key
+      key: ownFoodKey,
+      communityKey
     }
-  } catch (error: unknown) {
-    handleServerError(error)
+  }
+
+  // Not shared - just save the own food
+  const newRef = ownFoodRef.push()
+  await newRef.set({
+    ...foodData,
+    communityKey: null
+  })
+
+  return {
+    success: true,
+    key: newRef.key
   }
 })
