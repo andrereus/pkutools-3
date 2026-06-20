@@ -500,38 +500,40 @@ const handleCookieConsent = (consent) => {
               </transition>
             </HeadlessMenu>
           </div>
-        </div>
-        <div class="hidden lg:block border-b dark:border-gray-700" />
-        <nav class="hidden lg:flex py-2 w-full space-x-1 md:space-x-2" aria-label="Global">
-          <NuxtLink
-            v-for="item in tabNavigation"
-            :key="item.name"
-            :to="$localePath(item.route)"
-            :class="[
-              'flex-1 flex justify-center',
-              'group inline-flex items-center px-3 py-2 text-sm font-medium rounded-xl transition-all duration-150 ease-out active:scale-95',
-              item.icon === 'LucidePlus'
-                ? isTabActive(item)
-                  ? 'bottom-nav-add liquid-glass-active text-sky-600 dark:text-sky-300'
-                  : 'bottom-nav-add text-sky-600 dark:text-sky-300'
-                : isTabActive(item)
-                  ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
-                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
-            ]"
+
+          <nav
+            class="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center space-x-1"
+            aria-label="Global"
           >
-            <component
-              :is="iconMap[item.icon]"
-              class="md:mr-3 h-5 w-5"
-              :stroke-width="isTabActive(item) ? 2.5 : 2"
-              aria-hidden="true"
-            />
-            <span class="hidden lg:inline-block">{{ $t(item.name) }}</span>
-          </NuxtLink>
-        </nav>
+            <NuxtLink
+              v-for="item in tabNavigation"
+              :key="item.name"
+              :to="$localePath(item.route)"
+              :aria-label="$t(item.name)"
+              :class="[
+                'relative flex items-center justify-center h-12 w-14 rounded-xl transition-all duration-150 ease-out active:scale-95',
+                item.icon === 'LucidePlus'
+                  ? isTabActive(item)
+                    ? 'bottom-nav-add liquid-glass-active text-sky-600 dark:text-sky-300'
+                    : 'bottom-nav-add text-sky-600 dark:text-sky-300'
+                  : isTabActive(item)
+                    ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
+              ]"
+            >
+              <component
+                :is="iconMap[item.icon]"
+                :class="item.icon === 'LucidePlus' ? 'h-6 w-6' : 'h-5 w-5'"
+                :stroke-width="isTabActive(item) ? 2.5 : 2"
+                aria-hidden="true"
+              />
+            </NuxtLink>
+          </nav>
+        </div>
       </div>
     </div>
 
-    <div class="pb-24 lg:pb-10 grow pt-20 lg:pt-30">
+    <div class="pb-24 lg:pb-10 grow pt-20 lg:pt-16">
       <main>
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:py-8 lg:px-8">
           <slot />
