@@ -17,6 +17,10 @@ const open = ref(false)
 const paused = ref(false)
 const code = ref('')
 const error = ref('')
+// The most recent barcode whose lookup failed, shown with a "scan again" action.
+const lastFailedCode = ref('')
+// True while a product lookup is in flight (drives the in-dialog spinner).
+const looking = ref(false)
 const result = ref(null)
 const weight = ref(100)
 const select = ref('other')
@@ -63,16 +67,60 @@ const onReady = () => {
 }
 
 const onDetect = async (detectedCodes) => {
+  const scannedCode = detectedCodes[0]?.rawValue
+  // Look up the first detected code immediately — a clean single-frame read is
+  // enough. Freeze the camera right away; the `looking` guard ignores any stray
+  // detect that races the pause.
+  if (!scannedCode || looking.value) return
+
   paused.value = true
-  code.value = detectedCodes[0].rawValue
+  looking.value = true
+  error.value = ''
+  code.value = scannedCode
 
   try {
-    result.value = await $fetch(`https://world.openfoodfacts.org/api/v2/product/${code.value}.json`)
-  } catch (error) {
-    notifications.error(t('barcode-scanner.error'))
-    console.log(error)
+    const response = await $fetch(
+      `https://world.openfoodfacts.org/api/v2/product/${scannedCode}.json`
+    )
+    // A real product has status 1 and a product object; keep result null
+    // otherwise so the template (and calc helpers) never deref result.product.
+    if (response?.status === 1 && response.product) {
+      result.value = response
+      // Success: close the dialog and show the product on the page.
+      cancel()
+      return
+    }
+    showLookupError(scannedCode, t('barcode-scanner.error-not-found'))
+  } catch (err) {
+    // Open Food Facts returns 404 for unknown barcodes; treat anything else as
+    // a real lookup/network failure.
+    const status = err?.statusCode ?? err?.response?.status
+    showLookupError(
+      scannedCode,
+      status === 404 ? t('barcode-scanner.error-not-found') : t('barcode-scanner.error')
+    )
+    console.error(err)
+  } finally {
+    looking.value = false
   }
-  cancel()
+}
+
+// A lookup failed. The camera stays frozen (paused) showing the captured frame;
+// we surface the code + message and the user resumes via "scan again". No
+// auto-rescanning, which on awkward surfaces tends to pick up misread numbers.
+const showLookupError = (scannedCode, message) => {
+  result.value = null
+  error.value = message
+  lastFailedCode.value = scannedCode
+}
+
+const scanAgain = () => {
+  // Resume the frozen camera. loaded=false shows the camera-loading spinner
+  // until the stream is reacquired and @camera-on (onReady) fires.
+  error.value = ''
+  lastFailedCode.value = ''
+  loaded.value = false
+  paused.value = false
 }
 
 const onError = (err) => {
@@ -108,6 +156,9 @@ const onError = (err) => {
 const openDialog = () => {
   paused.value = false
   open.value = true
+  error.value = ''
+  lastFailedCode.value = ''
+  looking.value = false
   dialog.value.openDialog()
 }
 
@@ -242,10 +293,23 @@ defineOgImage('NuxtSeo', {
       :buttons="[{ type: 'close', label: $t('common.cancel') }]"
       @close="cancel"
     >
-      <p v-if="loaded === false">{{ $t('barcode-scanner.please-wait') }}</p>
+      <p
+        v-if="loaded === false"
+        class="inline-flex items-center gap-2 text-sm text-sky-600 dark:text-sky-400"
+      >
+        <LucideLoaderCircle class="h-4 w-4 animate-spin" />
+        {{ $t('barcode-scanner.please-wait') }}
+      </p>
 
       <!-- Do not remove -->
-      <p v-if="error !== ''">{{ error }}</p>
+      <!-- Camera errors only; lookup failures are shown grouped below. -->
+      <p
+        v-if="error !== '' && !lastFailedCode"
+        role="alert"
+        class="mb-4 rounded-lg bg-red-50 px-3 py-2 text-left text-sm text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/10 dark:text-red-300 dark:ring-red-500/20"
+      >
+        {{ error }}
+      </p>
 
       <QrcodeStream
         v-if="open"
@@ -256,6 +320,29 @@ defineOgImage('NuxtSeo', {
         @detect="onDetect"
         @error="onError"
       />
+
+      <!-- Lookup in progress -->
+      <p
+        v-if="looking"
+        class="mt-4 inline-flex items-center gap-2 text-sm text-sky-600 dark:text-sky-400"
+      >
+        <LucideLoaderCircle class="h-4 w-4 animate-spin" />
+        {{ $t('barcode-scanner.looking-up') }}
+      </p>
+
+      <!-- Last lookup failed: message + the code that was read, grouped, + retry. -->
+      <div v-else-if="lastFailedCode" class="mt-4">
+        <div
+          role="alert"
+          class="rounded-lg bg-red-50 px-3 py-2 text-left text-sm text-red-700 ring-1 ring-inset ring-red-200 dark:bg-red-500/10 dark:text-red-300 dark:ring-red-500/20"
+        >
+          <p>{{ error }}</p>
+          <p class="mt-0.5 font-mono text-red-700/70 dark:text-red-300/70">
+            Code: {{ lastFailedCode }}
+          </p>
+        </div>
+        <SecondaryButton :text="$t('barcode-scanner.scan-again')" class="mt-3" @click="scanAgain" />
+      </div>
     </ModalDialog>
 
     <div v-if="result">
@@ -274,7 +361,7 @@ defineOgImage('NuxtSeo', {
       <!-- Do not remove -->
       <p v-if="code !== ''" class="text-sm mb-6">Code: {{ code }}</p>
 
-      <div v-if="result.product.nutriments.proteins_100g">
+      <div v-if="result.product.nutriments?.proteins_100g">
         <p class="text-xl mb-1">
           {{ result.product.nutriments.proteins_100g }}
           {{ result.product.nutriments.proteins_unit }}
@@ -319,7 +406,7 @@ defineOgImage('NuxtSeo', {
         />
       </div>
 
-      <div v-if="!result.product.nutriments.proteins_100g" class="mb-6">
+      <div v-if="!result.product.nutriments?.proteins_100g" class="mb-6">
         <p>{{ $t('barcode-scanner.no-protein') }}</p>
         <NuxtLink :to="$localePath('phe-calculator')" class="text-sky-500">
           {{ $t('barcode-scanner.protein-link') }} <span aria-hidden="true">→</span>

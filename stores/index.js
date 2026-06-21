@@ -115,6 +115,12 @@ export const useStore = defineStore('main', {
       await sendPasswordResetEmail(auth, email)
     },
     initRef() {
+      // Tear down any existing listeners before re-binding. initRef is called
+      // both by the sign-in actions and by the onAuthStateChanged handler, so
+      // without this every login would register a second set of listeners and
+      // orphan the first (leak + duplicate state writes).
+      this.unsubscribeAll()
+
       const db = getDatabase()
       const userId = this.user.id
       const initialState = {

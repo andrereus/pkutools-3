@@ -140,7 +140,7 @@ const selectedDiaryEntry = computed(
 )
 
 const pheResult = computed(() => {
-  return selectedDayLog.value.reduce((sum, item) => sum + item.phe, 0)
+  return selectedDayLog.value.reduce((sum, item) => sum + (Number(item.phe) || 0), 0)
 })
 
 const kcalResult = computed(() => {
