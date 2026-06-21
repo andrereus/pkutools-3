@@ -34,7 +34,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
           throw createError({
             statusCode: 409,
             message:
-              'An entry with this date already exists. Please edit the existing entry instead.'
+              'An entry with this date already exists. Please edit the existing entry instead.',
+            data: { code: 'duplicate-date' }
           })
         }
       }

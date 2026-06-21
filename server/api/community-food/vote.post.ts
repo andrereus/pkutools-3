@@ -1,4 +1,5 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
+import { ServerValue } from 'firebase-admin/database'
 import { CommunityVoteSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
@@ -72,18 +73,19 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
   }
 
-  // Update community food vote counts atomically
+  // Apply the changes with atomic server-side increments so concurrent votes
+  // from different users can't overwrite each other (lost updates).
+  await communityFoodRef.update({
+    likes: ServerValue.increment(likeDelta),
+    dislikes: ServerValue.increment(dislikeDelta),
+    score: ServerValue.increment(likeDelta - dislikeDelta)
+  })
+
+  // Optimistic values for immediate UI feedback; the client's realtime listener
+  // reconciles with the authoritative counts.
   const newLikes = Math.max(0, (communityFood.likes || 0) + likeDelta)
   const newDislikes = Math.max(0, (communityFood.dislikes || 0) + dislikeDelta)
   const newScore = newLikes - newDislikes
-
-  const updateData: Record<string, unknown> = {
-    likes: newLikes,
-    dislikes: newDislikes,
-    score: newScore
-  }
-
-  await communityFoodRef.update(updateData)
 
   return {
     success: true,

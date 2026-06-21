@@ -91,7 +91,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     if (isDuplicate) {
       throw createError({
         statusCode: 409,
-        message: 'A similar food already exists in the community database'
+        message: 'A similar food already exists in the community database',
+        data: { code: 'duplicate-community-food' }
       })
     }
 

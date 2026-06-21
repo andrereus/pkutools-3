@@ -12,42 +12,27 @@ export default defineAuthedHandler(async ({ event, userId }) => {
 
   const diaryRef = db.ref(`/${userId}/pheDiary`)
 
-  // Check duplicate date and limit based on premium status
-  if (isPremium) {
-    // Premium: Use efficient query to check for duplicates
-    const duplicateSnapshot = await diaryRef.orderByChild('date').equalTo(date).once('value')
+  // Duplicate date check — uses the date index, so it's accurate regardless of
+  // how many entries the user has (e.g. someone who downgraded from premium and
+  // still has more than the free cap).
+  const duplicateSnapshot = await diaryRef.orderByChild('date').equalTo(date).once('value')
+  if (duplicateSnapshot.exists()) {
+    throw createError({
+      statusCode: 409,
+      message: 'An entry with this date already exists. Please edit the existing entry instead.',
+      data: { code: 'duplicate-date' }
+    })
+  }
 
-    if (duplicateSnapshot.exists()) {
-      throw createError({
-        statusCode: 409,
-        message: 'An entry with this date already exists. Please edit the existing entry instead.'
-      })
-    }
-  } else {
-    // Free: Fetch minimal data to check limit AND duplicates locally
-    // We only need to know if they have >= 14 entries, so fetch 15
+  // Free users are capped at 14 entries (fetch 15 to know we've exceeded it).
+  if (!isPremium) {
     const diarySnapshot = await diaryRef.limitToFirst(15).once('value')
-    const diaryData = diarySnapshot.val() || {}
-
-    const entryCount = Object.keys(diaryData).length
-
-    if (entryCount >= 14) {
+    if (diarySnapshot.numChildren() >= 14) {
       throw createError({
         statusCode: 403,
-        message: 'Diary limit reached. Upgrade to premium for unlimited entries.'
+        message: 'Diary limit reached. Upgrade to premium for unlimited entries.',
+        data: { code: 'limit-reached' }
       })
-    }
-
-    interface DiaryEntry {
-      date: string
-    }
-    for (const entry of Object.values(diaryData)) {
-      if ((entry as DiaryEntry).date === date) {
-        throw createError({
-          statusCode: 409,
-          message: 'An entry with this date already exists. Please edit the existing entry instead.'
-        })
-      }
     }
   }
 

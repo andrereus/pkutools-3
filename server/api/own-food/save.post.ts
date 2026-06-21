@@ -80,7 +80,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       if (nonSharedCount >= 50) {
         throw createError({
           statusCode: 403,
-          message: 'Own food limit reached. Upgrade to premium for unlimited entries.'
+          message: 'Own food limit reached. Upgrade to premium for unlimited entries.',
+          data: { code: 'limit-reached' }
         })
       }
     }
@@ -97,7 +98,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     if (isDuplicate) {
       throw createError({
         statusCode: 409,
-        message: 'A similar food already exists in the community database'
+        message: 'A similar food already exists in the community database',
+        data: { code: 'duplicate-community-food' }
       })
     }
 
@@ -128,12 +130,11 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       usageCount: 0
     }
 
-    await communityFoodRef.set(communityFoodData)
-
-    // Save own food with community key reference
-    await newOwnFoodRef.set({
-      ...foodData,
-      communityKey
+    // Write both atomically (multi-location update) so a failed write can't
+    // leave an orphaned community food without its backing own-food entry.
+    await db.ref().update({
+      [`${userId}/ownFood/${ownFoodKey}`]: { ...foodData, communityKey },
+      [`communityFoods/${communityKey}`]: communityFoodData
     })
 
     return {

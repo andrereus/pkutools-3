@@ -58,7 +58,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     if (entryCount >= 14) {
       throw createError({
         statusCode: 403,
-        message: 'Diary limit reached. Upgrade to premium for unlimited entries.'
+        message: 'Diary limit reached. Upgrade to premium for unlimited entries.',
+        data: { code: 'limit-reached' }
       })
     }
   }

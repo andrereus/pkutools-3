@@ -1,4 +1,5 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
+import { ServerValue } from 'firebase-admin/database'
 import { format } from 'date-fns'
 import { defineAuthedHandler } from '../../utils/handler'
 import { licenseFlags } from '../../utils/license'
@@ -63,12 +64,17 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   const remainingEstimates = Math.floor(remainingCredits / costPerEstimate)
 
   if (allowed) {
-    // Increment estimation count
-    const newCount = currentCount + costPerEstimate
-    await settingsRef.update({
-      estimationCount: newCount,
-      estimationDate: today
-    })
+    if (estimateDate === today) {
+      // Same day: atomic server-side increment so concurrent requests don't lose
+      // updates (which would let the count fall behind and allow over-use).
+      await settingsRef.update({ estimationCount: ServerValue.increment(costPerEstimate) })
+    } else {
+      // New day: reset the counter to this estimate's cost.
+      await settingsRef.update({
+        estimationCount: costPerEstimate,
+        estimationDate: today
+      })
+    }
   }
 
   return {

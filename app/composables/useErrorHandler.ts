@@ -149,6 +149,13 @@ export const useErrorHandler = () => {
         default:
           message = bodyMessage || httpError.message || message
       }
+
+      // Prefer a stable server-provided code (e.g. duplicate-date) so business-
+      // rule errors stay translated instead of leaking the English message.
+      const errorCode = (body?.data as { code?: string } | undefined)?.code
+      if (errorCode && te(`errors.${errorCode}`)) {
+        message = t(`errors.${errorCode}`)
+      }
     } else if (typeof httpError.message === 'string' && httpError.message.startsWith('Firebase:')) {
       // Firebase error without a parsable code field — fall back to a generic
       // translated auth message rather than showing the raw Firebase string.
