@@ -361,7 +361,7 @@ defineOgImage('NuxtSeo', {
       <!-- Do not remove -->
       <p v-if="code !== ''" class="text-sm mb-6">Code: {{ code }}</p>
 
-      <div v-if="result.product.nutriments?.proteins_100g">
+      <div v-if="result.product.nutriments?.proteins_100g != null">
         <p class="text-xl mb-1">
           {{ result.product.nutriments.proteins_100g }}
           {{ result.product.nutriments.proteins_unit }}
@@ -406,7 +406,7 @@ defineOgImage('NuxtSeo', {
         />
       </div>
 
-      <div v-if="!result.product.nutriments?.proteins_100g" class="mb-6">
+      <div v-if="result.product.nutriments?.proteins_100g == null" class="mb-6">
         <p>{{ $t('barcode-scanner.no-protein') }}</p>
         <NuxtLink :to="$localePath('phe-calculator')" class="text-sky-500">
           {{ $t('barcode-scanner.protein-link') }} <span aria-hidden="true">→</span>
