@@ -65,6 +65,32 @@ const save = async () => {
     return
   }
 
+  // Validate required fields client-side so every missing one is reported at
+  // once (and so an empty Phe/protein, which would compute to 0 via calculatePhe's
+  // `|| 0` and silently log a 0 mg-Phe food, is caught — the server can't, since
+  // it only sees the computed value). An explicit 0 is allowed. Messages reuse
+  // the same i18n keys as the server, so wording stays consistent and translated.
+  const isEmpty = (v) => v === null || v === undefined || v === ''
+  const nutritionalValue = select.value === 'phe' ? phe.value : protein.value
+  const nutritionalLabel = select.value === 'phe' ? 'common.phe-per-100g' : 'common.protein-per-100g'
+
+  const validationErrors = []
+  if (!name.value?.trim()) {
+    validationErrors.push(t('errors.validation.required', { field: t('common.food-name') }))
+  }
+  if (isEmpty(nutritionalValue)) {
+    validationErrors.push(t('errors.validation.required', { field: t(nutritionalLabel) }))
+  }
+  if (isEmpty(weight.value) || !(Number(weight.value) > 0)) {
+    validationErrors.push(
+      t('errors.validation.must-be-positive', { field: t('common.consumed-weight') })
+    )
+  }
+  if (validationErrors.length > 0) {
+    notifications.error(validationErrors.join(' '))
+    return
+  }
+
   let logEntry
   if (select.value === 'phe') {
     logEntry = {

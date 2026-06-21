@@ -40,6 +40,11 @@ const notify = (options: NotificationOptions) => {
 
 const close = () => {
   showNotification.value = false
+  // Clear any pending cleanup first so a second close() (undo emits both 'undo'
+  // and 'close', both wired to close) doesn't orphan the previous timeout.
+  if (cleanupTimeout) {
+    clearTimeout(cleanupTimeout)
+  }
   // Clear notification after animation
   cleanupTimeout = setTimeout(() => {
     notification.value = null

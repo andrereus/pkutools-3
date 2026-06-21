@@ -70,8 +70,8 @@ const save = async () => {
 
   try {
     await updateSettings({
-      maxPhe: settings.value.maxPhe || 0,
-      maxKcal: settings.value.maxKcal || 0,
+      maxPhe: settings.value.maxPhe || null,
+      maxKcal: settings.value.maxKcal || null,
       labUnit: settings.value.labUnit,
       progressStyle: settings.value.progressStyle
     })

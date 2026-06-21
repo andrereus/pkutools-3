@@ -36,7 +36,9 @@ export const LabValueSchema = z
     phe: z.coerce.number().positive('Phe value must be positive').nullable().optional(),
     tyrosine: z.coerce.number().positive('Tyrosine value must be positive').nullable().optional()
   })
-  .refine((data) => data.phe !== null || data.tyrosine !== null, {
+  // Loose `!= null` so an omitted (undefined) field counts as "not provided"
+  // too — otherwise a request with neither key passes (undefined !== null).
+  .refine((data) => data.phe != null || data.tyrosine != null, {
     message: 'Either Phe or Tyrosine must be provided',
     path: ['phe'] // Point to phe field for error
   })
