@@ -99,7 +99,9 @@ export default defineNuxtConfig({
         'firebase/ai',
         'vue-qrcode-reader',
         'date-fns/locale',
-        '@tanstack/vue-table'
+        '@tanstack/vue-table',
+        '@unhead/schema-org/vue',
+        '@lucide/vue'
       ]
     }
   },
