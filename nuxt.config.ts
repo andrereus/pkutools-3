@@ -70,7 +70,7 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' }
   },
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   modules: [
     '@nuxt/eslint',
