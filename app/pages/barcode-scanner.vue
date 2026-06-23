@@ -38,26 +38,39 @@ const constraints = ref(buildConstraints({ facingMode: { ideal: 'environment' } 
 // deviceId of the chosen rear camera, resolved once and reused for later opens.
 let resolvedRearCameraId = null
 
+// Camera labels are localized to the device language (iOS) so we match across the
+// app's locales (en/de/es/fr) instead of English only. REAR_RE flags rear-facing
+// cameras; FRONT_RE excludes selfie cameras that REAR_RE might otherwise catch.
+const REAR_RE = /\b(back|rear|environment)\b|rück|ruck|tras|posterior|arrière|arriere|hinten/i
+const FRONT_RE = /\bfront\b|frontal|avant|delantera|vorder|selfie/i
+
 // Rank a rear camera by its label: prefer the general-purpose main lens, avoid the
 // lenses that can't focus on a close barcode (ultra-wide, telephoto, macro, depth).
 const scoreRearCamera = (label = '') => {
   const l = label.toLowerCase()
   let score = 0
-  if (/\bback camera\b|\brear camera\b/.test(l)) score += 100 // iOS auto-switching lens
-  if (/\b0,?\s*facing back\b/.test(l)) score += 60 // Android main sensor is index 0
-  if (/dual|triple/.test(l)) score += 20
-  if (/ultra/.test(l)) score -= 100
-  if (/tele/.test(l)) score -= 80
-  if (/macro/.test(l)) score -= 60
-  if (/depth|infrared|\bir\b|truedepth|mono/.test(l)) score -= 200
+  // Lenses that can't focus on a close barcode. These tokens are stable across
+  // locales (ultra/macro) or listed with their common translations.
+  if (/ultra/.test(l)) score -= 100 // ultra-wide
+  if (/tele|télé/.test(l)) score -= 80 // telephoto / téléobjectif / teleobjetivo
+  if (/macro|makro/.test(l)) score -= 60
+  if (/depth|tiefe|profond|profund|infra|truedepth|monochrom/.test(l)) score -= 200
+  // Android's main sensor is the index-0 back camera.
+  if (/\b0,?\s*facing back\b/.test(l)) score += 1000
+  // Tie-break: prefer the plainest label. The generic auto-switching rear camera
+  // has the shortest name in every language (en "Back Camera", de "Rückkamera"),
+  // so a shorter label wins over qualified ones like "… Dual Wide Camera".
+  score -= l.length
   return score
 }
 
 // Pick the best rear camera, or null when there's nothing meaningful to choose
 // (labels hidden until permission is granted, or a single rear lens — in which
 // case the facingMode default already targets it).
+const isRearCamera = (label) => !!label && REAR_RE.test(label) && !FRONT_RE.test(label)
+
 const pickRearCamera = (videoInputs) => {
-  const rear = videoInputs.filter((d) => d.label && /\b(back|rear|environment)\b/i.test(d.label))
+  const rear = videoInputs.filter((d) => isRearCamera(d.label))
   if (rear.length <= 1) return null
   const ranked = [...rear].sort((a, b) => scoreRearCamera(b.label) - scoreRearCamera(a.label))
   return ranked[0]?.deviceId ?? null
@@ -93,7 +106,6 @@ const debug = ref({ pickedId: '', constraints: '', devices: [], capabilities: ''
 const shortId = (id) => (id ? id.slice(0, 10) + '…' : '—')
 
 const captureCameraDebug = async (capabilities) => {
-  const rearRe = /\b(back|rear|environment)\b/i
   try {
     const devices = await navigator.mediaDevices.enumerateDevices()
     const videoInputs = devices.filter((d) => d.kind === 'videoinput')
@@ -107,7 +119,7 @@ const captureCameraDebug = async (capabilities) => {
         id: shortId(d.deviceId),
         fullId: d.deviceId,
         label: d.label,
-        score: rearRe.test(d.label) ? scoreRearCamera(d.label) : null,
+        score: isRearCamera(d.label) ? scoreRearCamera(d.label) : null,
         chosen: !!resolvedRearCameraId && d.deviceId === resolvedRearCameraId
       }))
     }
