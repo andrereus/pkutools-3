@@ -183,6 +183,8 @@
     "description": "Scan barcodes from products.",
     "scan-barcode": "Scan barcode",
     "please-wait": "Please wait ...",
+    "camera": "Camera",
+    "camera-default": "Automatic",
     "info": "Phe gets calculated from protein. Source: openfoodfacts.org",
     "info-2": "To scan nutrient data from the label use the AI Calculator.",
     "no-protein": "Protein not available for calculation.",

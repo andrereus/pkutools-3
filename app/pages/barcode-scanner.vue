@@ -28,127 +28,57 @@ const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isSaving = ref(false)
 
 // Camera selection.
-// The bare `facingMode: 'environment'` default lets the OS pick any rear lens, and
-// on multi-camera phones that is often the ultra-wide or macro lens, which can't
-// focus close enough to read a barcode. We resolve a concrete deviceId for the
-// main rear camera instead. `advanced` requests continuous autofocus on top of
-// that (best-effort; silently ignored where unsupported, e.g. iOS Safari).
-const buildConstraints = (base) => ({ ...base, advanced: [{ focusMode: 'continuous' }] })
-const constraints = ref(buildConstraints({ facingMode: { ideal: 'environment' } }))
-// deviceId of the chosen rear camera, resolved once and reused for later opens.
-let resolvedRearCameraId = null
+// The MediaDevices API exposes no lens metadata, so there's no reliable way to
+// detect which rear lens can focus on a barcode (ultra-wide/macro lenses can't).
+// Instead the user picks from a dropdown when the device has more than one camera;
+// we default to the OS choice (facingMode: environment) and remember the selection.
+const CAMERA_STORAGE_KEY = 'pku-barcode-camera'
+const cameras = ref([]) // [{ deviceId, label }] — populated once labels are readable
+const selectedCameraId = ref('') // '' = OS default, otherwise a specific deviceId
 
-// Camera labels are localized to the device language (iOS) so we match across the
-// app's locales (en/de/es/fr) instead of English only. REAR_RE flags rear-facing
-// cameras; FRONT_RE excludes selfie cameras that REAR_RE might otherwise catch.
-const REAR_RE = /\b(back|rear|environment)\b|rück|ruck|tras|posterior|arrière|arriere|hinten/i
-const FRONT_RE = /\bfront\b|frontal|avant|delantera|vorder|selfie/i
+// `advanced` requests continuous autofocus on top of the chosen camera (best-effort;
+// silently ignored where unsupported, e.g. iOS Safari). The library deep-watches
+// this, so changing the selection re-acquires the camera.
+const constraints = computed(() => {
+  const base = selectedCameraId.value
+    ? { deviceId: { exact: selectedCameraId.value } }
+    : { facingMode: { ideal: 'environment' } }
+  return { ...base, advanced: [{ focusMode: 'continuous' }] }
+})
 
-// Rank a rear camera by its label: prefer the general-purpose main lens, avoid the
-// lenses that can't focus on a close barcode (ultra-wide, telephoto, macro, depth).
-const scoreRearCamera = (label = '') => {
-  const l = label.toLowerCase()
-  let score = 0
-  // Lenses that can't focus on a close barcode. These tokens are stable across
-  // locales (ultra/macro) or listed with their common translations.
-  if (/ultra/.test(l)) score -= 100 // ultra-wide
-  if (/tele|télé/.test(l)) score -= 80 // telephoto / téléobjectif / teleobjetivo
-  if (/macro|makro/.test(l)) score -= 60
-  if (/depth|tiefe|profond|profund|infra|truedepth|monochrom/.test(l)) score -= 200
-  // Android's main sensor is the index-0 back camera.
-  if (/\b0,?\s*facing back\b/.test(l)) score += 1000
-  // Tie-break: prefer the plainest label. The generic auto-switching rear camera
-  // has the shortest name in every language (en "Back Camera", de "Rückkamera"),
-  // so a shorter label wins over qualified ones like "… Dual Wide Camera".
-  score -= l.length
-  return score
-}
-
-// Pick the best rear camera, or null when there's nothing meaningful to choose
-// (labels hidden until permission is granted, or a single rear lens — in which
-// case the facingMode default already targets it).
-const isRearCamera = (label) => !!label && REAR_RE.test(label) && !FRONT_RE.test(label)
-
-const pickRearCamera = (videoInputs) => {
-  const rear = videoInputs.filter((d) => isRearCamera(d.label))
-  if (rear.length <= 1) return null
-  const ranked = [...rear].sort((a, b) => scoreRearCamera(b.label) - scoreRearCamera(a.label))
-  return ranked[0]?.deviceId ?? null
-}
-
-// Point `constraints` at the main rear camera. Device labels are only readable once
-// camera permission has been granted, so this is a no-op on the very first open and
-// is retried from @camera-on once the stream (and labels) are available.
-const resolveCamera = async () => {
-  if (resolvedRearCameraId) {
-    constraints.value = buildConstraints({ deviceId: { exact: resolvedRearCameraId } })
-    return
+// Persist the choice (including '' for "default") so it survives across visits.
+watch(selectedCameraId, (id) => {
+  try {
+    localStorage.setItem(CAMERA_STORAGE_KEY, id)
+  } catch {
+    // storage unavailable (e.g. private mode) — the choice just won't persist
   }
+})
+
+// Restore the remembered camera. Guarded for SSR (no localStorage on the server).
+onMounted(() => {
+  try {
+    selectedCameraId.value = localStorage.getItem(CAMERA_STORAGE_KEY) || ''
+  } catch {
+    // ignore
+  }
+})
+
+// Populate the dropdown. Device labels are only exposed after camera permission is
+// granted, so this returns real names only once the stream is live (see onReady).
+const refreshCameras = async () => {
   if (!navigator.mediaDevices?.enumerateDevices) return
   try {
     const devices = await navigator.mediaDevices.enumerateDevices()
-    const id = pickRearCamera(devices.filter((d) => d.kind === 'videoinput'))
-    if (id) {
-      resolvedRearCameraId = id
-      constraints.value = buildConstraints({ deviceId: { exact: id } })
+    cameras.value = devices
+      .filter((d) => d.kind === 'videoinput')
+      .map((d, i) => ({ deviceId: d.deviceId, label: d.label || `${t('barcode-scanner.camera')} ${i + 1}` }))
+    // A remembered camera can disappear (unplugged / id rotated) — fall back to default.
+    if (selectedCameraId.value && !cameras.value.some((c) => c.deviceId === selectedCameraId.value)) {
+      selectedCameraId.value = ''
     }
   } catch {
-    // enumerateDevices failed — keep the facingMode fallback.
-  }
-}
-
-// ---------------------------------------------------------------------------
-// TEMP DEBUG (remove after camera testing): surfaces the camera enumeration,
-// the per-lens scores and the lens we actually picked, directly in the UI so it
-// can be verified on a released build without USB remote debugging.
-// ---------------------------------------------------------------------------
-const debug = ref({ pickedId: '', constraints: '', devices: [], capabilities: '' })
-const shortId = (id) => (id ? id.slice(0, 10) + '…' : '—')
-
-const captureCameraDebug = async (capabilities) => {
-  try {
-    const devices = await navigator.mediaDevices.enumerateDevices()
-    const videoInputs = devices.filter((d) => d.kind === 'videoinput')
-    debug.value = {
-      pickedId: resolvedRearCameraId || '',
-      constraints: JSON.stringify(constraints.value),
-      capabilities: capabilities
-        ? JSON.stringify(capabilities, null, 2)
-        : debug.value.capabilities,
-      devices: videoInputs.map((d) => ({
-        id: shortId(d.deviceId),
-        fullId: d.deviceId,
-        label: d.label,
-        score: isRearCamera(d.label) ? scoreRearCamera(d.label) : null,
-        chosen: !!resolvedRearCameraId && d.deviceId === resolvedRearCameraId
-      }))
-    }
-  } catch (e) {
-    debug.value.capabilities = 'enumerate failed: ' + (e?.message || e)
-  }
-}
-
-const copyDebug = async () => {
-  const text = JSON.stringify(
-    {
-      pickedId: debug.value.pickedId,
-      constraints: debug.value.constraints,
-      devices: debug.value.devices.map((d) => ({
-        label: d.label,
-        id: d.fullId,
-        score: d.score,
-        chosen: d.chosen
-      })),
-      capabilities: debug.value.capabilities
-    },
-    null,
-    2
-  )
-  try {
-    await navigator.clipboard.writeText(text)
-    notifications.success('Debug info copied')
-  } catch {
-    notifications.error('Copy failed — select the text manually')
+    // ignore — the dropdown just won't populate
   }
 }
 
@@ -187,14 +117,11 @@ const paintBoundingBox = (detectedCodes, ctx) => {
   }
 }
 
-const onReady = async (capabilities) => {
+const onReady = () => {
   loaded.value = true
-  // First successful grant: labels are now readable. If this phone exposes several
-  // rear lenses, lock onto the main one (the default may have opened the ultra-wide
-  // or macro lens). Cached, so this only triggers a one-time switch on first scan.
-  if (!resolvedRearCameraId) await resolveCamera()
-  // TEMP DEBUG: refresh the on-screen diagnostics with the now-active camera.
-  captureCameraDebug(capabilities)
+  // Camera permission is now granted, so device labels are readable — populate the
+  // picker (no-op'd to a single entry, and hidden, on single-camera devices).
+  refreshCameras()
 }
 
 const onDetect = async (detectedCodes) => {
@@ -255,11 +182,10 @@ const scanAgain = () => {
 }
 
 const onError = (err) => {
-  // A cached deviceId can go stale (camera reassigned/unplugged). Drop it and fall
-  // back to the generic rear camera once, rather than surfacing a hard error.
-  if (err.name === 'OverconstrainedError' && constraints.value.deviceId) {
-    resolvedRearCameraId = null
-    constraints.value = buildConstraints({ facingMode: { ideal: 'environment' } })
+  // A selected deviceId can go stale (camera unplugged / id rotated). Fall back to
+  // the OS default once, rather than surfacing a hard error.
+  if (err.name === 'OverconstrainedError' && selectedCameraId.value) {
+    selectedCameraId.value = ''
     return
   }
 
@@ -298,10 +224,10 @@ const openDialog = async () => {
   error.value = ''
   lastFailedCode.value = ''
   looking.value = false
-  // Show the dialog (and its loading spinner) immediately, then resolve the camera
-  // before mounting the stream so a known main lens is used from the first frame.
+  // Show the dialog (and its loading spinner) immediately, then refresh the camera
+  // list so the picker is pre-populated if permission was granted on a prior visit.
   dialog.value.openDialog()
-  await resolveCamera()
+  await refreshCameras()
   open.value = true
 }
 
@@ -454,6 +380,18 @@ defineOgImage('NuxtSeo', {
         {{ error }}
       </p>
 
+      <SelectMenu
+        v-if="open && cameras.length > 1"
+        v-model="selectedCameraId"
+        id-name="camera"
+        :label="$t('barcode-scanner.camera')"
+      >
+        <option value="">{{ $t('barcode-scanner.camera-default') }}</option>
+        <option v-for="cam in cameras" :key="cam.deviceId" :value="cam.deviceId">
+          {{ cam.label }}
+        </option>
+      </SelectMenu>
+
       <QrcodeStream
         v-if="open"
         :paused="paused"
@@ -464,40 +402,6 @@ defineOgImage('NuxtSeo', {
         @detect="onDetect"
         @error="onError"
       />
-
-      <!-- TEMP DEBUG: camera selection diagnostics — remove after testing -->
-      <div
-        class="mt-4 overflow-x-auto rounded-lg bg-gray-900 p-3 text-left font-mono text-[11px] leading-relaxed text-gray-100"
-      >
-        <div class="mb-2 flex items-center justify-between">
-          <span class="text-amber-400">CAMERA DEBUG</span>
-          <button
-            type="button"
-            class="rounded bg-gray-700 px-2 py-0.5 text-gray-100 hover:bg-gray-600"
-            @click="copyDebug"
-          >
-            Copy
-          </button>
-        </div>
-        <p class="break-all">
-          picked: {{ debug.pickedId ? shortId(debug.pickedId) : '(none — facingMode default)' }}
-        </p>
-        <p class="break-all">constraints: {{ debug.constraints }}</p>
-        <p class="mt-2">cameras ({{ debug.devices.length }}):</p>
-        <ul class="space-y-0.5">
-          <li
-            v-for="d in debug.devices"
-            :key="d.fullId"
-            :class="d.chosen ? 'text-green-400' : ''"
-          >
-            {{ d.chosen ? '✓' : '·' }} [{{ d.score === null ? '—' : d.score }}]
-            {{ d.label || '(label hidden — grant permission)' }}
-            <span class="text-gray-500">{{ d.id }}</span>
-          </li>
-        </ul>
-        <p class="mt-2">active capabilities:</p>
-        <pre class="whitespace-pre-wrap break-all text-gray-300">{{ debug.capabilities || '—' }}</pre>
-      </div>
 
       <!-- Lookup in progress -->
       <p

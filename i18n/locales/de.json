@@ -183,6 +183,8 @@
     "description": "Scanne Barcodes von Produkten.",
     "scan-barcode": "Barcode scannen",
     "please-wait": "Bitte warten ...",
+    "camera": "Kamera",
+    "camera-default": "Automatisch",
     "info": "Phe wird aus Eiweiß berechnet. Quelle: openfoodfacts.org",
     "info-2": "Um Nährwertdaten vom Etikett zu scannen, verwende den KI Rechner.",
     "no-protein": "Eiweiß zur Berechnung nicht vorhanden.",

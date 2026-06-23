@@ -183,6 +183,8 @@
     "description": "Escanea los códigos de barras de los productos.",
     "scan-barcode": "Escanear código de barras",
     "please-wait": "Por favor, espera...",
+    "camera": "Cámara",
+    "camera-default": "Automática",
     "info": "Phe se calcula a partir de proteínas. Fuente: openfoodfacts.org",
     "info-2": "Para escanear datos nutricionales de la etiqueta, usa la Calculadora IA.",
     "no-protein": "Proteína no disponible para el cálculo.",
