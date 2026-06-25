@@ -30,21 +30,8 @@ const isSaving = ref(false)
 const imageFile = ref(null)
 const imagePreview = ref(null)
 const fileInputRef = ref(null)
-const descriptionRef = ref(null)
 const correctionDialog = ref(null)
 const correctionHint = ref('')
-
-// Grow the description field to fit its content (mobile-friendly alternative to a resize handle)
-const autoGrowDescription = () => {
-  const el = descriptionRef.value
-  if (!el) return
-  el.style.height = 'auto'
-  el.style.height = `${el.scrollHeight}px`
-}
-
-onMounted(() => {
-  autoGrowDescription()
-})
 
 // Result state
 const result = ref(null) // { name, emoji, phePer100g, proteinPer100g, kcalPer100g, weightInGrams, explanation }
@@ -514,13 +501,12 @@ defineOgImage('NuxtSeo', {
       <div class="mt-1">
         <textarea
           id="description"
-          ref="descriptionRef"
+          v-auto-grow
           v-model="description"
           rows="1"
           :placeholder="$t('ai-calculator.input-placeholder')"
           :disabled="isEstimating"
-          class="block w-full resize-none overflow-hidden rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
-          @input="autoGrowDescription"
+          class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
         />
       </div>
 
