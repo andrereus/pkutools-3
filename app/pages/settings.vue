@@ -51,6 +51,13 @@ const progressStyleOptions = computed(() => [
   { title: t('settings.progress-style-bars'), value: 'bars' }
 ])
 
+const preferredToolOptions = computed(() => [
+  { title: t('ai-calculator.title'), value: 'ai-calculator' },
+  { title: t('food-search.title'), value: 'food-search' },
+  { title: t('barcode-scanner.title'), value: 'barcode-scanner' },
+  { title: t('phe-calculator.title'), value: 'phe-calculator' }
+])
+
 // Methods
 const { handleError } = useErrorHandler()
 
@@ -72,8 +79,13 @@ const save = async () => {
     await updateSettings({
       maxPhe: settings.value.maxPhe || null,
       maxKcal: settings.value.maxKcal || null,
+      bloodPheMin: settings.value.bloodPheMin || null,
+      bloodPheMax: settings.value.bloodPheMax || null,
+      bloodTyrMin: settings.value.bloodTyrMin || null,
+      bloodTyrMax: settings.value.bloodTyrMax || null,
       labUnit: settings.value.labUnit,
-      progressStyle: settings.value.progressStyle
+      progressStyle: settings.value.progressStyle,
+      preferredTool: settings.value.preferredTool
     })
     notifications.success(t('settings.saved'))
   } catch (error) {
@@ -470,19 +482,19 @@ defineOgImage('NuxtSeo', {
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
           {{ $t('settings.app-settings') }}
         </h3>
-        <NumberInput
-          v-model.number="settings.maxPhe"
-          id-name="max-phe"
-          :label="$t('settings.max-phe')"
-          class="mb-4"
-        />
+        <div class="grid grid-cols-2 gap-4">
+          <NumberInput
+            v-model.number="settings.maxPhe"
+            id-name="max-phe"
+            :label="$t('settings.max-phe')"
+          />
 
-        <NumberInput
-          v-model.number="settings.maxKcal"
-          id-name="max-kcal"
-          :label="$t('settings.max-kcal')"
-          class="mb-4"
-        />
+          <NumberInput
+            v-model.number="settings.maxKcal"
+            id-name="max-kcal"
+            :label="$t('settings.max-kcal')"
+          />
+        </div>
 
         <SelectMenu
           v-model="settings.labUnit"
@@ -495,6 +507,46 @@ defineOgImage('NuxtSeo', {
           </option>
         </SelectMenu>
 
+        <div class="grid grid-cols-2 gap-4">
+          <NumberInput
+            v-model.number="settings.bloodPheMin"
+            id-name="blood-phe-min"
+            :label="
+              $t('settings.blood-phe-min') +
+              (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
+            "
+          />
+
+          <NumberInput
+            v-model.number="settings.bloodPheMax"
+            id-name="blood-phe-max"
+            :label="
+              $t('settings.blood-phe-max') +
+              (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
+            "
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <NumberInput
+            v-model.number="settings.bloodTyrMin"
+            id-name="blood-tyr-min"
+            :label="
+              $t('settings.blood-tyr-min') +
+              (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
+            "
+          />
+
+          <NumberInput
+            v-model.number="settings.bloodTyrMax"
+            id-name="blood-tyr-max"
+            :label="
+              $t('settings.blood-tyr-max') +
+              (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
+            "
+          />
+        </div>
+
         <SelectMenu
           v-model="settings.progressStyle"
           id-name="progress-style"
@@ -502,6 +554,17 @@ defineOgImage('NuxtSeo', {
           class="mb-4"
         >
           <option v-for="option in progressStyleOptions" :key="option.value" :value="option.value">
+            {{ option.title }}
+          </option>
+        </SelectMenu>
+
+        <SelectMenu
+          v-model="settings.preferredTool"
+          id-name="preferred-tool"
+          :label="$t('settings.preferred-tool')"
+          class="mb-4"
+        >
+          <option v-for="option in preferredToolOptions" :key="option.value" :value="option.value">
             {{ option.title }}
           </option>
         </SelectMenu>

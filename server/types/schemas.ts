@@ -151,8 +151,31 @@ export const OwnFoodUpdateSchema = z.object({
 export const SettingsUpdateSchema = z.object({
   maxPhe: z.coerce.number().nonnegative('Max Phe must be non-negative').nullable().optional(),
   maxKcal: z.coerce.number().nonnegative('Max Kcal must be non-negative').nullable().optional(),
+  bloodPheMin: z.coerce
+    .number()
+    .nonnegative('Min blood Phe must be non-negative')
+    .nullable()
+    .optional(),
+  bloodPheMax: z.coerce
+    .number()
+    .nonnegative('Max blood Phe must be non-negative')
+    .nullable()
+    .optional(),
+  bloodTyrMin: z.coerce
+    .number()
+    .nonnegative('Min tyrosine must be non-negative')
+    .nullable()
+    .optional(),
+  bloodTyrMax: z.coerce
+    .number()
+    .nonnegative('Max tyrosine must be non-negative')
+    .nullable()
+    .optional(),
   labUnit: z.enum(['mgdl', 'umoll']).optional(),
   progressStyle: z.enum(['bars', 'circles']).optional(),
+  preferredTool: z
+    .enum(['ai-calculator', 'food-search', 'barcode-scanner', 'phe-calculator'])
+    .optional(),
   license: z.string().nullable().optional()
 })
 

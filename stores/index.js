@@ -15,8 +15,13 @@ import { defineStore } from 'pinia'
 const defaultSettings = {
   maxPhe: null,
   maxKcal: null,
+  bloodPheMin: null,
+  bloodPheMax: null,
+  bloodTyrMin: null,
+  bloodTyrMax: null,
   labUnit: 'mgdl',
   progressStyle: 'circles',
+  preferredTool: 'ai-calculator',
   license: null,
   healthDataConsent: false,
   healthDataConsentDate: null,

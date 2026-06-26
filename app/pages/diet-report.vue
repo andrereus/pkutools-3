@@ -228,6 +228,15 @@ const graphKcal = computed(() => {
   ]
 })
 
+// Upper bound for the Phe chart's y-axis so the maxPhe line is always visible,
+// even when every day's total stays below it.
+const pheYAxisMax = computed(() => {
+  const phes = completeDiary.value.map((o) => o.phe).filter((v) => v != null)
+  const dataMax = phes.length ? Math.max(...phes) : 0
+  const top = Math.max(dataMax, settings.value.maxPhe ?? 0)
+  return top > 0 ? Math.ceil(top * 1.1) : undefined
+})
+
 const chartOptions = computed(() => {
   const en = enChart
   const de = deChart
@@ -287,7 +296,8 @@ const chartOptions = computed(() => {
       })
     },
     yaxis: {
-      min: 0
+      min: 0,
+      max: pheYAxisMax.value
     },
     annotations: {
       yaxis: [
@@ -304,6 +314,15 @@ const chartOptions = computed(() => {
     },
     colors: ['#0ea5e9']
   }
+})
+
+// Upper bound for the Kcal chart's y-axis so the maxKcal line is always visible,
+// even when every day's total stays below it.
+const kcalYAxisMax = computed(() => {
+  const kcals = completeDiary.value.map((o) => o.kcal).filter((v) => v != null)
+  const dataMax = kcals.length ? Math.max(...kcals) : 0
+  const top = Math.max(dataMax, settings.value.maxKcal ?? 0)
+  return top > 0 ? Math.ceil(top * 1.1) : undefined
 })
 
 const chartOptionsKcal = computed(() => {
@@ -365,7 +384,8 @@ const chartOptionsKcal = computed(() => {
       })
     },
     yaxis: {
-      min: 0
+      min: 0,
+      max: kcalYAxisMax.value
     },
     annotations: {
       yaxis: [

@@ -32,7 +32,8 @@ const isSaving = ref(false)
 // detect which rear lens can focus on a barcode (ultra-wide/macro lenses can't).
 // Instead the user picks from a dropdown when the device has more than one camera;
 // we default to the OS choice (facingMode: environment) and remember the selection.
-const CAMERA_STORAGE_KEY = 'pku-barcode-camera'
+const CAMERA_STORAGE_KEY = 'barcode_camera'
+const LEGACY_CAMERA_STORAGE_KEY = 'pku-barcode-camera' // renamed for naming consistency
 const cameras = ref([]) // [{ deviceId, label }] — populated once labels are readable
 const selectedCameraId = ref('') // '' = OS default, otherwise a specific deviceId
 
@@ -58,6 +59,14 @@ watch(selectedCameraId, (id) => {
 // Restore the remembered camera. Guarded for SSR (no localStorage on the server).
 onMounted(() => {
   try {
+    // Migrate any value saved under the previous key name (one-time).
+    const legacy = localStorage.getItem(LEGACY_CAMERA_STORAGE_KEY)
+    if (legacy !== null && localStorage.getItem(CAMERA_STORAGE_KEY) === null) {
+      localStorage.setItem(CAMERA_STORAGE_KEY, legacy)
+    }
+    if (legacy !== null) {
+      localStorage.removeItem(LEGACY_CAMERA_STORAGE_KEY)
+    }
     selectedCameraId.value = localStorage.getItem(CAMERA_STORAGE_KEY) || ''
   } catch {
     // ignore
@@ -72,9 +81,15 @@ const refreshCameras = async () => {
     const devices = await navigator.mediaDevices.enumerateDevices()
     cameras.value = devices
       .filter((d) => d.kind === 'videoinput')
-      .map((d, i) => ({ deviceId: d.deviceId, label: d.label || `${t('barcode-scanner.camera')} ${i + 1}` }))
+      .map((d, i) => ({
+        deviceId: d.deviceId,
+        label: d.label || `${t('barcode-scanner.camera')} ${i + 1}`
+      }))
     // A remembered camera can disappear (unplugged / id rotated) — fall back to default.
-    if (selectedCameraId.value && !cameras.value.some((c) => c.deviceId === selectedCameraId.value)) {
+    if (
+      selectedCameraId.value &&
+      !cameras.value.some((c) => c.deviceId === selectedCameraId.value)
+    ) {
       selectedCameraId.value = ''
     }
   } catch {

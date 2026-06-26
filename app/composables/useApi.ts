@@ -193,8 +193,13 @@ export const useApi = () => {
   const updateSettings = (data: {
     maxPhe?: number | null
     maxKcal?: number | null
+    bloodPheMin?: number | null
+    bloodPheMax?: number | null
+    bloodTyrMin?: number | null
+    bloodTyrMax?: number | null
     labUnit?: 'mgdl' | 'umoll'
     progressStyle?: 'bars' | 'circles'
+    preferredTool?: 'ai-calculator' | 'food-search' | 'barcode-scanner' | 'phe-calculator'
     license?: string | null
   }): Promise<{ success: boolean }> =>
     request('/api/settings/update', 'Update settings', 'POST', data)

@@ -199,12 +199,82 @@ const graphTyrosine = computed(() => {
   ]
 })
 
+// Therapeutic blood Phe target range (from settings): a shaded band between the
+// two bounds with a dotted boundary line for each bound that is set (the dotted
+// lines match the maxPhe line in the diet report).
+const pheRangeAnnotations = computed(() => {
+  const min = settings.value.bloodPheMin
+  const max = settings.value.bloodPheMax
+  const color = '#0ea5e9'
+  const dottedLine = (y) => ({ y, borderWidth: 2, borderColor: color, strokeDashArray: 6 })
+  const annotations = []
+  if (min != null && max != null) {
+    annotations.push({ y: min, y2: max, fillColor: color, opacity: 0.1, borderWidth: 0 })
+  }
+  if (min != null) annotations.push(dottedLine(min))
+  if (max != null) annotations.push(dottedLine(max))
+  return annotations
+})
+
+// Upper bound for the Phe chart's y-axis: large enough that the target lines are
+// always visible, even when every reading sits below (or above) the range.
+const pheYAxisMax = computed(() => {
+  const phes = labValues.value.map((o) => o.phe).filter((v) => v != null)
+  const dataMax = phes.length ? Math.max(...phes) : 0
+  const targetTop = Math.max(settings.value.bloodPheMin ?? 0, settings.value.bloodPheMax ?? 0)
+  const top = Math.max(dataMax, targetTop)
+  return top > 0 ? Math.ceil(top * 1.1) : undefined
+})
+
+// Tyrosine target range — same treatment as Phe (shaded band + dotted boundary
+// lines), in the tyrosine chart's amber color.
+const tyrosineRangeAnnotations = computed(() => {
+  const min = settings.value.bloodTyrMin
+  const max = settings.value.bloodTyrMax
+  const color = '#d97706'
+  const dottedLine = (y) => ({ y, borderWidth: 2, borderColor: color, strokeDashArray: 6 })
+  const annotations = []
+  if (min != null && max != null) {
+    annotations.push({ y: min, y2: max, fillColor: color, opacity: 0.1, borderWidth: 0 })
+  }
+  if (min != null) annotations.push(dottedLine(min))
+  if (max != null) annotations.push(dottedLine(max))
+  return annotations
+})
+
+const tyrosineYAxisMax = computed(() => {
+  const tyrs = labValues.value.map((o) => o.tyrosine).filter((v) => v != null)
+  const dataMax = tyrs.length ? Math.max(...tyrs) : 0
+  const targetTop = Math.max(settings.value.bloodTyrMin ?? 0, settings.value.bloodTyrMax ?? 0)
+  const top = Math.max(dataMax, targetTop)
+  return top > 0 ? Math.ceil(top * 1.1) : undefined
+})
+
+// Force a full chart re-render (instead of an in-place update) whenever the
+// data, target range or theme changes. ApexCharts does not reliably recompute
+// its yaxis scale or reposition yaxis annotations on a series/options update,
+// so without this the chart keeps the old scale and target band until refresh.
+const pheChartKey = computed(
+  () =>
+    `phe-${isDark.value}-${settings.value.bloodPheMin}-${settings.value.bloodPheMax}-` +
+    labValues.value.map((o) => `${o.date}:${o.phe}`).join(',')
+)
+
+const tyrosineChartKey = computed(
+  () =>
+    `tyrosine-${isDark.value}-${settings.value.bloodTyrMin}-${settings.value.bloodTyrMax}-` +
+    labValues.value.map((o) => `${o.date}:${o.tyrosine}`).join(',')
+)
+
 const chartOptions = computed(() => {
   const en = enChart
   const de = deChart
   const fr = frChart
   const es = esChart
   return {
+    annotations: {
+      yaxis: pheRangeAnnotations.value
+    },
     chart: {
       locales: [en, de, fr, es],
       defaultLocale: i18nLocale.value,
@@ -247,7 +317,8 @@ const chartOptions = computed(() => {
       type: 'datetime'
     },
     yaxis: {
-      min: 0
+      min: 0,
+      max: pheYAxisMax.value
     },
     theme: {
       mode: isDark.value ? 'dark' : 'light'
@@ -262,6 +333,9 @@ const chartOptionsTyrosine = computed(() => {
   const fr = frChart
   const es = esChart
   return {
+    annotations: {
+      yaxis: tyrosineRangeAnnotations.value
+    },
     chart: {
       locales: [en, de, fr, es],
       defaultLocale: i18nLocale.value,
@@ -304,7 +378,8 @@ const chartOptionsTyrosine = computed(() => {
       type: 'datetime'
     },
     yaxis: {
-      min: 0
+      min: 0,
+      max: tyrosineYAxisMax.value
     },
     theme: {
       mode: isDark.value ? 'dark' : 'light'
@@ -512,8 +587,8 @@ defineOgImage('NuxtSeo', {
             {{ $t('blood-values.phe-header') }}
           </p>
           <apexchart
-            :key="`phe-${isDark}`"
-            type="area"
+            :key="pheChartKey"
+            type="line"
             height="250"
             :options="chartOptions"
             :series="graph"
@@ -523,8 +598,8 @@ defineOgImage('NuxtSeo', {
             {{ $t('blood-values.tyrosine-header') }}
           </p>
           <apexchart
-            :key="`tyrosine-${isDark}`"
-            type="area"
+            :key="tyrosineChartKey"
+            type="line"
             height="250"
             :options="chartOptionsTyrosine"
             :series="graphTyrosine"

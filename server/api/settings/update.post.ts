@@ -18,11 +18,26 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   if (settings.maxKcal !== undefined) {
     updateData.maxKcal = settings.maxKcal ?? null
   }
+  if (settings.bloodPheMin !== undefined) {
+    updateData.bloodPheMin = settings.bloodPheMin ?? null
+  }
+  if (settings.bloodPheMax !== undefined) {
+    updateData.bloodPheMax = settings.bloodPheMax ?? null
+  }
+  if (settings.bloodTyrMin !== undefined) {
+    updateData.bloodTyrMin = settings.bloodTyrMin ?? null
+  }
+  if (settings.bloodTyrMax !== undefined) {
+    updateData.bloodTyrMax = settings.bloodTyrMax ?? null
+  }
   if (settings.labUnit !== undefined) {
     updateData.labUnit = settings.labUnit
   }
   if (settings.progressStyle !== undefined) {
     updateData.progressStyle = settings.progressStyle
+  }
+  if (settings.preferredTool !== undefined) {
+    updateData.preferredTool = settings.preferredTool
   }
   if (settings.license !== undefined) {
     updateData.license = settings.license ?? null
