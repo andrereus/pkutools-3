@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { format, parseISO, formatISO } from 'date-fns'
+import { format, parseISO, formatISO, subMonths } from 'date-fns'
 import { enUS, de, fr, es } from 'date-fns/locale'
 import enChart from 'apexcharts/dist/locales/en.json'
 import deChart from 'apexcharts/dist/locales/de.json'
@@ -60,6 +60,85 @@ const editedItem = ref({ ...defaultItem })
 const userIsAuthenticated = computed(() => store.user !== null)
 const labValues = computed(() => store.labValues)
 const settings = computed(() => store.settings)
+
+// Period picker for the summary card.
+const summaryPeriod = ref('all')
+const SUMMARY_PERIODS = ['1m', '3m', '6m', 'all']
+const summaryLabValues = computed(() => {
+  const months = { '1m': 1, '3m': 3, '6m': 6 }[summaryPeriod.value]
+  if (!months) return labValues.value
+  const cutoff = subMonths(new Date(), months)
+  return labValues.value.filter((o) => parseISO(o.date) >= cutoff)
+})
+
+// Time-in-range stats for one analyte over the given readings. Returns null when
+// there are no readings (e.g. none fall in the selected period).
+// Partial ranges are supported (e.g. only a minimum, as is common for tyrosine).
+const rangeStats = (list, key, min, max) => {
+  const withVal = list.filter((o) => o[key] != null)
+  const total = withVal.length
+  if (total === 0) return null
+  let inRange = 0
+  let above = 0
+  let below = 0
+  let last = null
+  let sum = 0
+  for (const o of withVal) {
+    const v = o[key]
+    sum += v
+    if (max != null && v > max) above++
+    else if (min != null && v < min) below++
+    else inRange++
+    if (!last || parseISO(o.date) > parseISO(last.date)) last = o
+  }
+  const pct = (n) => Math.round((n / total) * 100)
+  const lastVal = last[key]
+  const lastStatus =
+    max != null && lastVal > max ? 'above' : min != null && lastVal < min ? 'below' : 'in'
+  return {
+    total,
+    inRangePct: pct(inRange),
+    abovePct: pct(above),
+    belowPct: pct(below),
+    avg: Math.round((sum / total) * 10) / 10,
+    lastVal,
+    lastStatus
+  }
+}
+
+// One block per analyte that has a target set and at least one reading ever, so
+// the card (and its period picker) stay visible even when the chosen period has
+// no readings. `stats` is then null and the block shows a "no readings" note.
+const summaryBlocks = computed(() => {
+  const unit = settings.value.labUnit === 'mgdl' ? 'mg/dL' : 'µmol/L'
+  const make = (key, label, min, max) => {
+    if (min == null && max == null) return null
+    if (!labValues.value.some((o) => o[key] != null)) return null
+    return { key, label, unit, stats: rangeStats(summaryLabValues.value, key, min, max) }
+  }
+  return [
+    make(
+      'phe',
+      t('blood-values.phe-header'),
+      settings.value.bloodPheMin,
+      settings.value.bloodPheMax
+    ),
+    make(
+      'tyrosine',
+      t('blood-values.tyrosine-header'),
+      settings.value.bloodTyrMin,
+      settings.value.bloodTyrMax
+    )
+  ].filter(Boolean)
+})
+
+const statusArrow = (s) => (s === 'above' ? '▲' : s === 'below' ? '▼' : '✓')
+const statusClass = (s) =>
+  s === 'above'
+    ? 'text-red-600 dark:text-red-400'
+    : s === 'below'
+      ? 'text-amber-600 dark:text-amber-400'
+      : 'text-green-600 dark:text-green-400'
 
 const license = computed(() => isPremium.value)
 
@@ -579,6 +658,76 @@ defineOgImage('NuxtSeo', {
     </div>
 
     <div v-if="userIsAuthenticated">
+      <div
+        v-if="summaryBlocks.length"
+        class="rounded-xl bg-white dark:bg-gray-900 px-4 py-5 sm:p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-6"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+            {{ $t('blood-values.summary') }}
+          </h3>
+          <div class="flex gap-1">
+            <button
+              v-for="p in SUMMARY_PERIODS"
+              :key="p"
+              type="button"
+              :class="[
+                'px-2 py-0.5 text-xs rounded-lg',
+                summaryPeriod === p
+                  ? 'bg-black/5 dark:bg-white/15 text-gray-900 dark:text-white'
+                  : 'text-gray-500 dark:text-gray-400'
+              ]"
+              @click="summaryPeriod = p"
+            >
+              {{ p === 'all' ? 'ALL' : p.toUpperCase() }}
+            </button>
+          </div>
+        </div>
+        <div class="grid gap-6 sm:grid-cols-2">
+          <div v-for="block in summaryBlocks" :key="block.key">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm font-medium text-gray-900 dark:text-white">{{
+                block.label
+              }}</span>
+              <span v-if="block.stats" class="text-xs text-gray-500 dark:text-gray-400">
+                {{ block.stats.total }} {{ $t('blood-values.readings') }}
+              </span>
+            </div>
+            <template v-if="block.stats">
+              <div class="flex items-baseline gap-2">
+                <span class="text-xl font-semibold text-gray-900 dark:text-white">
+                  {{ block.stats.inRangePct }}%
+                </span>
+                <span class="text-xs text-gray-500 dark:text-gray-400">
+                  {{ $t('blood-values.in-range') }}
+                </span>
+              </div>
+              <div class="flex h-1.5 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700 my-2">
+                <div class="bg-amber-400" :style="{ width: block.stats.belowPct + '%' }"></div>
+                <div class="bg-green-500" :style="{ width: block.stats.inRangePct + '%' }"></div>
+                <div class="bg-red-500" :style="{ width: block.stats.abovePct + '%' }"></div>
+              </div>
+              <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+                <span>∅ {{ block.stats.avg }} {{ block.unit }}</span>
+                <span v-if="block.stats.belowPct">
+                  ▼ {{ $t('blood-values.below-target') }} {{ block.stats.belowPct }}%
+                </span>
+                <span v-if="block.stats.abovePct">
+                  ▲ {{ $t('blood-values.above-target') }} {{ block.stats.abovePct }}%
+                </span>
+                <span :class="statusClass(block.stats.lastStatus)">
+                  {{ $t('blood-values.last-reading') }}: {{ block.stats.lastVal }} {{ block.unit }}
+                  {{ statusArrow(block.stats.lastStatus) }}
+                </span>
+              </div>
+            </template>
+            <p v-else class="text-xs text-gray-400 dark:text-gray-500 mt-1">
+              {{ $t('blood-values.no-readings-period') }}
+            </p>
+          </div>
+        </div>
+      </div>
+
       <p v-if="labValues.length < 2" class="mb-6">{{ $t('blood-values.chart-info') }}</p>
 
       <ClientOnly>

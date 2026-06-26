@@ -251,6 +251,7 @@ const chartOptions = computed(() => {
           zoom: false,
           zoomin: false,
           zoomout: false,
+          pan: false,
           reset: false
         },
         export: {
@@ -268,11 +269,10 @@ const chartOptions = computed(() => {
           png: {
             filename: 'PKU Tools - Chart'
           }
-        },
-        autoSelected: 'pan'
+        }
       },
       zoom: {
-        enabled: true
+        enabled: false
       },
       background: 'transparent'
     },
@@ -339,6 +339,7 @@ const chartOptionsKcal = computed(() => {
           zoom: false,
           zoomin: false,
           zoomout: false,
+          pan: false,
           reset: false
         },
         export: {
@@ -356,11 +357,10 @@ const chartOptionsKcal = computed(() => {
           png: {
             filename: 'PKU Tools - Chart (kcal)'
           }
-        },
-        autoSelected: 'pan'
+        }
       },
       zoom: {
-        enabled: true
+        enabled: false
       },
       background: 'transparent'
     },
@@ -897,6 +897,10 @@ defineOgImage('NuxtSeo', {
     </div>
 
     <div v-if="userIsAuthenticated">
+      <div class="mb-6">
+        <DietReportCard />
+      </div>
+
       <p v-if="pheDiary.length < 2" class="mb-6">{{ $t('diet-report.chart-info') }}</p>
 
       <div v-if="pheDiary.length >= 2">
@@ -952,10 +956,6 @@ defineOgImage('NuxtSeo', {
             class="-mb-2"
           />
         </ClientOnly>
-      </div>
-
-      <div class="mt-6 mb-8">
-        <DietReportCard />
       </div>
 
       <div class="mb-8">
