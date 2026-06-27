@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { subDays, subMonths, parseISO, format } from 'date-fns'
+import { subDays, subMonths, parseISO, format, differenceInDays } from 'date-fns'
 
 const store = useStore()
 const { t } = useI18n()
@@ -12,28 +12,73 @@ const pheDiary = computed(() => store.pheDiary)
 const period = ref('all')
 const PERIODS = ['1w', '2w', '1m', '3m', 'all']
 
+// Complete diary days. Ignores days flagged incomplete and today, whose totals
+// are still in progress (food tracking isn't finished yet) so they shouldn't
+// skew the average.
+const completeDays = computed(() => {
+  const today = format(new Date(), 'yyyy-MM-dd')
+  return pheDiary.value.filter(
+    (entry) => !entry.incomplete && format(parseISO(entry.date), 'yyyy-MM-dd') !== today
+  )
+})
+
+// Most recent complete day. The range counts back from here (not today) so the
+// card's window matches the chart's for the same label, even when the latest
+// entry isn't today.
+const newestDate = computed(() => {
+  if (!completeDays.value.length) return new Date()
+  return completeDays.value.reduce((newest, entry) => {
+    const entryDate = parseISO(entry.date)
+    return entryDate > newest ? entryDate : newest
+  }, parseISO(completeDays.value[0].date))
+})
+
 // Start date for the selected range ('all' → no cutoff).
 const periodCutoff = (p) => {
-  const now = new Date()
-  if (p === '1w') return subDays(now, 7)
-  if (p === '2w') return subDays(now, 14)
-  if (p === '1m') return subMonths(now, 1)
-  if (p === '3m') return subMonths(now, 3)
+  const anchor = newestDate.value
+  if (p === '1w') return subDays(anchor, 7)
+  if (p === '2w') return subDays(anchor, 14)
+  if (p === '1m') return subMonths(anchor, 1)
+  if (p === '3m') return subMonths(anchor, 3)
   return null
 }
 
-// Complete diary days within the selected range. Ignores days flagged
-// incomplete and today, whose totals are still in progress (food tracking isn't
-// finished yet) so it shouldn't skew the average.
+// Complete diary days within the selected range.
 const periodDays = computed(() => {
-  const today = format(new Date(), 'yyyy-MM-dd')
-  const complete = pheDiary.value.filter(
-    (entry) => !entry.incomplete && format(parseISO(entry.date), 'yyyy-MM-dd') !== today
-  )
   const cutoff = periodCutoff(period.value)
-  if (!cutoff) return complete
-  return complete.filter((entry) => parseISO(entry.date) >= cutoff)
+  if (!cutoff) return completeDays.value
+  return completeDays.value.filter((entry) => parseISO(entry.date) >= cutoff)
 })
+
+// Smart default: start on the same range the chart picks (see diet-report.vue),
+// so the averages line up with what's shown above. When the diary spans many
+// days we default to a shorter range. Applied once — the user can still switch
+// the picker freely afterward.
+const DAYS_THRESHOLD_THREE_MONTHS = 90
+const DAYS_THRESHOLD_ONE_MONTH = 30
+const DAYS_THRESHOLD_TWO_WEEKS = 14
+
+const dateRangeSpanInDays = computed(() => {
+  if (completeDays.value.length < 2) return 0
+  const oldest = completeDays.value.reduce((oldest, entry) => {
+    const entryDate = parseISO(entry.date)
+    return entryDate < oldest ? entryDate : oldest
+  }, parseISO(completeDays.value[0].date))
+  return differenceInDays(newestDate.value, oldest)
+})
+
+const defaultPeriodApplied = ref(false)
+watch(
+  () => dateRangeSpanInDays.value,
+  (spanInDays) => {
+    if (defaultPeriodApplied.value || spanInDays < 2) return
+    defaultPeriodApplied.value = true
+    if (spanInDays > DAYS_THRESHOLD_THREE_MONTHS) period.value = '3m'
+    else if (spanInDays > DAYS_THRESHOLD_ONE_MONTH) period.value = '1m'
+    else if (spanInDays > DAYS_THRESHOLD_TWO_WEEKS) period.value = '2w'
+  },
+  { immediate: true }
+)
 
 const dayValues = (key) => periodDays.value.filter((e) => e[key] != null).map((e) => e[key])
 const average = (vals) => Math.round(vals.reduce((s, v) => s + v, 0) / vals.length)
