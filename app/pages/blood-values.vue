@@ -702,7 +702,7 @@ defineOgImage('NuxtSeo', {
                   {{ $t('blood-values.in-range') }}
                 </span>
               </div>
-              <div class="flex h-1.25 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700 my-2">
+              <div class="flex h-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700 my-2">
                 <div class="bg-amber-400" :style="{ width: block.stats.belowPct + '%' }"></div>
                 <div class="bg-green-500" :style="{ width: block.stats.inRangePct + '%' }"></div>
                 <div class="bg-red-500" :style="{ width: block.stats.abovePct + '%' }"></div>
