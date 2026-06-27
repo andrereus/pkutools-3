@@ -270,6 +270,7 @@
     "chart-info": "El diagrama se muestra después de la segunda entrada.",
     "days": "días",
     "averages": "Promedios",
+    "no-entries-period": "Sin entradas en este periodo",
     "target": "Objetivo",
     "of-target": "del objetivo",
     "day-incomplete": "Día incompleto (ocultar de las estadísticas)",

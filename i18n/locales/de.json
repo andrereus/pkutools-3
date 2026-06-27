@@ -270,6 +270,7 @@
     "chart-info": "Das Diagramm wird nach dem zweiten Eintrag angezeigt.",
     "days": "Tage",
     "averages": "Durchschnitt",
+    "no-entries-period": "Keine Einträge in diesem Zeitraum",
     "target": "Ziel",
     "of-target": "des Ziels",
     "day-incomplete": "Tag ist unvollständig (aus Statistik ausblenden)",
