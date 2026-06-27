@@ -38,6 +38,7 @@ const result = ref(null) // { name, emoji, phePer100g, proteinPer100g, kcalPer10
 const weight = ref(null)
 
 // Constants
+const ESTIMATE_MODEL = 'gemini-3.5-flash'
 const BASE_DAILY_ESTIMATE_LIMIT = 20
 const PREMIUM_AI_DAILY_ESTIMATE_LIMIT = 100
 const FREE_USER_DAILY_ESTIMATE_LIMIT = 3
@@ -48,41 +49,18 @@ const MAX_IMAGE_FILE_SIZE = 15 * 1024 * 1024 // 15MB
 const userIsAuthenticated = computed(() => store.user !== null)
 const settings = computed(() => store.settings)
 
-const estimateConfig = computed(() => {
-  if (!isPremium.value) {
-    return {
-      model: 'gemini-2.5-flash',
-      dailyLimitCredits: FREE_USER_DAILY_ESTIMATE_LIMIT,
-      costPerEstimate: 1
-    }
-  }
-  if (isPremiumAI.value) {
-    return {
-      model: 'gemini-2.5-flash',
-      dailyLimitCredits: PREMIUM_AI_DAILY_ESTIMATE_LIMIT,
-      costPerEstimate: 1
-    }
-  }
-  return {
-    model: 'gemini-2.5-flash',
-    dailyLimitCredits: BASE_DAILY_ESTIMATE_LIMIT,
-    costPerEstimate: 1
-  }
+// Total estimates available per day for the current tier (not the remaining count)
+const dailyEstimateLimit = computed(() => {
+  if (!isPremium.value) return FREE_USER_DAILY_ESTIMATE_LIMIT
+  if (isPremiumAI.value) return PREMIUM_AI_DAILY_ESTIMATE_LIMIT
+  return BASE_DAILY_ESTIMATE_LIMIT
 })
 
 const remainingEstimates = computed(() => {
   const today = format(new Date(), 'yyyy-MM-dd')
   const estimateDate = settings.value.estimationDate
   const currentCount = estimateDate === today ? settings.value.estimationCount || 0 : 0
-  const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
-  const remainingCredits = Math.max(0, dailyLimitCredits - currentCount)
-  return Math.floor(remainingCredits / costPerEstimate)
-})
-
-// Total estimates available per day for the current tier (not the remaining count)
-const dailyEstimateLimit = computed(() => {
-  const { dailyLimitCredits, costPerEstimate } = estimateConfig.value
-  return Math.floor(dailyLimitCredits / costPerEstimate)
+  return Math.max(0, dailyEstimateLimit.value - currentCount)
 })
 
 // Computed Phe: use phePer100g directly, or fall back to protein × 50
@@ -222,12 +200,10 @@ const estimateFoodValues = async () => {
     }
 
     const token = await currentUser.getIdToken()
-    const { model: modelName } = estimateConfig.value
 
     const checkResponse = await $fetch('/api/gemini/check', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: { model: modelName }
+      headers: { Authorization: `Bearer ${token}` }
     })
 
     if (!checkResponse.allowed) {
@@ -248,7 +224,7 @@ const estimateFoodValues = async () => {
 
     const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() })
     const model = getGenerativeModel(ai, {
-      model: modelName,
+      model: ESTIMATE_MODEL,
       generationConfig: { responseMimeType: 'application/json' }
     })
 
@@ -660,12 +636,16 @@ defineOgImage('NuxtSeo', {
     <p v-if="userIsAuthenticated && !isPremium" class="mt-6 text-sm">
       <NuxtLink :to="$localePath('settings')">
         <LucideBadgeMinus class="h-5 w-5 inline-block mr-1" aria-hidden="true" />
-        {{ $t('ai-calculator.trial-limit') }} ({{ $t('ai-calculator.estimates-per-day', { count: dailyEstimateLimit }) }})
+        {{ $t('ai-calculator.trial-limit') }} ({{
+          $t('ai-calculator.estimates-per-day', { count: dailyEstimateLimit })
+        }})
       </NuxtLink>
     </p>
     <p v-if="isPremium && !isPremiumAI" class="mt-6 text-sm">
       <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
-      {{ $t('ai-calculator.premium-limit') }} ({{ $t('ai-calculator.estimates-per-day', { count: dailyEstimateLimit }) }})
+      {{ $t('ai-calculator.premium-limit') }} ({{
+        $t('ai-calculator.estimates-per-day', { count: dailyEstimateLimit })
+      }})
     </p>
     <p v-if="isPremiumAI" class="mt-6 text-sm">
       <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
