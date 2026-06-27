@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from '../../stores/index'
-import { subDays, subMonths, parseISO } from 'date-fns'
+import { subDays, subMonths, parseISO, format } from 'date-fns'
 
 const store = useStore()
 const { t } = useI18n()
@@ -22,9 +22,14 @@ const periodCutoff = (p) => {
   return null
 }
 
-// Complete diary days within the selected range (ignores days flagged incomplete).
+// Complete diary days within the selected range. Ignores days flagged
+// incomplete and today, whose totals are still in progress (food tracking isn't
+// finished yet) so it shouldn't skew the average.
 const periodDays = computed(() => {
-  const complete = pheDiary.value.filter((entry) => !entry.incomplete)
+  const today = format(new Date(), 'yyyy-MM-dd')
+  const complete = pheDiary.value.filter(
+    (entry) => !entry.incomplete && format(parseISO(entry.date), 'yyyy-MM-dd') !== today
+  )
   const cutoff = periodCutoff(period.value)
   if (!cutoff) return complete
   return complete.filter((entry) => parseISO(entry.date) >= cutoff)

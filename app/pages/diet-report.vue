@@ -194,7 +194,14 @@ const formTitle = computed(() => {
   return editedIndex.value === -1 ? t('common.add') : t('common.edit')
 })
 
-const completeDiary = computed(() => pheDiary.value.filter((obj) => !obj.incomplete))
+// Days that feed the chart and date range: exclude days flagged incomplete and
+// today, whose totals are still in progress (food tracking isn't finished yet).
+const completeDiary = computed(() => {
+  const today = format(new Date(), 'yyyy-MM-dd')
+  return pheDiary.value.filter(
+    (obj) => !obj.incomplete && format(parseISO(obj.date), 'yyyy-MM-dd') !== today
+  )
+})
 
 const graph = computed(() => {
   const chartPheDiary = completeDiary.value
