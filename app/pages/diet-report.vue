@@ -337,6 +337,12 @@ const chartOptions = computed(() => {
       hover: { filter: { type: 'none' } },
       active: { filter: { type: 'none' } }
     },
+    // Shared, non-intersect tooltip tracks the x-position instead of requiring an exact
+    // hit on the small dot — stops the popup flickering on touch.
+    tooltip: {
+      shared: true,
+      intersect: false
+    },
     dataLabels: {
       enabled: false
     },
@@ -446,6 +452,12 @@ const chartOptionsKcal = computed(() => {
     states: {
       hover: { filter: { type: 'none' } },
       active: { filter: { type: 'none' } }
+    },
+    // Shared, non-intersect tooltip tracks the x-position instead of requiring an exact
+    // hit on the small dot — stops the popup flickering on touch.
+    tooltip: {
+      shared: true,
+      intersect: false
     },
     dataLabels: {
       enabled: false
