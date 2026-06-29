@@ -276,7 +276,8 @@
     "day-incomplete": "Tag ist unvollständig (aus Statistik ausblenden)",
     "incomplete-badge": "Unvollständig",
     "chart-daily": "Täglich",
-    "chart-trend": "Trend"
+    "chart-trend": "Trend",
+    "chart-actual": "Tatsächlich"
   },
   "blood-values": {
     "title": "Blutwerte",

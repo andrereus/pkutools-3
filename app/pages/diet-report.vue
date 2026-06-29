@@ -231,11 +231,14 @@ const graph = computed(() => {
     .sort((a, b) => {
       return parseISO(a.x) - parseISO(b.x)
     })
+  if (!showTrend.value) {
+    return [{ name: 'Phe', data: chartPheDiary }]
+  }
+  // Trend mode: the smoothed curve (area) with the original daily values as dots
+  // (scatter) on top. Scatter has no line or fill of its own, so the dots stay clean.
   return [
-    {
-      name: 'Phe',
-      data: showTrend.value ? rollingAverage(chartPheDiary) : chartPheDiary
-    }
+    { name: t('diet-report.chart-trend'), type: 'area', data: rollingAverage(chartPheDiary) },
+    { name: t('diet-report.chart-actual'), type: 'scatter', data: chartPheDiary }
   ]
 })
 
@@ -247,11 +250,12 @@ const graphKcal = computed(() => {
     .sort((a, b) => {
       return parseISO(a.x) - parseISO(b.x)
     })
+  if (!showTrend.value) {
+    return [{ name: t('common.kcal'), data: chartKcalDiary }]
+  }
   return [
-    {
-      name: t('common.kcal'),
-      data: showTrend.value ? rollingAverage(chartKcalDiary) : chartKcalDiary
-    }
+    { name: t('diet-report.chart-trend'), type: 'area', data: rollingAverage(chartKcalDiary) },
+    { name: t('diet-report.chart-actual'), type: 'scatter', data: chartKcalDiary }
   ]
 })
 
@@ -307,9 +311,18 @@ const chartOptions = computed(() => {
       curve: 'smooth'
     },
     markers: {
-      size: showTrend.value ? 0 : 1
+      // Trend mode: hide markers on the curve (series 0); show the daily values as
+      // dots (series 1). Marker styling (incl. the default ring) is left untouched.
+      size: showTrend.value ? [0, 3] : 1
     },
+    // Trend mode: keep the gradient area under the curve (series 0), but give the
+    // daily dots (series 1) a solid fill — otherwise the markers inherit the area's
+    // gradient and the dot colour looks washed out / unchanged.
+    ...(showTrend.value && { fill: { type: ['gradient', 'solid'] } }),
     grid: {
+      show: false
+    },
+    legend: {
       show: false
     },
     dataLabels: {
@@ -339,7 +352,7 @@ const chartOptions = computed(() => {
     theme: {
       mode: isDark.value ? 'dark' : 'light'
     },
-    colors: ['#0ea5e9']
+    colors: showTrend.value ? ['#0ea5e9', '#0369a1'] : ['#0ea5e9']
   }
 })
 
@@ -395,9 +408,18 @@ const chartOptionsKcal = computed(() => {
       curve: 'smooth'
     },
     markers: {
-      size: showTrend.value ? 0 : 1
+      // Trend mode: hide markers on the curve (series 0); show the daily values as
+      // dots (series 1). Marker styling (incl. the default ring) is left untouched.
+      size: showTrend.value ? [0, 3] : 1
     },
+    // Trend mode: keep the gradient area under the curve (series 0), but give the
+    // daily dots (series 1) a solid fill — otherwise the markers inherit the area's
+    // gradient and the dot colour looks washed out / unchanged.
+    ...(showTrend.value && { fill: { type: ['gradient', 'solid'] } }),
     grid: {
+      show: false
+    },
+    legend: {
       show: false
     },
     dataLabels: {
@@ -427,7 +449,7 @@ const chartOptionsKcal = computed(() => {
     theme: {
       mode: isDark.value ? 'dark' : 'light'
     },
-    colors: ['#d97706']
+    colors: showTrend.value ? ['#d97706', '#92400e'] : ['#d97706']
   }
 })
 

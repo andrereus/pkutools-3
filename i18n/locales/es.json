@@ -276,7 +276,8 @@
     "day-incomplete": "Día incompleto (ocultar de las estadísticas)",
     "incomplete-badge": "Incompleto",
     "chart-daily": "Diario",
-    "chart-trend": "Tendencia"
+    "chart-trend": "Tendencia",
+    "chart-actual": "Valor real"
   },
   "blood-values": {
     "title": "Valores de sangre",
