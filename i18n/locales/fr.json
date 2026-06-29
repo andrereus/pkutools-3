@@ -274,7 +274,9 @@
     "target": "Cible",
     "of-target": "de la cible",
     "day-incomplete": "Jour incomplet (masquer des statistiques)",
-    "incomplete-badge": "Incomplet"
+    "incomplete-badge": "Incomplet",
+    "chart-daily": "Quotidien",
+    "chart-trend": "Tendance"
   },
   "blood-values": {
     "title": "Valeurs sanguines",

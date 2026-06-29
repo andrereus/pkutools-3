@@ -44,6 +44,8 @@ const defaultItem = {
 const editedItem = ref({ ...defaultItem })
 
 const selection = ref('all')
+// Toggle between the raw daily line and a smoothed trend line (controls both charts).
+const showTrend = ref(false)
 const chartRef = ref(null)
 const chartRefKcal = ref(null)
 
@@ -203,6 +205,24 @@ const completeDiary = computed(() => {
   )
 })
 
+// Centered rolling average ("trend"): for each logged day, the mean of all
+// values within ±TREND_HALF_WINDOW calendar days. Smooths daily noise into a
+// trend curve. Averages by date (not entry position) so gaps in logging don't
+// distort it. Returns [] for <2 points so the chart falls back to nothing.
+const TREND_HALF_WINDOW = 3 // ±3 days → 7-day window
+const rollingAverage = (points) => {
+  const pts = points.filter((p) => p.y != null)
+  if (pts.length < 2) return []
+  return pts.map((p) => {
+    const center = parseISO(p.x)
+    const window = pts.filter(
+      (q) => Math.abs(differenceInDays(parseISO(q.x), center)) <= TREND_HALF_WINDOW
+    )
+    const avg = window.reduce((sum, q) => sum + q.y, 0) / window.length
+    return { x: p.x, y: Math.round(avg) }
+  })
+}
+
 const graph = computed(() => {
   const chartPheDiary = completeDiary.value
     .map((obj) => {
@@ -214,7 +234,7 @@ const graph = computed(() => {
   return [
     {
       name: 'Phe',
-      data: chartPheDiary
+      data: showTrend.value ? rollingAverage(chartPheDiary) : chartPheDiary
     }
   ]
 })
@@ -230,7 +250,7 @@ const graphKcal = computed(() => {
   return [
     {
       name: t('common.kcal'),
-      data: chartKcalDiary
+      data: showTrend.value ? rollingAverage(chartKcalDiary) : chartKcalDiary
     }
   ]
 })
@@ -287,7 +307,7 @@ const chartOptions = computed(() => {
       curve: 'smooth'
     },
     markers: {
-      size: 1
+      size: showTrend.value ? 0 : 1
     },
     grid: {
       show: false
@@ -375,7 +395,7 @@ const chartOptionsKcal = computed(() => {
       curve: 'smooth'
     },
     markers: {
-      size: 1
+      size: showTrend.value ? 0 : 1
     },
     grid: {
       show: false
@@ -911,30 +931,55 @@ defineOgImage('NuxtSeo', {
       <p v-if="pheDiary.length < 2" class="mb-6">{{ $t('diet-report.chart-info') }}</p>
 
       <div v-if="pheDiary.length >= 2">
-        <div class="flex gap-2 mb-4">
-          <button
-            v-for="(period, idx) in ['one_week', 'two_weeks', 'one_month', 'three_months', 'all']"
-            :key="idx"
-            :class="[
-              'px-3 py-1 text-sm rounded-lg',
-              selection === period
-                ? 'bg-black/5 dark:bg-white/15'
-                : 'text-gray-700 dark:text-gray-300'
-            ]"
-            @click="updateData(period)"
-          >
-            {{
-              period === 'one_week'
-                ? '1W'
-                : period === 'two_weeks'
-                  ? '2W'
-                  : period === 'one_month'
-                    ? '1M'
-                    : period === 'three_months'
-                      ? '3M'
-                      : 'ALL'
-            }}
-          </button>
+        <div class="flex items-center justify-between gap-2 flex-wrap mb-4">
+          <div class="flex gap-2">
+            <button
+              v-for="(period, idx) in ['one_week', 'two_weeks', 'one_month', 'three_months', 'all']"
+              :key="idx"
+              :class="[
+                'px-3 py-1 text-sm rounded-lg',
+                selection === period
+                  ? 'bg-black/5 dark:bg-white/15'
+                  : 'text-gray-700 dark:text-gray-300'
+              ]"
+              @click="updateData(period)"
+            >
+              {{
+                period === 'one_week'
+                  ? '1W'
+                  : period === 'two_weeks'
+                    ? '2W'
+                    : period === 'one_month'
+                      ? '1M'
+                      : period === 'three_months'
+                        ? '3M'
+                        : 'ALL'
+              }}
+            </button>
+          </div>
+
+          <div class="flex gap-1">
+            <button
+              type="button"
+              :class="[
+                'px-3 py-1 text-sm rounded-lg',
+                !showTrend ? 'bg-black/5 dark:bg-white/15' : 'text-gray-700 dark:text-gray-300'
+              ]"
+              @click="showTrend = false"
+            >
+              {{ $t('diet-report.chart-daily') }}
+            </button>
+            <button
+              type="button"
+              :class="[
+                'px-3 py-1 text-sm rounded-lg',
+                showTrend ? 'bg-black/5 dark:bg-white/15' : 'text-gray-700 dark:text-gray-300'
+              ]"
+              @click="showTrend = true"
+            >
+              {{ $t('diet-report.chart-trend') }}
+            </button>
+          </div>
         </div>
 
         <ClientOnly>

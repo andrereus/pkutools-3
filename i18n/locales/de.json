@@ -274,7 +274,9 @@
     "target": "Ziel",
     "of-target": "des Ziels",
     "day-incomplete": "Tag ist unvollständig (aus Statistik ausblenden)",
-    "incomplete-badge": "Unvollständig"
+    "incomplete-badge": "Unvollständig",
+    "chart-daily": "Täglich",
+    "chart-trend": "Trend"
   },
   "blood-values": {
     "title": "Blutwerte",
