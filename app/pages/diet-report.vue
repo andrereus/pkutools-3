@@ -312,8 +312,11 @@ const chartOptions = computed(() => {
     },
     markers: {
       // Trend mode: hide markers on the curve (series 0); show the daily values as
-      // dots (series 1). Marker styling (incl. the default ring) is left untouched.
-      size: showTrend.value ? [0, 3] : 1
+      // dots (series 1) with no ring — cleaner when there are many points. Daily mode
+      // keeps the default 2px ring. strokeWidth is set in BOTH branches so it can't
+      // persist across the toggle (updateOptions merges, it doesn't reset to default).
+      size: showTrend.value ? [0, 3] : 1,
+      strokeWidth: showTrend.value ? 0 : 2
     },
     // Trend mode: keep the gradient area under the curve (series 0), but give the
     // daily dots (series 1) a solid fill — otherwise the markers inherit the area's
@@ -352,7 +355,9 @@ const chartOptions = computed(() => {
     theme: {
       mode: isDark.value ? 'dark' : 'light'
     },
-    colors: showTrend.value ? ['#0ea5e9', '#0369a1'] : ['#0ea5e9']
+    // Trend mode: dot colour adapts to the theme so a ringless dot stays visible —
+    // darker than the line in light mode, brighter in dark mode.
+    colors: showTrend.value ? ['#0ea5e9', isDark.value ? '#38bdf8' : '#0369a1'] : ['#0ea5e9']
   }
 })
 
@@ -409,8 +414,11 @@ const chartOptionsKcal = computed(() => {
     },
     markers: {
       // Trend mode: hide markers on the curve (series 0); show the daily values as
-      // dots (series 1). Marker styling (incl. the default ring) is left untouched.
-      size: showTrend.value ? [0, 3] : 1
+      // dots (series 1) with no ring — cleaner when there are many points. Daily mode
+      // keeps the default 2px ring. strokeWidth is set in BOTH branches so it can't
+      // persist across the toggle (updateOptions merges, it doesn't reset to default).
+      size: showTrend.value ? [0, 3] : 1,
+      strokeWidth: showTrend.value ? 0 : 2
     },
     // Trend mode: keep the gradient area under the curve (series 0), but give the
     // daily dots (series 1) a solid fill — otherwise the markers inherit the area's
@@ -449,7 +457,9 @@ const chartOptionsKcal = computed(() => {
     theme: {
       mode: isDark.value ? 'dark' : 'light'
     },
-    colors: showTrend.value ? ['#d97706', '#92400e'] : ['#d97706']
+    // Trend mode: dot colour adapts to the theme so a ringless dot stays visible —
+    // darker than the line in light mode, brighter in dark mode.
+    colors: showTrend.value ? ['#d97706', isDark.value ? '#fbbf24' : '#92400e'] : ['#d97706']
   }
 })
 
