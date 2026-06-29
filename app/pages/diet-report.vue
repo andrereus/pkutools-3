@@ -234,11 +234,12 @@ const graph = computed(() => {
   if (!showTrend.value) {
     return [{ name: 'Phe', data: chartPheDiary }]
   }
-  // Trend mode: the smoothed curve (area) with the original daily values as dots
-  // (scatter) on top. Scatter has no line or fill of its own, so the dots stay clean.
+  // Trend mode: the smoothed curve (area) with the original daily values as dots on
+  // top. The dots are a line series with zero stroke width (markers only) rather than
+  // scatter — scatter breaks the shared tooltip's positioning in an area combo.
   return [
     { name: t('diet-report.chart-trend'), type: 'area', data: rollingAverage(chartPheDiary) },
-    { name: t('diet-report.chart-actual'), type: 'scatter', data: chartPheDiary }
+    { name: t('diet-report.chart-actual'), type: 'line', data: chartPheDiary }
   ]
 })
 
@@ -255,7 +256,7 @@ const graphKcal = computed(() => {
   }
   return [
     { name: t('diet-report.chart-trend'), type: 'area', data: rollingAverage(chartKcalDiary) },
-    { name: t('diet-report.chart-actual'), type: 'scatter', data: chartKcalDiary }
+    { name: t('diet-report.chart-actual'), type: 'line', data: chartKcalDiary }
   ]
 })
 
