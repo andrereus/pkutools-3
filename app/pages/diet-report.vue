@@ -311,7 +311,7 @@ const chartOptions = computed(() => {
       curve: 'smooth',
       // Trend mode: curve at the default width (series 0), no line for the dots
       // (series 1). Set in both branches so width can't persist across the toggle.
-      width: showTrend.value ? [3, 0] : 3
+      width: showTrend.value ? [2, 0] : 2
     },
     markers: {
       // Trend mode: hide markers on the curve (series 0); show the daily values as
@@ -427,7 +427,7 @@ const chartOptionsKcal = computed(() => {
       curve: 'smooth',
       // Trend mode: curve at the default width (series 0), no line for the dots
       // (series 1). Set in both branches so width can't persist across the toggle.
-      width: showTrend.value ? [3, 0] : 3
+      width: showTrend.value ? [2, 0] : 2
     },
     markers: {
       // Trend mode: hide markers on the curve (series 0); show the daily values as

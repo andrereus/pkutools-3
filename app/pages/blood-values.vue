@@ -382,7 +382,7 @@ const chartOptions = computed(() => {
     },
     stroke: {
       curve: 'smooth',
-      width: 3
+      width: 4
     },
     markers: {
       size: 1
@@ -444,7 +444,7 @@ const chartOptionsTyrosine = computed(() => {
     },
     stroke: {
       curve: 'smooth',
-      width: 3
+      width: 4
     },
     markers: {
       size: 1
