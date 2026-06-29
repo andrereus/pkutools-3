@@ -344,6 +344,17 @@ const chartOptions = computed(() => {
       shared: true,
       intersect: false
     },
+    // On small screens the larger two-value tooltip overlaps the finger, which causes a
+    // show/hide flicker loop. Pin it to a fixed corner on mobile so it never sits under
+    // the touch point; desktop keeps the normal point-following tooltip.
+    responsive: [
+      {
+        breakpoint: 768,
+        options: {
+          tooltip: { fixed: { enabled: true, position: 'topLeft' } }
+        }
+      }
+    ],
     dataLabels: {
       enabled: false
     },
@@ -460,6 +471,17 @@ const chartOptionsKcal = computed(() => {
       shared: true,
       intersect: false
     },
+    // On small screens the larger two-value tooltip overlaps the finger, which causes a
+    // show/hide flicker loop. Pin it to a fixed corner on mobile so it never sits under
+    // the touch point; desktop keeps the normal point-following tooltip.
+    responsive: [
+      {
+        breakpoint: 768,
+        options: {
+          tooltip: { fixed: { enabled: true, position: 'topLeft' } }
+        }
+      }
+    ],
     dataLabels: {
       enabled: false
     },
