@@ -315,7 +315,7 @@ const chartOptions = computed(() => {
       // dots (series 1) with no ring — cleaner when there are many points. Daily mode
       // keeps the default 2px ring. strokeWidth is set in BOTH branches so it can't
       // persist across the toggle (updateOptions merges, it doesn't reset to default).
-      size: showTrend.value ? [0, 3] : 1,
+      size: showTrend.value ? [0, 2] : 1,
       strokeWidth: showTrend.value ? 0 : 2
     },
     // Trend mode: keep the gradient area under the curve (series 0), but give the
@@ -416,7 +416,7 @@ const chartOptionsKcal = computed(() => {
       // dots (series 1) with no ring — cleaner when there are many points. Daily mode
       // keeps the default 2px ring. strokeWidth is set in BOTH branches so it can't
       // persist across the toggle (updateOptions merges, it doesn't reset to default).
-      size: showTrend.value ? [0, 3] : 1,
+      size: showTrend.value ? [0, 2] : 1,
       strokeWidth: showTrend.value ? 0 : 2
     },
     // Trend mode: keep the gradient area under the curve (series 0), but give the
