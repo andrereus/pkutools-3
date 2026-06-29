@@ -381,7 +381,8 @@ const chartOptions = computed(() => {
       background: 'transparent'
     },
     stroke: {
-      curve: 'smooth'
+      curve: 'smooth',
+      width: 3
     },
     markers: {
       size: 1
@@ -442,7 +443,8 @@ const chartOptionsTyrosine = computed(() => {
       background: 'transparent'
     },
     stroke: {
-      curve: 'smooth'
+      curve: 'smooth',
+      width: 3
     },
     markers: {
       size: 1
