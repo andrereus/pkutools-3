@@ -355,9 +355,8 @@ const chartOptions = computed(() => {
     theme: {
       mode: isDark.value ? 'dark' : 'light'
     },
-    // Trend mode: dot colour adapts to the theme so a ringless dot stays visible —
-    // darker than the line in light mode, brighter in dark mode.
-    colors: showTrend.value ? ['#0ea5e9', isDark.value ? '#38bdf8' : '#0369a1'] : ['#0ea5e9']
+    // Trend mode: dots are the same colour as the line.
+    colors: showTrend.value ? ['#0ea5e9', '#0ea5e9'] : ['#0ea5e9']
   }
 })
 
@@ -457,9 +456,8 @@ const chartOptionsKcal = computed(() => {
     theme: {
       mode: isDark.value ? 'dark' : 'light'
     },
-    // Trend mode: dot colour adapts to the theme so a ringless dot stays visible —
-    // darker than the line in light mode, brighter in dark mode.
-    colors: showTrend.value ? ['#d97706', isDark.value ? '#fbbf24' : '#92400e'] : ['#d97706']
+    // Trend mode: dots are the same colour as the line.
+    colors: showTrend.value ? ['#d97706', '#d97706'] : ['#d97706']
   }
 })
 
