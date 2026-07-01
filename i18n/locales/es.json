@@ -426,7 +426,7 @@
       "a7": "La Phe se calcula a partir de la proteína: Phe (mg) = proteína (g) × factor. Como regla general, 1 g de proteína equivale a unos 50 mg de Phe. Para un resultado más preciso, la app usa un factor según el tipo de alimento: 27 para la fruta, 35 para la verdura, 46 para la carne y 50 para otros alimentos (mg de Phe por gramo de proteína). En la Calculadora de Phe eliges el tipo de alimento e introduces la proteína. El escáner de código de barras funciona igual.",
       "q8": "¿Cómo registro un alimento?",
       "a8": "Toca el botón + de la barra de navegación. Abre tu herramienta preferida: IA, Búsqueda, Escáner o la Calculadora de Phe (la eliges en Configuración). Calcula tu alimento y toca «Añadir» para guardarlo en el diario de hoy. El diario también muestra sugerencias según lo que has registrado antes, que puedes añadir con un toque.",
-      "q9": "¿Qué muestra el Informe de dieta?",
+      "q9": "¿Cómo hago un seguimiento de mi ingesta de Phe a lo largo del tiempo?",
       "a9": "El Informe de dieta muestra tu ingesta de Phe a lo largo del tiempo como un gráfico, con una vista diaria y una de tendencia (media de 7 días). Una tarjeta de promedios te permite elegir un periodo y muestra tu Phe media y las calorías como porcentaje de tu objetivo diario. Puedes marcar los días incompletos, ver tus entradas en una tabla y exportarlo todo a CSV.",
       "q10": "¿Cómo registro y represento mis valores sanguíneos?",
       "a10": "En «Valores de sangre», añade tus resultados de laboratorio de fenilalanina y, opcionalmente, tirosina con la fecha. Aparecen en un gráfico interactivo. Define tu rango objetivo para ver qué lecturas quedan dentro. Puedes exportar los datos como CSV, SVG o PNG y cambiar la unidad en Configuración.",

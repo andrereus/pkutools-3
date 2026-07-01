@@ -426,7 +426,7 @@
       "a7": "Phe is calculated from protein: Phe (mg) = protein (g) × factor. As a rule of thumb, 1 g of protein is about 50 mg Phe. For a closer result the app uses a factor per food type: 27 for fruit, 35 for vegetables, 46 for meat and 50 for other foods (mg Phe per gram of protein). Pick the food type in the Phe Calculator and enter the protein. The barcode scanner works the same way.",
       "q8": "How do I log a food?",
       "a8": "Tap the + button in the navigation bar. It opens your preferred tool: AI, Search, Scanner or the Phe Calculator (choose it in Settings). Calculate your food and tap Add to save it to today's diary. The diary also shows suggestions based on what you've logged before, which you can add with one tap.",
-      "q9": "What does the Diet Report show?",
+      "q9": "How do I keep track of my Phe intake over time?",
       "a9": "The Diet Report shows your Phe intake over time as a chart, with a daily view and a trend view (7-day average). An averages card lets you pick a period and shows your average Phe and calories as a share of your daily target. You can mark incomplete days, view your entries in a table, and export everything to CSV.",
       "q10": "How do I track and chart my blood values?",
       "a10": "In Blood Values, add your lab results for phenylalanine and optionally tyrosine with the date. They appear on an interactive chart. Set your target range to see which readings fall inside it. You can export the data as CSV, SVG or PNG and change the unit in Settings.",
