@@ -120,11 +120,11 @@
       "q1": "What is PKU Tools?",
       "a1": "PKU Tools is an all-in-one nutrition app for people with phenylketonuria (PKU). It replaces the scale, nutrition table, calculator and pen-and-paper with a single app for a low-phenylalanine (Phe) diet.",
       "q2": "Is PKU Tools free?",
-      "a2": "Yes. The free trial version includes a 14-day diary, 30 blood-value entries, 50 own foods and 3 AI estimates per day, with no ads. Optional Premium subscriptions raise these limits and add CSV export and more AI.",
+      "a2": "Yes. The food search, barcode scanner and Phe calculator are completely free and don't even need an account. The diary, blood values, own foods and the AI calculator come as a free trial, with no ads. Optional Premium subscriptions raise these limits and add CSV export and more AI.",
       "q3": "Which devices can I use it on?",
       "a3": "PKU Tools is a progressive web app. It installs on Android, iOS, Mac and Windows and is also on the Google Play Store. Your data syncs across your devices in real time.",
-      "q4": "Is my health data safe?",
-      "a4": "Yes. Your data is stored securely and is never sold. It stays yours, and you can export or delete it anytime. PKU Tools is open source and independent, built by and for the PKU community.",
+      "q4": "Is my health data private and secure?",
+      "a4": "Yes. Your data is stored securely and is not sold. It stays yours, and you can export or delete it anytime. PKU Tools is open source and independent, built by and for the PKU community. See the Privacy Policy for details.",
       "q5": "Do I need an account?",
       "a5": "For the basic tools — food search, barcode scanner and the Phe calculator — you don't need an account. An account is needed to save your data (diary, blood values, own foods) and for the AI calculator. Signing in also syncs everything across your devices.",
       "more": "More questions? Visit the Help section"
@@ -439,7 +439,7 @@
       "q14": "How does the Premium subscription work?",
       "a14": "The free trial version has fixed limits, and Premium subscriptions raise them, depending on the plan. To subscribe, open Settings and tap \"Join\" on a plan. You complete the subscription on Ko-fi and receive a license key, which you enter and activate in Settings. You can cancel anytime via Ko-fi or your PayPal account.",
       "q15": "Is my health data private and secure?",
-      "a15": "Yes. Your data is stored securely and is never sold or shared for advertising. When you start, you give explicit consent to health-data processing. You can revoke it or delete your data anytime in Settings. See the Privacy Policy for details.",
+      "a15": "Yes. Your data is stored securely and is not sold or shared for advertising. When you start, you give explicit consent to health-data processing. You can revoke it or delete your data anytime in Settings. See the Privacy Policy for details.",
       "q-contact": "How do I get help or send feedback?",
       "q-install": "How do I install PKU Tools?"
     }

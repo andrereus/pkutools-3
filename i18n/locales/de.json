@@ -120,11 +120,11 @@
       "q1": "Was ist PKU Tools?",
       "a1": "PKU Tools ist eine All-in-One-Ernährungs-App für Menschen mit Phenylketonurie (PKU). Sie ersetzt Waage, Nährwerttabelle, Taschenrechner sowie Zettel und Stift durch eine einzige App für eine phenylalaninarme (Phe-arme) Ernährung.",
       "q2": "Ist PKU Tools kostenlos?",
-      "a2": "Ja. Die kostenlose Testversion umfasst ein 14-Tage-Tagebuch, 30 Blutwert-Einträge, 50 eigene Lebensmittel und 3 KI-Schätzungen pro Tag, ganz ohne Werbung. Optionale Premium-Abos erweitern diese Limits und bieten CSV-Export und mehr KI.",
-      "q3": "Auf welchen Geräten kann ich sie nutzen?",
+      "a2": "Ja. Lebensmittelsuche, Barcode-Scanner und Phe-Rechner sind komplett kostenlos und brauchen nicht einmal ein Konto. Für Tagebuch, Blutwerte, eigene Lebensmittel und den KI-Rechner gibt es eine kostenlose Testversion, ganz ohne Werbung. Optionale Premium-Abos erweitern diese Limits und bieten CSV-Export und mehr KI.",
+      "q3": "Auf welchen Geräten kann ich es nutzen?",
       "a3": "PKU Tools ist eine Progressive Web App. Sie lässt sich auf Android, iOS, Mac und Windows installieren und ist auch im Google Play Store verfügbar. Deine Daten werden in Echtzeit über deine Geräte synchronisiert.",
-      "q4": "Sind meine Gesundheitsdaten sicher?",
-      "a4": "Ja. Deine Daten werden sicher gespeichert und niemals verkauft. Sie gehören dir, und du kannst sie jederzeit exportieren oder löschen. PKU Tools ist Open Source und unabhängig, entwickelt von und für die PKU-Community.",
+      "q4": "Sind meine Gesundheitsdaten privat und sicher?",
+      "a4": "Ja. Deine Daten werden sicher gespeichert und nicht verkauft. Sie gehören dir, und du kannst sie jederzeit exportieren oder löschen. PKU Tools ist Open Source und unabhängig, entwickelt von und für die PKU-Community. Details findest du in der Datenschutzerklärung.",
       "q5": "Brauche ich ein Konto?",
       "a5": "Für die grundlegenden Tools — Lebensmittelsuche, Barcode-Scanner und Phe-Rechner — brauchst du kein Konto. Ein Konto ist nötig, um deine Daten zu speichern (Tagebuch, Blutwerte, eigene Lebensmittel) und für den KI-Rechner. Nach der Anmeldung werden deine Daten zudem über deine Geräte synchronisiert.",
       "more": "Weitere Fragen? Zum Hilfe-Bereich"
@@ -439,7 +439,7 @@
       "q14": "Wie funktioniert das Premium-Abo?",
       "a14": "Die kostenlose Testversion hat feste Limits, und Premium-Abos erweitern sie je nach Plan. Zum Abonnieren öffnest du die Einstellungen und tippst bei einem Plan auf „Abonnieren“. Das Abo schließt du auf Ko-fi ab und erhältst einen Lizenzschlüssel, den du in den Einstellungen einträgst und aktivierst. Kündigen kannst du jederzeit über Ko-fi oder dein PayPal-Konto.",
       "q15": "Sind meine Gesundheitsdaten privat und sicher?",
-      "a15": "Ja. Deine Daten werden sicher gespeichert und niemals verkauft oder für Werbung weitergegeben. Zu Beginn erteilst du eine ausdrückliche Einwilligung zur Verarbeitung von Gesundheitsdaten. Du kannst sie jederzeit in den Einstellungen widerrufen oder deine Daten löschen. Details findest du in der Datenschutzerklärung.",
+      "a15": "Ja. Deine Daten werden sicher gespeichert und nicht verkauft oder für Werbung weitergegeben. Zu Beginn erteilst du eine ausdrückliche Einwilligung zur Verarbeitung von Gesundheitsdaten. Du kannst sie jederzeit in den Einstellungen widerrufen oder deine Daten löschen. Details findest du in der Datenschutzerklärung.",
       "q-contact": "Wie erhalte ich Hilfe oder sende Feedback?",
       "q-install": "Wie installiere ich PKU Tools?"
     }

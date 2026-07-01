@@ -120,11 +120,11 @@
       "q1": "Qu'est-ce que PKU Tools ?",
       "a1": "PKU Tools est une application nutritionnelle tout-en-un pour les personnes atteintes de phénylcétonurie (PKU). Elle remplace la balance, la table nutritionnelle, la calculatrice et le papier-crayon par une seule application pour un régime pauvre en phénylalanine (Phe).",
       "q2": "PKU Tools est-il gratuit ?",
-      "a2": "Oui. La version d'essai gratuite comprend un journal de 14 jours, 30 entrées de valeurs sanguines, 50 aliments personnels et 3 estimations IA par jour, sans publicité. Les abonnements Premium facultatifs augmentent ces limites et ajoutent l'export CSV et plus d'IA.",
+      "a2": "Oui. La recherche d'aliments, le scanner de code-barres et le calculateur Phe sont entièrement gratuits et ne nécessitent même pas de compte. Le journal, les valeurs sanguines, les aliments personnels et le calculateur IA sont proposés en version d'essai gratuite, sans publicité. Les abonnements Premium facultatifs augmentent ces limites et ajoutent l'export CSV et plus d'IA.",
       "q3": "Sur quels appareils puis-je l'utiliser ?",
       "a3": "PKU Tools est une application web progressive. Elle s'installe sur Android, iOS, Mac et Windows et est aussi sur le Google Play Store. Tes données se synchronisent en temps réel entre tes appareils.",
-      "q4": "Mes données de santé sont-elles en sécurité ?",
-      "a4": "Oui. Tes données sont stockées de façon sécurisée et ne sont jamais vendues. Elles restent les tiennes, et tu peux les exporter ou les supprimer à tout moment. PKU Tools est open source et indépendant, développé par et pour la communauté PKU.",
+      "q4": "Mes données de santé sont-elles privées et sécurisées ?",
+      "a4": "Oui. Tes données sont stockées de façon sécurisée et ne sont pas vendues. Elles restent les tiennes, et tu peux les exporter ou les supprimer à tout moment. PKU Tools est open source et indépendant, développé par et pour la communauté PKU. Consulte la Politique de confidentialité pour plus de détails.",
       "q5": "Ai-je besoin d'un compte ?",
       "a5": "Pour les outils de base — recherche d'aliments, scanner de code-barres et calculateur Phe — tu n'as pas besoin de compte. Un compte est nécessaire pour enregistrer tes données (journal, valeurs sanguines, aliments personnels) et pour le calculateur IA. Une fois connecté, tes données se synchronisent aussi entre tes appareils.",
       "more": "D'autres questions ? Va dans la section Aide"
@@ -439,7 +439,7 @@
       "q14": "Comment fonctionne l'abonnement Premium ?",
       "a14": "La version d'essai gratuite a des limites fixes, et les abonnements Premium les augmentent selon l'offre. Pour t'abonner, ouvre les Paramètres et appuie sur « Rejoindre » sur une offre. Tu finalises l'abonnement sur Ko-fi et reçois une clé de licence, que tu saisis et actives dans les Paramètres. Tu peux résilier à tout moment via Ko-fi ou ton compte PayPal.",
       "q15": "Mes données de santé sont-elles privées et sécurisées ?",
-      "a15": "Oui. Tes données sont stockées de façon sécurisée et ne sont jamais vendues ni partagées à des fins publicitaires. Au début, tu donnes un consentement explicite au traitement des données de santé. Tu peux le révoquer ou supprimer tes données à tout moment dans les Paramètres. Consulte la Politique de confidentialité pour plus de détails.",
+      "a15": "Oui. Tes données sont stockées de façon sécurisée et ne sont pas vendues ni partagées à des fins publicitaires. Au début, tu donnes un consentement explicite au traitement des données de santé. Tu peux le révoquer ou supprimer tes données à tout moment dans les Paramètres. Consulte la Politique de confidentialité pour plus de détails.",
       "q-contact": "Comment obtenir de l'aide ou envoyer un commentaire ?",
       "q-install": "Comment installer PKU Tools ?"
     }
