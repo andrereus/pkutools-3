@@ -178,6 +178,22 @@ watch(userIsAuthenticated, (newVal) => {
   }
 })
 
+const faqItems = Array.from({ length: 5 }, (_, i) => ({
+  q: `home.faq.q${i + 1}`,
+  a: `home.faq.a${i + 1}`
+}))
+
+// FAQPage structured data for search engines (rich results).
+useSchemaOrg([
+  defineWebPage({ '@type': ['WebPage', 'FAQPage'] }),
+  ...faqItems.map((item) =>
+    defineQuestion({
+      name: () => t(item.q),
+      acceptedAnswer: () => t(item.a)
+    })
+  )
+])
+
 useSeoMeta({
   // Resolves via the site's global title template to e.g.
   // "All-in-One Nutrition App for PKU <sep> PKU Tools" — using the site's own
@@ -686,6 +702,27 @@ defineOgImage('NuxtSeo', {
             class="rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
           >
             {{ $t('app.install') }} <span aria-hidden="true">→</span>
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-10 sm:pt-12 pb-14 sm:pb-20">
+      <div class="mx-auto max-w-3xl px-6 lg:px-8">
+        <h2
+          class="text-center text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl"
+        >
+          {{ $t('home.faq.title') }}
+        </h2>
+        <div class="mt-10">
+          <FaqAccordion :items="faqItems" />
+        </div>
+        <div class="mt-10 text-center">
+          <NuxtLink
+            :to="$localePath('help')"
+            class="rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
+          >
+            {{ $t('home.faq.more') }} <span aria-hidden="true">→</span>
           </NuxtLink>
         </div>
       </div>
