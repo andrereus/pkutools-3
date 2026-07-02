@@ -329,6 +329,49 @@ const tyrosineYAxisMax = computed(() => {
   return top > 0 ? Math.ceil(top * 1.1) : undefined
 })
 
+// Period selector for both charts: narrows the visible x-axis window to the last
+// N months (or all data), mirroring the diet report's range buttons. Blood tests
+// are infrequent, so the steps are 1M/3M/6M/ALL (no weekly options).
+const chartPeriod = ref('all')
+const CHART_PERIODS = ['1m', '3m', '6m', 'all']
+const pheChart = ref(null)
+const tyrosineChart = ref(null)
+
+const sortedLabDates = computed(() =>
+  labValues.value.map((o) => parseISO(o.date)).sort((a, b) => a - b)
+)
+const oldestLabDate = computed(() => sortedLabDates.value[0] ?? new Date())
+const newestLabDate = computed(
+  () => sortedLabDates.value[sortedLabDates.value.length - 1] ?? new Date()
+)
+
+// X-axis window for the current period, applied in the chart options so a fresh
+// render (mount, new reading, theme toggle) already starts at the right zoom.
+// 'all' returns {} to keep ApexCharts' default padding.
+const chartXAxisRange = computed(() => {
+  const months = { '1m': 1, '3m': 3, '6m': 6 }[chartPeriod.value]
+  if (!months) return {}
+  return {
+    min: subMonths(newestLabDate.value, months).getTime(),
+    max: newestLabDate.value.getTime()
+  }
+})
+
+// Switch period by panning the existing charts with zoomX (as the diet report
+// does), so they aren't torn down and re-rendered. 'all' zooms to the full data
+// extent so the reset actually applies — updateOptions merges, so an omitted
+// min/max would leave the previous window stuck.
+const setChartPeriod = (period) => {
+  chartPeriod.value = period
+  const months = { '1m': 1, '3m': 3, '6m': 6 }[period]
+  const min = months
+    ? subMonths(newestLabDate.value, months).getTime()
+    : oldestLabDate.value.getTime()
+  const max = newestLabDate.value.getTime()
+  pheChart.value?.chart?.zoomX(min, max)
+  tyrosineChart.value?.chart?.zoomX(min, max)
+}
+
 // Force a full chart re-render (instead of an in-place update) whenever the
 // data, target range or theme changes. ApexCharts does not reliably recompute
 // its yaxis scale or reposition yaxis annotations on a series/options update,
@@ -394,7 +437,11 @@ const chartOptions = computed(() => {
       enabled: false
     },
     xaxis: {
-      type: 'datetime'
+      type: 'datetime',
+      ...(chartXAxisRange.value.min !== undefined && {
+        min: chartXAxisRange.value.min,
+        max: chartXAxisRange.value.max
+      })
     },
     yaxis: {
       min: 0,
@@ -456,7 +503,11 @@ const chartOptionsTyrosine = computed(() => {
       enabled: false
     },
     xaxis: {
-      type: 'datetime'
+      type: 'datetime',
+      ...(chartXAxisRange.value.min !== undefined && {
+        min: chartXAxisRange.value.min,
+        max: chartXAxisRange.value.max
+      })
     },
     yaxis: {
       min: 0,
@@ -734,10 +785,27 @@ defineOgImage('NuxtSeo', {
 
       <ClientOnly>
         <div v-if="labValues.length >= 2">
+          <div class="flex gap-2 mb-4">
+            <button
+              v-for="p in CHART_PERIODS"
+              :key="p"
+              type="button"
+              :class="[
+                'px-3 py-1 text-sm rounded-lg',
+                chartPeriod === p
+                  ? 'bg-black/5 dark:bg-white/15'
+                  : 'text-gray-700 dark:text-gray-300'
+              ]"
+              @click="setChartPeriod(p)"
+            >
+              {{ p === 'all' ? 'ALL' : p.toUpperCase() }}
+            </button>
+          </div>
           <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             {{ $t('blood-values.phe-header') }}
           </p>
           <apexchart
+            ref="pheChart"
             :key="pheChartKey"
             type="line"
             height="250"
@@ -749,6 +817,7 @@ defineOgImage('NuxtSeo', {
             {{ $t('blood-values.tyrosine-header') }}
           </p>
           <apexchart
+            ref="tyrosineChart"
             :key="tyrosineChartKey"
             type="line"
             height="250"
