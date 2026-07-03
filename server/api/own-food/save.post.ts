@@ -66,24 +66,39 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   const isPremium = await checkPremiumStatus(userId)
   const ownFoodRef = db.ref(`/${userId}/ownFood`)
 
+  const ownFoodSnapshot = await ownFoodRef.once('value')
+  const existingFoods = ownFoodSnapshot.val() as Record<
+    string,
+    { name: string; phe: number; shared?: boolean }
+  > | null
+
+  // Duplicate = same name (case-insensitive) AND exact same phe value,
+  // mirroring the community duplicate rule
+  if (existingFoods) {
+    const normalizedName = normalizeString(foodData.name)
+    const isDuplicate = Object.values(existingFoods).some(
+      (food) => normalizeString(food.name) === normalizedName && food.phe === foodData.phe
+    )
+    if (isDuplicate) {
+      throw createError({
+        statusCode: 409,
+        message: 'A similar food already exists in your own foods',
+        data: { code: 'duplicate-own-food' }
+      })
+    }
+  }
+
   // Check limit based on premium status (shared foods don't count towards limit)
-  if (!isPremium) {
-    const ownFoodSnapshot = await ownFoodRef.once('value')
-    const foods = ownFoodSnapshot.val()
+  if (!isPremium && existingFoods) {
+    // Count only non-shared foods
+    const nonSharedCount = Object.values(existingFoods).filter((food) => !food.shared).length
 
-    if (foods) {
-      // Count only non-shared foods
-      const nonSharedCount = Object.values(foods).filter(
-        (food: unknown) => !(food as { shared?: boolean }).shared
-      ).length
-
-      if (nonSharedCount >= 50) {
-        throw createError({
-          statusCode: 403,
-          message: 'Own food limit reached. Upgrade to premium for unlimited entries.',
-          data: { code: 'limit-reached' }
-        })
-      }
+    if (nonSharedCount >= 50) {
+      throw createError({
+        statusCode: 403,
+        message: 'Own food limit reached. Upgrade to premium for unlimited entries.',
+        data: { code: 'limit-reached' }
+      })
     }
   }
 

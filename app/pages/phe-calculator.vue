@@ -6,7 +6,7 @@ const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
-const { addFoodItemToDiary } = useApi()
+const { addFoodItemToDiary, saveOwnFood } = useApi()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
 
 // Reactive state
@@ -19,6 +19,13 @@ const kcalReference = ref(null)
 const select = ref('phe')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isSaving = ref(false)
+const saveToOwnFood = ref(false)
+const shareWithCommunity = ref(false)
+
+// Community sharing rides on the own-food entry, so it can't stay checked alone
+watch(saveToOwnFood, (value) => {
+  if (!value) shareWithCommunity.value = false
+})
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
@@ -72,7 +79,8 @@ const save = async () => {
   // the same i18n keys as the server, so wording stays consistent and translated.
   const isEmpty = (v) => v === null || v === undefined || v === ''
   const nutritionalValue = select.value === 'phe' ? phe.value : protein.value
-  const nutritionalLabel = select.value === 'phe' ? 'common.phe-per-100g' : 'common.protein-per-100g'
+  const nutritionalLabel =
+    select.value === 'phe' ? 'common.phe-per-100g' : 'common.protein-per-100g'
 
   const validationErrors = []
   if (!name.value?.trim()) {
@@ -123,6 +131,25 @@ const save = async () => {
   // Use server API for all writes - validates with Zod
   try {
     logEntry = await ensureEmojiForLogEntry(logEntry)
+
+    // Own food only in exact-Phe mode (converted protein values are too
+    // imprecise to store as reference values). Saved before the diary entry so
+    // a failure (limit reached, community duplicate) aborts the whole save and
+    // retrying can't duplicate the diary entry.
+    if (select.value === 'phe' && saveToOwnFood.value) {
+      await saveOwnFood({
+        name: logEntry.name,
+        icon: null,
+        emoji: logEntry.emoji || null,
+        phe: Number(phe.value),
+        kcal: Number(kcalReference.value) || 0,
+        note: null,
+        shared: shareWithCommunity.value
+      })
+      // Uncheck so a retry after a failed diary write doesn't save it twice
+      saveToOwnFood.value = false
+      shareWithCommunity.value = false
+    }
 
     await addFoodItemToDiary({
       date: selectedDate.value,
@@ -266,6 +293,44 @@ defineOgImage('NuxtSeo', {
         <template v-else>≈ {{ calculatePhe() }} mg Phe</template>
       </span>
       <span class="flex-1 ml-1 text-lg">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
+    </div>
+
+    <div v-if="userIsAuthenticated && select === 'phe'" class="mb-6">
+      <div class="flex items-start">
+        <div class="flex h-6 items-center">
+          <input
+            id="save-own-food"
+            v-model="saveToOwnFood"
+            name="save-own-food"
+            type="checkbox"
+            class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
+          />
+        </div>
+        <div class="ml-3 text-sm leading-6">
+          <label for="save-own-food" class="font-medium text-gray-900 dark:text-gray-300">
+            {{ $t('phe-calculator.save-to-own-food') }}
+          </label>
+        </div>
+      </div>
+      <div v-if="saveToOwnFood" class="mt-2 flex items-start">
+        <div class="flex h-6 items-center">
+          <input
+            id="share-community"
+            v-model="shareWithCommunity"
+            name="share-community"
+            type="checkbox"
+            class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
+          />
+        </div>
+        <div class="ml-3 text-sm leading-6">
+          <label for="share-community" class="font-medium text-gray-900 dark:text-gray-300">
+            {{ $t('community.share') }}
+          </label>
+          <p class="text-gray-500 dark:text-gray-400">
+            {{ $t('community.shareLanguage', { language: $t('app.language-name') }) }}
+          </p>
+        </div>
+      </div>
     </div>
 
     <PrimaryButton

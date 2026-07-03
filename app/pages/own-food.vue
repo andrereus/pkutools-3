@@ -17,7 +17,7 @@ import DataTablePagination from '@/components/DataTablePagination.vue'
 import { LucideStickyNote, LucideUsers, LucideThumbsUp, LucideThumbsDown } from '@lucide/vue'
 
 const store = useStore()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const dialog = ref(null)
 const dialog2 = ref(null)
 const route = useRoute()
@@ -333,42 +333,47 @@ const save = async () => {
       originalFood.phe !== entryPhe ||
       originalFood.kcal !== entryKcal)
 
-  // Close modal first so confirmation dialog appears on top
-  closeModal()
+  // Confirmation flows close the modal first so the confirmation dialog
+  // appears on top. Otherwise the modal stays open during the save so API
+  // errors (e.g. duplicate food) show inline and the input is preserved.
+  if (isUnsharing || willResetVotes) {
+    closeModal()
 
-  // If unsharing, show warning
-  if (isUnsharing) {
-    const confirmed = await confirm.confirm({
-      title: t('own-food.unshare-title'),
-      message: t('own-food.unshare-warning'),
-      confirmLabel: t('own-food.unshare-confirm'),
-      cancelLabel: t('common.cancel'),
-      variant: 'destructive'
-    })
+    // If unsharing, show warning
+    if (isUnsharing) {
+      const confirmed = await confirm.confirm({
+        title: t('own-food.unshare-title'),
+        message: t('own-food.unshare-warning'),
+        confirmLabel: t('own-food.unshare-confirm'),
+        cancelLabel: t('common.cancel'),
+        variant: 'destructive'
+      })
 
-    if (!confirmed) {
-      return
+      if (!confirmed) {
+        return
+      }
+    }
+
+    // If phe/kcal changed on shared food, warn that votes will be reset
+    if (willResetVotes) {
+      const confirmed = await confirm.confirm({
+        title: t('own-food.reset-votes-title'),
+        message: t('own-food.reset-votes-warning'),
+        confirmLabel: t('common.save'),
+        cancelLabel: t('common.cancel'),
+        variant: 'default'
+      })
+
+      if (!confirmed) {
+        return
+      }
     }
   }
 
-  // If phe/kcal changed on shared food, warn that votes will be reset
-  if (willResetVotes) {
-    const confirmed = await confirm.confirm({
-      title: t('own-food.reset-votes-title'),
-      message: t('own-food.reset-votes-warning'),
-      confirmLabel: t('common.save'),
-      cancelLabel: t('common.cancel'),
-      variant: 'default'
-    })
-
-    if (!confirmed) {
-      return
-    }
-  }
-
-  if (isEditing && entryKey) {
-    // Update existing entry - use update API (validates server-side with Zod)
-    try {
+  isSaving.value = true
+  try {
+    if (isEditing && entryKey) {
+      // Update existing entry - use update API (validates server-side with Zod)
       await updateOwnFood({
         entryKey: entryKey,
         name: entryName,
@@ -379,14 +384,8 @@ const save = async () => {
         note: entryNote,
         shared: entryShared
       })
-      notifications.success(t('common.saved'))
-    } catch (error) {
-      // Error handling is done in useApi composable
-      console.error('Update error:', error)
-    }
-  } else {
-    // Add new entry - auto-generate emoji if missing, then save
-    try {
+    } else {
+      // Add new entry - auto-generate emoji if missing, then save
       let emoji = entryEmoji
       if (!emoji && entryName.trim()) {
         const withEmoji = await ensureEmojiForLogEntry({
@@ -405,11 +404,15 @@ const save = async () => {
         note: entryNote,
         shared: entryShared
       })
-      notifications.success(t('common.saved'))
-    } catch (error) {
-      // Error handling is done in useApi composable
-      console.error('Save error:', error)
     }
+    notifications.success(t('common.saved'))
+    closeModal()
+  } catch (error) {
+    // Error handling is done in useApi composable; the dialog stays open so
+    // the inline error is visible and the input can be corrected
+    console.error('Save error:', error)
+  } finally {
+    isSaving.value = false
   }
 }
 
@@ -616,8 +619,13 @@ defineOgImage('NuxtSeo', {
 
     <div v-if="userIsAuthenticated">
       <!-- Info about sharing with community -->
-      <div class="mb-6 flex items-start gap-2.5 rounded-lg bg-teal-50 dark:bg-teal-900/20 px-4 py-3 ring-1 ring-inset ring-teal-600/15 dark:ring-teal-400/15">
-        <LucideInfo class="mt-0.5 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-400" aria-hidden="true" />
+      <div
+        class="mb-6 flex items-start gap-2.5 rounded-lg bg-teal-50 dark:bg-teal-900/20 px-4 py-3 ring-1 ring-inset ring-teal-600/15 dark:ring-teal-400/15"
+      >
+        <LucideInfo
+          class="mt-0.5 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-400"
+          aria-hidden="true"
+        />
         <p class="text-sm text-teal-800 dark:text-teal-200">
           {{ $t('own-food.share-info') }}
         </p>
@@ -716,6 +724,7 @@ defineOgImage('NuxtSeo', {
       <ModalDialog
         ref="dialog"
         :title="formTitle"
+        :loading="isSaving"
         :buttons="[
           { label: $t('common.save'), type: 'submit', visible: true },
           { label: $t('common.delete'), type: 'delete', visible: editedIndex !== -1 },
