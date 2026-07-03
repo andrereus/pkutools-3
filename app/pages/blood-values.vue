@@ -155,8 +155,8 @@ const getlocalDate = (date) => {
   }
 }
 
-// Table state
-const sorting = ref([])
+// Table state — newest readings first by default
+const sorting = ref([{ id: 'date', desc: true }])
 const columnFilters = ref([])
 const columnVisibility = ref({})
 
