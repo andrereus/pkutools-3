@@ -1265,62 +1265,65 @@ defineOgImage('NuxtSeo', {
             {{ $t('diet-report.day-incomplete') }}
           </span>
         </div>
-      </ModalDialog>
 
-      <ModalDialog
-        ref="dialog2"
-        :title="logFormTitle"
-        :buttons="[
-          { label: $t('common.save'), type: 'submit', visible: true },
-          { label: $t('common.delete'), type: 'delete', visible: editedLogIndex !== -1 },
-          { label: $t('common.cancel'), type: 'close', visible: true }
-        ]"
-        @submit="saveLogEdit"
-        @delete="deleteLogItem"
-        @close="closeLogEdit"
-      >
-        <TextInput v-model="editedLogItem.name" id-name="food" :label="$t('common.food-name')" />
-        <div>
-          <label
-            for="note"
-            class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
-            >{{ $t('diary.note') }}</label
-          >
-          <div class="mt-1 mb-3">
-            <textarea
-              id="note"
-              v-model="editedLogItem.note"
-              v-auto-grow
-              name="note"
-              rows="1"
-              :placeholder="$t('diary.note-placeholder')"
-              class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+        <!-- Nested inside the day dialog (not a sibling) so headlessui's inject-based
+             dialog stack registers it: the day dialog then ignores Esc/outside clicks
+             while this one is on top, instead of closing itself in the background. -->
+        <ModalDialog
+          ref="dialog2"
+          :title="logFormTitle"
+          :buttons="[
+            { label: $t('common.save'), type: 'submit', visible: true },
+            { label: $t('common.delete'), type: 'delete', visible: editedLogIndex !== -1 },
+            { label: $t('common.cancel'), type: 'close', visible: true }
+          ]"
+          @submit="saveLogEdit"
+          @delete="deleteLogItem"
+          @close="closeLogEdit"
+        >
+          <TextInput v-model="editedLogItem.name" id-name="food" :label="$t('common.food-name')" />
+          <div>
+            <label
+              for="note"
+              class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
+              >{{ $t('diary.note') }}</label
+            >
+            <div class="mt-1 mb-3">
+              <textarea
+                id="note"
+                v-model="editedLogItem.note"
+                v-auto-grow
+                name="note"
+                rows="1"
+                :placeholder="$t('diary.note-placeholder')"
+                class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+              />
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <NumberInput
+              v-model.number="editedLogItem.pheReference"
+              id-name="phe"
+              :label="$t('common.phe-per-100g')"
+              class="flex-1"
+            />
+            <NumberInput
+              v-model.number="editedLogItem.kcalReference"
+              id-name="kcalRef"
+              :label="$t('common.kcal-per-100g')"
+              class="flex-1"
             />
           </div>
-        </div>
-        <div class="flex gap-4">
           <NumberInput
-            v-model.number="editedLogItem.pheReference"
-            id-name="phe"
-            :label="$t('common.phe-per-100g')"
-            class="flex-1"
+            v-model.number="editedLogItem.weight"
+            id-name="weight"
+            :label="$t('common.consumed-weight')"
           />
-          <NumberInput
-            v-model.number="editedLogItem.kcalReference"
-            id-name="kcalRef"
-            :label="$t('common.kcal-per-100g')"
-            class="flex-1"
-          />
-        </div>
-        <NumberInput
-          v-model.number="editedLogItem.weight"
-          id-name="weight"
-          :label="$t('common.consumed-weight')"
-        />
-        <div class="flex gap-4 mt-4">
-          <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>
-          <span class="flex-1 ml-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
-        </div>
+          <div class="flex gap-4 mt-4">
+            <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>
+            <span class="flex-1 ml-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
+          </div>
+        </ModalDialog>
       </ModalDialog>
 
       <SecondaryButton
