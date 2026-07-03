@@ -71,7 +71,9 @@ const formTitle = computed(() => {
 
 const filteredOwnFood = computed(() => {
   if (!search.value.trim()) {
-    return ownFood.value
+    // Entries have no date field, but Firebase push keys are chronological,
+    // so key-descending shows the newest foods first
+    return [...ownFood.value].sort((a, b) => (a['.key'] < b['.key'] ? 1 : -1))
   }
 
   const fuse = new Fuse(ownFood.value, {
