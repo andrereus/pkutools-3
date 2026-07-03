@@ -153,11 +153,12 @@ const onDetect = async (detectedCodes) => {
 
   try {
     const response = await $fetch(
-      `https://world.openfoodfacts.org/api/v2/product/${scannedCode}.json`
+      `https://world.openfoodfacts.org/api/v3/product/${scannedCode}.json?fields=product_name,nutriments,image_small_url`
     )
-    // A real product has status 1 and a product object; keep result null
-    // otherwise so the template (and calc helpers) never deref result.product.
-    if (response?.status === 1 && response.product) {
+    // v3 reports found products as "success" or "success_with_warnings", so
+    // don't match on "success" alone. Keep result null on failure so the
+    // template (and calc helpers) never deref result.product.
+    if (response?.status?.startsWith('success') && response.product) {
       result.value = response
       // Success: close the dialog and show the product on the page.
       cancel()
