@@ -21,6 +21,7 @@ const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isSaving = ref(false)
 const saveToOwnFood = ref(false)
 const shareWithCommunity = ref(false)
+const note = ref(null)
 
 // Community sharing rides on the own-food entry, so it can't stay checked alone
 watch(saveToOwnFood, (value) => {
@@ -137,13 +138,15 @@ const save = async () => {
     // a failure (limit reached, community duplicate) aborts the whole save and
     // retrying can't duplicate the diary entry.
     if (select.value === 'phe' && saveToOwnFood.value) {
+      const entryNote = note.value && note.value.trim() !== '' ? note.value.trim() : null
+      logEntry.note = entryNote
       await saveOwnFood({
         name: logEntry.name,
         icon: null,
         emoji: logEntry.emoji || null,
         phe: Number(phe.value),
         kcal: Number(kcalReference.value) || 0,
-        note: null,
+        note: entryNote,
         shared: shareWithCommunity.value
       })
       // Uncheck so a retry after a failed diary write doesn't save it twice
@@ -312,7 +315,25 @@ defineOgImage('NuxtSeo', {
           </label>
         </div>
       </div>
-      <div v-if="saveToOwnFood" class="mt-2 flex items-start">
+      <div v-if="saveToOwnFood" class="mt-3">
+        <label
+          for="note"
+          class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
+          >{{ $t('diary.note') }}</label
+        >
+        <div class="mt-1">
+          <textarea
+            id="note"
+            v-model="note"
+            v-auto-grow
+            name="note"
+            rows="1"
+            :placeholder="$t('diary.note-placeholder')"
+            class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+          />
+        </div>
+      </div>
+      <div v-if="saveToOwnFood" class="mt-3 flex items-start">
         <div class="flex h-6 items-center">
           <input
             id="share-community"

@@ -839,6 +839,24 @@ defineOgImage('NuxtSeo', {
           {{ $t('diary.data-warning') }}
         </p>
         <TextInput v-model="editedItem.name" id-name="food" :label="$t('common.food-name')" />
+        <div>
+          <label
+            for="note"
+            class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
+            >{{ $t('diary.note') }}</label
+          >
+          <div class="mt-1 mb-3">
+            <textarea
+              id="note"
+              v-model="editedItem.note"
+              v-auto-grow
+              name="note"
+              rows="1"
+              :placeholder="$t('diary.note-placeholder')"
+              class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+            />
+          </div>
+        </div>
         <div class="flex gap-4">
           <NumberInput
             v-model.number="editedItem.pheReference"
@@ -861,24 +879,6 @@ defineOgImage('NuxtSeo', {
         <div class="flex gap-4 mt-4">
           <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>
           <span class="flex-1 ml-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
-        </div>
-        <div class="mt-3">
-          <label
-            for="note"
-            class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
-            >{{ $t('diary.note') }}</label
-          >
-          <div class="mt-1 mb-3">
-            <textarea
-              id="note"
-              v-auto-grow
-              v-model="editedItem.note"
-              name="note"
-              rows="1"
-              :placeholder="$t('diary.note-placeholder')"
-              class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
-            />
-          </div>
         </div>
       </ModalDialog>
 

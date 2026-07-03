@@ -248,8 +248,8 @@
     "progress-circles": "Fortschritt als Kreise anzeigen",
     "item-deleted": "Eintrag gelöscht",
     "quick-add-placeholder": "Schnell hinzufügen",
-    "note": "Notiz",
-    "note-placeholder": "Notiz hinzufügen (optional)",
+    "note": "Notiz/Beschreibung",
+    "note-placeholder": "Optional",
     "has-note": "Notiz",
     "entry-deleted": "Eintrag gelöscht",
     "empty-state": {

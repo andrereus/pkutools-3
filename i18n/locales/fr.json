@@ -248,8 +248,8 @@
     "progress-circles": "Afficher la progression en cercles",
     "item-deleted": "Élément supprimé",
     "quick-add-placeholder": "Ajout rapide",
-    "note": "Note",
-    "note-placeholder": "Ajouter une note (optionnel)",
+    "note": "Note/Description",
+    "note-placeholder": "Optionnel",
     "has-note": "Note",
     "entry-deleted": "Entrée supprimée",
     "empty-state": {
