@@ -7,18 +7,19 @@ const part3 = ref('com')
 
 // Install and contact come first (the app's "install" button links here, and
 // contact matters most for support). They open custom panels via named slots
-// below; the remaining items render their translated answer text.
+// below; the remaining items render their translated answer text. Install
+// also has a plain-text answer (a-install) used only for the structured data.
 const faqItems = [
-  { q: 'help.faq.q-install', slot: 'install' },
+  { q: 'help.faq.q-install', slot: 'install', a: 'help.faq.a-install' },
   { q: 'help.faq.q-contact', slot: 'contact' },
-  ...Array.from({ length: 15 }, (_, i) => ({
+  ...Array.from({ length: 16 }, (_, i) => ({
     q: `help.faq.q${i + 1}`,
     a: `help.faq.a${i + 1}`
   }))
 ]
 
-// FAQPage structured data for search engines (rich results). Only the text
-// answers are exposed; the slot items (contact, install) are display-only.
+// FAQPage structured data for search engines (rich results). Items without a
+// text answer stay out — contact deliberately has none because of the email
 useSchemaOrg([
   defineWebPage({ '@type': ['WebPage', 'FAQPage'] }),
   ...faqItems
