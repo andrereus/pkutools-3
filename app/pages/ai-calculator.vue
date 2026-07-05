@@ -863,7 +863,7 @@ defineOgImage('NuxtSeo', {
     </ModalDialog>
 
     <p v-if="userIsAuthenticated" class="mt-4 text-gray-600 dark:text-gray-400 italic text-sm">
-      {{ $t('ai-calculator.disclaimer') }}
+      {{ mode === 'label' ? $t('ai-calculator.disclaimer-label') : $t('ai-calculator.disclaimer') }}
     </p>
     <p v-if="userIsAuthenticated" class="mt-2 text-gray-600 dark:text-gray-400 italic text-sm">
       {{ $t('ai-calculator.disclaimer-2') }}
