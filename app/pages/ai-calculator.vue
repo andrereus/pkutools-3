@@ -23,6 +23,7 @@ const signInGoogle = async () => {
 }
 
 // Reactive state
+const mode = ref('estimate') // 'estimate' | 'label'
 const description = ref('')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isEstimating = ref(false)
@@ -614,84 +615,123 @@ defineOgImage('NuxtSeo', {
     />
 
     <div v-if="userIsAuthenticated" class="mt-2">
-      <label
-        for="description"
-        class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
-      >
-        {{ $t('ai-calculator.input-label') }}
-      </label>
-      <div class="mt-1">
-        <textarea
-          id="description"
-          v-auto-grow
-          v-model="description"
-          rows="1"
-          :placeholder="$t('ai-calculator.input-placeholder')"
+      <div class="inline-flex rounded-full bg-black/5 dark:bg-white/10 p-1 mb-4">
+        <button
+          type="button"
+          class="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          :class="
+            mode === 'estimate'
+              ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-xs'
+              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+          "
+          :aria-pressed="mode === 'estimate'"
           :disabled="isBusy"
-          class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
-        />
+          @click="mode = 'estimate'"
+        >
+          <LucideUtensils class="h-4 w-4" />
+          {{ $t('ai-calculator.mode-estimate') }}
+        </button>
+        <button
+          type="button"
+          class="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          :class="
+            mode === 'label'
+              ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-xs'
+              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+          "
+          :aria-pressed="mode === 'label'"
+          :disabled="isBusy"
+          @click="mode = 'label'"
+        >
+          <LucideScanText class="h-4 w-4" />
+          {{ $t('ai-calculator.mode-label') }}
+        </button>
       </div>
 
-      <div v-if="imageFile" class="flex items-center gap-4 mt-3">
-        <div class="relative">
-          <img
-            :src="imagePreview"
-            :alt="$t('phe-calculator.image-preview')"
-            class="h-24 w-24 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+      <template v-if="mode === 'estimate'">
+        <label
+          for="description"
+          class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
+        >
+          {{ $t('ai-calculator.input-label') }}
+        </label>
+        <div class="mt-1">
+          <textarea
+            id="description"
+            v-auto-grow
+            v-model="description"
+            rows="1"
+            :placeholder="$t('ai-calculator.input-placeholder')"
+            :disabled="isBusy"
+            class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
           />
+        </div>
+
+        <div v-if="imageFile" class="flex items-center gap-4 mt-3">
+          <div class="relative">
+            <img
+              :src="imagePreview"
+              :alt="$t('phe-calculator.image-preview')"
+              class="h-24 w-24 rounded-lg object-cover border border-gray-200 dark:border-gray-700"
+            />
+            <button
+              type="button"
+              class="absolute -top-2 -right-2 rounded-full bg-red-500 p-0.5 text-white shadow-xs hover:bg-red-600 cursor-pointer"
+              :title="$t('phe-calculator.remove-photo')"
+              :aria-label="$t('phe-calculator.remove-photo')"
+              @click="removeImage"
+            >
+              <LucideX class="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 mt-3">
           <button
             type="button"
-            class="absolute -top-2 -right-2 rounded-full bg-red-500 p-0.5 text-white shadow-xs hover:bg-red-600 cursor-pointer"
-            :title="$t('phe-calculator.remove-photo')"
-            :aria-label="$t('phe-calculator.remove-photo')"
-            @click="removeImage"
+            class="rounded-full bg-gray-200 px-3 py-1.5 text-sm font-semibold text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
+            :disabled="isBusy"
+            :title="$t('phe-calculator.add-photo')"
+            @click="
+              isPremium
+                ? fileInputRef?.click()
+                : notifications.error(t('phe-calculator.image-premium-only'))
+            "
           >
-            <LucideX class="h-3.5 w-3.5" />
+            <LucideCamera class="h-5 w-5" />
+            <span class="ml-1">{{ $t('ai-calculator.analyze-photo') }}</span>
+          </button>
+          <button
+            type="button"
+            class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
+            :disabled="
+              isBusy ||
+              ((!description || description.trim() === '') && !imageFile) ||
+              remainingEstimates === 0
+            "
+            @click="estimateFoodValues"
+          >
+            <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
+            <span v-else>{{ $t('phe-calculator.estimate') }}</span>
           </button>
         </div>
-      </div>
+      </template>
 
-      <div class="flex items-center gap-2 mt-3">
+      <div v-else>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          {{ $t('ai-calculator.label-info') }}
+        </p>
         <button
           type="button"
-          class="rounded-full bg-gray-200 px-3 py-1.5 text-sm font-semibold text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
-          :disabled="isBusy"
-          :title="$t('phe-calculator.add-photo')"
-          @click="
-            isPremium
-              ? fileInputRef?.click()
-              : notifications.error(t('phe-calculator.image-premium-only'))
-          "
-        >
-          <LucideCamera class="h-5 w-5" />
-          <span class="ml-1">{{ $t('ai-calculator.analyze-photo') }}</span>
-        </button>
-        <button
-          type="button"
-          class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
-          :disabled="
-            isBusy ||
-            ((!description || description.trim() === '') && !imageFile) ||
-            remainingEstimates === 0
-          "
-          @click="estimateFoodValues"
-        >
-          <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
-          <span v-else>{{ $t('phe-calculator.estimate') }}</span>
-        </button>
-        <div class="ml-auto h-6 w-px bg-gray-300 dark:bg-gray-600" aria-hidden="true" />
-        <button
-          type="button"
-          class="rounded-full bg-gray-200 px-3 py-1.5 text-sm font-semibold text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
+          class="mt-3 rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
           :disabled="isBusy || remainingEstimates === 0"
-          :title="$t('ai-calculator.read-label')"
           @click="
             isPremium
               ? labelFileInputRef?.click()
               : notifications.error(t('phe-calculator.image-premium-only'))
           "
         >
-          <LucideScanText class="h-5 w-5" />
+          <LucideCamera class="h-5 w-5" />
           <span class="ml-1">
             <template v-if="isReadingLabel">{{ $t('ai-calculator.reading-label') }}</template>
             <template v-else>{{ $t('ai-calculator.read-label') }}</template>
@@ -731,7 +771,18 @@ defineOgImage('NuxtSeo', {
         {{ result.explanation }}
       </div>
 
-      <div class="flex gap-4 text-gray-600 dark:text-gray-400 mb-4">
+      <div v-if="isLabelResult" class="flex flex-wrap gap-4 text-gray-600 dark:text-gray-400 mb-4">
+        <span v-if="result.phePer100g !== null" class="flex-1 whitespace-nowrap"
+          >{{ result.phePer100g }} {{ $t('common.mg-phe-per-100g') }}</span
+        >
+        <span v-if="result.proteinPer100g !== null" class="flex-1 whitespace-nowrap"
+          >{{ result.proteinPer100g }} g {{ $t('common.short-protein-per-100g') }}</span
+        >
+        <span v-if="kcalReference" class="flex-1 whitespace-nowrap"
+          >{{ kcalReference }} {{ $t('common.kcal-per-100g') }}</span
+        >
+      </div>
+      <div v-else class="flex gap-4 text-gray-600 dark:text-gray-400 mb-4">
         <span class="flex-1">{{ pheReference }} {{ $t('common.mg-phe-per-100g') }}</span>
         <span v-if="kcalReference" class="flex-1"
           >{{ kcalReference }} {{ $t('common.kcal-per-100g') }}</span
