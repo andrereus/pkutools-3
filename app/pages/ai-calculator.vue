@@ -26,10 +26,13 @@ const signInGoogle = async () => {
 const description = ref('')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isEstimating = ref(false)
+const isReadingLabel = ref(false)
 const isSaving = ref(false)
 const imageFile = ref(null)
 const imagePreview = ref(null)
 const fileInputRef = ref(null)
+const labelImageFile = ref(null)
+const labelFileInputRef = ref(null)
 const correctionDialog = ref(null)
 const correctionHint = ref('')
 
@@ -82,6 +85,10 @@ const kcalReference = computed(() => {
   }
   return 0
 })
+
+const isBusy = computed(() => isEstimating.value || isReadingLabel.value)
+
+const isLabelResult = computed(() => result.value?.source === 'label')
 
 const isProteinFallback = computed(() => {
   if (!result.value) return false
@@ -171,8 +178,67 @@ const sanitizePromptInput = (value) =>
     .replace(/\t/g, ' ')
     .trim()
 
+// Checks the daily quota via server API and returns a ready-to-use model, or null
+const requestAiModel = async () => {
+  const auth = getAuth()
+  const currentUser = auth.currentUser
+  if (!currentUser) {
+    notifications.error(t('phe-calculator.estimate-error-firebase'))
+    return null
+  }
+
+  const token = await currentUser.getIdToken()
+
+  const checkResponse = await $fetch('/api/gemini/check', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` }
+  })
+
+  if (!checkResponse.allowed) {
+    notifications.error(
+      t('phe-calculator.estimate-error-daily-limit', { limit: checkResponse.remaining })
+    )
+    return null
+  }
+
+  let firebaseApp
+  try {
+    firebaseApp = getApp()
+  } catch {
+    notifications.error(t('phe-calculator.estimate-error-firebase'))
+    return null
+  }
+
+  const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() })
+  return getGenerativeModel(ai, {
+    model: ESTIMATE_MODEL,
+    generationConfig: { responseMimeType: 'application/json' }
+  })
+}
+
+const notifyAiError = (error) => {
+  const errorMessage = error?.message || error?.error?.message || ''
+  const errorType = error?.type || error?.error?.type || ''
+
+  if (
+    errorType === 'RESOURCE_EXHAUSTED' ||
+    errorMessage.includes('quota') ||
+    errorMessage.includes('Quota exceeded') ||
+    errorMessage.includes('rate limit')
+  ) {
+    notifications.error(t('phe-calculator.estimate-error-quota'))
+  } else {
+    notifications.error(t('phe-calculator.estimate-error'))
+  }
+}
+
+const appLanguageName = () => {
+  const languageMap = { en: 'English', de: 'German', es: 'Spanish', fr: 'French' }
+  return languageMap[locale.value] || 'English'
+}
+
 const estimateFoodValues = async () => {
-  if (isEstimating.value) return
+  if (isBusy.value) return
 
   isEstimating.value = true
   const previousResult = result.value
@@ -191,45 +257,10 @@ const estimateFoodValues = async () => {
     const sanitizedCorrection = sanitizePromptInput(correctionHint.value)
     const hasCorrection = sanitizedCorrection !== '' && previousResult !== null
 
-    // Check permission via server API
-    const auth = getAuth()
-    const currentUser = auth.currentUser
-    if (!currentUser) {
-      notifications.error(t('phe-calculator.estimate-error-firebase'))
-      return
-    }
+    const model = await requestAiModel()
+    if (!model) return
 
-    const token = await currentUser.getIdToken()
-
-    const checkResponse = await $fetch('/api/gemini/check', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` }
-    })
-
-    if (!checkResponse.allowed) {
-      notifications.error(
-        t('phe-calculator.estimate-error-daily-limit', { limit: checkResponse.remaining })
-      )
-      return
-    }
-
-    // Initialize Firebase AI
-    let firebaseApp
-    try {
-      firebaseApp = getApp()
-    } catch {
-      notifications.error(t('phe-calculator.estimate-error-firebase'))
-      return
-    }
-
-    const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() })
-    const model = getGenerativeModel(ai, {
-      model: ESTIMATE_MODEL,
-      generationConfig: { responseMimeType: 'application/json' }
-    })
-
-    const languageMap = { en: 'English', de: 'German', es: 'Spanish', fr: 'French' }
-    const appLanguage = languageMap[locale.value] || 'English'
+    const appLanguage = appLanguageName()
 
     const previousEstimate = hasCorrection ? JSON.stringify(previousResult) : ''
 
@@ -265,6 +296,7 @@ Return JSON:
 
     // Build result object
     result.value = {
+      source: 'estimate',
       name: foodData.name || null,
       emoji:
         foodData.emoji && typeof foodData.emoji === 'string' && foodData.emoji.trim() !== ''
@@ -312,23 +344,114 @@ Return JSON:
     notifications.success(t('phe-calculator.estimate-success'))
   } catch (error) {
     console.error('Error estimating food values:', error)
-
-    const errorMessage = error?.message || error?.error?.message || ''
-    const errorType = error?.type || error?.error?.type || ''
-
-    if (
-      errorType === 'RESOURCE_EXHAUSTED' ||
-      errorMessage.includes('quota') ||
-      errorMessage.includes('Quota exceeded') ||
-      errorMessage.includes('rate limit')
-    ) {
-      notifications.error(t('phe-calculator.estimate-error-quota'))
-    } else {
-      notifications.error(t('phe-calculator.estimate-error'))
-    }
+    notifyAiError(error)
   } finally {
     isEstimating.value = false
   }
+}
+
+const parseLabelNumber = (value, decimals) => {
+  if (value === null || value === undefined || isNaN(Number(value))) return null
+  const factor = 10 ** decimals
+  return Math.round(Number(value) * factor) / factor
+}
+
+const readLabel = async () => {
+  if (isBusy.value || !labelImageFile.value) return
+
+  isReadingLabel.value = true
+  const previousResult = result.value
+  result.value = null
+
+  try {
+    const sanitizedCorrection = sanitizePromptInput(correctionHint.value)
+    const hasCorrection =
+      sanitizedCorrection !== '' && previousResult !== null && previousResult.source === 'label'
+
+    const model = await requestAiModel()
+    if (!model) return
+
+    const appLanguage = appLanguageName()
+
+    const previousReading = hasCorrection ? JSON.stringify(previousResult) : ''
+
+    const prompt = `Read the nutrition facts label in the image. Extract only values printed on the label. Do not estimate or guess missing values. If values are printed per serving or per portion only, convert them to per 100g using the printed serving size. If energy is printed only in kJ, convert it to kcal. If phenylalanine is printed in g, convert it to mg. Use ${appLanguage} for the name.${hasCorrection ? `\n\nPrevious reading: ${previousReading}\nUser correction: "${sanitizedCorrection}"` : ''}
+
+Return JSON:
+{
+  "isNutritionLabel": boolean (true only if the image shows a nutrition facts label),
+  "name": string (product name if visible) or null,
+  "proteinPer100g": number (protein in g per 100g) or null,
+  "kcalPer100g": number (energy in kcal per 100g) or null,
+  "phePer100g": number (phenylalanine in mg per 100g, ONLY if phenylalanine is explicitly printed on the label) or null,
+  "servingSizeInGrams": number (serving size in g if printed) or null
+}`
+
+    const base64Data = await resizeAndConvertToBase64(labelImageFile.value)
+    const aiResult = await model.generateContent([
+      prompt,
+      { inlineData: { mimeType: 'image/jpeg', data: base64Data } }
+    ])
+    const text = aiResult.response.text()
+
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) throw new Error('No JSON found in response')
+
+    const labelData = JSON.parse(jsonMatch[0])
+
+    const phePer100g = parseLabelNumber(labelData.phePer100g, 0)
+    const proteinPer100g = parseLabelNumber(labelData.proteinPer100g, 1)
+    const kcalPer100g = parseLabelNumber(labelData.kcalPer100g, 0)
+    const servingSize = parseLabelNumber(labelData.servingSizeInGrams, 0)
+
+    if (labelData.isNutritionLabel !== true || (phePer100g === null && proteinPer100g === null)) {
+      notifications.error(t('ai-calculator.label-error'))
+      return
+    }
+
+    result.value = {
+      source: 'label',
+      name: labelData.name && typeof labelData.name === 'string' ? labelData.name.trim() : '',
+      emoji: null,
+      phePer100g,
+      proteinPer100g,
+      kcalPer100g,
+      weightInGrams: servingSize && servingSize > 0 ? servingSize : null,
+      explanation: null
+    }
+
+    weight.value = result.value.weightInGrams || 100
+
+    correctionHint.value = ''
+
+    notifications.success(t('ai-calculator.label-success'))
+  } catch (error) {
+    console.error('Error reading label:', error)
+    notifyAiError(error)
+  } finally {
+    isReadingLabel.value = false
+  }
+}
+
+const onLabelImageSelected = async (event) => {
+  const file = event.target.files?.[0]
+  if (labelFileInputRef.value) labelFileInputRef.value.value = ''
+  if (!file) return
+  if (!isPremium.value) {
+    notifications.error(t('phe-calculator.image-premium-only'))
+    return
+  }
+  if (!file.type.startsWith('image/')) {
+    notifications.error(t('phe-calculator.estimate-error-invalid-image'))
+    return
+  }
+  if (file.size > MAX_IMAGE_FILE_SIZE) {
+    notifications.error(t('phe-calculator.estimate-error-image-too-large'))
+    return
+  }
+  labelImageFile.value = file
+  correctionHint.value = ''
+  await readLabel()
 }
 
 const openCorrectionDialog = () => {
@@ -339,7 +462,11 @@ const openCorrectionDialog = () => {
 const submitCorrection = async () => {
   if (!correctionHint.value || correctionHint.value.trim() === '') return
   correctionDialog.value?.closeDialog()
-  await estimateFoodValues()
+  if (isLabelResult.value) {
+    await readLabel()
+  } else {
+    await estimateFoodValues()
+  }
 }
 
 const save = async () => {
@@ -467,6 +594,15 @@ defineOgImage('NuxtSeo', {
       @change="onImageSelected"
     />
 
+    <input
+      ref="labelFileInputRef"
+      type="file"
+      accept="image/*"
+      capture="environment"
+      class="hidden"
+      @change="onLabelImageSelected"
+    />
+
     <div v-if="userIsAuthenticated" class="mt-2">
       <label
         for="description"
@@ -481,7 +617,7 @@ defineOgImage('NuxtSeo', {
           v-model="description"
           rows="1"
           :placeholder="$t('ai-calculator.input-placeholder')"
-          :disabled="isEstimating"
+          :disabled="isBusy"
           class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
         />
       </div>
@@ -509,7 +645,7 @@ defineOgImage('NuxtSeo', {
         <button
           type="button"
           class="rounded-full bg-gray-200 px-3 py-1.5 text-sm font-semibold text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
-          :disabled="isEstimating"
+          :disabled="isBusy"
           :title="$t('phe-calculator.add-photo')"
           @click="
             isPremium
@@ -522,9 +658,26 @@ defineOgImage('NuxtSeo', {
         </button>
         <button
           type="button"
+          class="rounded-full bg-gray-200 px-3 py-1.5 text-sm font-semibold text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
+          :disabled="isBusy || remainingEstimates === 0"
+          :title="$t('ai-calculator.read-label')"
+          @click="
+            isPremium
+              ? labelFileInputRef?.click()
+              : notifications.error(t('phe-calculator.image-premium-only'))
+          "
+        >
+          <LucideScanText class="h-5 w-5" />
+          <span class="ml-1">
+            <template v-if="isReadingLabel">{{ $t('ai-calculator.reading-label') }}</template>
+            <template v-else>{{ $t('ai-calculator.read-label') }}</template>
+          </span>
+        </button>
+        <button
+          type="button"
           class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
           :disabled="
-            isEstimating ||
+            isBusy ||
             ((!description || description.trim() === '') && !imageFile) ||
             remainingEstimates === 0
           "
@@ -541,13 +694,16 @@ defineOgImage('NuxtSeo', {
       class="mt-6 rounded-xl bg-white dark:bg-gray-900 p-4 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
     >
       <div class="flex items-start justify-between gap-3 mb-4">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+        <h2 v-if="!isLabelResult" class="text-xl font-semibold text-gray-900 dark:text-white">
           <span v-if="result.emoji">{{ result.emoji }}&nbsp;</span>{{ result.name }}
         </h2>
+        <div v-else class="flex-1">
+          <TextInput v-model="result.name" id-name="food-name" :label="$t('common.food-name')" />
+        </div>
         <button
           type="button"
           class="shrink-0 inline-flex items-center gap-1 rounded-full bg-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-          :disabled="isEstimating || remainingEstimates === 0"
+          :disabled="isBusy || remainingEstimates === 0"
           :title="$t('ai-calculator.correct-title')"
           @click="openCorrectionDialog"
         >
@@ -570,7 +726,17 @@ defineOgImage('NuxtSeo', {
         >
       </div>
 
-      <div v-if="isProteinFallback" class="text-xs text-amber-600 dark:text-amber-400 mb-3">
+      <div v-if="isLabelResult" class="text-xs text-gray-600 dark:text-gray-400 mb-3">
+        <template v-if="result.phePer100g !== null">{{
+          $t('ai-calculator.label-phe-note')
+        }}</template>
+        <template v-else>{{ $t('ai-calculator.label-protein-note') }}</template>
+      </div>
+
+      <div
+        v-if="isProteinFallback && !isLabelResult"
+        class="text-xs text-amber-600 dark:text-amber-400 mb-3"
+      >
         {{ $t('ai-calculator.protein-fallback-note') }}
       </div>
 
@@ -584,7 +750,7 @@ defineOgImage('NuxtSeo', {
 
       <div class="flex gap-4 my-4">
         <span class="flex-1 text-lg">
-          <template v-if="isProteinFallback">≈</template>
+          <template v-if="isProteinFallback && !isLabelResult">≈</template>
           <template v-else>=</template>
           {{ totalPhe }} mg Phe
         </span>
@@ -612,7 +778,7 @@ defineOgImage('NuxtSeo', {
         },
         { label: $t('common.cancel'), type: 'simpleClose', visible: true }
       ]"
-      :loading="isEstimating"
+      :loading="isBusy"
       @submit="submitCorrection"
     >
       <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
@@ -621,7 +787,7 @@ defineOgImage('NuxtSeo', {
       <textarea
         v-model="correctionHint"
         rows="3"
-        :disabled="isEstimating"
+        :disabled="isBusy"
         class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
       />
     </ModalDialog>
