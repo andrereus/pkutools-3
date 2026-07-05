@@ -192,7 +192,7 @@
     "serving-size": "Weight (in g)",
     "protein-fallback-note": "Phe estimated from protein (approximate)",
     "disclaimer": "Estimates can be inaccurate. Phe is cross-checked with protein for plausibility. Model: Google Gemini.",
-    "disclaimer-label": "Reading errors are possible. Check the values against the label. If Phe is not printed, it is calculated from protein. Model: Google Gemini.",
+    "disclaimer-label": "Check the values against the label. If Phe is not printed, it is calculated from protein. Model: Google Gemini.",
     "disclaimer-2": "Don't share sensitive data.",
     "trial-limit": "Trial version",
     "premium-limit": "Premium",

@@ -192,7 +192,7 @@
     "serving-size": "Peso (en g)",
     "protein-fallback-note": "Phe estimado a partir de proteína (aproximado)",
     "disclaimer": "Las estimaciones pueden ser inexactas. La Phe se verifica con la proteína para comprobar su plausibilidad. Modelo: Google Gemini.",
-    "disclaimer-label": "Pueden producirse errores de lectura. Comprueba los valores con la etiqueta. Si la Phe no está impresa, se calcula a partir de la proteína. Modelo: Google Gemini.",
+    "disclaimer-label": "Comprueba los valores con la etiqueta. Si la Phe no está impresa, se calcula a partir de la proteína. Modelo: Google Gemini.",
     "disclaimer-2": "No compartas datos sensibles.",
     "trial-limit": "Versión de prueba",
     "premium-limit": "Premium",

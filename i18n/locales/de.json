@@ -192,7 +192,7 @@
     "serving-size": "Gewicht (in g)",
     "protein-fallback-note": "Phe aus Protein geschätzt (ungefähr)",
     "disclaimer": "Schätzungen können ungenau sein. Phe wird mit Eiweiß auf Plausibilität geprüft. Modell: Google Gemini.",
-    "disclaimer-label": "Lesefehler sind möglich. Prüfe die Werte mit dem Etikett. Ohne Phe-Angabe wird Phe aus Eiweiß berechnet. Modell: Google Gemini.",
+    "disclaimer-label": "Prüfe die Werte mit dem Etikett. Ohne Phe-Angabe wird Phe aus Eiweiß berechnet. Modell: Google Gemini.",
     "disclaimer-2": "Teile keine sensiblen Daten.",
     "trial-limit": "Testversion",
     "premium-limit": "Premium",
