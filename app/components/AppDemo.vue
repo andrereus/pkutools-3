@@ -351,9 +351,9 @@ onBeforeUnmount(() => {
                         <stop offset="100%" stop-color="rgb(14 165 233)" stop-opacity="0" />
                       </linearGradient>
                     </defs>
-                    <polygon :points="bloodArea" fill="url(#demo-blood-grad)" />
+                    <polygon :points.attr="bloodArea" fill="url(#demo-blood-grad)" />
                     <polyline
-                      :points="bloodLine"
+                      :points.attr="bloodLine"
                       fill="none"
                       stroke="rgb(14 165 233)"
                       stroke-width="1.5"

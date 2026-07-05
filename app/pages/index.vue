@@ -549,9 +549,9 @@ defineOgImage('NuxtSeo', {
                         <stop offset="100%" stop-color="rgb(14 165 233)" stop-opacity="0" />
                       </linearGradient>
                     </defs>
-                    <polygon :points="overviewBloodArea" fill="url(#overview-blood-grad)" />
+                    <polygon :points.attr="overviewBloodArea" fill="url(#overview-blood-grad)" />
                     <polyline
-                      :points="overviewBloodPoints"
+                      :points.attr="overviewBloodPoints"
                       fill="none"
                       stroke="rgb(14 165 233)"
                       stroke-width="1.5"
