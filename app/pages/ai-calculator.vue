@@ -33,6 +33,7 @@ const imagePreview = ref(null)
 const fileInputRef = ref(null)
 const labelImageFile = ref(null)
 const labelFileInputRef = ref(null)
+const labelFoodType = ref('other')
 const correctionDialog = ref(null)
 const correctionHint = ref('')
 
@@ -66,14 +67,39 @@ const remainingEstimates = computed(() => {
   return Math.max(0, dailyEstimateLimit.value - currentCount)
 })
 
-// Computed Phe: use phePer100g directly, or fall back to protein × 50
+const isBusy = computed(() => isEstimating.value || isReadingLabel.value)
+
+const isLabelResult = computed(() => result.value?.source === 'label')
+
+const labelFoodTypes = computed(() => [
+  { title: t('phe-calculator.other'), value: 'other' },
+  { title: t('phe-calculator.meat'), value: 'meat' },
+  { title: t('phe-calculator.vegetable'), value: 'vegetable' },
+  { title: t('phe-calculator.fruit'), value: 'fruit' }
+])
+
+const labelFactor = computed(() => {
+  if (labelFoodType.value === 'fruit') {
+    return 27
+  } else if (labelFoodType.value === 'vegetable') {
+    return 35
+  } else if (labelFoodType.value === 'meat') {
+    return 46
+  } else {
+    return 50
+  }
+})
+
+// Computed Phe: use phePer100g directly, or fall back to protein × factor
+// (selectable food type factor for label results, general 50 for estimates)
 const pheReference = computed(() => {
   if (!result.value) return 0
   if (result.value.phePer100g !== null && !isNaN(result.value.phePer100g)) {
     return Math.round(result.value.phePer100g)
   }
   if (result.value.proteinPer100g !== null && !isNaN(result.value.proteinPer100g)) {
-    return Math.round(result.value.proteinPer100g * 50)
+    const factor = isLabelResult.value ? labelFactor.value : 50
+    return Math.round(result.value.proteinPer100g * factor)
   }
   return 0
 })
@@ -85,10 +111,6 @@ const kcalReference = computed(() => {
   }
   return 0
 })
-
-const isBusy = computed(() => isEstimating.value || isReadingLabel.value)
-
-const isLabelResult = computed(() => result.value?.source === 'label')
 
 const isProteinFallback = computed(() => {
   if (!result.value) return false
@@ -360,22 +382,15 @@ const readLabel = async () => {
   if (isBusy.value || !labelImageFile.value) return
 
   isReadingLabel.value = true
-  const previousResult = result.value
   result.value = null
 
   try {
-    const sanitizedCorrection = sanitizePromptInput(correctionHint.value)
-    const hasCorrection =
-      sanitizedCorrection !== '' && previousResult !== null && previousResult.source === 'label'
-
     const model = await requestAiModel()
     if (!model) return
 
     const appLanguage = appLanguageName()
 
-    const previousReading = hasCorrection ? JSON.stringify(previousResult) : ''
-
-    const prompt = `Read the nutrition facts label in the image. Extract only values printed on the label. Do not estimate or guess missing values. If values are printed per serving or per portion only, convert them to per 100g using the printed serving size. If energy is printed only in kJ, convert it to kcal. If phenylalanine is printed in g, convert it to mg. Use ${appLanguage} for the name.${hasCorrection ? `\n\nPrevious reading: ${previousReading}\nUser correction: "${sanitizedCorrection}"` : ''}
+    const prompt = `Read the nutrition facts label in the image. Extract only values printed on the label. Do not estimate or guess missing values. If values are printed per serving or per portion only, convert them to per 100g using the printed serving size. If energy is printed only in kJ, convert it to kcal. If phenylalanine is printed in g, convert it to mg. Use ${appLanguage} for the name.
 
 Return JSON:
 {
@@ -421,8 +436,7 @@ Return JSON:
     }
 
     weight.value = result.value.weightInGrams || 100
-
-    correctionHint.value = ''
+    labelFoodType.value = 'other'
 
     notifications.success(t('ai-calculator.label-success'))
   } catch (error) {
@@ -462,11 +476,7 @@ const openCorrectionDialog = () => {
 const submitCorrection = async () => {
   if (!correctionHint.value || correctionHint.value.trim() === '') return
   correctionDialog.value?.closeDialog()
-  if (isLabelResult.value) {
-    await readLabel()
-  } else {
-    await estimateFoodValues()
-  }
+  await estimateFoodValues()
 }
 
 const save = async () => {
@@ -658,6 +668,20 @@ defineOgImage('NuxtSeo', {
         </button>
         <button
           type="button"
+          class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
+          :disabled="
+            isBusy ||
+            ((!description || description.trim() === '') && !imageFile) ||
+            remainingEstimates === 0
+          "
+          @click="estimateFoodValues"
+        >
+          <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
+          <span v-else>{{ $t('phe-calculator.estimate') }}</span>
+        </button>
+        <div class="ml-auto h-6 w-px bg-gray-300 dark:bg-gray-600" aria-hidden="true" />
+        <button
+          type="button"
           class="rounded-full bg-gray-200 px-3 py-1.5 text-sm font-semibold text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
           :disabled="isBusy || remainingEstimates === 0"
           :title="$t('ai-calculator.read-label')"
@@ -672,19 +696,6 @@ defineOgImage('NuxtSeo', {
             <template v-if="isReadingLabel">{{ $t('ai-calculator.reading-label') }}</template>
             <template v-else>{{ $t('ai-calculator.read-label') }}</template>
           </span>
-        </button>
-        <button
-          type="button"
-          class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
-          :disabled="
-            isBusy ||
-            ((!description || description.trim() === '') && !imageFile) ||
-            remainingEstimates === 0
-          "
-          @click="estimateFoodValues"
-        >
-          <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
-          <span v-else>{{ $t('phe-calculator.estimate') }}</span>
         </button>
       </div>
     </div>
@@ -701,6 +712,7 @@ defineOgImage('NuxtSeo', {
           <TextInput v-model="result.name" id-name="food-name" :label="$t('common.food-name')" />
         </div>
         <button
+          v-if="!isLabelResult"
           type="button"
           class="shrink-0 inline-flex items-center gap-1 rounded-full bg-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           :disabled="isBusy || remainingEstimates === 0"
@@ -726,13 +738,6 @@ defineOgImage('NuxtSeo', {
         >
       </div>
 
-      <div v-if="isLabelResult" class="text-xs text-gray-600 dark:text-gray-400 mb-3">
-        <template v-if="result.phePer100g !== null">{{
-          $t('ai-calculator.label-phe-note')
-        }}</template>
-        <template v-else>{{ $t('ai-calculator.label-protein-note') }}</template>
-      </div>
-
       <div
         v-if="isProteinFallback && !isLabelResult"
         class="text-xs text-amber-600 dark:text-amber-400 mb-3"
@@ -741,6 +746,17 @@ defineOgImage('NuxtSeo', {
       </div>
 
       <DateInput v-model="selectedDate" id-name="date" :label="$t('common.date')" />
+
+      <SelectMenu
+        v-if="isLabelResult && result.phePer100g === null"
+        v-model="labelFoodType"
+        id-name="food-type"
+        :label="$t('common.food-type')"
+      >
+        <option v-for="option in labelFoodTypes" :key="option.value" :value="option.value">
+          {{ option.title }}
+        </option>
+      </SelectMenu>
 
       <NumberInput
         v-model.number="weight"
