@@ -234,6 +234,14 @@ watch([ownFood, communityFoods], () => {
 })
 
 const searchFood = async () => {
+  const query = search.value.trim()
+
+  // Fuse 7.3+ returns the entire collection for a blank query
+  if (query.length < 2) {
+    advancedFood.value = null
+    return
+  }
+
   loading.value = true
 
   // Load USDA data and build index once
@@ -242,7 +250,7 @@ const searchFood = async () => {
     buildFuseIndex()
   }
 
-  const results = fuseInstance.value.search(search.value.trim())
+  const results = fuseInstance.value.search(query)
   advancedFood.value = results.map((result) => result.item)
   loading.value = false
 }
