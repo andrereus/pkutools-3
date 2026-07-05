@@ -185,6 +185,7 @@
     "label-success": "Label read successfully",
     "label-error": "Could not read the label. Please try again with a sharper photo.",
     "label-info": "Photograph the nutrition label. The printed values are used directly.",
+    "name-placeholder": "Enter food name",
     "input-label": "What do you want to eat?",
     "input-placeholder": "Text (optional)",
     "serving-size": "Weight (in g)",

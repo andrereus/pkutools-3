@@ -185,6 +185,7 @@
     "label-success": "Étiquette lue avec succès",
     "label-error": "Impossible de lire l'étiquette. Réessaie avec une photo plus nette.",
     "label-info": "Photographie le tableau nutritionnel. Les valeurs imprimées sont utilisées directement.",
+    "name-placeholder": "Saisis le nom de l'aliment",
     "input-label": "Que veux-tu manger ?",
     "input-placeholder": "Texte (facultatif)",
     "serving-size": "Poids (en g)",

@@ -1,5 +1,5 @@
 <script setup>
-defineProps(['idName', 'label'])
+defineProps(['idName', 'label', 'placeholder'])
 const model = defineModel()
 </script>
 
@@ -16,6 +16,7 @@ const model = defineModel()
         v-model="model"
         type="text"
         :name="idName"
+        :placeholder="placeholder"
         class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
       />
     </div>

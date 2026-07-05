@@ -389,14 +389,11 @@ const readLabel = async () => {
     const model = await requestAiModel()
     if (!model) return
 
-    const appLanguage = appLanguageName()
-
-    const prompt = `Read the nutrition facts label in the image. Extract only values printed on the label. Do not estimate or guess missing values. If values are printed per serving or per portion only, convert them to per 100g using the printed serving size. If energy is printed only in kJ, convert it to kcal. If phenylalanine is printed in g, convert it to mg. Use ${appLanguage} for the name.
+    const prompt = `Read the nutrition facts label in the image. Extract only values printed on the label. Do not estimate or guess missing values. If values are printed per serving or per portion only, convert them to per 100g using the printed serving size. If energy is printed only in kJ, convert it to kcal. If phenylalanine is printed in g, convert it to mg.
 
 Return JSON:
 {
   "isNutritionLabel": boolean (true only if the image shows a nutrition facts label),
-  "name": string (product name if visible) or null,
   "proteinPer100g": number (protein in g per 100g) or null,
   "kcalPer100g": number (energy in kcal per 100g) or null,
   "phePer100g": number (phenylalanine in mg per 100g, ONLY if phenylalanine is explicitly printed on the label) or null,
@@ -427,7 +424,7 @@ Return JSON:
 
     result.value = {
       source: 'label',
-      name: labelData.name && typeof labelData.name === 'string' ? labelData.name.trim() : '',
+      name: '',
       emoji: null,
       phePer100g,
       proteinPer100g,
@@ -749,7 +746,12 @@ defineOgImage('NuxtSeo', {
           <span v-if="result.emoji">{{ result.emoji }}&nbsp;</span>{{ result.name }}
         </h2>
         <div v-else class="flex-1">
-          <TextInput v-model="result.name" id-name="food-name" :label="$t('common.food-name')" />
+          <TextInput
+            v-model="result.name"
+            id-name="food-name"
+            :label="$t('common.food-name')"
+            :placeholder="$t('ai-calculator.name-placeholder')"
+          />
         </div>
         <button
           v-if="!isLabelResult"
@@ -830,6 +832,7 @@ defineOgImage('NuxtSeo', {
         :text="$t('common.add')"
         :loading="isSaving"
         :loading-text="$t('common.saving')"
+        :disabled="isLabelResult && !result.name?.trim()"
         @click="save"
       />
     </div>

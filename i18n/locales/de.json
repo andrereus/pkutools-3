@@ -185,6 +185,7 @@
     "label-success": "Etikett erfolgreich gelesen",
     "label-error": "Etikett konnte nicht gelesen werden. Bitte versuche es mit einem schärferen Foto.",
     "label-info": "Fotografiere die Nährwerttabelle. Die aufgedruckten Werte werden direkt übernommen.",
+    "name-placeholder": "Lebensmittelname eingeben",
     "input-label": "Was willst du essen?",
     "input-placeholder": "Text (optional)",
     "serving-size": "Gewicht (in g)",
