@@ -615,7 +615,7 @@ defineOgImage('NuxtSeo', {
       <div class="inline-flex rounded-full bg-black/5 dark:bg-white/10 p-1 mb-4">
         <button
           type="button"
-          class="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          class="inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           :class="
             mode === 'estimate'
               ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-xs'
@@ -625,12 +625,11 @@ defineOgImage('NuxtSeo', {
           :disabled="isBusy"
           @click="mode = 'estimate'"
         >
-          <LucideUtensils class="h-4 w-4" />
           {{ $t('ai-calculator.mode-estimate') }}
         </button>
         <button
           type="button"
-          class="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          class="inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           :class="
             mode === 'label'
               ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-xs'
@@ -640,7 +639,6 @@ defineOgImage('NuxtSeo', {
           :disabled="isBusy"
           @click="mode = 'label'"
         >
-          <LucideScanText class="h-4 w-4" />
           {{ $t('ai-calculator.mode-label') }}
         </button>
       </div>
