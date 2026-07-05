@@ -726,8 +726,7 @@ defineOgImage('NuxtSeo', {
               : notifications.error(t('phe-calculator.image-premium-only'))
           "
         >
-          <LucideCamera class="h-5 w-5" />
-          <span class="ml-1">
+          <span>
             <template v-if="isReadingLabel">{{ $t('ai-calculator.reading-label') }}</template>
             <template v-else>{{ $t('ai-calculator.read-label') }}</template>
           </span>
