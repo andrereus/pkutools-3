@@ -211,19 +211,28 @@ const buildFuseIndex = () => {
   })
 }
 
-// Load USDA data once
-const loadUsdaData = async () => {
-  if (cachedUsdaFood.value) return
-
-  const foodData = await $fetch('/data/usda-phe-kcal.json')
-  cachedUsdaFood.value = foodData.map((item) => ({
-    name: item[locale.value] || item.en,
-    emoji: item.emoji,
-    phe: Math.round(item.phe * 1000),
-    kcal: item.kcal,
-    isOwnFood: false,
-    isCommunityFood: false
-  }))
+// Load USDA data once, sharing one request across concurrent calls
+let usdaFoodPromise = null
+const loadUsdaData = () => {
+  if (!usdaFoodPromise) {
+    usdaFoodPromise = $fetch('/data/usda-phe-kcal.json')
+      .then((foodData) => {
+        cachedUsdaFood.value = foodData.map((item) => ({
+          name: item[locale.value] || item.en,
+          emoji: item.emoji,
+          phe: Math.round(item.phe * 1000),
+          kcal: item.kcal,
+          isOwnFood: false,
+          isCommunityFood: false
+        }))
+      })
+      .catch((error) => {
+        // Allow the next search to retry the download
+        usdaFoodPromise = null
+        throw error
+      })
+  }
+  return usdaFoodPromise
 }
 
 // Rebuild index when user data changes
@@ -231,6 +240,17 @@ watch([ownFood, communityFoods], () => {
   if (cachedUsdaFood.value) {
     buildFuseIndex()
   }
+})
+
+// Preload data and index so the first search is instant
+onMounted(() => {
+  loadUsdaData()
+    .then(() => {
+      if (!fuseInstance.value) {
+        buildFuseIndex()
+      }
+    })
+    .catch(() => {})
 })
 
 const searchFood = async () => {
