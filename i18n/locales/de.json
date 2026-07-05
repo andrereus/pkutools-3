@@ -135,6 +135,7 @@
     "title": "Lebensmittelsuche",
     "description": "Durchsuche eine Lebensmitteldatenbank.",
     "search": "Lebensmittel suchen",
+    "show-more": "Mehr anzeigen",
     "search-info": "Verfeinere deine Suche mit mehreren Wörtern, z.B. \"äpfel roh\" oder \"kartoffeln gekocht\". Quelle: fdc.nal.usda.gov",
     "search-info-2": "Verwende für Produkte mit Barcode den Barcode Scanner.",
     "own-food": "Eigenes",

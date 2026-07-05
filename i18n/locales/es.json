@@ -135,6 +135,7 @@
     "title": "Búsqueda de alimentos",
     "description": "Busca en una base de datos de alimentos.",
     "search": "Buscar alimentos",
+    "show-more": "Mostrar más",
     "search-info": "Afina tu búsqueda con varias palabras, por ejemplo \"manzanas crudas\" o \"patatas cocidas\". Fuente: fdc.nal.usda.gov",
     "search-info-2": "Para productos con código de barras, utiliza el escáner de códigos de barras.",
     "own-food": "Propio",

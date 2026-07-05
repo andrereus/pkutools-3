@@ -26,6 +26,7 @@ const isSharedOwnFood = ref(false)
 const ownFoodCommunityKey = ref(null)
 const selectedOwnFoodKey = ref(null)
 const advancedFood = ref(null)
+const visibleCount = ref(100)
 const loading = ref(false)
 const fuseInstance = ref(null)
 const cachedUsdaFood = ref(null)
@@ -53,6 +54,11 @@ const currentUserVote = computed(() => {
   if (!communityFoodKey.value || !currentCommunityFood.value || !userId.value) return null
   return currentCommunityFood.value.voterIds?.[userId.value] || null
 })
+
+// Rendering thousands of rows at once freezes the page, so only a slice is mounted
+const visibleFood = computed(() =>
+  advancedFood.value ? advancedFood.value.slice(0, visibleCount.value) : []
+)
 
 const tableHeaders = computed(() => [
   { key: 'food', title: t('common.food') },
@@ -271,8 +277,13 @@ const searchFood = async () => {
   }
 
   const results = fuseInstance.value.search(query)
+  visibleCount.value = 100
   advancedFood.value = results.map((result) => result.item)
   loading.value = false
+}
+
+const showMore = () => {
+  visibleCount.value += 100
 }
 
 definePageMeta({
@@ -364,7 +375,7 @@ defineOgImage('NuxtSeo', {
 
       <DataTable v-if="advancedFood !== null" :headers="tableHeaders">
         <tr
-          v-for="(item, index) in advancedFood"
+          v-for="(item, index) in visibleFood"
           :key="index"
           class="cursor-pointer"
           @click="loadItem(item)"
@@ -437,6 +448,19 @@ defineOgImage('NuxtSeo', {
           </td>
         </tr>
       </DataTable>
+
+      <div
+        v-if="advancedFood !== null && advancedFood.length > visibleCount"
+        class="mt-4 flex justify-center"
+      >
+        <button
+          type="button"
+          class="rounded-full bg-white dark:bg-white/15 px-4 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-black/5 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400 cursor-pointer"
+          @click="showMore"
+        >
+          {{ $t('food-search.show-more') }}
+        </button>
+      </div>
 
       <p class="mt-6 text-gray-600 dark:text-gray-400 italic text-sm">
         {{ $t('food-search.search-info') }}

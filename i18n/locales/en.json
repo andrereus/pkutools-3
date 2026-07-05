@@ -135,6 +135,7 @@
     "title": "Food Search",
     "description": "Search a food database.",
     "search": "Search for food",
+    "show-more": "Show more",
     "search-info": "Refine your search with several words, e.g. \"apples raw\" or \"potatoes cooked\". Source: fdc.nal.usda.gov",
     "search-info-2": "For products with barcode, use the Barcode Scanner.",
     "own-food": "Own",

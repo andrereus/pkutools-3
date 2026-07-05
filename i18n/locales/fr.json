@@ -135,6 +135,7 @@
     "title": "Recherche alimentaire",
     "description": "Recherche dans une base de données d'aliments.",
     "search": "Chercher des aliments",
+    "show-more": "Afficher plus",
     "search-info": "Affine ta recherche avec plusieurs mots, par exemple \"pommes crues\" ou \"pommes de terre cuites\". Source: fdc.nal.usda.gov",
     "search-info-2": "Pour les produits avec code-barres, utilise le scanner de codes-barres.",
     "own-food": "Propre",
