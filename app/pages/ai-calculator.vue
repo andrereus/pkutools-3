@@ -773,14 +773,14 @@ defineOgImage('NuxtSeo', {
         {{ result.explanation }}
       </div>
 
-      <div v-if="isLabelResult" class="flex flex-wrap gap-4 text-gray-600 dark:text-gray-400 mb-4">
-        <span v-if="result.phePer100g !== null" class="flex-1 whitespace-nowrap"
+      <div v-if="isLabelResult" class="flex gap-4 text-gray-600 dark:text-gray-400 mb-4">
+        <span v-if="result.phePer100g !== null" class="flex-1"
           >{{ result.phePer100g }} {{ $t('common.mg-phe-per-100g') }}</span
         >
-        <span v-if="result.proteinPer100g !== null" class="flex-1 whitespace-nowrap"
-          >{{ result.proteinPer100g }} g {{ $t('common.short-protein-per-100g') }}</span
+        <span v-if="result.proteinPer100g !== null" class="flex-1"
+          >{{ result.proteinPer100g }} {{ $t('common.g-protein-per-100g') }}</span
         >
-        <span v-if="kcalReference" class="flex-1 whitespace-nowrap"
+        <span v-if="kcalReference" class="flex-1"
           >{{ kcalReference }} {{ $t('common.kcal-per-100g') }}</span
         >
       </div>
