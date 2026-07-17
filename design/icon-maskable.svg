@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <!-- Glyph sized to the Android adaptive-icon keyline (66/108dp, radius ~156
+       at 512): circular launcher masks show only the inner ~67% of the canvas,
+       stricter than the W3C maskable 80% safe zone. Do not reuse the square
+       icon's 1.08 scale here or circle masks clip the diagonal tips. -->
+  <g fill="#ffffff">
+    <g transform="rotate(-45 256 256) translate(256 256) scale(0.86) translate(-256 -256)">
+      <rect x="206" y="76" width="24" height="92" rx="12"/>
+      <rect x="244" y="76" width="24" height="92" rx="12"/>
+      <rect x="282" y="76" width="24" height="92" rx="12"/>
+      <path d="M206 148 L306 148 L306 168 C306 192 290 202 276 206 L276 410 C276 425 268 436 256 436 C244 436 236 425 236 410 L236 206 C222 202 206 192 206 168 Z"/>
+    </g>
+    <g transform="rotate(45 256 256) translate(256 256) scale(0.86) translate(-256 -256)">
+      <rect x="238" y="76" width="36" height="26" rx="8"/>
+      <rect x="238" y="108" width="36" height="256"/>
+      <path d="M238 364 L274 364 L261 416 C258 426 254 426 251 416 Z"/>
+    </g>
+  </g>
+</svg>
