@@ -458,6 +458,8 @@
       "a15": "Yes. Your data is stored securely and is not sold or shared for advertising. When you start, you give explicit consent to health-data processing. You can revoke it or delete your data anytime in Settings. See the Privacy Policy for details.",
       "q16": "Does PKU Tools work offline?",
       "a16": "No, PKU Tools needs an internet connection. Offline support conflicts with real-time sync across your devices and with app updates. That's why the app deliberately leaves it out. In return you always see your current data and use the latest version.",
+      "q17": "The app icon on my device is outdated. What can I do?",
+      "a17": "Installed via the browser: the icon updates by itself within a few days. If it doesn't, remove the app and install it again.\nInstalled via Google Play: the icon arrives with the next app update.\niPhone/iPad: remove the app from the Home Screen. Then in Safari tap the share button and \"Add to Home Screen\" again.",
       "q-contact": "How do I get help or send feedback?",
       "q-install": "How do I install PKU Tools?",
       "a-install": "PKU Tools is a web app and can be installed on any device like an app. Android: get it on Google Play or install it in Chrome. iOS: in Safari, tap the share button and then \"Add to Home Screen\". PC: click the little installation icon in the address bar in Chrome, Brave or Edge."

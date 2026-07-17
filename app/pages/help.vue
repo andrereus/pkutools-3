@@ -12,7 +12,7 @@ const part3 = ref('com')
 const faqItems = [
   { q: 'help.faq.q-install', slot: 'install', a: 'help.faq.a-install' },
   { q: 'help.faq.q-contact', slot: 'contact' },
-  ...Array.from({ length: 16 }, (_, i) => ({
+  ...Array.from({ length: 17 }, (_, i) => ({
     q: `help.faq.q${i + 1}`,
     a: `help.faq.a${i + 1}`
   }))

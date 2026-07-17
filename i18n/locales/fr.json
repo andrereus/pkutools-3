@@ -458,6 +458,8 @@
       "a15": "Oui. Tes données sont stockées de façon sécurisée et ne sont pas vendues ni partagées à des fins publicitaires. Au début, tu donnes un consentement explicite au traitement des données de santé. Tu peux le révoquer ou supprimer tes données à tout moment dans les Paramètres. Consulte la Politique de confidentialité pour plus de détails.",
       "q16": "Est-ce que PKU Tools fonctionne hors ligne ?",
       "a16": "Non, PKU Tools a besoin d'une connexion internet. Le mode hors ligne s'accorde mal avec la synchronisation en temps réel entre tes appareils et avec les mises à jour de l'app. C'est pourquoi l'app y renonce volontairement. En échange, tu vois toujours tes données actuelles et tu utilises la dernière version.",
+      "q17": "L'icône de l'application sur mon appareil est obsolète. Que puis-je faire ?",
+      "a17": "Installée depuis le navigateur : l'icône se met à jour toute seule en quelques jours. Sinon supprime l'application et réinstalle-la.\nInstallée depuis Google Play : l'icône arrive avec la prochaine mise à jour de l'application.\niPhone/iPad : supprime l'application de l'écran d'accueil. Puis dans Safari appuie sur le bouton de partage et de nouveau sur « Ajouter à l'écran d'accueil ».",
       "q-contact": "Comment obtenir de l'aide ou envoyer un commentaire ?",
       "q-install": "Comment installer PKU Tools ?",
       "a-install": "PKU Tools est une application web et peut être installée sur n'importe quel appareil comme une application. Android : télécharge-la sur Google Play ou installe-la dans Chrome. iOS : dans Safari, appuie sur le bouton de partage, puis sur « Ajouter à l'écran d'accueil ». PC : clique sur la petite icône d'installation dans la barre d'adresse de Chrome, Brave ou Edge."
