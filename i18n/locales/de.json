@@ -279,6 +279,13 @@
       "message-5": "Dein Tagebuch ist heute leer. Beginne mit der Erfassung!",
       "greeting-6": "Hallo {name}!",
       "message-6": "Bereit zu erfassen? Füge deine erste Mahlzeit hinzu und behalte deine Phe im Blick."
+    },
+    "icon-note": {
+      "title": "Neues App Icon erhalten",
+      "intro": "PKU Tools hat ein neues Icon. Wann es auf deinem Gerät erscheint hängt von der Installation ab:",
+      "browser": "Über den Browser installiert: Das Icon aktualisiert sich innerhalb weniger Tage von selbst. Falls nicht entferne die App und installiere sie neu.",
+      "play": "Über Google Play installiert: Das Icon kommt mit dem nächsten App-Update.",
+      "ios": "iPhone/iPad: Entferne die App vom Home-Bildschirm. Tippe dann in Safari auf den Teilen-Button und wieder auf „Zum Home-Bildschirm“."
     }
   },
   "diet-report": {

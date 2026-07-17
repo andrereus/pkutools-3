@@ -279,6 +279,13 @@
       "message-5": "Ton journal est vide aujourd'hui. Commence à enregistrer tes repas !",
       "greeting-6": "Bonjour {name} !",
       "message-6": "Prêt à suivre ? Ajoute ton premier repas et garde ta Phe sous contrôle."
+    },
+    "icon-note": {
+      "title": "Obtenir la nouvelle icône de l'application",
+      "intro": "PKU Tools a une nouvelle icône. Quand elle apparaît sur ton appareil dépend de l'installation :",
+      "browser": "Installée depuis le navigateur : l'icône se met à jour toute seule en quelques jours. Sinon supprime l'application et réinstalle-la.",
+      "play": "Installée depuis Google Play : l'icône arrive avec la prochaine mise à jour de l'application.",
+      "ios": "iPhone/iPad : supprime l'application de l'écran d'accueil. Puis dans Safari appuie sur le bouton de partage et de nouveau sur « Ajouter à l'écran d'accueil »."
     }
   },
   "diet-report": {

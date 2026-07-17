@@ -279,6 +279,13 @@
       "message-5": "Your diary is empty today. Start logging your meals!",
       "greeting-6": "Hello there, {name}!",
       "message-6": "Ready to track? Add your first meal and keep your Phe in check."
+    },
+    "icon-note": {
+      "title": "Get the new app icon",
+      "intro": "PKU Tools has a new icon. When it appears on your device depends on how the app was installed:",
+      "browser": "Installed via the browser: the icon updates by itself within a few days. If it doesn't, remove the app and install it again.",
+      "play": "Installed via Google Play: the icon arrives with the next app update.",
+      "ios": "iPhone/iPad: remove the app from the Home Screen. Then in Safari tap the share button and \"Add to Home Screen\" again."
     }
   },
   "diet-report": {

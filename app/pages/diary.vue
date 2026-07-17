@@ -8,7 +8,9 @@ import {
   LucideSun,
   LucideCoffee,
   LucideHeart,
-  LucideZap
+  LucideZap,
+  LucidePlus,
+  LucideMinus
 } from '@lucide/vue'
 
 const store = useStore()
@@ -25,6 +27,10 @@ const {
   updateGettingStarted
 } = useApi()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
+
+// Icon migration note at the page bottom — self-expiring. After this date the
+// disclosure block and the diary.icon-note locale keys can be deleted.
+const showIconNote = new Date() < new Date('2026-11-01')
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -942,6 +948,24 @@ defineOgImage('NuxtSeo', {
         <LucideBadgeCheck class="h-5 w-5 text-sky-500 inline-block mr-1" aria-hidden="true" />
         {{ isPremiumAI ? $t('app.unlimited-ai') : $t('app.unlimited') }}
       </p>
+
+      <HeadlessDisclosure v-if="showIconNote" v-slot="{ open }" as="div" class="mt-6">
+        <HeadlessDisclosureButton
+          class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 cursor-pointer"
+        >
+          <LucideMinus v-if="open" class="h-4 w-4" aria-hidden="true" />
+          <LucidePlus v-else class="h-4 w-4" aria-hidden="true" />
+          {{ $t('diary.icon-note.title') }}
+        </HeadlessDisclosureButton>
+        <HeadlessDisclosurePanel class="mt-2 max-w-md text-sm text-gray-600 dark:text-gray-400">
+          <p>{{ $t('diary.icon-note.intro') }}</p>
+          <ul class="mt-2 list-disc pl-5 space-y-1">
+            <li>{{ $t('diary.icon-note.browser') }}</li>
+            <li>{{ $t('diary.icon-note.play') }}</li>
+            <li>{{ $t('diary.icon-note.ios') }}</li>
+          </ul>
+        </HeadlessDisclosurePanel>
+      </HeadlessDisclosure>
     </div>
   </div>
 </template>
