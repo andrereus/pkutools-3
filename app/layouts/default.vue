@@ -292,7 +292,7 @@ const handleCookieConsent = (consent) => {
               :to="userIsAuthenticated ? $localePath('diary') : $localePath('index')"
               class="flex shrink-0 items-center"
             >
-              <img class="h-8 w-auto mr-3" src="~/assets/pkutools-logo.png" alt="PKU Tools Logo" />
+              <img class="h-8 w-auto mr-3" src="~/assets/pkutools-logo.svg" alt="PKU Tools Logo" />
               <span class="dark:text-white">PKU Tools</span>
             </NuxtLink>
           </div>
@@ -552,7 +552,7 @@ const handleCookieConsent = (consent) => {
             :to="userIsAuthenticated ? $localePath('diary') : $localePath('index')"
             class="hidden lg:block"
           >
-            <img class="h-8" src="~/assets/pkutools-logo.png" alt="PKU Tools Logo" />
+            <img class="h-8" src="~/assets/pkutools-logo.svg" alt="PKU Tools Logo" />
           </NuxtLink>
           <div class="lg:mt-12 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
             <div class="md:grid md:grid-cols-2 md:gap-8">

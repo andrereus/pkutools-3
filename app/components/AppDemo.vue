@@ -162,7 +162,7 @@ onBeforeUnmount(() => {
           class="flex items-center justify-between border-b border-gray-100 px-5 py-3 dark:border-white/10"
         >
           <div class="flex items-center gap-2">
-            <img class="h-5 w-auto" src="~/assets/pkutools-logo.png" alt="PKU Tools" />
+            <img class="h-5 w-auto" src="~/assets/pkutools-logo.svg" alt="PKU Tools" />
             <span class="text-sm font-semibold text-gray-900 dark:text-white">PKU Tools</span>
           </div>
           <LucideCircleUser class="h-5 w-5 text-gray-600 dark:text-gray-300" aria-hidden="true" />
