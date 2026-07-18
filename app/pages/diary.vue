@@ -805,14 +805,17 @@ defineOgImage('NuxtSeo', {
               >
                 {{ item.emoji }}
               </span>
-              {{ item.name }}
-              <!-- Note indicator badge -->
-              <span
-                v-if="item.note"
-                class="inline-flex items-center rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
-                :title="item.note"
-              >
-                <LucideStickyNote class="h-3.5 w-3.5" />
+              <!-- Name and badge share one inline block, so the badge wraps with the text -->
+              <span class="wrap-anywhere">
+                {{ item.name }}
+                <!-- Note indicator badge -->
+                <span
+                  v-if="item.note"
+                  class="inline-flex items-center align-middle rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
+                  :title="item.note"
+                >
+                  <LucideStickyNote class="h-3.5 w-3.5" />
+                </span>
               </span>
             </span>
           </td>

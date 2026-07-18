@@ -128,31 +128,34 @@ const columns = [
               { class: 'text-xl flex-shrink-0 opacity-50 inline-block align-middle leading-none' },
               '🍽'
             )
+      // Name and badges share one inline block, so badges wrap with the text
       return h('span', { class: 'flex items-center gap-1 min-w-0' }, [
         iconOrEmoji,
-        h('span', { style: 'word-wrap: break-word; overflow-wrap: break-word;' }, item.name),
-        item.shared
-          ? h(
-              'span',
-              {
-                class:
-                  'inline-flex items-center rounded-full bg-teal-100 px-2 py-1 text-xs font-medium text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 ml-2 flex-shrink-0',
-                title: t('community.shared')
-              },
-              [h(LucideUsers, { class: 'h-3.5 w-3.5' })]
-            )
-          : null,
-        item.note
-          ? h(
-              'span',
-              {
-                class:
-                  'inline-flex items-center rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300 ml-2 flex-shrink-0',
-                title: item.note
-              },
-              [h(LucideStickyNote, { class: 'h-3.5 w-3.5' })]
-            )
-          : null
+        h('span', { class: 'wrap-anywhere' }, [
+          item.name,
+          item.shared
+            ? h(
+                'span',
+                {
+                  class:
+                    'inline-flex items-center align-middle rounded-full bg-teal-100 px-2 py-1 text-xs font-medium text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 ml-1',
+                  title: t('community.shared')
+                },
+                [h(LucideUsers, { class: 'h-3.5 w-3.5' })]
+              )
+            : null,
+          item.note
+            ? h(
+                'span',
+                {
+                  class:
+                    'inline-flex items-center align-middle rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300 ml-1',
+                  title: item.note
+                },
+                [h(LucideStickyNote, { class: 'h-3.5 w-3.5' })]
+              )
+            : null
+        ])
       ])
     }
   },

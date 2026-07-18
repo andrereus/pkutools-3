@@ -503,43 +503,46 @@ defineOgImage('NuxtSeo', {
               >
                 {{ item.emoji }}
               </span>
-              {{ item.name }}
-              <!-- Reference database source badge -->
-              <span
-                v-if="item.source"
-                class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400"
-                :title="
-                  item.source === 'bls' ? 'BLS (Max Rubner-Institut)' : 'USDA (fdc.nal.usda.gov)'
-                "
-              >
-                {{ item.source === 'bls' ? 'BLS' : 'USDA' }}
-              </span>
-              <!-- Own food indicator badge -->
-              <span
-                v-if="item.isOwnFood && !item.isShared"
-                class="inline-flex items-center rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
-                :title="$t('food-search.own-food-indicator')"
-              >
-                <LucideUser class="h-3 w-3 mr-1" />
-                {{ $t('food-search.own-food') }}
-              </span>
-              <!-- Shared own food indicator badge -->
-              <span
-                v-if="item.isOwnFood && item.isShared"
-                class="inline-flex items-center rounded-full bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-800 dark:bg-teal-900/30 dark:text-teal-300"
-                :title="$t('community.shared')"
-              >
-                <LucideUsers class="h-3 w-3 mr-1" />
-                {{ $t('community.sharedBadge') }}
-              </span>
-              <!-- Community food indicator badge -->
-              <span
-                v-if="item.isCommunityFood"
-                class="inline-flex items-center rounded-full bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-800 dark:bg-teal-900/30 dark:text-teal-300"
-                :title="$t('community.communityFood')"
-              >
-                <LucideUsers class="h-3 w-3 mr-1" />
-                {{ $t('community.communityFood') }}
+              <!-- Name and badge share one inline block, so the badge wraps with the text -->
+              <span class="wrap-anywhere">
+                {{ item.name }}
+                <!-- Reference database source badge -->
+                <span
+                  v-if="item.source"
+                  class="inline-flex items-center align-middle rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                  :title="
+                    item.source === 'bls' ? 'BLS (Max Rubner-Institut)' : 'USDA (fdc.nal.usda.gov)'
+                  "
+                >
+                  {{ item.source === 'bls' ? 'BLS' : 'USDA' }}
+                </span>
+                <!-- Own food indicator badge -->
+                <span
+                  v-if="item.isOwnFood && !item.isShared"
+                  class="inline-flex items-center align-middle rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
+                  :title="$t('food-search.own-food-indicator')"
+                >
+                  <LucideUser class="h-3 w-3 mr-1" />
+                  {{ $t('food-search.own-food') }}
+                </span>
+                <!-- Shared own food indicator badge -->
+                <span
+                  v-if="item.isOwnFood && item.isShared"
+                  class="inline-flex items-center align-middle rounded-full bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-800 dark:bg-teal-900/30 dark:text-teal-300"
+                  :title="$t('community.shared')"
+                >
+                  <LucideUsers class="h-3 w-3 mr-1" />
+                  {{ $t('community.sharedBadge') }}
+                </span>
+                <!-- Community food indicator badge -->
+                <span
+                  v-if="item.isCommunityFood"
+                  class="inline-flex items-center align-middle rounded-full bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-800 dark:bg-teal-900/30 dark:text-teal-300"
+                  :title="$t('community.communityFood')"
+                >
+                  <LucideUsers class="h-3 w-3 mr-1" />
+                  {{ $t('community.communityFood') }}
+                </span>
               </span>
             </span>
           </td>
