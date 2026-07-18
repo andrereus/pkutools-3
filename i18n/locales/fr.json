@@ -48,6 +48,12 @@
     "short-protein-per-100g": "Protéines (par 100g)",
     "kcal": "Kcal",
     "kcal-per-100g": "Kcal par 100g",
+    "protein": "Protéines",
+    "fat": "Matières grasses",
+    "carbs": "Glucides",
+    "sugar": "Sucres",
+    "fiber": "Fibres",
+    "salt": "Sel",
     "mg-phe-per-100g": "mg Phe par 100g",
     "g-protein-per-100g": "g de protéines par 100g",
     "total-kcal": "Total kcal",
@@ -136,6 +142,7 @@
     "description": "Recherche dans une base de données d'aliments.",
     "search": "Chercher des aliments",
     "show-more": "Afficher plus",
+    "sources": "Sources",
     "search-info": "Affine ta recherche avec plusieurs mots, par exemple \"pommes crues\" ou \"pommes de terre cuites\". Source: fdc.nal.usda.gov",
     "search-info-2": "Pour les produits avec code-barres, utilise le scanner de codes-barres.",
     "own-food": "Propre",
@@ -468,7 +475,7 @@
   "imprint": {
     "title": "Mentions légales",
     "email": "E-mail",
-    "sources": "Sources: USDA, FoodData Central (fdc.nal.usda.gov) & openfoodfacts.org",
+    "sources": "Sources: USDA, FoodData Central (fdc.nal.usda.gov), base de données allemande BLS (Max Rubner-Institut) & openfoodfacts.org",
     "open-source": "Cette application est open source et disponible sur"
   },
   "disclaimer": {

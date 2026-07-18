@@ -13,6 +13,9 @@ node_modules
 logs
 *.log
 
+# Source data for the food database (large, freely downloadable, see scripts/bls-convert.py)
+data-src
+
 # Misc
 .DS_Store
 .fleet

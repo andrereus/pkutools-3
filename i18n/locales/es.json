@@ -48,6 +48,12 @@
     "short-protein-per-100g": "Proteínas (por 100 g)",
     "kcal": "Kcal",
     "kcal-per-100g": "Kcal por 100g",
+    "protein": "Proteínas",
+    "fat": "Grasas",
+    "carbs": "Hidratos de carbono",
+    "sugar": "Azúcares",
+    "fiber": "Fibra",
+    "salt": "Sal",
     "mg-phe-per-100g": "mg Phe por 100g",
     "g-protein-per-100g": "g de proteína por 100g",
     "total-kcal": "Kcal totales",
@@ -136,6 +142,7 @@
     "description": "Busca en una base de datos de alimentos.",
     "search": "Buscar alimentos",
     "show-more": "Mostrar más",
+    "sources": "Fuentes",
     "search-info": "Afina tu búsqueda con varias palabras, por ejemplo \"manzanas crudas\" o \"patatas cocidas\". Fuente: fdc.nal.usda.gov",
     "search-info-2": "Para productos con código de barras, utiliza el escáner de códigos de barras.",
     "own-food": "Propio",
@@ -468,7 +475,7 @@
   "imprint": {
     "title": "Pie de imprenta",
     "email": "Correo electrónico",
-    "sources": "Fuentes: USDA, FoodData Central (fdc.nal.usda.gov) & openfoodfacts.org",
+    "sources": "Fuentes: USDA, FoodData Central (fdc.nal.usda.gov), base de datos alemana BLS (Max Rubner-Institut) & openfoodfacts.org",
     "open-source": "Esta aplicación es de código abierto y está disponible en"
   },
   "disclaimer": {

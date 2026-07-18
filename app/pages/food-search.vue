@@ -29,7 +29,15 @@ const advancedFood = ref(null)
 const visibleCount = ref(100)
 const loading = ref(false)
 const fuseInstance = ref(null)
-const cachedUsdaFood = ref(null)
+const cachedStaticFood = ref(null)
+const nutrients = ref(null)
+
+// Source filter (all on by default, resets on every visit)
+const showUsda = ref(true)
+const showBls = ref(true)
+const showOwn = ref(true)
+const showCommunity = ref(true)
+const sourceRefs = { usda: showUsda, bls: showBls, own: showOwn, community: showCommunity }
 const isSaving = ref(false)
 const isVoting = ref(false)
 const kcalReference = ref(null)
@@ -37,10 +45,33 @@ const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const note = ref(null)
 
 // Computed properties
+const blsAvailable = computed(() => locale.value === 'de' || locale.value === 'en')
 const userIsAuthenticated = computed(() => store.user !== null)
 const userId = computed(() => store.user?.id)
 const ownFood = computed(() => store.ownFood)
 const communityFoods = computed(() => store.communityFoods)
+
+// Community foods that qualify for this user's search results
+const visibleCommunityFoods = computed(() =>
+  communityFoods.value.filter((item) => {
+    if (item.language !== locale.value) return false
+    // Filter out hidden foods based on score threshold
+    const score = (item.likes || 0) - (item.dislikes || 0)
+    if (isCommunityFoodHidden(score)) return false
+    if (item.contributorId === userId.value) return false
+    return true
+  })
+)
+
+// Sources the filter offers; pills only appear when a source has content
+const visibleSources = computed(() => {
+  const sources = [{ key: 'usda', label: 'USDA' }]
+  if (blsAvailable.value) sources.push({ key: 'bls', label: 'BLS' })
+  if (ownFood.value.length > 0) sources.push({ key: 'own', label: t('food-search.own-food') })
+  if (visibleCommunityFoods.value.length > 0)
+    sources.push({ key: 'community', label: t('community.communityFood') })
+  return sources
+})
 
 // Get current community food data for dialog (for community foods or shared own foods)
 const currentCommunityFood = computed(() => {
@@ -80,6 +111,7 @@ const loadItem = (item) => {
   phe.value = item.phe
   weight.value = 100
   kcalReference.value = item.kcal
+  nutrients.value = item.nutrients || null
   note.value = item.note || null
   selectedDate.value = format(new Date(), 'yyyy-MM-dd')
   dialog.value.openDialog()
@@ -91,6 +123,12 @@ const calculatePhe = () => {
 
 const calculateKcal = () => {
   return Math.round((weight.value * kcalReference.value) / 100) || 0
+}
+
+// Scale a per-100g nutrient value (in g) to the entered weight
+const scaleNutrient = (value) => {
+  if (value === null || value === undefined) return '–'
+  return Math.round(((value * weight.value) / 100) * 10) / 10
 }
 
 const save = async () => {
@@ -163,49 +201,45 @@ const goToShareWithCommunity = () => {
   navigateTo(path)
 }
 
-// Build Fuse index from cached data
+// Build Fuse index from cached data, honoring the source filter
 const buildFuseIndex = () => {
-  if (!cachedUsdaFood.value) return
+  if (!cachedStaticFood.value) return
 
-  const food = cachedUsdaFood.value
+  const food = cachedStaticFood.value
+    .filter((item) => (item.source === 'bls' ? showBls.value : showUsda.value))
     .concat(
-      ownFood.value.map((item) => ({
-        name: item.name,
-        icon: item.icon,
-        emoji: item.emoji,
-        phe: item.phe,
-        kcal: item.kcal,
-        note: item.note || null,
-        isOwnFood: true,
-        isCommunityFood: false,
-        isShared: item.shared || false,
-        ownFoodCommunityKey: item.communityKey || null,
-        ownFoodKey: item['.key']
-      }))
+      showOwn.value
+        ? ownFood.value.map((item) => ({
+            name: item.name,
+            icon: item.icon,
+            emoji: item.emoji,
+            phe: item.phe,
+            kcal: item.kcal,
+            note: item.note || null,
+            isOwnFood: true,
+            isCommunityFood: false,
+            isShared: item.shared || false,
+            ownFoodCommunityKey: item.communityKey || null,
+            ownFoodKey: item['.key']
+          }))
+        : []
     )
     .concat(
-      communityFoods.value
-        .filter((item) => {
-          if (item.language !== locale.value) return false
-          // Filter out hidden foods based on score threshold
-          const score = (item.likes || 0) - (item.dislikes || 0)
-          if (isCommunityFoodHidden(score)) return false
-          if (item.contributorId === userId.value) return false
-          return true
-        })
-        .map((item) => ({
-          name: item.name,
-          icon: item.icon,
-          emoji: item.emoji,
-          phe: item.phe,
-          kcal: item.kcal,
-          note: item.note || null,
-          isOwnFood: false,
-          isCommunityFood: true,
-          communityFoodKey: item['.key'],
-          likes: item.likes || 0,
-          dislikes: item.dislikes || 0
-        }))
+      showCommunity.value
+        ? visibleCommunityFoods.value.map((item) => ({
+            name: item.name,
+            icon: item.icon,
+            emoji: item.emoji,
+            phe: item.phe,
+            kcal: item.kcal,
+            note: item.note || null,
+            isOwnFood: false,
+            isCommunityFood: true,
+            communityFoodKey: item['.key'],
+            likes: item.likes || 0,
+            dislikes: item.dislikes || 0
+          }))
+        : []
     )
 
   fuseInstance.value = new Fuse(food, {
@@ -217,40 +251,76 @@ const buildFuseIndex = () => {
   })
 }
 
-// Load USDA data once, sharing one request across concurrent calls
-let usdaFoodPromise = null
-const loadUsdaData = () => {
-  if (!usdaFoodPromise) {
-    usdaFoodPromise = $fetch('/data/usda-phe-kcal.json')
-      .then((foodData) => {
-        cachedUsdaFood.value = foodData.map((item) => ({
+// Load USDA and BLS data once, sharing one request across concurrent calls
+let foodDataPromise = null
+const loadFoodData = () => {
+  if (!foodDataPromise) {
+    foodDataPromise = Promise.all([
+      $fetch('/data/usda-phe-kcal.json'),
+      // BLS ships German and English names only, so es/fr skip the download
+      blsAvailable.value ? $fetch('/data/bls-nutrients.json') : Promise.resolve([])
+    ])
+      .then(([usdaData, blsData]) => {
+        const usdaFood = usdaData.map((item) => ({
           name: item[locale.value] || item.en,
           emoji: item.emoji,
           phe: Math.round(item.phe * 1000),
           kcal: item.kcal,
+          source: 'usda',
           isOwnFood: false,
           isCommunityFood: false
         }))
+        const blsFood = blsData.map((item) => ({
+          name: locale.value === 'de' ? item.de : item.en,
+          emoji: item.emoji,
+          phe: Math.round(item.phe * 1000),
+          kcal: item.kcal,
+          source: 'bls',
+          nutrients: {
+            protein: item.protein,
+            fat: item.fat,
+            carbs: item.carbs,
+            sugar: item.sugar,
+            fiber: item.fiber,
+            salt: item.salt
+          },
+          isOwnFood: false,
+          isCommunityFood: false
+        }))
+        cachedStaticFood.value =
+          locale.value === 'de' ? blsFood.concat(usdaFood) : usdaFood.concat(blsFood)
       })
       .catch((error) => {
         // Allow the next search to retry the download
-        usdaFoodPromise = null
+        foodDataPromise = null
         throw error
       })
   }
-  return usdaFoodPromise
+  return foodDataPromise
+}
+
+// Toggle a source on/off, always keeping at least one active
+const toggleSource = (key) => {
+  const target = sourceRefs[key]
+  const otherActive = visibleSources.value.some((s) => s.key !== key && sourceRefs[s.key].value)
+  if (target.value && !otherActive) return
+  target.value = !target.value
+  buildFuseIndex()
+  if (search.value.trim().length >= 2) {
+    searchFood()
+  }
 }
 
 // Rebuild index when user data changes
 watch([ownFood, communityFoods], () => {
-  if (cachedUsdaFood.value) {
+  if (cachedStaticFood.value) {
     buildFuseIndex()
   }
 })
 
 // Preload data and index so the first search is instant
 onMounted(() => {
-  loadUsdaData()
+  loadFoodData()
     .then(() => {
       if (!fuseInstance.value) {
         buildFuseIndex()
@@ -270,8 +340,8 @@ const searchFood = async () => {
 
   loading.value = true
 
-  // Load USDA data and build index once
-  await loadUsdaData()
+  // Load food data and build index once
+  await loadFoodData()
   if (!fuseInstance.value) {
     buildFuseIndex()
   }
@@ -371,6 +441,29 @@ defineOgImage('NuxtSeo', {
             @input="searchFood"
           />
         </div>
+
+        <!-- Source filter (only when there is more than one source) -->
+        <div
+          v-if="visibleSources.length > 1"
+          class="mt-3 flex flex-wrap items-center gap-2 text-sm"
+        >
+          <span class="text-gray-500 dark:text-gray-400"> {{ $t('food-search.sources') }}: </span>
+          <button
+            v-for="sourceOption in visibleSources"
+            :key="sourceOption.key"
+            type="button"
+            :aria-pressed="sourceRefs[sourceOption.key].value"
+            :class="[
+              'rounded-full px-3 py-1 text-sm font-medium cursor-pointer',
+              sourceRefs[sourceOption.key].value
+                ? 'bg-black/5 dark:bg-white/15 text-gray-700 dark:text-gray-300'
+                : 'text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400 line-through'
+            ]"
+            @click="toggleSource(sourceOption.key)"
+          >
+            {{ sourceOption.label }}
+          </button>
+        </div>
       </div>
 
       <DataTable v-if="advancedFood !== null" :headers="tableHeaders">
@@ -411,6 +504,16 @@ defineOgImage('NuxtSeo', {
                 {{ item.emoji }}
               </span>
               {{ item.name }}
+              <!-- Reference database source badge -->
+              <span
+                v-if="item.source"
+                class="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                :title="
+                  item.source === 'bls' ? 'BLS (Max Rubner-Institut)' : 'USDA (fdc.nal.usda.gov)'
+                "
+              >
+                {{ item.source === 'bls' ? 'BLS' : 'USDA' }}
+              </span>
               <!-- Own food indicator badge -->
               <span
                 v-if="item.isOwnFood && !item.isShared"
@@ -517,6 +620,37 @@ defineOgImage('NuxtSeo', {
         <div class="flex gap-4 my-6">
           <span class="flex-1">= {{ calculatePhe() }} mg Phe</span>
           <span class="flex-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
+        </div>
+
+        <!-- Nutrient breakdown (BLS foods) -->
+        <div
+          v-if="nutrients"
+          class="mb-4 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
+        >
+          <div class="flex justify-between">
+            <span>{{ $t('common.protein') }}</span>
+            <span>{{ scaleNutrient(nutrients.protein) }} g</span>
+          </div>
+          <div class="flex justify-between">
+            <span>{{ $t('common.fat') }}</span>
+            <span>{{ scaleNutrient(nutrients.fat) }} g</span>
+          </div>
+          <div class="flex justify-between">
+            <span>{{ $t('common.carbs') }}</span>
+            <span>{{ scaleNutrient(nutrients.carbs) }} g</span>
+          </div>
+          <div class="flex justify-between">
+            <span>{{ $t('common.sugar') }}</span>
+            <span>{{ scaleNutrient(nutrients.sugar) }} g</span>
+          </div>
+          <div class="flex justify-between">
+            <span>{{ $t('common.fiber') }}</span>
+            <span>{{ scaleNutrient(nutrients.fiber) }} g</span>
+          </div>
+          <div class="flex justify-between">
+            <span>{{ $t('common.salt') }}</span>
+            <span>{{ scaleNutrient(nutrients.salt) }} g</span>
+          </div>
         </div>
 
         <!-- Note display -->
