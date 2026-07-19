@@ -23,9 +23,9 @@ import {
 } from '@lucide/vue'
 
 const pheTools = [
-  { name: 'home.phe-anywhere-ai', icon: LucideSparkles, route: 'ai-calculator' },
   { name: 'home.phe-anywhere-search', icon: LucideSearch, route: 'food-search' },
   { name: 'home.phe-anywhere-scanner', icon: LucideScanBarcode, route: 'barcode-scanner' },
+  { name: 'home.phe-anywhere-ai', icon: LucideSparkles, route: 'ai-calculator' },
   { name: 'home.phe-anywhere-calculator', icon: LucideCalculator, route: 'phe-calculator' }
 ]
 
@@ -93,14 +93,6 @@ const notifications = useNotifications()
 // Features data (8 items for even layout: short descriptions, merged Own & Community Foods, merged AI features)
 const features = [
   {
-    name: 'features.ai-features-name',
-    description: 'features.ai-features-description',
-    icon: LucideSparkles,
-    iconBg: 'bg-sky-500',
-    iconColor: 'text-white',
-    route: 'ai-calculator'
-  },
-  {
     name: 'features.search-name',
     description: 'features.search-description',
     icon: LucideSearch,
@@ -115,6 +107,14 @@ const features = [
     iconBg: 'bg-sky-500',
     iconColor: 'text-white',
     route: 'barcode-scanner'
+  },
+  {
+    name: 'features.ai-features-name',
+    description: 'features.ai-features-description',
+    icon: LucideSparkles,
+    iconBg: 'bg-sky-500',
+    iconColor: 'text-white',
+    route: 'ai-calculator'
   },
   {
     name: 'features.calculator-name',

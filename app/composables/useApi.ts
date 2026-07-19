@@ -199,7 +199,7 @@ export const useApi = () => {
     bloodTyrMax?: number | null
     labUnit?: 'mgdl' | 'umoll'
     progressStyle?: 'bars' | 'circles'
-    preferredTool?: 'ai-calculator' | 'food-search' | 'barcode-scanner' | 'phe-calculator'
+    preferredTool?: 'food-search' | 'barcode-scanner' | 'ai-calculator' | 'phe-calculator'
     license?: string | null
   }): Promise<{ success: boolean }> =>
     request('/api/settings/update', 'Update settings', 'POST', data)

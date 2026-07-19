@@ -52,9 +52,9 @@ const progressStyleOptions = computed(() => [
 ])
 
 const preferredToolOptions = computed(() => [
-  { title: t('ai-calculator.title'), value: 'ai-calculator' },
   { title: t('food-search.title'), value: 'food-search' },
   { title: t('barcode-scanner.title'), value: 'barcode-scanner' },
+  { title: t('ai-calculator.title'), value: 'ai-calculator' },
   { title: t('phe-calculator.title'), value: 'phe-calculator' }
 ])
 

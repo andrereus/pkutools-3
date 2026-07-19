@@ -174,7 +174,7 @@ export const SettingsUpdateSchema = z.object({
   labUnit: z.enum(['mgdl', 'umoll']).optional(),
   progressStyle: z.enum(['bars', 'circles']).optional(),
   preferredTool: z
-    .enum(['ai-calculator', 'food-search', 'barcode-scanner', 'phe-calculator'])
+    .enum(['food-search', 'barcode-scanner', 'ai-calculator', 'phe-calculator'])
     .optional(),
   license: z.string().nullable().optional()
 })

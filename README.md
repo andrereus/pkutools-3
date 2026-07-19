@@ -6,9 +6,9 @@ PKU Tools is an All-in-One Nutrition App for PKU — a Progressive Web App (PWA)
 
 ### Core Functionality
 
-- **✨ AI Calculator**: Describe or photograph your food and let AI estimate the weight and nutritional values
 - **🔍 Food Search**: USDA and BLS food databases with fuzzy search (multilingual support)
 - **📷 Barcode Scanner**: Scan product barcodes to lookup nutritional information
+- **✨ AI Calculator**: Describe or photograph your food and let AI estimate the weight and nutritional values
 - **📱 Phe Calculator**: Calculate Phe or convert protein to Phe (with conversion factors for fruit, vegetables, meat, and other foods)
 - **📅 Diary**: Daily food log with date navigation, progress bars, and smart suggestions based on eating history
 - **📖 Diet Report**: Charts and sortable tables of dietary patterns over time, plus a summary card with 14-day average Phe intake and deviation from your daily limit (CSV export)

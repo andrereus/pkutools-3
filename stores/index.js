@@ -21,7 +21,7 @@ const defaultSettings = {
   bloodTyrMax: null,
   labUnit: 'mgdl',
   progressStyle: 'circles',
-  preferredTool: 'ai-calculator',
+  preferredTool: 'food-search',
   license: null,
   healthDataConsent: false,
   healthDataConsentDate: null,

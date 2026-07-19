@@ -176,27 +176,29 @@ onBeforeUnmount(() => {
               <div v-if="scene === 0" class="flex h-full flex-col">
                 <!-- Tools tabs, like the app's AI-calculator page (AI tab active) -->
                 <nav class="mb-4 flex justify-center gap-2" aria-label="Tabs">
-                  <span
-                    class="rounded-md bg-black/5 p-2 text-gray-700 dark:bg-white/15 dark:text-gray-300"
-                  >
-                    <LucideSparkles class="h-4 w-4" aria-hidden="true" />
-                  </span>
                   <span class="rounded-md p-2 text-gray-500 dark:text-gray-300">
                     <LucideSearch class="h-4 w-4" aria-hidden="true" />
                   </span>
                   <span class="rounded-md p-2 text-gray-500 dark:text-gray-300">
                     <LucideScanBarcode class="h-4 w-4" aria-hidden="true" />
                   </span>
+                  <span
+                    class="rounded-md bg-black/5 p-2 text-gray-700 dark:bg-white/15 dark:text-gray-300"
+                  >
+                    <LucideSparkles class="h-4 w-4" aria-hidden="true" />
+                  </span>
                   <span class="rounded-md p-2 text-gray-500 dark:text-gray-300">
                     <LucideCalculator class="h-4 w-4" aria-hidden="true" />
                   </span>
                 </nav>
 
-                <!-- Plain-language input (the AI calculator's textarea) -->
-                <div class="min-h-14 rounded-xl bg-gray-100 px-3 py-2.5 dark:bg-gray-800">
-                  <span class="text-sm text-gray-900 dark:text-white">{{ typed }}</span>
+                <!-- Plain-language input (the AI calculator's single-line input) -->
+                <div
+                  class="flex h-9 items-center overflow-hidden rounded-xl bg-gray-100 px-3 dark:bg-gray-800"
+                >
+                  <span class="truncate text-sm text-gray-900 dark:text-white">{{ typed }}</span>
                   <span
-                    class="demo-caret ml-px inline-block h-4 w-px translate-y-0.5 bg-sky-500"
+                    class="demo-caret ml-px inline-block h-4 w-px shrink-0 bg-sky-500"
                     aria-hidden="true"
                   />
                 </div>
