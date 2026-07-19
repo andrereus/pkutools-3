@@ -10,6 +10,18 @@ portion). The only transformation is decoding the raw IEEE-754 doubles stored
 in the xlsx back to their shortest decimal representation (what Excel
 displays), e.g. "9.3000000000000007" -> 9.3. Only the emoji column is added.
 
+Two kinds of food are dropped rather than shown with an unsafe Phe value (a
+false 0 is the most dangerous error in a PKU app), and the full list of what
+was removed is written to scripts/bls-dropped-foods.txt for auditing:
+
+  1. Phe not determined: the BLS marks it "-". No value can be shown.
+  2. Implausible Phe = 0: the BLS stores literal 0 while the food clearly
+     contains protein (> 0.5 g, or two or more other amino acids measured).
+     Any real protein contains phenylalanine, so this 0 is a data error — the
+     BLS should have written "-" but wrote 0. Genuine zeros (oils, sugar,
+     spirits, water, salt, single-amino-acid additives like MSG) have no
+     protein/amino-acid profile and are kept, as are trace markers.
+
 Uses only the Python standard library: python3 scripts/bls-convert.py
 """
 
@@ -26,6 +38,7 @@ ROOT = Path(__file__).resolve().parent.parent
 XLSX = ROOT / "data-src" / "BLS_4_0_2025_DE" / "BLS_4_0_Daten_2025_DE.xlsx"
 OUT_CSV = ROOT / "public" / "data" / "bls-nutrients.csv"
 OUT_JSON = ROOT / "public" / "data" / "bls-nutrients.json"
+OUT_DROPPED = ROOT / "scripts" / "bls-dropped-foods.txt"
 
 NS = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
 
@@ -93,6 +106,25 @@ def iter_rows(path):
 # a made-up 0 would be unsafe in a PKU app).
 TRACE_MARKERS = {"<LOD", "<LOQ", "<LOD or <LOQ", "TR"}
 
+# The 17 amino acids the BLS lists besides Phe. Used only to detect implausible
+# Phe zeros — never written to the output. Component codes -> value columns are
+# resolved from the header at runtime.
+OTHER_AMINO_ACIDS = [
+    "ALA", "ARG", "ASP", "CYSTE", "GLU", "GLY", "HIS", "ILE", "LEU", "LYS",
+    "MET", "PRO", "SER", "THR", "TRP", "TYR", "VAL",
+]
+
+# A Phe of literal "0" is a data error, not a natural zero, when the food
+# demonstrably contains mixed protein — either >0.5 g protein, or two or more
+# other amino acids measured (any real protein must contain Phe). Such foods
+# are dropped: the BLS should have marked Phe as "-" (not determined) but wrote
+# 0 instead, and a false 0 is the most dangerous error in a PKU app. Genuine
+# zeros (oils, sugar, spirits, water, salt, and single-amino-acid additives
+# such as monosodium glutamate) have no protein or amino-acid profile and are
+# kept. Trace markers are NOT literal zeros and are always kept.
+IMPLAUSIBLE_ZERO_MIN_PROTEIN = 0.5
+IMPLAUSIBLE_ZERO_MIN_OTHER_AMINO_ACIDS = 2
+
 
 def to_number(raw):
     """Shortest decimal that round-trips to the stored double (Excel display)."""
@@ -102,6 +134,16 @@ def to_number(raw):
         return 0
     value = float(raw)
     return int(value) if value == int(value) else value
+
+
+def amino_acid_count(row, amino_columns):
+    """How many of the other amino acids are present (> 0) for this row."""
+    count = 0
+    for col in amino_columns:
+        value = to_number(row[col]) if col < len(row) else None
+        if value:
+            count += 1
+    return count
 
 
 # --- Emoji assignment -------------------------------------------------------
@@ -470,18 +512,23 @@ def main():
 
     rows = iter_rows(XLSX)
     header = next(rows)
-    columns = {}
-    for code, field in NUTRIENTS:
+
+    def resolve_column(code):
         matches = [i for i, h in enumerate(header) if h and h.startswith(f"{code} ")
                    and "Datenherkunft" not in h and "Referenz" not in h]
         if len(matches) != 1:
             sys.exit(f"Expected exactly one column for {code}, found {len(matches)}")
-        columns[field] = matches[0]
+        return matches[0]
+
+    columns = {field: resolve_column(code) for code, field in NUTRIENTS}
+    phe_col = columns["phe"]
+    amino_columns = [resolve_column(code) for code in OTHER_AMINO_ACIDS]
 
     group_rules, shared_rules = compile_rules()
     items = []
     fallback_hits = Counter()
-    dropped = []
+    dropped_missing = []
+    dropped_bad_zero = []
     for row in rows:
         if not row or not row[0]:
             continue
@@ -490,7 +537,15 @@ def main():
         for _, field in NUTRIENTS:
             item[field] = to_number(row[columns[field]])
         if item["phe"] is None:
-            dropped.append(f"{code} {name_de}")
+            dropped_missing.append(f"{code} {name_de}")
+            continue
+        # A literal-0 Phe (not a trace marker) is an error when the food clearly
+        # contains protein; such entries should have been "-" and are dropped.
+        if row[phe_col] == "0" and (
+            (item["protein"] or 0) > IMPLAUSIBLE_ZERO_MIN_PROTEIN
+            or amino_acid_count(row, amino_columns) >= IMPLAUSIBLE_ZERO_MIN_OTHER_AMINO_ACIDS
+        ):
+            dropped_bad_zero.append(f"{code} {name_de}")
             continue
         emoji = assign_emoji(code, name_de, group_rules, shared_rules)
         if emoji == GROUP_FALLBACK.get(code[0]):
@@ -508,8 +563,19 @@ def main():
         json.dump(items, f, ensure_ascii=False, indent=2, separators=(",", ":"))
         f.write("\n")
 
+    # Record exactly which foods were removed, so the drop rules are auditable.
+    with open(OUT_DROPPED, "w", encoding="utf-8") as f:
+        f.write(f"# Phe not determined (marker '-'): {len(dropped_missing)}\n")
+        f.write("\n".join(dropped_missing))
+        f.write(f"\n\n# Implausible Phe = 0 (protein > {IMPLAUSIBLE_ZERO_MIN_PROTEIN} g or "
+                f">= {IMPLAUSIBLE_ZERO_MIN_OTHER_AMINO_ACIDS} other amino acids present): "
+                f"{len(dropped_bad_zero)}\n")
+        f.write("\n".join(dropped_bad_zero))
+        f.write("\n")
+
     print(f"{len(items)} foods written to {OUT_CSV.name} and {OUT_JSON.name}")
-    print(f"{len(dropped)} foods without a Phe value dropped")
+    print(f"{len(dropped_missing)} foods dropped: Phe not determined ('-')")
+    print(f"{len(dropped_bad_zero)} foods dropped: implausible Phe = 0 (see {OUT_DROPPED.name})")
     print("group fallback emojis used:",
           dict(sorted(fallback_hits.items())), f"(total {sum(fallback_hits.values())})")
 

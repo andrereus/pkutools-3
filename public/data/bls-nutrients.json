@@ -1078,20 +1078,6 @@
     "emoji":"🫐"
   },
   {
-    "id":"F408000",
-    "de":"Moltebeere roh",
-    "en":"Cloudberry raw",
-    "phe":0,
-    "kcal":43,
-    "protein":1,
-    "fat":0.3,
-    "carbs":5.2,
-    "sugar":5.2,
-    "fiber":4.7,
-    "salt":0.0012,
-    "emoji":"🫐"
-  },
-  {
     "id":"F321100",
     "de":"Johannisbeere rot, roh",
     "en":"Red currant raw",
@@ -1131,20 +1117,6 @@
     "sugar":9.7,
     "fiber":4.9,
     "salt":0.005,
-    "emoji":"🫐"
-  },
-  {
-    "id":"F411100",
-    "de":"Wald-Himbeere roh",
-    "en":"Wild raspberry raw",
-    "phe":0,
-    "kcal":43,
-    "protein":1,
-    "fat":0.3,
-    "carbs":5.2,
-    "sugar":5.2,
-    "fiber":4.7,
-    "salt":0.0012,
     "emoji":"🫐"
   },
   {
@@ -2464,20 +2436,6 @@
     "emoji":"🥩"
   },
   {
-    "id":"F403100",
-    "de":"Schlehe roh",
-    "en":"Sloe raw",
-    "phe":0,
-    "kcal":52,
-    "protein":0.75,
-    "fat":0.22,
-    "carbs":7.82,
-    "sugar":7.82,
-    "fiber":3.5,
-    "salt":0.00282,
-    "emoji":"🍇"
-  },
-  {
     "id":"F406100",
     "de":"Holunderbeere roh",
     "en":"Elderberry raw",
@@ -3290,20 +3248,6 @@
     "emoji":"🍎"
   },
   {
-    "id":"F201100",
-    "de":"Aprikose roh",
-    "en":"Apricot raw",
-    "phe":0,
-    "kcal":42,
-    "protein":0.8,
-    "fat":0.13,
-    "carbs":8.22,
-    "sugar":7.42,
-    "fiber":1.54,
-    "salt":0.005,
-    "emoji":"🍑"
-  },
-  {
     "id":"F201400",
     "de":"Aprikose getrocknet",
     "en":"Apricot dried",
@@ -3526,34 +3470,6 @@
     "fiber":3.9,
     "salt":0.008,
     "emoji":"🥝"
-  },
-  {
-    "id":"F516100",
-    "de":"Mango roh",
-    "en":"Mango raw",
-    "phe":0,
-    "kcal":60,
-    "protein":0.7,
-    "fat":0.45,
-    "carbs":12,
-    "sugar":11,
-    "fiber":1.7,
-    "salt":0.022,
-    "emoji":"🥭"
-  },
-  {
-    "id":"F517100",
-    "de":"Papaya roh",
-    "en":"Papaya raw",
-    "phe":0,
-    "kcal":46,
-    "protein":0.7,
-    "fat":0.09,
-    "carbs":9.6,
-    "sugar":9.6,
-    "fiber":1.9,
-    "salt":0.035,
-    "emoji":"🥭"
   },
   {
     "id":"F523100",
@@ -4058,20 +3974,6 @@
     "fiber":3.43,
     "salt":0.002228,
     "emoji":"🎃"
-  },
-  {
-    "id":"G582100",
-    "de":"Zucchini roh",
-    "en":"Courgette raw",
-    "phe":0,
-    "kcal":22,
-    "protein":1.3,
-    "fat":0.287,
-    "carbs":3,
-    "sugar":2,
-    "fiber":1.1,
-    "salt":0.0027,
-    "emoji":"🥒"
   },
   {
     "id":"G613100",
@@ -8022,20 +7924,6 @@
     "emoji":"🥚"
   },
   {
-    "id":"F140100",
-    "de":"Quitte roh",
-    "en":"Quince raw",
-    "phe":0,
-    "kcal":53,
-    "protein":0.42,
-    "fat":0.5,
-    "carbs":8.2,
-    "sugar":6.977,
-    "fiber":5.92,
-    "salt":0.005,
-    "emoji":"🍐"
-  },
-  {
     "id":"F130100",
     "de":"Birne roh",
     "en":"Pear raw",
@@ -8078,20 +7966,6 @@
     "emoji":"🍎"
   },
   {
-    "id":"F404100",
-    "de":"Eberesche süß, roh",
-    "en":"Sweet rowanberry raw",
-    "phe":0,
-    "kcal":73,
-    "protein":1.3,
-    "fat":1.2,
-    "carbs":12.7,
-    "sugar":4.1,
-    "fiber":6,
-    "salt":0.0015,
-    "emoji":"🍇"
-  },
-  {
     "id":"F150100",
     "de":"Mispel roh",
     "en":"Medlar raw",
@@ -8120,20 +7994,6 @@
     "emoji":"🍎"
   },
   {
-    "id":"F220100",
-    "de":"Pflaume roh",
-    "en":"Plum raw",
-    "phe":0,
-    "kcal":48,
-    "protein":0.3,
-    "fat":0.17,
-    "carbs":10.71,
-    "sugar":8.1,
-    "fiber":1.7,
-    "salt":0.002,
-    "emoji":"🍑"
-  },
-  {
     "id":"F202100",
     "de":"Nektarine roh",
     "en":"Nectarine raw",
@@ -8146,20 +8006,6 @@
     "fiber":1.7,
     "salt":0.0012,
     "emoji":"🧃"
-  },
-  {
-    "id":"F203100",
-    "de":"Pfirsich roh",
-    "en":"Peach raw",
-    "phe":0,
-    "kcal":39,
-    "protein":0.7,
-    "fat":0.11,
-    "carbs":8.02,
-    "sugar":6.99,
-    "fiber":1.7,
-    "salt":0.001718,
-    "emoji":"🍑"
   },
   {
     "id":"F203400",
@@ -8456,20 +8302,6 @@
     "emoji":"🥕"
   },
   {
-    "id":"G103100",
-    "de":"Eisbergsalat roh",
-    "en":"Iceberg lettuce raw",
-    "phe":0,
-    "kcal":15,
-    "protein":0.8,
-    "fat":0.2,
-    "carbs":1.62,
-    "sugar":1.62,
-    "fiber":1.8,
-    "salt":0.022,
-    "emoji":"🥬"
-  },
-  {
     "id":"G230100",
     "de":"Mangold roh",
     "en":"Chard/leaf beet, raw",
@@ -8680,20 +8512,6 @@
     "emoji":"🧅"
   },
   {
-    "id":"G486100",
-    "de":"Frühlingszwiebel/Lauchzwiebel (ohne Laub) roh",
-    "en":"Spring onion, bulb only, raw",
-    "phe":0,
-    "kcal":32,
-    "protein":0.9,
-    "fat":0.15,
-    "carbs":5.99,
-    "sugar":5.99,
-    "fiber":1.4,
-    "salt":0.032,
-    "emoji":"🧅"
-  },
-  {
     "id":"G484100",
     "de":"Perlzwiebel roh",
     "en":"Pearl onion raw",
@@ -8720,20 +8538,6 @@
     "fiber":5.4243,
     "salt":0.028,
     "emoji":"🧅"
-  },
-  {
-    "id":"G568900",
-    "de":"Tomate geschält, Konserve",
-    "en":"Tomato peeled, canned",
-    "phe":0,
-    "kcal":24,
-    "protein":1.2,
-    "fat":0.3,
-    "carbs":3.25,
-    "sugar":3.25,
-    "fiber":0.9,
-    "salt":0.01,
-    "emoji":"🍅"
   },
   {
     "id":"G581000",
@@ -11018,34 +10822,6 @@
     "emoji":"🍺"
   },
   {
-    "id":"P172000",
-    "de":"Bockbier",
-    "en":"Bock beer (original wort > 16 %)",
-    "phe":0,
-    "kcal":49,
-    "protein":0.9,
-    "fat":0,
-    "carbs":2.1275,
-    "sugar":0,
-    "fiber":0,
-    "salt":0.012,
-    "emoji":"🍺"
-  },
-  {
-    "id":"P177000",
-    "de":"Stout",
-    "en":"Stout",
-    "phe":0,
-    "kcal":46,
-    "protein":0.4,
-    "fat":0,
-    "carbs":5.3,
-    "sugar":3.2,
-    "fiber":0,
-    "salt":0.004,
-    "emoji":"🍸"
-  },
-  {
     "id":"P174000",
     "de":"Doppelbock",
     "en":"Doppelbock beer (original wort min. 18 %)",
@@ -11466,34 +11242,6 @@
     "emoji":"🧈"
   },
   {
-    "id":"Q683000",
-    "de":"Butterschmalz",
-    "en":"Rendered butter",
-    "phe":0,
-    "kcal":897,
-    "protein":0.25,
-    "fat":99.5,
-    "carbs":0,
-    "sugar":0,
-    "fiber":0,
-    "salt":0.005,
-    "emoji":"🧈"
-  },
-  {
-    "id":"Q6A7000",
-    "de":"Mischfett mit überwiegend Milchfett, ungesalzen",
-    "en":"Mixed fat spread, mainly milk fat, unsalted",
-    "phe":0,
-    "kcal":647,
-    "protein":0.59,
-    "fat":71.28,
-    "carbs":0.645,
-    "sugar":0.645,
-    "fiber":0,
-    "salt":0.0178,
-    "emoji":"🧈"
-  },
-  {
     "id":"Q630000",
     "de":"Süßrahmbutter",
     "en":"Sweet cream butter",
@@ -11505,20 +11253,6 @@
     "sugar":0.6,
     "fiber":0,
     "salt":0.03,
-    "emoji":"🧈"
-  },
-  {
-    "id":"Q620000",
-    "de":"Sauerrahmbutter",
-    "en":"Cultured butter",
-    "phe":0,
-    "kcal":747,
-    "protein":1.188,
-    "fat":82.2,
-    "carbs":0.571,
-    "sugar":0.571,
-    "fiber":0,
-    "salt":0.028,
     "emoji":"🧈"
   },
   {
@@ -14042,20 +13776,6 @@
     "emoji":"🍋"
   },
   {
-    "id":"F605100",
-    "de":"Pampelmuse/Pomelo, roh",
-    "en":"Pomelo raw",
-    "phe":0,
-    "kcal":46,
-    "protein":0.9,
-    "fat":0.4,
-    "carbs":7.77,
-    "sugar":7.77,
-    "fiber":2.2,
-    "salt":0.005,
-    "emoji":"🍊"
-  },
-  {
     "id":"F607100",
     "de":"Clementine roh",
     "en":"Clementine raw",
@@ -14066,20 +13786,6 @@
     "carbs":9.19,
     "sugar":9.19,
     "fiber":1.7,
-    "salt":0.002,
-    "emoji":"🍊"
-  },
-  {
-    "id":"F604100",
-    "de":"Grapefruit roh",
-    "en":"Grapefruit raw",
-    "phe":0,
-    "kcal":35,
-    "protein":0.5,
-    "fat":0.15,
-    "carbs":6.5,
-    "sugar":6.5,
-    "fiber":0.6,
     "salt":0.002,
     "emoji":"🍊"
   },
@@ -14193,20 +13899,6 @@
     "sugar":2.133,
     "fiber":1.5,
     "salt":0.055,
-    "emoji":"🥕"
-  },
-  {
-    "id":"G414100",
-    "de":"Gemüseartischocke/Kardone, roh",
-    "en":"Cardoon raw",
-    "phe":0,
-    "kcal":19,
-    "protein":0.7,
-    "fat":0.1,
-    "carbs":2.69,
-    "sugar":2.51,
-    "fiber":1.6,
-    "salt":0.425,
     "emoji":"🥕"
   },
   {
@@ -15286,20 +14978,6 @@
     "fiber":0,
     "salt":0.0038,
     "emoji":"🍺"
-  },
-  {
-    "id":"P166000",
-    "de":"Export dunkel",
-    "en":"Dark export beer",
-    "phe":0,
-    "kcal":27,
-    "protein":0.4,
-    "fat":0,
-    "carbs":0.172,
-    "sugar":0.172,
-    "fiber":0,
-    "salt":0.008,
-    "emoji":"🍸"
   },
   {
     "id":"P273100",
@@ -16842,20 +16520,6 @@
     "emoji":"🍇"
   },
   {
-    "id":"F504100",
-    "de":"Dattel roh",
-    "en":"Date raw",
-    "phe":0,
-    "kcal":140,
-    "protein":1.5,
-    "fat":0.1,
-    "carbs":31.6,
-    "sugar":31.5,
-    "fiber":1.6,
-    "salt":0.018,
-    "emoji":"🥭"
-  },
-  {
     "id":"F312100",
     "de":"Weintraube weiß, roh",
     "en":"Grape white, raw",
@@ -16882,20 +16546,6 @@
     "fiber":0.31,
     "salt":0.008,
     "emoji":"🧃"
-  },
-  {
-    "id":"F501100",
-    "de":"Ananas roh",
-    "en":"Pineapple raw",
-    "phe":0,
-    "kcal":46,
-    "protein":0.5,
-    "fat":0.1,
-    "carbs":9.4,
-    "sugar":9.4,
-    "fiber":1.4,
-    "salt":0.01,
-    "emoji":"🍍"
   },
   {
     "id":"F602100",
@@ -16935,20 +16585,6 @@
     "fat":0.3,
     "carbs":10.1,
     "sugar":10.1,
-    "fiber":1.12,
-    "salt":0.0072,
-    "emoji":"🍇"
-  },
-  {
-    "id":"F608100",
-    "de":"Satsuma roh",
-    "en":"Satsuma mandarin raw",
-    "phe":0,
-    "kcal":50,
-    "protein":0.8,
-    "fat":0.3,
-    "carbs":9.6,
-    "sugar":9.6,
     "fiber":1.12,
     "salt":0.0072,
     "emoji":"🍇"
@@ -17192,20 +16828,6 @@
     "emoji":"🧈"
   },
   {
-    "id":"Q4A1000",
-    "de":"Pflanzenmargarine Dreiviertelfett, angereichert mit Vitaminen",
-    "en":"Margarine three-quarter fat, fortified with vitamins",
-    "phe":0,
-    "kcal":541,
-    "protein":0.06,
-    "fat":60.13,
-    "carbs":0,
-    "sugar":0,
-    "fiber":0,
-    "salt":0.0638,
-    "emoji":"🧈"
-  },
-  {
     "id":"Q4C2000",
     "de":"Pflanzliches Streichfett mit > 41 % und < 60 % Fett, angereichert mit Vitaminen",
     "en":"Vegetable fat spread with > 41 % and < 60 % fat, fortified with vitamins",
@@ -17248,20 +16870,6 @@
     "emoji":"🧈"
   },
   {
-    "id":"Q400000",
-    "de":"Pflanzenmargarine Vollfett, angereichert mit Vitaminen",
-    "en":"Margarine full-fat, fortified with vitamins",
-    "phe":0,
-    "kcal":718,
-    "protein":0.11,
-    "fat":79.6,
-    "carbs":0.163578,
-    "sugar":0.163578,
-    "fiber":0,
-    "salt":0.223,
-    "emoji":"🧈"
-  },
-  {
     "id":"Q440000",
     "de":"Pflanzenmargarine Halbfett, angereichert mit Vitaminen",
     "en":"Margarine half-fat, fortified with vitamins",
@@ -17273,20 +16881,6 @@
     "sugar":0.360864,
     "fiber":0,
     "salt":0.4805,
-    "emoji":"🧈"
-  },
-  {
-    "id":"Q4C1000",
-    "de":"Pflanzliches Streichfett mit > 62 - < 80 % Fett, angereichert mit Vitaminen",
-    "en":"Vegetable fat spread with > 62 % and < 80 % fat, fortified with vitamins",
-    "phe":0,
-    "kcal":628,
-    "protein":0.12,
-    "fat":69.57,
-    "carbs":0.346631,
-    "sugar":0.346631,
-    "fiber":0,
-    "salt":0.3132,
     "emoji":"🧈"
   },
   {
@@ -18760,20 +18354,6 @@
     "emoji":"🧀"
   },
   {
-    "id":"S358300",
-    "de":"Vanillefondant",
-    "en":"Vanilla fondant",
-    "phe":0,
-    "kcal":390,
-    "protein":0.011,
-    "fat":4.602,
-    "carbs":85.3,
-    "sugar":79.5,
-    "fiber":0.025,
-    "salt":0.01,
-    "emoji":"🍬"
-  },
-  {
     "id":"G554182",
     "de":"Pfefferschote rot, gebraten ohne Fett (Pfanne)",
     "en":"Chilli pepper red, fried without fat (pan)",
@@ -19416,20 +18996,6 @@
     "fiber":2.96,
     "salt":0.075,
     "emoji":"🍪"
-  },
-  {
-    "id":"G486132",
-    "de":"Frühlingszwiebel/Lauchzwiebel (ohne Laub) gekocht",
-    "en":"Spring onion, bulb only, boiled",
-    "phe":0,
-    "kcal":37,
-    "protein":1,
-    "fat":0.173,
-    "carbs":6.91,
-    "sugar":6.91,
-    "fiber":1.7,
-    "salt":0.022,
-    "emoji":"🧅"
   },
   {
     "id":"W217000",
@@ -21224,20 +20790,6 @@
     "emoji":"🍝"
   },
   {
-    "id":"F201600",
-    "de":"Aprikosensaft",
-    "en":"Apricot juice",
-    "phe":0,
-    "kcal":49,
-    "protein":0.7,
-    "fat":0.104,
-    "carbs":10.8,
-    "sugar":10.1,
-    "fiber":0.154,
-    "salt":0.005,
-    "emoji":"🧃"
-  },
-  {
     "id":"D2A2000",
     "de":"Johannisbeertorte mit Baiser/Träublestorte (Mürbeteig)",
     "en":"Red currant torte (shortcrust pastry) with meringue",
@@ -22104,20 +21656,6 @@
     "fiber":0.071,
     "salt":0.005,
     "emoji":"🍷"
-  },
-  {
-    "id":"Y849440",
-    "de":"Grapefruit gezuckert",
-    "en":"Grapefruit sugared",
-    "phe":0,
-    "kcal":74,
-    "protein":0.4,
-    "fat":0.134,
-    "carbs":16.5,
-    "sugar":16.5,
-    "fiber":0.5,
-    "salt":0.002,
-    "emoji":"🍊"
   },
   {
     "id":"G613152",
@@ -23560,20 +23098,6 @@
     "fiber":0,
     "salt":0.1608,
     "emoji":"🥩"
-  },
-  {
-    "id":"F605600",
-    "de":"Pampelmusensaft/Pomelosaft",
-    "en":"Pomelo juice",
-    "phe":0,
-    "kcal":35,
-    "protein":0.8,
-    "fat":0.3,
-    "carbs":6.22,
-    "sugar":6.22,
-    "fiber":0.2,
-    "salt":0.005,
-    "emoji":"🧃"
   },
   {
     "id":"T417200",
@@ -25844,20 +25368,6 @@
     "emoji":"🐟"
   },
   {
-    "id":"G486182",
-    "de":"Frühlingszwiebel/Lauchzwiebel (ohne Laub) gebraten ohne Fett (Pfanne)",
-    "en":"Spring onion, bulb only, fried without fat (pan)",
-    "phe":0,
-    "kcal":51,
-    "protein":1.4,
-    "fat":0.238,
-    "carbs":9.5,
-    "sugar":9.5,
-    "fiber":2.2,
-    "salt":0.052,
-    "emoji":"🧅"
-  },
-  {
     "id":"T206152",
     "de":"Schellfisch gedünstet",
     "en":"Haddock stewed",
@@ -26150,20 +25660,6 @@
     "fiber":0.7,
     "salt":0.102,
     "emoji":"🍣"
-  },
-  {
-    "id":"R913000",
-    "de":"Wasabi-Paste Konserve",
-    "en":"Wasabi paste canned",
-    "phe":0,
-    "kcal":94,
-    "protein":5.4,
-    "fat":2.23,
-    "carbs":10.189,
-    "sugar":7.203,
-    "fiber":4.1,
-    "salt":4.805,
-    "emoji":"🥫"
   },
   {
     "id":"X9A1050",
@@ -27832,20 +27328,6 @@
     "emoji":"🍫"
   },
   {
-    "id":"G486142",
-    "de":"Frühlingszwiebel/Lauchzwiebel (ohne Laub) geschmort ohne Fett",
-    "en":"Spring onion, bulb only, braised without fat",
-    "phe":0,
-    "kcal":41,
-    "protein":1.1,
-    "fat":0.186,
-    "carbs":7.49,
-    "sugar":7.49,
-    "fiber":1.8,
-    "salt":0.04,
-    "emoji":"🧅"
-  },
-  {
     "id":"C522000",
     "de":"Getreideflakes gesüßt",
     "en":"Cereal flakes sweetened",
@@ -29036,20 +28518,6 @@
     "emoji":"🐟"
   },
   {
-    "id":"S161000",
-    "de":"Pflaumenmus",
-    "en":"Plum butter (jam)",
-    "phe":0,
-    "kcal":195,
-    "protein":0.94,
-    "fat":0.2,
-    "carbs":45.928,
-    "sugar":44.55,
-    "fiber":1.66,
-    "salt":0.035,
-    "emoji":"🍓"
-  },
-  {
     "id":"R9A3500",
     "de":"Zucker-Butter-Zimt-Füllung für Gebäck/Torten",
     "en":"Sugar-butter-cinnamon filling for pastry/tortes",
@@ -29636,20 +29104,6 @@
     "fiber":1.448,
     "salt":0.12,
     "emoji":"🥔"
-  },
-  {
-    "id":"X3A8000",
-    "de":"Essigmarinade warm, für gekochte Salate",
-    "en":"Vinegar marinade warm, for cooked salad",
-    "phe":0,
-    "kcal":140,
-    "protein":0.16,
-    "fat":14.2,
-    "carbs":0.77,
-    "sugar":0.75,
-    "fiber":0.01,
-    "salt":0.875,
-    "emoji":"🥗"
   },
   {
     "id":"D770200",
@@ -32172,20 +31626,6 @@
     "emoji":"🥬"
   },
   {
-    "id":"G582152",
-    "de":"Zucchini gedünstet",
-    "en":"Courgette stewed",
-    "phe":0,
-    "kcal":23,
-    "protein":1.4,
-    "fat":0.312,
-    "carbs":3,
-    "sugar":2.2,
-    "fiber":1.2,
-    "salt":0.00292,
-    "emoji":"🥒"
-  },
-  {
     "id":"U151182",
     "de":"Rind Gulasch (Bug) gebraten ohne Fett (Pfanne)",
     "en":"Beef goulash (shoulder) fried without fat (pan)",
@@ -33626,20 +33066,6 @@
     "fiber":0,
     "salt":0.258,
     "emoji":"🐟"
-  },
-  {
-    "id":"Q6A7100",
-    "de":"Mischfett mit überwiegend Milchfett, gesalzen",
-    "en":"Mixed fat spread, mainly milk fat, salted",
-    "phe":0,
-    "kcal":640,
-    "protein":0.58,
-    "fat":70.53,
-    "carbs":0.638,
-    "sugar":0.638,
-    "fiber":0,
-    "salt":1.0188,
-    "emoji":"🧈"
   },
   {
     "id":"T406600",
@@ -36526,20 +35952,6 @@
     "emoji":"🍬"
   },
   {
-    "id":"F140152",
-    "de":"Quitte gedünstet",
-    "en":"Quince stewed",
-    "phe":0,
-    "kcal":54,
-    "protein":0.433,
-    "fat":0.515,
-    "carbs":8.4,
-    "sugar":7.193,
-    "fiber":6.103,
-    "salt":0.005,
-    "emoji":"🍐"
-  },
-  {
     "id":"X574412",
     "de":"Dicke Bohnen gedünstet (mit Fett und Salz)",
     "en":"Broad beans stewed (with fat and salt)",
@@ -36804,20 +36216,6 @@
     "fiber":2.2,
     "salt":0.045,
     "emoji":"🍰"
-  },
-  {
-    "id":"S440000",
-    "de":"Gelee-Früchte",
-    "en":"Jelly fruit",
-    "phe":0,
-    "kcal":331,
-    "protein":0.015,
-    "fat":0,
-    "carbs":78.6,
-    "sugar":70.3,
-    "fiber":0.048,
-    "salt":0.01,
-    "emoji":"🍓"
   },
   {
     "id":"W512000",
@@ -37548,34 +36946,6 @@
     "emoji":"🍫"
   },
   {
-    "id":"G582172",
-    "de":"Zucchini gegrillt",
-    "en":"Courgette grilled",
-    "phe":0,
-    "kcal":46,
-    "protein":2.8,
-    "fat":0.638,
-    "carbs":6,
-    "sugar":4.5,
-    "fiber":2.4,
-    "salt":0.006,
-    "emoji":"🥒"
-  },
-  {
-    "id":"Y841743",
-    "de":"Pflaumenkompott/Zwetschgenkompott",
-    "en":"Plum compote",
-    "phe":0,
-    "kcal":66,
-    "protein":0.21,
-    "fat":0.121,
-    "carbs":15.57,
-    "sugar":13.71,
-    "fiber":1.2,
-    "salt":0.005,
-    "emoji":"🍮"
-  },
-  {
     "id":"T213152",
     "de":"Alaska-Pollack/Alaska-Seelachs, gedünstet",
     "en":"Alaska pollock stewed",
@@ -38078,20 +37448,6 @@
     "fiber":3.48,
     "salt":0.0955,
     "emoji":"🍨"
-  },
-  {
-    "id":"F516400",
-    "de":"Mango getrocknet",
-    "en":"Mango dried",
-    "phe":0,
-    "kcal":322,
-    "protein":3.8,
-    "fat":2.44,
-    "carbs":65,
-    "sugar":59.8,
-    "fiber":9.2,
-    "salt":0.122,
-    "emoji":"🥭"
   },
   {
     "id":"T512400",
@@ -38668,20 +38024,6 @@
     "emoji":"🥟"
   },
   {
-    "id":"F501152",
-    "de":"Ananas gedünstet",
-    "en":"Pineapple stewed",
-    "phe":0,
-    "kcal":47,
-    "protein":0.5,
-    "fat":0.1,
-    "carbs":9.7,
-    "sugar":9.7,
-    "fiber":1.4,
-    "salt":0.01,
-    "emoji":"🍍"
-  },
-  {
     "id":"W110000",
     "de":"Braunschweiger Mettwurst Ia",
     "en":"Braunschweiger Mettwurst sausage high quality, spreadable",
@@ -38764,20 +38106,6 @@
     "fiber":0.18,
     "salt":0.012,
     "emoji":"🧃"
-  },
-  {
-    "id":"G582142",
-    "de":"Zucchini geschmort ohne Fett",
-    "en":"Courgette braised without fat",
-    "phe":0,
-    "kcal":23,
-    "protein":1.4,
-    "fat":0.312,
-    "carbs":3,
-    "sugar":2.2,
-    "fiber":1.2,
-    "salt":0.00292,
-    "emoji":"🥒"
   },
   {
     "id":"W510082",
@@ -39396,20 +38724,6 @@
     "emoji":"🍖"
   },
   {
-    "id":"P288300",
-    "de":"Ananasbowle",
-    "en":"Pineapple punch",
-    "phe":0,
-    "kcal":66,
-    "protein":0.2,
-    "fat":0,
-    "carbs":4.2,
-    "sugar":4.2,
-    "fiber":0.3,
-    "salt":0.008,
-    "emoji":"🍸"
-  },
-  {
     "id":"G321152",
     "de":"Chinakohl gedünstet",
     "en":"Chinese white cabbage stewed",
@@ -39576,20 +38890,6 @@
     "fiber":0,
     "salt":0.21,
     "emoji":"🐟"
-  },
-  {
-    "id":"Y842712",
-    "de":"Pflaumenkompott/Zwetschgenkompott, zuckerreduziert",
-    "en":"Plum compote sugar-reduced",
-    "phe":0,
-    "kcal":52,
-    "protein":0.22,
-    "fat":0.126,
-    "carbs":12.05,
-    "sugar":10.12,
-    "fiber":1.3,
-    "salt":0.005,
-    "emoji":"🍮"
   },
   {
     "id":"U432162",
@@ -41468,20 +40768,6 @@
     "emoji":"🍸"
   },
   {
-    "id":"G486152",
-    "de":"Frühlingszwiebel/Lauchzwiebel (ohne Laub) gedünstet",
-    "en":"Spring onion, bulb only, stewed",
-    "phe":0,
-    "kcal":32,
-    "protein":0.9,
-    "fat":0.147,
-    "carbs":5.87,
-    "sugar":5.87,
-    "fiber":1.4,
-    "salt":0.032,
-    "emoji":"🧅"
-  },
-  {
     "id":"C492000",
     "de":"Mehrkornschrot",
     "en":"Grain mix coarse meal",
@@ -41704,20 +40990,6 @@
     "fiber":0,
     "salt":0.255,
     "emoji":"🍗"
-  },
-  {
-    "id":"F403600",
-    "de":"Schlehensaft",
-    "en":"Sloe fruit juice",
-    "phe":0,
-    "kcal":42,
-    "protein":0.675,
-    "fat":0.176,
-    "carbs":7.04,
-    "sugar":7.04,
-    "fiber":0.4,
-    "salt":0.0024,
-    "emoji":"🧃"
   },
   {
     "id":"G480072",
@@ -42952,20 +42224,6 @@
     "emoji":"🥬"
   },
   {
-    "id":"S475100",
-    "de":"Ananas kandiert",
-    "en":"Pineapple candied",
-    "phe":0,
-    "kcal":208,
-    "protein":0.3,
-    "fat":0,
-    "carbs":51.1,
-    "sugar":51.1,
-    "fiber":0.8,
-    "salt":0.01,
-    "emoji":"🍍"
-  },
-  {
     "id":"U990400",
     "de":"Sauce Hollandaise, Konserve",
     "en":"Sauce Hollandaise, canned",
@@ -43078,20 +42336,6 @@
     "emoji":"🍖"
   },
   {
-    "id":"P9A8000",
-    "de":"Cocktail, Kir Royal",
-    "en":"Cocktail, Kir royale",
-    "phe":0,
-    "kcal":90,
-    "protein":0,
-    "fat":0,
-    "carbs":4.8,
-    "sugar":4.8,
-    "fiber":0,
-    "salt":0.01,
-    "emoji":"🍸"
-  },
-  {
     "id":"C238032",
     "de":"Dinkel Grieß, gekocht",
     "en":"Spelt semolina, boiled",
@@ -43146,20 +42390,6 @@
     "fiber":10.639,
     "salt":0.008,
     "emoji":"🍖"
-  },
-  {
-    "id":"Y841412",
-    "de":"Aprikosenkompott ungesüßt",
-    "en":"Apricot compote unsweetened",
-    "phe":0,
-    "kcal":38,
-    "protein":0.7,
-    "fat":0.116,
-    "carbs":7.323,
-    "sugar":6.61,
-    "fiber":1.372,
-    "salt":0.005,
-    "emoji":"🍮"
   },
   {
     "id":"Y362012",
@@ -44548,20 +43778,6 @@
     "emoji":"🥬"
   },
   {
-    "id":"Y841812",
-    "de":"Pfirsichkompott ungesüßt",
-    "en":"Peach compote unsweetened",
-    "phe":0,
-    "kcal":35,
-    "protein":0.6,
-    "fat":0.098,
-    "carbs":7.17,
-    "sugar":6.25,
-    "fiber":1.5,
-    "salt":0.0028,
-    "emoji":"🍮"
-  },
-  {
     "id":"C235132",
     "de":"Dinkel Vollkornschrot, gekocht",
     "en":"Spelt coarse meal, boiled",
@@ -44588,20 +43804,6 @@
     "fiber":0,
     "salt":0.302,
     "emoji":"🐟"
-  },
-  {
-    "id":"G582182",
-    "de":"Zucchini gebraten ohne Fett (Pfanne)",
-    "en":"Courgette fried without fat (pan)",
-    "phe":0,
-    "kcal":41,
-    "protein":2.2,
-    "fat":0.486,
-    "carbs":6,
-    "sugar":3.5,
-    "fiber":1.9,
-    "salt":0.00458,
-    "emoji":"🥒"
   },
   {
     "id":"W515072",
@@ -44798,20 +44000,6 @@
     "fiber":0,
     "salt":0.118,
     "emoji":"🐟"
-  },
-  {
-    "id":"F608600",
-    "de":"Satsumasaft",
-    "en":"Satsuma mandarin juice",
-    "phe":0,
-    "kcal":39,
-    "protein":0.7,
-    "fat":0.24,
-    "carbs":7.68,
-    "sugar":7.68,
-    "fiber":0.112,
-    "salt":0.0062,
-    "emoji":"🧃"
   },
   {
     "id":"G553132",
@@ -45794,20 +44982,6 @@
     "emoji":"🍖"
   },
   {
-    "id":"P287000",
-    "de":"Kalte Ente (Bowle aus Wein und Sekt)",
-    "en":"Cold duck (punch made from wine and sparkling wine)",
-    "phe":0,
-    "kcal":74,
-    "protein":0.1,
-    "fat":0,
-    "carbs":1.55,
-    "sugar":1.55,
-    "fiber":0,
-    "salt":0.005,
-    "emoji":"🥂"
-  },
-  {
     "id":"G220162",
     "de":"Bleichsellerie gebacken",
     "en":"Stalk celery baked",
@@ -45918,20 +45092,6 @@
     "fiber":0,
     "salt":1.6488,
     "emoji":"🧀"
-  },
-  {
-    "id":"F140132",
-    "de":"Quitte gekocht",
-    "en":"Quince boiled",
-    "phe":0,
-    "kcal":44,
-    "protein":0.411,
-    "fat":0.515,
-    "carbs":6.7,
-    "sugar":5.754,
-    "fiber":4.882,
-    "salt":0.002,
-    "emoji":"🍐"
   },
   {
     "id":"U070182",
@@ -46242,20 +45402,6 @@
     "emoji":"🥩"
   },
   {
-    "id":"F220600",
-    "de":"Pflaumensaft",
-    "en":"Plum juice",
-    "phe":0,
-    "kcal":41,
-    "protein":0.27,
-    "fat":0.136,
-    "carbs":9.64,
-    "sugar":7.29,
-    "fiber":0.2,
-    "salt":0.0018,
-    "emoji":"🧃"
-  },
-  {
     "id":"F311600",
     "de":"Traubensaft rot",
     "en":"Grape red juice",
@@ -46522,20 +45668,6 @@
     "emoji":"🐟"
   },
   {
-    "id":"F203152",
-    "de":"Pfirsich gedünstet",
-    "en":"Peach stewed",
-    "phe":0,
-    "kcal":45,
-    "protein":0.8,
-    "fat":0.125,
-    "carbs":9.11,
-    "sugar":7.94,
-    "fiber":1.9,
-    "salt":0.001952,
-    "emoji":"🍑"
-  },
-  {
     "id":"V478182",
     "de":"Gans Innereien, gebraten ohne Fett (Pfanne)",
     "en":"Goose giblets, fried without fat (pan)",
@@ -46730,20 +45862,6 @@
     "fiber":46.278,
     "salt":0.118,
     "emoji":"🦪"
-  },
-  {
-    "id":"F140600",
-    "de":"Quittensaft",
-    "en":"Quince juice",
-    "phe":0,
-    "kcal":38,
-    "protein":0.378,
-    "fat":0.4,
-    "carbs":7.3,
-    "sugar":6.279,
-    "fiber":0.592,
-    "salt":0.005,
-    "emoji":"🧃"
   },
   {
     "id":"G660132",
@@ -46954,20 +46072,6 @@
     "fiber":0,
     "salt":0.072,
     "emoji":"🍖"
-  },
-  {
-    "id":"G470200",
-    "de":"Porree/Lauch, tiefgefroren",
-    "en":"Leek deep-frozen",
-    "phe":0,
-    "kcal":32,
-    "protein":0.9,
-    "fat":0.278,
-    "carbs":5,
-    "sugar":4.3,
-    "fiber":2.4,
-    "salt":0.0015,
-    "emoji":"🧅"
   },
   {
     "id":"N630400",
@@ -48174,20 +47278,6 @@
     "emoji":"🥩"
   },
   {
-    "id":"F220152",
-    "de":"Pflaume gedünstet",
-    "en":"Plum stewed",
-    "phe":0,
-    "kcal":57,
-    "protein":0.35,
-    "fat":0.2,
-    "carbs":12.6,
-    "sugar":9.53,
-    "fiber":2,
-    "salt":0.0022,
-    "emoji":"🍑"
-  },
-  {
     "id":"C559032",
     "de":"Reisnudeln gekocht",
     "en":"Rice noodles boiled",
@@ -48396,20 +47486,6 @@
     "fiber":0,
     "salt":0.198,
     "emoji":"🍖"
-  },
-  {
-    "id":"F501400",
-    "de":"Ananas getrocknet",
-    "en":"Pineapple dried",
-    "phe":0,
-    "kcal":333,
-    "protein":3.7,
-    "fat":0.7,
-    "carbs":68.9,
-    "sugar":68.9,
-    "fiber":10.2,
-    "salt":0.072,
-    "emoji":"🍍"
   },
   {
     "id":"U576162",
@@ -48790,20 +47866,6 @@
     "emoji":"🐟"
   },
   {
-    "id":"F517400",
-    "de":"Papaya getrocknet",
-    "en":"Papaya dried",
-    "phe":0,
-    "kcal":289,
-    "protein":4.4,
-    "fat":0.568,
-    "carbs":60.2,
-    "sugar":60.2,
-    "fiber":12,
-    "salt":0.22,
-    "emoji":"🥭"
-  },
-  {
     "id":"N4A0000",
     "de":"Kaffee (Getränk) mit Haferdrink, ungesüßt",
     "en":"Coffee (infusion) with oat drink, unsweetened",
@@ -48886,20 +47948,6 @@
     "fiber":0,
     "salt":2.392,
     "emoji":"🍖"
-  },
-  {
-    "id":"G582162",
-    "de":"Zucchini gebacken",
-    "en":"Courgette baked",
-    "phe":0,
-    "kcal":28,
-    "protein":1.5,
-    "fat":0.338,
-    "carbs":4,
-    "sugar":2.5,
-    "fiber":1.3,
-    "salt":0.00318,
-    "emoji":"🥒"
   },
   {
     "id":"T102400",
@@ -49236,20 +48284,6 @@
     "fiber":0,
     "salt":1.6488,
     "emoji":"🧀"
-  },
-  {
-    "id":"F516600",
-    "de":"Mangosaft",
-    "en":"Mango juice",
-    "phe":0,
-    "kcal":51,
-    "protein":0.6,
-    "fat":0.36,
-    "carbs":11,
-    "sugar":9.9,
-    "fiber":0.2,
-    "salt":0.02,
-    "emoji":"🧃"
   },
   {
     "id":"U632800",
@@ -49698,20 +48732,6 @@
     "fiber":2.021,
     "salt":0.0025,
     "emoji":"🥣"
-  },
-  {
-    "id":"G582132",
-    "de":"Zucchini gekocht",
-    "en":"Courgette boiled",
-    "phe":0,
-    "kcal":22,
-    "protein":1.3,
-    "fat":0.3,
-    "carbs":3,
-    "sugar":1.7,
-    "fiber":0.8,
-    "salt":0.0012,
-    "emoji":"🥒"
   },
   {
     "id":"T417182",
@@ -52276,20 +51296,6 @@
     "emoji":"🐟"
   },
   {
-    "id":"G414132",
-    "de":"Gemüseartischocke/Kardone, gekocht",
-    "en":"Cardoon boiled",
-    "phe":0,
-    "kcal":22,
-    "protein":0.9,
-    "fat":0.1,
-    "carbs":3.27,
-    "sugar":3.05,
-    "fiber":2,
-    "salt":0.43,
-    "emoji":"🥕"
-  },
-  {
     "id":"U622172",
     "de":"Schwein Kotelett (Rücken/cranial) gegrillt",
     "en":"Pork loin (cranial part) grilled",
@@ -52976,20 +51982,6 @@
     "emoji":"🍗"
   },
   {
-    "id":"G486162",
-    "de":"Frühlingszwiebel/Lauchzwiebel (ohne Laub) gebacken",
-    "en":"Spring onion, bulb only, baked",
-    "phe":0,
-    "kcal":38,
-    "protein":1.1,
-    "fat":0.176,
-    "carbs":7.05,
-    "sugar":7.05,
-    "fiber":1.6,
-    "salt":0.038,
-    "emoji":"🧅"
-  },
-  {
     "id":"H230172",
     "de":"Edelkastanie/Marone, gegrillt",
     "en":"Sweet chestnut grilled",
@@ -53114,20 +52106,6 @@
     "fiber":2.011,
     "salt":0.00528,
     "emoji":"🫘"
-  },
-  {
-    "id":"F201152",
-    "de":"Aprikose gedünstet",
-    "en":"Apricot stewed",
-    "phe":0,
-    "kcal":47,
-    "protein":0.9,
-    "fat":0.148,
-    "carbs":9.341,
-    "sugar":8.432,
-    "fiber":1.75,
-    "salt":0.005,
-    "emoji":"🍑"
   },
   {
     "id":"T792200",
@@ -56084,20 +55062,6 @@
     "emoji":"🍖"
   },
   {
-    "id":"X321153",
-    "de":"Tomatensauce von heller/weißer Grundsauce",
-    "en":"Tomato sauce from white basic sauce",
-    "phe":0,
-    "kcal":48,
-    "protein":1,
-    "fat":2.6,
-    "carbs":4.7,
-    "sugar":2.7,
-    "fiber":0.8,
-    "salt":0.812,
-    "emoji":"🥫"
-  },
-  {
     "id":"W154500",
     "de":"Salami Kroatische Art",
     "en":"Salami Croatian-type",
@@ -56250,20 +55214,6 @@
     "fiber":0.01,
     "salt":0.578,
     "emoji":"🍖"
-  },
-  {
-    "id":"P9A9000",
-    "de":"Cocktail, Caipirinha",
-    "en":"Cocktail, Caipirinha",
-    "phe":0,
-    "kcal":92,
-    "protein":0.014,
-    "fat":0,
-    "carbs":6.11,
-    "sugar":6.11,
-    "fiber":0.004,
-    "salt":0.005,
-    "emoji":"🍸"
   },
   {
     "id":"D7A7810",
@@ -58030,20 +56980,6 @@
     "emoji":"🥫"
   },
   {
-    "id":"Y846312",
-    "de":"Pfirsichkompott mit Süßstoff",
-    "en":"Peach compote with artificial sweetener",
-    "phe":0,
-    "kcal":35,
-    "protein":0.6,
-    "fat":0.097,
-    "carbs":7.14,
-    "sugar":6.22,
-    "fiber":1.5,
-    "salt":0.012,
-    "emoji":"🍮"
-  },
-  {
     "id":"W320000",
     "de":"Braunschweiger grobe Leberwurst",
     "en":"Braunschweiger coarse liver sausage",
@@ -58660,20 +57596,6 @@
     "emoji":"🍝"
   },
   {
-    "id":"G940100",
-    "de":"Gemüseaufstrich, Brotaufstrich pflanzlich",
-    "en":"Vegetable spread",
-    "phe":0,
-    "kcal":199,
-    "protein":0.8,
-    "fat":16.8,
-    "carbs":10,
-    "sugar":6,
-    "fiber":1.6,
-    "salt":1.48,
-    "emoji":"🥬"
-  },
-  {
     "id":"Y231432",
     "de":"Kalbsschnitzel mit Kochschinken und Käse übergrillt",
     "en":"Veal schnitzel grilled with boiled ham and cheese",
@@ -58896,20 +57818,6 @@
     "fiber":1,
     "salt":1.322,
     "emoji":"🧀"
-  },
-  {
-    "id":"G470262",
-    "de":"Porree/Lauch, tiefgefroren, gebacken",
-    "en":"Leek deep-frozen, baked",
-    "phe":0,
-    "kcal":38,
-    "protein":1.1,
-    "fat":0.327,
-    "carbs":6,
-    "sugar":5,
-    "fiber":2.8,
-    "salt":0.0018,
-    "emoji":"🧅"
   },
   {
     "id":"Y036410",
@@ -60450,20 +59358,6 @@
     "fiber":0.106,
     "salt":0.21,
     "emoji":"🍰"
-  },
-  {
-    "id":"Y841843",
-    "de":"Pfirsichkompott",
-    "en":"Peach compote",
-    "phe":0,
-    "kcal":58,
-    "protein":0.6,
-    "fat":0.092,
-    "carbs":12.96,
-    "sugar":12.1,
-    "fiber":1.4,
-    "salt":0.002,
-    "emoji":"🍮"
   },
   {
     "id":"E605200",
@@ -62144,20 +61038,6 @@
     "fiber":0.7,
     "salt":0.54,
     "emoji":"🍲"
-  },
-  {
-    "id":"N390100",
-    "de":"Cola-Misch-Getränk Orange",
-    "en":"Cola Mix (cola beverage caffeinated with orange soft drink)",
-    "phe":0,
-    "kcal":36,
-    "protein":0.015,
-    "fat":0,
-    "carbs":9,
-    "sugar":9,
-    "fiber":0.005,
-    "salt":0.002,
-    "emoji":"🥤"
   },
   {
     "id":"T730182",
@@ -64008,20 +62888,6 @@
     "emoji":"🦑"
   },
   {
-    "id":"N630700",
-    "de":"Schwarztee (Getränk) mit Zitronensaft und Zucker",
-    "en":"Black tea (infusion) with lemon juice and sugar",
-    "phe":0,
-    "kcal":8,
-    "protein":0.008,
-    "fat":0,
-    "carbs":1.823,
-    "sugar":1.823,
-    "fiber":0.002,
-    "salt":0.005,
-    "emoji":"🍵"
-  },
-  {
     "id":"M857000",
     "de":"Grießpudding mit Sahne, gesüßt",
     "en":"Semolina pudding with cream, sweetened",
@@ -65154,20 +64020,6 @@
     "fiber":9.6,
     "salt":0.016,
     "emoji":"🍫"
-  },
-  {
-    "id":"X4A6020",
-    "de":"Tomatensuppe aus Tomatenmark mit Gemüsebrühe",
-    "en":"Tomato soup of tomato paste and vegetable stock",
-    "phe":0,
-    "kcal":41,
-    "protein":0.7,
-    "fat":2.8,
-    "carbs":3,
-    "sugar":1.3,
-    "fiber":0.3,
-    "salt":0.76,
-    "emoji":"🍲"
   },
   {
     "id":"X344060",
@@ -66959,20 +65811,6 @@
     "sugar":12.21,
     "fiber":0.46,
     "salt":0.152,
-    "emoji":"🍮"
-  },
-  {
-    "id":"Y852312",
-    "de":"Quittenkompott mit Süßstoff",
-    "en":"Quince compote with artificial sweetener",
-    "phe":0,
-    "kcal":34,
-    "protein":0.27,
-    "fat":0.322,
-    "carbs":5.3,
-    "sugar":4.496,
-    "fiber":3.815,
-    "salt":0.01,
     "emoji":"🍮"
   },
   {
@@ -70112,20 +68950,6 @@
     "emoji":"🥣"
   },
   {
-    "id":"Y842412",
-    "de":"Aprikosenkompott mit Süßstoff",
-    "en":"Apricot compote with artificial sweetener",
-    "phe":0,
-    "kcal":38,
-    "protein":0.7,
-    "fat":0.115,
-    "carbs":7.283,
-    "sugar":6.574,
-    "fiber":1.365,
-    "salt":0.015,
-    "emoji":"🍮"
-  },
-  {
     "id":"X570653",
     "de":"Erbsen-Mais-Gemüse gedünstet",
     "en":"Green peas and sweetcorn stewed",
@@ -70152,20 +68976,6 @@
     "fiber":2.101,
     "salt":0.01,
     "emoji":"🥣"
-  },
-  {
-    "id":"N001000",
-    "de":"Nearwater/Aqua Plus Getränk, aromatisiert, ungesüßt",
-    "en":"Nearwater/Aqua Plus beverage, flavoured, unsweetened",
-    "phe":0,
-    "kcal":0,
-    "protein":0.008,
-    "fat":0,
-    "carbs":0,
-    "sugar":0,
-    "fiber":0.002,
-    "salt":0.0068,
-    "emoji":"🥤"
   },
   {
     "id":"T410252",
@@ -70294,20 +69104,6 @@
     "emoji":"🥗"
   },
   {
-    "id":"X369243",
-    "de":"Rotweinsauce süß",
-    "en":"Red wine sauce sweet",
-    "phe":0,
-    "kcal":76,
-    "protein":0.008,
-    "fat":0,
-    "carbs":12.9,
-    "sugar":12.12,
-    "fiber":0.008,
-    "salt":0.005,
-    "emoji":"🥫"
-  },
-  {
     "id":"U881242",
     "de":"Schaf Keule, mager, tiefgefroren, geschmort ohne Fett",
     "en":"Sheep leg, lean, deep-frozen, braised without fat",
@@ -70320,20 +69116,6 @@
     "fiber":0,
     "salt":0.15,
     "emoji":"🍖"
-  },
-  {
-    "id":"P9A7100",
-    "de":"Cocktail, Cuba Libre",
-    "en":"Cocktail, Cuba libre",
-    "phe":0,
-    "kcal":52,
-    "protein":0.012,
-    "fat":0,
-    "carbs":5.435,
-    "sugar":5.435,
-    "fiber":0.002,
-    "salt":0.002,
-    "emoji":"🍸"
   },
   {
     "id":"W873500",
@@ -71120,20 +69902,6 @@
     "emoji":"🥛"
   },
   {
-    "id":"X416513",
-    "de":"Gemüsebrühe mit Teigwaren eifrei",
-    "en":"Vegetable stock with pasta egg-free",
-    "phe":0,
-    "kcal":21,
-    "protein":0.9,
-    "fat":0.2,
-    "carbs":3.91,
-    "sugar":0.58,
-    "fiber":0.2,
-    "salt":0.645,
-    "emoji":"🍲"
-  },
-  {
     "id":"Y725212",
     "de":"Rührei gebraten mit Kochschinken",
     "en":"Scrambled eggs fried with boiled ham",
@@ -71580,20 +70348,6 @@
     "fiber":0,
     "salt":0.165,
     "emoji":"🍖"
-  },
-  {
-    "id":"X422643",
-    "de":"Fleischbrühe mit Teigwaren eifrei",
-    "en":"Meat stock with pasta egg-free",
-    "phe":0,
-    "kcal":21,
-    "protein":1,
-    "fat":0.3,
-    "carbs":3.44,
-    "sugar":0.11,
-    "fiber":0.2,
-    "salt":0.552,
-    "emoji":"🍲"
   },
   {
     "id":"Y894243",
@@ -72210,20 +70964,6 @@
     "fiber":0.61,
     "salt":1.8,
     "emoji":"🥩"
-  },
-  {
-    "id":"X321163",
-    "de":"Tomatensauce aus Tomatenmark",
-    "en":"Tomato sauce of tomato paste",
-    "phe":0,
-    "kcal":107,
-    "protein":0.5,
-    "fat":10.4,
-    "carbs":2.3,
-    "sugar":2.3,
-    "fiber":0.8,
-    "salt":0.518,
-    "emoji":"🥫"
   },
   {
     "id":"U541272",
@@ -73122,20 +71862,6 @@
     "emoji":"🍮"
   },
   {
-    "id":"G470282",
-    "de":"Porree/Lauch, tiefgefroren, gebraten ohne Fett (Pfanne)",
-    "en":"Leek deep-frozen, fried without fat (pan)",
-    "phe":0,
-    "kcal":54,
-    "protein":1.4,
-    "fat":0.441,
-    "carbs":9,
-    "sugar":6.8,
-    "fiber":3.8,
-    "salt":0.0025,
-    "emoji":"🧅"
-  },
-  {
     "id":"X365563",
     "de":"Aprikosensauce von frischen Früchten",
     "en":"Apricot sauce from fresh fruit",
@@ -73248,34 +71974,6 @@
     "emoji":"🥛"
   },
   {
-    "id":"Y841443",
-    "de":"Aprikosenkompott",
-    "en":"Apricot compote",
-    "phe":0,
-    "kcal":61,
-    "protein":0.7,
-    "fat":0.109,
-    "carbs":13.145,
-    "sugar":12.478,
-    "fiber":1.284,
-    "salt":0.005,
-    "emoji":"🍮"
-  },
-  {
-    "id":"N0A1000",
-    "de":"Nearwater/Aqua Plus Getränk, mit Fruchtsaft, aromatisiert, gesüßt",
-    "en":"Nearwater/Aqua Plus beverage, with fruit juice, flavoured, sweetened",
-    "phe":0,
-    "kcal":18,
-    "protein":0.008,
-    "fat":0.007,
-    "carbs":4.4,
-    "sugar":4.3,
-    "fiber":0,
-    "salt":0.007,
-    "emoji":"🧃"
-  },
-  {
     "id":"X358240",
     "de":"Sahne-Dressing für Salat",
     "en":"Cream dressing for salad",
@@ -73302,20 +72000,6 @@
     "fiber":3.48,
     "salt":1.2,
     "emoji":"🥨"
-  },
-  {
-    "id":"P9A7110",
-    "de":"Cocktail, Mojito",
-    "en":"Cocktail, Mojito",
-    "phe":0,
-    "kcal":52,
-    "protein":0.031,
-    "fat":0,
-    "carbs":3.498,
-    "sugar":3.498,
-    "fiber":0.009,
-    "salt":0.005,
-    "emoji":"🍸"
   },
   {
     "id":"Y841953",
@@ -74130,20 +72814,6 @@
     "emoji":"🍗"
   },
   {
-    "id":"Y849912",
-    "de":"Pflaumenkompott/Zwetschgenkompott, mit Süßstoff",
-    "en":"Plum compote with artificial sweetener",
-    "phe":0,
-    "kcal":39,
-    "protein":0.24,
-    "fat":0.138,
-    "carbs":8.68,
-    "sugar":6.57,
-    "fiber":1.4,
-    "salt":0.018,
-    "emoji":"🍮"
-  },
-  {
     "id":"Y882410",
     "de":"Quark (Magerstufe) mit Konfitüre",
     "en":"Quark (< 10 % fat in dry matter) with jam",
@@ -74506,20 +73176,6 @@
     "fiber":0,
     "salt":0.948,
     "emoji":"🦐"
-  },
-  {
-    "id":"F516700",
-    "de":"Mangonektar",
-    "en":"Mango nectar",
-    "phe":0,
-    "kcal":51,
-    "protein":0.2,
-    "fat":0.126,
-    "carbs":12.2,
-    "sugar":12.2,
-    "fiber":0.1,
-    "salt":0.012,
-    "emoji":"🧃"
   },
   {
     "id":"X431340",
@@ -75206,20 +73862,6 @@
     "fiber":0,
     "salt":0.15,
     "emoji":"🥩"
-  },
-  {
-    "id":"Y845312",
-    "de":"Pfirsichkompott zuckerreduziert",
-    "en":"Peach compote sugar-reduced",
-    "phe":0,
-    "kcal":47,
-    "protein":0.6,
-    "fat":0.095,
-    "carbs":10.16,
-    "sugar":9.27,
-    "fiber":1.5,
-    "salt":0.002,
-    "emoji":"🍮"
   },
   {
     "id":"G311262",
@@ -77994,20 +76636,6 @@
     "emoji":"🍮"
   },
   {
-    "id":"X336661",
-    "de":"Pfeffersauce von dunkler/brauner Grundsauce",
-    "en":"Pepper sauce from brown basic sauce",
-    "phe":0,
-    "kcal":74,
-    "protein":1.2,
-    "fat":5,
-    "carbs":5.8,
-    "sugar":0.7,
-    "fiber":0.6,
-    "salt":0.618,
-    "emoji":"🥫"
-  },
-  {
     "id":"V217262",
     "de":"Hirsch Rücken, tiefgefroren, gebraten ohne Fett (Ofen)",
     "en":"Venison saddle, deep-frozen, fried without fat (oven)",
@@ -78146,20 +76774,6 @@
     "fiber":0.048,
     "salt":0.142,
     "emoji":"🌶️"
-  },
-  {
-    "id":"G470252",
-    "de":"Porree/Lauch, tiefgefroren, gedünstet",
-    "en":"Leek deep-frozen, stewed",
-    "phe":0,
-    "kcal":37,
-    "protein":1,
-    "fat":0.296,
-    "carbs":6,
-    "sugar":4.5,
-    "fiber":2.6,
-    "salt":0.0015,
-    "emoji":"🧅"
   },
   {
     "id":"G620232",
@@ -78776,20 +77390,6 @@
     "fiber":0,
     "salt":0.68,
     "emoji":"🥫"
-  },
-  {
-    "id":"G470232",
-    "de":"Porree/Lauch, tiefgefroren, gekocht",
-    "en":"Leek deep-frozen, boiled",
-    "phe":0,
-    "kcal":31,
-    "protein":0.8,
-    "fat":0.261,
-    "carbs":5,
-    "sugar":4.1,
-    "fiber":2.3,
-    "salt":0.0012,
-    "emoji":"🧅"
   },
   {
     "id":"T753232",
@@ -79716,20 +78316,6 @@
     "emoji":"🥐"
   },
   {
-    "id":"G470242",
-    "de":"Porree/Lauch, tiefgefroren, geschmort ohne Fett",
-    "en":"Leek deep-frozen, braised without fat",
-    "phe":0,
-    "kcal":38,
-    "protein":1.1,
-    "fat":0.344,
-    "carbs":6,
-    "sugar":5.3,
-    "fiber":3,
-    "salt":0.0018,
-    "emoji":"🧅"
-  },
-  {
     "id":"K706432",
     "de":"Butterpilz getrocknet, gekocht",
     "en":"Brown-yellow boletus (slippery jack) dried, boiled",
@@ -79812,20 +78398,6 @@
     "fiber":0,
     "salt":0.14,
     "emoji":"🍗"
-  },
-  {
-    "id":"F203700",
-    "de":"Pfirsichnektar",
-    "en":"Peach nectar",
-    "phe":0,
-    "kcal":48,
-    "protein":0.3,
-    "fat":0.044,
-    "carbs":11.6,
-    "sugar":11.14,
-    "fiber":0.1,
-    "salt":0.005,
-    "emoji":"🧃"
   },
   {
     "id":"V484242",
@@ -82516,20 +81088,6 @@
     "emoji":"🍰"
   },
   {
-    "id":"F227902",
-    "de":"Pflaume mit Süßungsmitteln, Konserve, abgetropft",
-    "en":"Plum with artificial sweeteners, canned, drained",
-    "phe":0,
-    "kcal":22,
-    "protein":0.24,
-    "fat":0.141,
-    "carbs":4.52,
-    "sugar":3.42,
-    "fiber":1.1,
-    "salt":0.02,
-    "emoji":"🍑"
-  },
-  {
     "id":"X5A6020",
     "de":"Artischocken gekocht, mit Butter",
     "en":"Artichokes boiled, with butter",
@@ -83074,20 +81632,6 @@
     "fiber":1.5,
     "salt":0.432,
     "emoji":"🥚"
-  },
-  {
-    "id":"N276000",
-    "de":"Pfirsich-Maracujanektarschorle",
-    "en":"Peach-maracuja nectar spritzer",
-    "phe":0,
-    "kcal":22,
-    "protein":0.2,
-    "fat":0,
-    "carbs":5.13,
-    "sugar":4.91,
-    "fiber":0,
-    "salt":0.005,
-    "emoji":"🧃"
   },
   {
     "id":"Y694923",
@@ -86240,20 +84784,6 @@
     "emoji":"🍰"
   },
   {
-    "id":"F201902",
-    "de":"Aprikose gezuckert, Konserve, abgetropft",
-    "en":"Apricot sugared, canned, drained",
-    "phe":0,
-    "kcal":69,
-    "protein":0.5,
-    "fat":0.1,
-    "carbs":15.452,
-    "sugar":15.1,
-    "fiber":1.143,
-    "salt":0.025,
-    "emoji":"🍑"
-  },
-  {
     "id":"K392292",
     "de":"Kartoffel-Speck-Rösti tiefgefroren, frittiert",
     "en":"Potato rösti with bacon, deep-frozen, deep-fried",
@@ -87934,20 +86464,6 @@
     "emoji":"🥚"
   },
   {
-    "id":"X447413",
-    "de":"Tomatensuppe aus frischen Tomaten, Gemüsebrühe und Teigwaren eifrei",
-    "en":"Tomato soup of fresh tomatoes, vegetable stock and pasta egg-free",
-    "phe":0,
-    "kcal":38,
-    "protein":1.1,
-    "fat":1.2,
-    "carbs":5,
-    "sugar":2.9,
-    "fiber":0.9,
-    "salt":0.34,
-    "emoji":"🍲"
-  },
-  {
     "id":"X2A1020",
     "de":"Chinakohlsalat mit Mandarinen und Sahne-Dressing",
     "en":"Chinese white cabbage with mandarins and cream dressing",
@@ -88592,20 +87108,6 @@
     "emoji":"🥗"
   },
   {
-    "id":"F208902",
-    "de":"Pfirsich ungesüßt, Konserve, abgetropft",
-    "en":"Peach unsweetened, canned, drained",
-    "phe":0,
-    "kcal":19,
-    "protein":0.5,
-    "fat":0.094,
-    "carbs":3.46,
-    "sugar":3.02,
-    "fiber":1.1,
-    "salt":0.0035,
-    "emoji":"🍑"
-  },
-  {
     "id":"S243600",
     "de":"Speiseeis (Frucht, Nuss, Schoko) gemischt",
     "en":"Ice cream mixed (chocolate, nut, fruit)",
@@ -89222,20 +87724,6 @@
     "emoji":"🥗"
   },
   {
-    "id":"F220902",
-    "de":"Pflaume gezuckert, Konserve, abgetropft",
-    "en":"Plum sugared, canned, drained",
-    "phe":0,
-    "kcal":70,
-    "protein":0.651,
-    "fat":0.149,
-    "carbs":15.92,
-    "sugar":14.815,
-    "fiber":1.1,
-    "salt":0.035,
-    "emoji":"🍑"
-  },
-  {
     "id":"Y135033",
     "de":"Pfeffersteak vom Rind gebraten, mit Sauce",
     "en":"Beef pepper steak fried, with sauce",
@@ -89444,20 +87932,6 @@
     "fiber":0.2,
     "salt":1.8,
     "emoji":"🍖"
-  },
-  {
-    "id":"F2C1902",
-    "de":"Aprikose ungesüßt, Konserve, abgetropft",
-    "en":"Apricot unsweetened, canned, drained",
-    "phe":0,
-    "kcal":23,
-    "protein":0.7,
-    "fat":0.113,
-    "carbs":3.623,
-    "sugar":3.271,
-    "fiber":1.143,
-    "salt":0.005,
-    "emoji":"🍑"
   },
   {
     "id":"Y623823",
@@ -90510,20 +88984,6 @@
     "emoji":"🥩"
   },
   {
-    "id":"F2B1902",
-    "de":"Aprikose mit Süßungsmitteln, Konserve, abgetropft",
-    "en":"Apricot with artificial sweeteners, canned, drained",
-    "phe":0,
-    "kcal":23,
-    "protein":0.7,
-    "fat":0.113,
-    "carbs":3.623,
-    "sugar":3.271,
-    "fiber":1.143,
-    "salt":0.02,
-    "emoji":"🍑"
-  },
-  {
     "id":"X741033",
     "de":"Eierteigwaren mit Gorgonzolasauce",
     "en":"Egg pasta with Gorgonzola sauce",
@@ -90886,20 +89346,6 @@
     "fiber":2.73,
     "salt":0.14,
     "emoji":"🍫"
-  },
-  {
-    "id":"F597902",
-    "de":"Ananas mit Süßungsmitteln, Konserve, abgetropft",
-    "en":"Pineapple with artificial sweeteners, canned, drained",
-    "phe":0,
-    "kcal":24,
-    "protein":0.5,
-    "fat":0.1,
-    "carbs":4.4,
-    "sugar":4.4,
-    "fiber":1.1,
-    "salt":0.028,
-    "emoji":"🍍"
   },
   {
     "id":"Y251323",
@@ -91700,20 +90146,6 @@
     "emoji":"🐟"
   },
   {
-    "id":"X447313",
-    "de":"Tomatensuppe aus Tomatenmark, Gemüsebrühe und Teigwaren eifrei",
-    "en":"Tomato soup of tomato paste, vegetable stock and pasta egg-free",
-    "phe":0,
-    "kcal":51,
-    "protein":1.1,
-    "fat":2.6,
-    "carbs":5.6,
-    "sugar":1.3,
-    "fiber":0.4,
-    "salt":0.688,
-    "emoji":"🍲"
-  },
-  {
     "id":"X702612",
     "de":"Vollkorn-Eier-Frischteigwaren mit gedünstetem Kaisergemüse",
     "en":"Fresh wholemeal egg pasta with stewed mixed vegetables",
@@ -91768,20 +90200,6 @@
     "fiber":0.6,
     "salt":0.052,
     "emoji":"🍨"
-  },
-  {
-    "id":"G582802",
-    "de":"Zucchini gesäuert, abgetropft",
-    "en":"Courgette pickled, drained",
-    "phe":0,
-    "kcal":34,
-    "protein":1.1,
-    "fat":0.3,
-    "carbs":5.5,
-    "sugar":5.5,
-    "fiber":0.7,
-    "salt":1.188,
-    "emoji":"🥒"
   },
   {
     "id":"G410702",
@@ -92106,20 +90524,6 @@
     "emoji":"🥗"
   },
   {
-    "id":"F591902",
-    "de":"Ananas ungesüßt, Konserve, abgetropft",
-    "en":"Pineapple unsweetened, canned, drained",
-    "phe":0,
-    "kcal":24,
-    "protein":0.5,
-    "fat":0.1,
-    "carbs":4.4,
-    "sugar":4.4,
-    "fiber":1.1,
-    "salt":0.008,
-    "emoji":"🍍"
-  },
-  {
     "id":"Y8A4020",
     "de":"Grießbrei (als Dessert) mit Kirschsauce",
     "en":"Semolina pudding (as dessert) with cherry sauce",
@@ -92356,20 +90760,6 @@
     "fiber":0.2,
     "salt":0.95,
     "emoji":"🥫"
-  },
-  {
-    "id":"F515902",
-    "de":"Litschi gezuckert, Konserve, abgetropft",
-    "en":"Lychee sugared, canned, drained",
-    "phe":0,
-    "kcal":68,
-    "protein":0.65,
-    "fat":0.239,
-    "carbs":15.3,
-    "sugar":15.1,
-    "fiber":1.097,
-    "salt":0.005,
-    "emoji":"🥭"
   },
   {
     "id":"E607182",
@@ -93056,20 +91446,6 @@
     "fiber":0.2,
     "salt":0.006,
     "emoji":"🧃"
-  },
-  {
-    "id":"F517902",
-    "de":"Papaya gezuckert, Konserve, abgetropft",
-    "en":"Papaya sugared, canned, drained",
-    "phe":0,
-    "kcal":58,
-    "protein":0.5,
-    "fat":0.079,
-    "carbs":13.2,
-    "sugar":13.2,
-    "fiber":1.4,
-    "salt":0.02,
-    "emoji":"🥭"
   },
   {
     "id":"T930862",
@@ -93954,20 +92330,6 @@
     "emoji":"🫐"
   },
   {
-    "id":"F516902",
-    "de":"Mango gezuckert, Konserve, abgetropft",
-    "en":"Mango sugared, canned, drained",
-    "phe":0,
-    "kcal":65,
-    "protein":0.5,
-    "fat":0.395,
-    "carbs":14,
-    "sugar":12.8,
-    "fiber":1.3,
-    "salt":0.012,
-    "emoji":"🥭"
-  },
-  {
     "id":"Y567133",
     "de":"Hühnerherzen geschmort, in Weißweinsauce von heller/weißer Grundsauce",
     "en":"Chicken hearts braised, in white wine sauce from white basic sauce",
@@ -94540,20 +92902,6 @@
     "fiber":1.1,
     "salt":0.118,
     "emoji":"🍮"
-  },
-  {
-    "id":"F22A902",
-    "de":"Pflaume ungesüßt, Konserve, abgetropft",
-    "en":"Plum unsweetened, canned, drained",
-    "phe":0,
-    "kcal":22,
-    "protein":0.24,
-    "fat":0.141,
-    "carbs":4.52,
-    "sugar":3.42,
-    "fiber":1.1,
-    "salt":0.0038,
-    "emoji":"🍑"
   },
   {
     "id":"G440902",

@@ -1,0 +1,156 @@
+# Phe not determined (marker '-'): 35
+S120000 Honig
+S121000 Blütenhonig (Nektarhonig)
+S122000 Honigtauhonig (Waldhonig)
+F506100 Granatapfel roh
+F511100 Acerola roh
+F515100 Litschi roh
+P2B1100 Rosewein lieblich
+R421100 Backpulver
+R434000 Sahnestandmittel
+R466000 Apfelpektin getrocknet
+X4A1000 Fischbrühe
+F529100 Japanische Wollmispel/Loquat, roh
+K762400 Hefe Flocken/Nährhefe
+N419000 Türkischer Mokka (Getränk)
+N415000 Kaffee (Getränk) entkoffeiniert
+N416000 Kaffee (Getränk) koffeinreduziert
+P2B1000 Rosewein süß
+P2B1200 Rosewein halbtrocken
+S351000 Fondant (Fondantmasse)
+S152000 Melasse
+S361000 Fruchtgummi (Gummibonbon)
+X412263 Geflügelkraftbrühe (Huhn)
+X412463 Fischkraftbrühe
+X412053 Rinderkraftbrühe
+X411363 Wildbrühe
+X413663 Doppelte Rinderkraftbrühe
+X411563 Kalbsbrühe
+X412363 Wildkraftbrühe
+G492100 Bärlauch roh
+S353000 Fondant mit Pfefferminzgeschmack
+S355000 Fondantkonfekt
+S356000 Fondantcreme
+P560000 Bitterlikör/Kräuterlikör/Gewürzlikör
+F511600 Acerolasaft
+F515600 Litschisaft
+
+# Implausible Phe = 0 (protein > 0.5 g or >= 2 other amino acids present): 118
+F408000 Moltebeere roh
+F411100 Wald-Himbeere roh
+F403100 Schlehe roh
+F201100 Aprikose roh
+F516100 Mango roh
+F517100 Papaya roh
+G582100 Zucchini roh
+F140100 Quitte roh
+F404100 Eberesche süß, roh
+F220100 Pflaume roh
+F203100 Pfirsich roh
+G103100 Eisbergsalat roh
+G486100 Frühlingszwiebel/Lauchzwiebel (ohne Laub) roh
+G568900 Tomate geschält, Konserve
+P172000 Bockbier
+P177000 Stout
+Q683000 Butterschmalz
+Q6A7000 Mischfett mit überwiegend Milchfett, ungesalzen
+Q620000 Sauerrahmbutter
+F605100 Pampelmuse/Pomelo, roh
+F604100 Grapefruit roh
+G414100 Gemüseartischocke/Kardone, roh
+P166000 Export dunkel
+F504100 Dattel roh
+F501100 Ananas roh
+F608100 Satsuma roh
+Q4A1000 Pflanzenmargarine Dreiviertelfett, angereichert mit Vitaminen
+Q400000 Pflanzenmargarine Vollfett, angereichert mit Vitaminen
+Q4C1000 Pflanzliches Streichfett mit > 62 - < 80 % Fett, angereichert mit Vitaminen
+S358300 Vanillefondant
+G486132 Frühlingszwiebel/Lauchzwiebel (ohne Laub) gekocht
+F201600 Aprikosensaft
+Y849440 Grapefruit gezuckert
+F605600 Pampelmusensaft/Pomelosaft
+G486182 Frühlingszwiebel/Lauchzwiebel (ohne Laub) gebraten ohne Fett (Pfanne)
+R913000 Wasabi-Paste Konserve
+G486142 Frühlingszwiebel/Lauchzwiebel (ohne Laub) geschmort ohne Fett
+S161000 Pflaumenmus
+X3A8000 Essigmarinade warm, für gekochte Salate
+G582152 Zucchini gedünstet
+Q6A7100 Mischfett mit überwiegend Milchfett, gesalzen
+F140152 Quitte gedünstet
+S440000 Gelee-Früchte
+G582172 Zucchini gegrillt
+Y841743 Pflaumenkompott/Zwetschgenkompott
+F516400 Mango getrocknet
+F501152 Ananas gedünstet
+G582142 Zucchini geschmort ohne Fett
+P288300 Ananasbowle
+Y842712 Pflaumenkompott/Zwetschgenkompott, zuckerreduziert
+G486152 Frühlingszwiebel/Lauchzwiebel (ohne Laub) gedünstet
+F403600 Schlehensaft
+S475100 Ananas kandiert
+P9A8000 Cocktail, Kir Royal
+Y841412 Aprikosenkompott ungesüßt
+Y841812 Pfirsichkompott ungesüßt
+G582182 Zucchini gebraten ohne Fett (Pfanne)
+F608600 Satsumasaft
+P287000 Kalte Ente (Bowle aus Wein und Sekt)
+F140132 Quitte gekocht
+F220600 Pflaumensaft
+F203152 Pfirsich gedünstet
+F140600 Quittensaft
+G470200 Porree/Lauch, tiefgefroren
+F220152 Pflaume gedünstet
+F501400 Ananas getrocknet
+F517400 Papaya getrocknet
+G582162 Zucchini gebacken
+F516600 Mangosaft
+G582132 Zucchini gekocht
+G414132 Gemüseartischocke/Kardone, gekocht
+G486162 Frühlingszwiebel/Lauchzwiebel (ohne Laub) gebacken
+F201152 Aprikose gedünstet
+X321153 Tomatensauce von heller/weißer Grundsauce
+P9A9000 Cocktail, Caipirinha
+Y846312 Pfirsichkompott mit Süßstoff
+G940100 Gemüseaufstrich, Brotaufstrich pflanzlich
+G470262 Porree/Lauch, tiefgefroren, gebacken
+Y841843 Pfirsichkompott
+N390100 Cola-Misch-Getränk Orange
+N630700 Schwarztee (Getränk) mit Zitronensaft und Zucker
+X4A6020 Tomatensuppe aus Tomatenmark mit Gemüsebrühe
+Y852312 Quittenkompott mit Süßstoff
+Y842412 Aprikosenkompott mit Süßstoff
+N001000 Nearwater/Aqua Plus Getränk, aromatisiert, ungesüßt
+X369243 Rotweinsauce süß
+P9A7100 Cocktail, Cuba Libre
+X416513 Gemüsebrühe mit Teigwaren eifrei
+X422643 Fleischbrühe mit Teigwaren eifrei
+X321163 Tomatensauce aus Tomatenmark
+G470282 Porree/Lauch, tiefgefroren, gebraten ohne Fett (Pfanne)
+Y841443 Aprikosenkompott
+N0A1000 Nearwater/Aqua Plus Getränk, mit Fruchtsaft, aromatisiert, gesüßt
+P9A7110 Cocktail, Mojito
+Y849912 Pflaumenkompott/Zwetschgenkompott, mit Süßstoff
+F516700 Mangonektar
+Y845312 Pfirsichkompott zuckerreduziert
+X336661 Pfeffersauce von dunkler/brauner Grundsauce
+G470252 Porree/Lauch, tiefgefroren, gedünstet
+G470232 Porree/Lauch, tiefgefroren, gekocht
+G470242 Porree/Lauch, tiefgefroren, geschmort ohne Fett
+F203700 Pfirsichnektar
+F227902 Pflaume mit Süßungsmitteln, Konserve, abgetropft
+N276000 Pfirsich-Maracujanektarschorle
+F201902 Aprikose gezuckert, Konserve, abgetropft
+X447413 Tomatensuppe aus frischen Tomaten, Gemüsebrühe und Teigwaren eifrei
+F208902 Pfirsich ungesüßt, Konserve, abgetropft
+F220902 Pflaume gezuckert, Konserve, abgetropft
+F2C1902 Aprikose ungesüßt, Konserve, abgetropft
+F2B1902 Aprikose mit Süßungsmitteln, Konserve, abgetropft
+F597902 Ananas mit Süßungsmitteln, Konserve, abgetropft
+X447313 Tomatensuppe aus Tomatenmark, Gemüsebrühe und Teigwaren eifrei
+G582802 Zucchini gesäuert, abgetropft
+F591902 Ananas ungesüßt, Konserve, abgetropft
+F515902 Litschi gezuckert, Konserve, abgetropft
+F517902 Papaya gezuckert, Konserve, abgetropft
+F516902 Mango gezuckert, Konserve, abgetropft
+F22A902 Pflaume ungesüßt, Konserve, abgetropft
