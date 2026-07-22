@@ -350,7 +350,7 @@
     "progress-style-circles": "Círculos",
     "preferred-tool": "Herramienta predeterminada del botón añadir",
     "max-phe": "Tolerancia de Phe por día",
-    "max-kcal": "Kcal por día",
+    "max-kcal": "Necesidades calóricas por día",
     "blood-phe-min": "Phe en sangre mín.",
     "blood-phe-max": "Phe en sangre máx.",
     "blood-tyr-min": "Tirosina mín.",
@@ -556,7 +556,18 @@
   },
   "getting-started": {
     "title": "Primeros Pasos",
-    "subtitle": "¡Bienvenido a PKU Tools! Aquí puedes configurar la aplicación y dar tu consentimiento para el procesamiento de datos."
+    "subtitle": "¡Bienvenido a PKU Tools! Aquí puedes configurar la aplicación y dar tu consentimiento para el procesamiento de datos.",
+    "step": "Paso {current} de {total}",
+    "back": "Atrás",
+    "continue": "Continuar",
+    "optional-hint": "Opcional. Puedes cambiarlo más tarde en la configuración.",
+    "targets-title": "Objetivos diarios",
+    "targets-description": "Establece tu tolerancia de Phe y tus necesidades calóricas por día. El diario las usa para mostrar tu progreso diario.",
+    "blood-title": "Valores de sangre",
+    "blood-description": "Elige la unidad de tu laboratorio y establece tus rangos objetivo de Phe en sangre y tirosina. El gráfico de valores de sangre muestra estos rangos.",
+    "done-title": "¡Todo listo!",
+    "done-description": "Con estas herramientas determinas la fenilalanina de cualquier alimento y la añades al diario.",
+    "go-diary": "Ir al diario"
   },
   "community": {
     "statistics": "Estadísticas:",

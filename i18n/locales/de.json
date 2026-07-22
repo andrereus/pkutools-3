@@ -350,9 +350,9 @@
     "progress-style-circles": "Kreise",
     "preferred-tool": "Standard-Tool für Hinzufügen-Button",
     "max-phe": "Phe-Toleranz pro Tag",
-    "max-kcal": "Kcal pro Tag",
-    "blood-phe-min": "Blut-Phe min",
-    "blood-phe-max": "Blut-Phe max",
+    "max-kcal": "Kalorienbedarf pro Tag",
+    "blood-phe-min": "Phe-Spiegel min",
+    "blood-phe-max": "Phe-Spiegel max",
     "blood-tyr-min": "Tyrosin min",
     "blood-tyr-max": "Tyrosin max",
     "saved": "Gespeichert",
@@ -556,7 +556,18 @@
   },
   "getting-started": {
     "title": "Erste Schritte",
-    "subtitle": "Willkommen bei PKU Tools! Hier kannst du die App einrichten und der Datenverarbeitung zustimmen."
+    "subtitle": "Willkommen bei PKU Tools! Hier kannst du die App einrichten und der Datenverarbeitung zustimmen.",
+    "step": "Schritt {current} von {total}",
+    "back": "Zurück",
+    "continue": "Weiter",
+    "optional-hint": "Optional. Du kannst das später in den Einstellungen ändern.",
+    "targets-title": "Tagesziele",
+    "targets-description": "Lege deine Phe-Toleranz und deinen Kalorienbedarf pro Tag fest. Das Tagebuch zeigt damit deinen täglichen Fortschritt.",
+    "blood-title": "Blutwerte",
+    "blood-description": "Wähle die Einheit deines Labors und lege deine Zielbereiche für Phe- und Tyrosin-Spiegel fest. Das Diagramm der Blutwerte zeigt diese Bereiche.",
+    "done-title": "Fertig!",
+    "done-description": "Mit diesen Tools bestimmst du das Phenylalanin von jedem Lebensmittel und fügst es dem Tagebuch hinzu.",
+    "go-diary": "Zum Tagebuch"
   },
   "community": {
     "statistics": "Statistiken:",

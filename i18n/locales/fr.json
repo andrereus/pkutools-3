@@ -350,9 +350,9 @@
     "progress-style-circles": "Cercles",
     "preferred-tool": "Outil par défaut du bouton ajouter",
     "max-phe": "Tolérance de Phe par jour",
-    "max-kcal": "Kcal par jour",
-    "blood-phe-min": "Phe sanguine min",
-    "blood-phe-max": "Phe sanguine max",
+    "max-kcal": "Besoins caloriques par jour",
+    "blood-phe-min": "Taux de Phe min",
+    "blood-phe-max": "Taux de Phe max",
     "blood-tyr-min": "Tyrosine min",
     "blood-tyr-max": "Tyrosine max",
     "saved": "Enregistré",
@@ -556,7 +556,18 @@
   },
   "getting-started": {
     "title": "Premiers Pas",
-    "subtitle": "Bienvenue dans PKU Tools ! Ici tu peux configurer l'application et donner ton consentement pour le traitement des données."
+    "subtitle": "Bienvenue dans PKU Tools ! Ici tu peux configurer l'application et donner ton consentement pour le traitement des données.",
+    "step": "Étape {current} sur {total}",
+    "back": "Retour",
+    "continue": "Continuer",
+    "optional-hint": "Optionnel. Tu peux le modifier plus tard dans les paramètres.",
+    "targets-title": "Objectifs quotidiens",
+    "targets-description": "Définis ta tolérance de Phe et tes besoins caloriques par jour. Le journal les utilise pour afficher ta progression quotidienne.",
+    "blood-title": "Valeurs sanguines",
+    "blood-description": "Choisis l'unité de ton laboratoire et définis tes plages cibles pour les taux de Phe et de tyrosine. Le graphique des valeurs sanguines montre ces plages.",
+    "done-title": "C'est prêt !",
+    "done-description": "Avec ces outils tu détermines la phénylalanine de chaque aliment et l'ajoutes au journal.",
+    "go-diary": "Vers le journal"
   },
   "community": {
     "statistics": "Statistiques :",

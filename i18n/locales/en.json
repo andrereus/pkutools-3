@@ -350,7 +350,7 @@
     "progress-style-circles": "Circles",
     "preferred-tool": "Default tool for add button",
     "max-phe": "Phe tolerance per day",
-    "max-kcal": "Kcal per day",
+    "max-kcal": "Calorie requirement per day",
     "blood-phe-min": "Blood Phe min",
     "blood-phe-max": "Blood Phe max",
     "blood-tyr-min": "Tyrosine min",
@@ -556,7 +556,18 @@
   },
   "getting-started": {
     "title": "Getting Started",
-    "subtitle": "Welcome to PKU Tools! Here you can set up the app and consent to data processing."
+    "subtitle": "Welcome to PKU Tools! Here you can set up the app and consent to data processing.",
+    "step": "Step {current} of {total}",
+    "back": "Back",
+    "continue": "Continue",
+    "optional-hint": "Optional. You can change this later in the settings.",
+    "targets-title": "Daily Targets",
+    "targets-description": "Set your Phe tolerance and calorie requirement per day. The diary uses them to show your daily progress.",
+    "blood-title": "Blood Values",
+    "blood-description": "Choose the unit your lab uses and set your target ranges for blood Phe and tyrosine. The blood values chart shows these ranges.",
+    "done-title": "All Set!",
+    "done-description": "With these tools you determine the phenylalanine of any food and add it to your diary.",
+    "go-diary": "Go to Diary"
   },
   "community": {
     "statistics": "Statistics:",
