@@ -144,11 +144,11 @@
     "show-more": "Mostrar más",
     "sources": "Fuentes",
     "search-info": "Afina tu búsqueda con varias palabras, por ejemplo \"manzanas crudas\" o \"patatas cocidas\". Fuente: fdc.nal.usda.gov",
-    "search-info-2": "Para productos con código de barras, utiliza el escáner de códigos de barras.",
     "own-food": "Propio",
     "own-food-indicator": "Este es tu propio alimento",
-    "add-food": "Añadir alimento",
-    "add-food-description": "¿No lo encuentras? Estima con IA o añade tu propio alimento a la búsqueda."
+    "product-link": "Para productos con código de barras, utiliza el {tool}.",
+    "not-found-link": "¿No lo encuentras? Estima cualquier cosa con la {ai} o añade tu {own} a la búsqueda.",
+    "not-found-link-own": "propio alimento"
   },
   "phe-calculator": {
     "title": "Calculadora de Phe",
@@ -219,9 +219,8 @@
     "camera": "Cámara",
     "camera-default": "Automática",
     "info": "Phe se calcula a partir de proteínas. Fuente: openfoodfacts.org",
-    "info-2": "Para escanear datos nutricionales de la etiqueta, usa la Calculadora IA.",
     "no-protein": "Proteína no disponible para el cálculo.",
-    "protein-link": "Convertir proteínas manualmente",
+    "no-protein-link": "Escanea la etiqueta con la {ai} o convierte la proteína manualmente con la {phe}.",
     "error": "Algo ha ido mal. Si el error se repite, prueba a reiniciar la aplicación.",
     "error-not-found": "Código incorrecto o producto no encontrado.",
     "looking-up": "Buscando producto…",

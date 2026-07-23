@@ -23,7 +23,9 @@ const signInGoogle = async () => {
 }
 
 // Reactive state
-const mode = ref('estimate') // 'estimate' | 'label'
+// 'estimate' | 'label' — ?mode=label deep-links straight to the label scanner
+// (used by the barcode scanner's label link)
+const mode = ref(useRoute().query.mode === 'label' ? 'label' : 'estimate')
 const description = ref('')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isEstimating = ref(false)

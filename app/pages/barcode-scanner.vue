@@ -371,6 +371,11 @@ defineOgImage('NuxtSeo', {
     </header>
 
     <PrimaryButton :text="$t('barcode-scanner.scan-barcode')" class="mt-2" @click="openDialog" />
+    <SecondaryButton
+      :text="$t('ai-calculator.read-label')"
+      class="mt-2"
+      @click="navigateTo(localePath('ai-calculator') + '?mode=label')"
+    />
 
     <ModalDialog
       ref="dialog"
@@ -512,19 +517,30 @@ defineOgImage('NuxtSeo', {
         />
       </div>
 
-      <div v-if="result.product.nutriments?.proteins_100g == null">
-        <p>{{ $t('barcode-scanner.no-protein') }}</p>
-        <NuxtLink :to="$localePath('phe-calculator')" class="text-sky-500">
-          {{ $t('barcode-scanner.protein-link') }} <span aria-hidden="true">→</span>
-        </NuxtLink>
-      </div>
+      <p v-if="result.product.nutriments?.proteins_100g == null">
+        {{ $t('barcode-scanner.no-protein') }}
+        {{ ' ' }}
+        <i18n-t keypath="barcode-scanner.no-protein-link" tag="span" scope="global">
+          <template #ai>
+            <NuxtLink
+              :to="$localePath('ai-calculator') + '?mode=label'"
+              class="text-sky-600 dark:text-sky-400 hover:underline"
+              >{{ $t('ai-calculator.title') }}</NuxtLink
+            >
+          </template>
+          <template #phe>
+            <NuxtLink
+              :to="$localePath('phe-calculator')"
+              class="text-sky-600 dark:text-sky-400 hover:underline"
+              >{{ $t('phe-calculator.title') }}</NuxtLink
+            >
+          </template>
+        </i18n-t>
+      </p>
     </div>
 
     <p class="mt-4 text-gray-600 dark:text-gray-400 italic text-sm">
       {{ $t('barcode-scanner.info') }}
-    </p>
-    <p class="mt-2 text-gray-600 dark:text-gray-400 italic text-sm">
-      {{ $t('barcode-scanner.info-2') }}
     </p>
   </div>
 </template>

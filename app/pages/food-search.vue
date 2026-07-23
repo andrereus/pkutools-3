@@ -571,37 +571,35 @@ defineOgImage('NuxtSeo', {
       <p class="mt-6 text-gray-600 dark:text-gray-400 italic text-sm">
         {{ $t('food-search.search-info') }}
       </p>
-      <p class="mt-2 text-gray-600 dark:text-gray-400 italic text-sm">
-        {{ $t('food-search.search-info-2') }}
+      <!-- Tool referrals: products in the scanner, estimates in the AI calculator, the rest in own food -->
+      <p v-if="userIsAuthenticated" class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <i18n-t keypath="food-search.product-link" tag="span" scope="global">
+          <template #tool>
+            <NuxtLink
+              :to="$localePath('barcode-scanner')"
+              class="text-sky-600 dark:text-sky-400 hover:underline"
+              >{{ $t('barcode-scanner.title') }}</NuxtLink
+            >
+          </template>
+        </i18n-t>
+        {{ ' ' }}
+        <i18n-t keypath="food-search.not-found-link" tag="span" scope="global">
+          <template #ai>
+            <NuxtLink
+              :to="$localePath('ai-calculator')"
+              class="text-sky-600 dark:text-sky-400 hover:underline"
+              >{{ $t('ai-calculator.title') }}</NuxtLink
+            >
+          </template>
+          <template #own>
+            <NuxtLink
+              :to="$localePath('own-food')"
+              class="text-sky-600 dark:text-sky-400 hover:underline"
+              >{{ $t('food-search.not-found-link-own') }}</NuxtLink
+            >
+          </template>
+        </i18n-t>
       </p>
-
-      <!-- Food not found call-to-action -->
-      <div
-        v-if="userIsAuthenticated"
-        class="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-lg bg-sky-50 dark:bg-sky-900/20 px-4 py-3"
-      >
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          {{ $t('food-search.add-food-description') }}
-        </p>
-        <div class="flex flex-wrap gap-2">
-          <button
-            type="button"
-            class="inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/5 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400 cursor-pointer"
-            @click="navigateTo(localePath('ai-calculator'))"
-          >
-            <LucideSparkles class="h-4 w-4" />
-            {{ $t('ai-calculator.title') }}
-          </button>
-          <button
-            type="button"
-            class="inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/5 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400 cursor-pointer"
-            @click="navigateTo(localePath('own-food'))"
-          >
-            <LucidePlus class="h-4 w-4" />
-            {{ $t('food-search.add-food') }}
-          </button>
-        </div>
-      </div>
 
       <ModalDialog
         ref="dialog"

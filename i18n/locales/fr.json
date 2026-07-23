@@ -144,11 +144,11 @@
     "show-more": "Afficher plus",
     "sources": "Sources",
     "search-info": "Affine ta recherche avec plusieurs mots, par exemple \"pommes crues\" ou \"pommes de terre cuites\". Source: fdc.nal.usda.gov",
-    "search-info-2": "Pour les produits avec code-barres, utilise le scanner de codes-barres.",
     "own-food": "Propre",
     "own-food-indicator": "C'est ton propre aliment",
-    "add-food": "Ajouter un aliment",
-    "add-food-description": "Tu ne trouves pas ? Estime avec l'IA ou ajoute ton propre aliment à la recherche."
+    "product-link": "Pour les produits avec code-barres, utilise le {tool}.",
+    "not-found-link": "Tu ne trouves pas ? Estime tout avec le {ai} ou ajoute ton {own} à la recherche.",
+    "not-found-link-own": "propre aliment"
   },
   "phe-calculator": {
     "title": "Calculateur Phe",
@@ -219,9 +219,8 @@
     "camera": "Caméra",
     "camera-default": "Automatique",
     "info": "Le Phe est calculé à partir des protéines. Source: openfoodfacts.org",
-    "info-2": "Pour scanner les données nutritionnelles de l'étiquette, utilise le Calculateur IA.",
     "no-protein": "Protéines non disponibles pour le calcul.",
-    "protein-link": "Convertir manuellement les protéines",
+    "no-protein-link": "Scanne l'étiquette avec le {ai} ou convertis les protéines manuellement avec le {phe}.",
     "error": "Quelque chose s'est mal passé. Si l'erreur se reproduit, essaie de redémarrer l'application.",
     "error-not-found": "Code erroné ou produit introuvable.",
     "looking-up": "Recherche du produit…",

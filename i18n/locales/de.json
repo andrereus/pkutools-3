@@ -144,11 +144,11 @@
     "show-more": "Mehr anzeigen",
     "sources": "Quellen",
     "search-info": "Verfeinere deine Suche mit mehreren Wörtern, z.B. \"äpfel roh\" oder \"kartoffeln gekocht\". Quellen: USDA (fdc.nal.usda.gov) und BLS (Max Rubner-Institut)",
-    "search-info-2": "Verwende für Produkte mit Barcode den Barcode Scanner.",
     "own-food": "Eigenes",
     "own-food-indicator": "Dies ist dein eigenes Lebensmittel",
-    "add-food": "Lebensmittel hinzufügen",
-    "add-food-description": "Nicht gefunden? Schätze mit KI oder füge dein eigenes Lebensmittel zur Suche hinzu."
+    "product-link": "Verwende für Produkte mit Barcode den {tool}.",
+    "not-found-link": "Nicht gefunden? Schätze alles mit dem {ai} oder füge dein {own} zur Suche hinzu.",
+    "not-found-link-own": "eigenes Lebensmittel"
   },
   "phe-calculator": {
     "title": "Phe Rechner",
@@ -219,9 +219,8 @@
     "camera": "Kamera",
     "camera-default": "Automatisch",
     "info": "Phe wird aus Eiweiß berechnet. Quelle: openfoodfacts.org",
-    "info-2": "Um Nährwertdaten vom Etikett zu scannen, verwende den KI Rechner.",
     "no-protein": "Eiweiß zur Berechnung nicht vorhanden.",
-    "protein-link": "Eiweiß manuell umrechnen",
+    "no-protein-link": "Scanne das Etikett mit dem {ai} oder rechne Eiweiß mit dem {phe} manuell um.",
     "error": "Etwas ist schief gelaufen. Falls der Fehler erneut auftritt, versuche die App neu zu starten.",
     "error-not-found": "Falscher Code oder Produkt nicht gefunden.",
     "looking-up": "Produkt wird gesucht …",
