@@ -206,7 +206,7 @@ onBeforeUnmount(() => {
                 <!-- Photo + Calculate actions -->
                 <div class="mt-3 flex items-center gap-2">
                   <span
-                    class="inline-flex items-center gap-1 rounded-full bg-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                    class="inline-flex items-center gap-1 rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-gray-900 dark:bg-white/15 dark:text-gray-300"
                   >
                     <LucideCamera class="h-4 w-4" aria-hidden="true" />
                     {{ $t('ai-calculator.analyze-photo') }}
@@ -220,13 +220,9 @@ onBeforeUnmount(() => {
 
                 <!-- AI result row (rises in after the estimate) -->
                 <div
-                  class="demo-result mt-4 flex items-center gap-3 rounded-xl bg-white px-3 py-3 ring-1 ring-gray-900/5 dark:bg-gray-800/60 dark:ring-white/10"
+                  class="demo-result mt-4 flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-3 ring-1 ring-gray-900/5 dark:bg-gray-800/60 dark:ring-white/10"
                 >
-                  <div
-                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-xl dark:bg-gray-800"
-                  >
-                    <span aria-hidden="true">{{ appleEmoji }}</span>
-                  </div>
+                  <span class="shrink-0 text-xl" aria-hidden="true">{{ appleEmoji }}</span>
                   <div class="min-w-0 flex-1">
                     <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
                       {{ query }}
@@ -250,9 +246,9 @@ onBeforeUnmount(() => {
                   </span>
                   <LucideChevronRight class="h-5 w-5 text-gray-400" aria-hidden="true" />
                 </div>
-                <!-- Daily total in the diary's gray summary box -->
+                <!-- Daily total in the diary's summary card -->
                 <div
-                  class="relative mt-3 rounded-md bg-gray-50 px-3 py-3 shadow-inner dark:bg-gray-800/60"
+                  class="relative mt-3 rounded-xl bg-gray-50 px-3 py-3 ring-1 ring-gray-900/5 dark:bg-gray-800/60 dark:ring-white/10"
                 >
                   <span
                     class="demo-chip absolute -top-2 right-3 text-xs font-bold text-teal-500"

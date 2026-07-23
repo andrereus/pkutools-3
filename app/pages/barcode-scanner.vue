@@ -443,32 +443,39 @@ defineOgImage('NuxtSeo', {
       </div>
     </ModalDialog>
 
-    <div v-if="result">
+    <div
+      v-if="result"
+      class="mt-6 rounded-xl bg-white dark:bg-gray-900 p-4 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
+    >
       <img
         v-if="result.product.image_small_url"
         :src="result.product.image_small_url"
         max-height="200"
         max-width="200"
-        class="my-6"
+        class="mb-4"
       />
 
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mt-3 mb-1">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-1">
         {{ result.product.product_name }}
       </h2>
 
       <!-- Do not remove -->
-      <p v-if="code !== ''" class="text-sm mb-6">Code: {{ code }}</p>
+      <p v-if="code !== ''" class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+        Code: {{ code }}
+      </p>
 
       <div v-if="result.product.nutriments?.proteins_100g != null">
-        <p class="text-xl mb-1">
-          {{ result.product.nutriments.proteins_100g }}
-          {{ result.product.nutriments.proteins_unit }}
-          {{ $t('common.short-protein-per-100g') }}
-        </p>
-        <p v-if="result.product.nutriments['energy-kcal_100g']" class="text-sm mb-6">
-          {{ result.product.nutriments['energy-kcal_100g'] || 0 }}
-          {{ $t('common.kcal-per-100g') }}
-        </p>
+        <div class="flex gap-4 text-gray-600 dark:text-gray-400 mb-4">
+          <span class="flex-1">
+            {{ result.product.nutriments.proteins_100g }}
+            {{ result.product.nutriments.proteins_unit }}
+            {{ $t('common.short-protein-per-100g') }}
+          </span>
+          <span v-if="result.product.nutriments['energy-kcal_100g']" class="flex-1">
+            {{ result.product.nutriments['energy-kcal_100g'] || 0 }}
+            {{ $t('common.kcal-per-100g') }}
+          </span>
+        </div>
 
         <DateInput
           v-if="userIsAuthenticated"
@@ -487,13 +494,14 @@ defineOgImage('NuxtSeo', {
           v-model.number="weight"
           id-name="weight"
           :label="$t('common.consumed-weight')"
-          class="mb-6"
         />
 
-        <p class="text-xl mb-1">≈ {{ calculatePhe() }} mg Phe</p>
-        <p v-if="result.product.nutriments['energy-kcal_100g']" class="text-sm mb-6">
-          = {{ calculateKcal() }} {{ $t('common.kcal') }}
-        </p>
+        <div class="flex gap-4 my-4">
+          <span class="flex-1 text-lg">≈ {{ calculatePhe() }} mg Phe</span>
+          <span v-if="result.product.nutriments['energy-kcal_100g']" class="flex-1 text-lg">
+            = {{ calculateKcal() }} {{ $t('common.kcal') }}
+          </span>
+        </div>
 
         <PrimaryButton
           v-if="userIsAuthenticated"
@@ -504,7 +512,7 @@ defineOgImage('NuxtSeo', {
         />
       </div>
 
-      <div v-if="result.product.nutriments?.proteins_100g == null" class="mb-6">
+      <div v-if="result.product.nutriments?.proteins_100g == null">
         <p>{{ $t('barcode-scanner.no-protein') }}</p>
         <NuxtLink :to="$localePath('phe-calculator')" class="text-sky-500">
           {{ $t('barcode-scanner.protein-link') }} <span aria-hidden="true">→</span>

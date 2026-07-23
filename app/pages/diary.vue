@@ -584,7 +584,9 @@ defineOgImage('NuxtSeo', {
         </button>
       </div>
 
-      <div class="relative mb-6 py-3 px-3 bg-gray-100 dark:bg-gray-900 rounded-xl shadow-inner">
+      <div
+        class="relative mb-6 py-3 px-3 rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
+      >
         <!-- Header: label + view toggle (progress bars vs. circles) -->
         <div class="flex items-center justify-between mb-2">
           <h2

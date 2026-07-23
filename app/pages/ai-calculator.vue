@@ -684,7 +684,7 @@ defineOgImage('NuxtSeo', {
         <div class="flex items-center gap-2 mt-3">
           <button
             type="button"
-            class="rounded-full bg-gray-200 px-3 py-1.5 text-sm font-semibold text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
+            class="rounded-full bg-black/5 px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-xs hover:bg-black/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:bg-white/15 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-gray-400 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
             :disabled="isBusy"
             :title="$t('phe-calculator.add-photo')"
             @click="
@@ -753,7 +753,7 @@ defineOgImage('NuxtSeo', {
         <button
           v-if="!isLabelResult"
           type="button"
-          class="shrink-0 inline-flex items-center gap-1 rounded-full bg-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 shadow-xs hover:bg-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          class="shrink-0 inline-flex items-center gap-1 rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-gray-900 shadow-xs hover:bg-black/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:bg-white/15 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-gray-400 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           :disabled="isBusy || remainingEstimates === 0"
           :title="$t('ai-calculator.correct-title')"
           @click="openCorrectionDialog"
