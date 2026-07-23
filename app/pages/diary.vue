@@ -448,15 +448,20 @@ const save = async () => {
 const toggleIncomplete = async () => {
   if (!selectedDiaryEntry.value) return
   const entry = selectedDiaryEntry.value
+  const incomplete = !entry.incomplete
+  // Flip the store entry before the request so the switch reacts instantly;
+  // the RTDB echo confirms it, and an error reverts it.
+  entry.incomplete = incomplete
   try {
     await updateDiaryDay({
       entryKey: entry['.key'],
       date: entry.date,
       phe: entry.phe ?? 0,
       kcal: entry.kcal ?? 0,
-      incomplete: !entry.incomplete
+      incomplete
     })
   } catch (error) {
+    entry.incomplete = !incomplete
     console.error('Toggle incomplete error:', error)
   }
 }
@@ -912,26 +917,13 @@ defineOgImage('NuxtSeo', {
       </div>
 
       <div v-if="selectedDiaryEntry" class="mt-6 flex items-center">
-        <button
+        <ToggleSwitch
           id="diary-day-incomplete"
-          type="button"
-          role="switch"
-          :aria-checked="!!selectedDiaryEntry.incomplete"
+          :model-value="!!selectedDiaryEntry.incomplete"
+          small
           aria-labelledby="diary-day-incomplete-label"
-          :class="[
-            !!selectedDiaryEntry.incomplete ? 'bg-sky-600' : 'bg-gray-200 dark:bg-gray-700',
-            'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600'
-          ]"
-          @click="toggleIncomplete"
-        >
-          <span
-            aria-hidden="true"
-            :class="[
-              !!selectedDiaryEntry.incomplete ? 'translate-x-4' : 'translate-x-0',
-              'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
-            ]"
-          />
-        </button>
+          @update:model-value="toggleIncomplete"
+        />
         <span
           id="diary-day-incomplete-label"
           class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"

@@ -234,6 +234,14 @@ const revokeHealthDataConsent = async () => {
   }
 }
 
+const toggleHealthConsent = (value) => {
+  if (value === true) {
+    giveHealthDataConsent()
+  } else {
+    revokeHealthDataConsent()
+  }
+}
+
 const updateEmailConsent = async (emailConsent) => {
   try {
     await updateConsent({ emailConsent })
@@ -365,6 +373,31 @@ defineOgImage('NuxtSeo', {
     </div>
 
     <div v-if="userIsAuthenticated">
+      <!-- Missing Consent Warning -->
+      <div
+        v-if="settings.healthDataConsent !== true"
+        class="rounded-xl bg-amber-50 dark:bg-amber-900/20 p-4 shadow-sm ring-1 ring-amber-200 dark:ring-amber-800 mb-8"
+      >
+        <div class="flex items-start">
+          <LucideAlertTriangle
+            class="h-5 w-5 text-amber-600 dark:text-amber-400 mr-3 mt-0.5 shrink-0"
+          />
+          <div>
+            <p class="text-sm font-medium text-amber-800 dark:text-amber-200">
+              {{ $t('health-consent.no-consent-status') }}
+            </p>
+            <p class="mt-1 text-sm text-amber-700 dark:text-amber-300">
+              {{ $t('health-consent.no-consent-explanation') }}
+            </p>
+            <PrimaryButton
+              class="mt-3"
+              :text="$t('health-consent.accept')"
+              @click="giveHealthDataConsent"
+            />
+          </div>
+        </div>
+      </div>
+
       <!-- Getting Started Section -->
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
@@ -376,103 +409,6 @@ defineOgImage('NuxtSeo', {
           {{ $t('getting-started.subtitle') }}
         </p>
         <SecondaryButton :text="$t('health-consent.reopen-onboarding')" @click="reopenOnboarding" />
-      </div>
-
-      <!-- Health Data Consent Section -->
-      <div
-        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
-      >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-          {{ $t('health-consent.title') }}
-        </h3>
-        <p class="mb-4 text-gray-600 dark:text-gray-400">
-          {{ $t('health-consent.subtitle') }}
-        </p>
-        <div
-          v-if="store.settings.healthDataConsent === true"
-          class="rounded-lg bg-teal-50 p-4 dark:bg-teal-900/20 mb-4"
-        >
-          <div class="flex items-center">
-            <LucideCheckCircle class="h-5 w-5 text-teal-600 dark:text-teal-400 mr-2" />
-            <span class="text-sm font-medium text-teal-800 dark:text-teal-200">
-              {{ $t('health-consent.consent-given') }}
-            </span>
-          </div>
-          <p class="mt-2 text-xs text-teal-700 dark:text-teal-300">
-            {{ $t('health-consent.consent-date') }}:
-            {{ formatConsentDate(settings.healthDataConsentDate) }}
-          </p>
-        </div>
-        <div v-else class="rounded-lg bg-amber-50 p-4 dark:bg-amber-900/20 mb-4">
-          <div class="flex items-center">
-            <LucideAlertTriangle class="h-5 w-5 text-amber-600 dark:text-amber-400 mr-2" />
-            <span class="text-sm font-medium text-amber-800 dark:text-amber-200">
-              {{ $t('health-consent.no-consent-status') }}
-            </span>
-          </div>
-          <p class="mt-2 text-xs text-amber-700 dark:text-amber-300">
-            {{ $t('health-consent.no-consent-explanation') }}
-          </p>
-        </div>
-        <div class="flex space-x-3">
-          <PrimaryButton
-            v-if="store.settings.healthDataConsent !== true"
-            :text="$t('health-consent.accept')"
-            @click="giveHealthDataConsent"
-          />
-          <SecondaryButton
-            v-if="store.settings.healthDataConsent === true"
-            :text="$t('health-consent.revoke')"
-            @click="revokeHealthDataConsent"
-          />
-        </div>
-      </div>
-
-      <!-- Email Notifications Section -->
-      <div
-        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
-      >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-          {{ $t('health-consent.email-consent-title') }}
-        </h3>
-        <p class="mb-4 text-gray-600 dark:text-gray-400">
-          {{ $t('health-consent.email-consent-subtitle') }}
-        </p>
-        <div
-          v-if="settings.emailConsent"
-          class="rounded-lg bg-teal-50 p-4 dark:bg-teal-900/20 mb-4"
-        >
-          <div class="flex items-center">
-            <LucideCheckCircle class="h-5 w-5 text-teal-600 dark:text-teal-400 mr-2" />
-            <span class="text-sm font-medium text-teal-800 dark:text-teal-200">
-              {{ $t('health-consent.email-consent-given') }}
-            </span>
-          </div>
-          <p class="mt-2 text-xs text-teal-700 dark:text-teal-300">
-            {{ $t('health-consent.email-consent-date') }}:
-            {{ formatConsentDate(settings.emailConsentDate) }}
-          </p>
-        </div>
-        <div v-else class="rounded-lg bg-gray-50 p-4 dark:bg-gray-900/20 mb-4">
-          <div class="flex items-center">
-            <LucideMail class="h-5 w-5 text-gray-600 dark:text-gray-400 mr-2" />
-            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">
-              {{ $t('health-consent.email-consent-not-given') }}
-            </span>
-          </div>
-        </div>
-        <div class="flex space-x-3">
-          <PrimaryButton
-            v-if="!settings.emailConsent"
-            :text="$t('health-consent.email-consent-accept')"
-            @click="updateEmailConsent(true)"
-          />
-          <SecondaryButton
-            v-if="settings.emailConsent"
-            :text="$t('health-consent.email-consent-revoke')"
-            @click="updateEmailConsent(false)"
-          />
-        </div>
       </div>
 
       <!-- App Settings Section -->
@@ -584,6 +520,54 @@ defineOgImage('NuxtSeo', {
         <PrimaryButton :text="$t('common.save')" @click="save" />
       </div>
 
+      <!-- Consent Section -->
+      <div
+        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
+      >
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+              {{ $t('health-consent.title') }}
+            </h3>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+              {{ $t('health-consent.subtitle') }}
+            </p>
+            <p
+              v-if="settings.healthDataConsent === true"
+              class="mt-1 text-xs text-gray-500 dark:text-gray-400"
+            >
+              {{ $t('health-consent.consent-date') }}:
+              {{ formatConsentDate(settings.healthDataConsentDate) }}
+            </p>
+          </div>
+          <ToggleSwitch
+            :model-value="settings.healthDataConsent === true"
+            :label="$t('health-consent.title')"
+            @update:model-value="toggleHealthConsent"
+          />
+        </div>
+        <div class="my-5 border-t border-gray-200 dark:border-gray-700" />
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+              {{ $t('health-consent.email-consent-title') }}
+            </h3>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+              {{ $t('health-consent.email-consent-subtitle') }}
+            </p>
+            <p v-if="settings.emailConsent" class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              {{ $t('health-consent.email-consent-date') }}:
+              {{ formatConsentDate(settings.emailConsentDate) }}
+            </p>
+          </div>
+          <ToggleSwitch
+            :model-value="settings.emailConsent === true"
+            :label="$t('health-consent.email-consent-title')"
+            @update:model-value="updateEmailConsent"
+          />
+        </div>
+      </div>
+
       <!-- Premium & License Section -->
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
@@ -642,9 +626,9 @@ defineOgImage('NuxtSeo', {
           {{ $t('settings.reset-heading') }}
         </h3>
         <div class="space-y-3">
-          <SecondaryButton :text="$t('settings.reset-diary')" @click="resetDiary" />
-          <SecondaryButton :text="$t('settings.reset-blood-values')" @click="resetLabValues" />
-          <SecondaryButton :text="$t('settings.reset-own-food')" @click="resetOwnFood" />
+          <DangerButton outline :text="$t('settings.reset-diary')" @click="resetDiary" />
+          <DangerButton outline :text="$t('settings.reset-blood-values')" @click="resetLabValues" />
+          <DangerButton outline :text="$t('settings.reset-own-food')" @click="resetOwnFood" />
         </div>
       </div>
 
@@ -658,7 +642,7 @@ defineOgImage('NuxtSeo', {
         <p class="mb-4 text-red-700 dark:text-red-300">
           {{ $t('settings.delete-account-info') }}
         </p>
-        <SecondaryButton :text="$t('settings.delete-account')" @click="handleDeleteAccount" />
+        <DangerButton :text="$t('settings.delete-account')" @click="handleDeleteAccount" />
       </div>
     </div>
   </div>
