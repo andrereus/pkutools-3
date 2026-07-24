@@ -238,7 +238,6 @@
     "title": "Eigene Lebensmittel",
     "tab-title": "Eig. Leb.",
     "description": "Hinterlege eigene Lebensmittel zum schnellen Hinzufügen.",
-    "share-info": "Teile deine eigenen Lebensmittel mit der Community – andere finden sie dann in der Lebensmittelsuche.",
     "export-filename": "PKU Tools - Eigene Lebensmittel",
     "generate-icon": "Icon generieren",
     "remove-icon": "Entfernen",
@@ -571,7 +570,7 @@
   "community": {
     "statistics": "Statistiken:",
     "share": "Mit Community teilen",
-    "shareLanguage": "Wird in {language} geteilt",
+    "shareLanguage": "Wird in {language} geteilt. Andere finden es dann in der Lebensmittelsuche.",
     "shared": "Mit Community geteilt",
     "sharedBadge": "Geteilt",
     "communityFood": "Community",

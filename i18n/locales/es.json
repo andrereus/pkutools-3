@@ -238,7 +238,6 @@
     "title": "Alimentos propios",
     "tab-title": "Alim. propios",
     "description": "Guarda tus propios alimentos para añadir rápidamente.",
-    "share-info": "Comparte tus propios alimentos con la comunidad para que otros los encuentren en la Búsqueda de alimentos.",
     "export-filename": "PKU Tools - Alimento propio",
     "generate-icon": "Generar icono",
     "remove-icon": "Quitar",
@@ -571,7 +570,7 @@
   "community": {
     "statistics": "Estadísticas:",
     "share": "Compartir con la comunidad",
-    "shareLanguage": "Se compartirá en {language}",
+    "shareLanguage": "Se compartirá en {language}. Otros lo encontrarán en la Búsqueda de alimentos.",
     "shared": "Compartido con la comunidad",
     "sharedBadge": "Compartido",
     "communityFood": "Comunidad",

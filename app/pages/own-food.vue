@@ -623,19 +623,6 @@ defineOgImage('NuxtSeo', {
     </div>
 
     <div v-if="userIsAuthenticated">
-      <!-- Info about sharing with community -->
-      <div
-        class="mb-6 flex items-start gap-2.5 rounded-lg bg-teal-50 dark:bg-teal-900/20 px-4 py-3 ring-1 ring-inset ring-teal-600/15 dark:ring-teal-400/15"
-      >
-        <LucideInfo
-          class="mt-0.5 h-4 w-4 shrink-0 text-teal-600 dark:text-teal-400"
-          aria-hidden="true"
-        />
-        <p class="text-sm text-teal-800 dark:text-teal-200">
-          {{ $t('own-food.share-info') }}
-        </p>
-      </div>
-
       <div class="w-full mb-6">
         <label for="search" class="sr-only">{{ $t('food-search.search') }}</label>
         <div class="relative">

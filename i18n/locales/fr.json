@@ -238,7 +238,6 @@
     "title": "Aliments personnels",
     "tab-title": "Alim. perso.",
     "description": "Enregistre tes propres aliments pour un ajout rapide.",
-    "share-info": "Partage tes aliments personnels avec la communauté pour que d'autres puissent les trouver dans la Recherche alimentaire.",
     "export-filename": "PKU Tools - Aliments personnels",
     "generate-icon": "Générer l'icône",
     "remove-icon": "Supprimer",
@@ -571,7 +570,7 @@
   "community": {
     "statistics": "Statistiques :",
     "share": "Partager avec la communauté",
-    "shareLanguage": "Sera partagé en {language}",
+    "shareLanguage": "Sera partagé en {language}. D'autres le trouveront dans la Recherche alimentaire.",
     "shared": "Partagé avec la communauté",
     "sharedBadge": "Partagé",
     "communityFood": "Communauté",

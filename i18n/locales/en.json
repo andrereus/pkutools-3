@@ -238,7 +238,6 @@
     "title": "Own Food",
     "tab-title": "Own Food",
     "description": "Save your own foods for quick addition.",
-    "share-info": "Share your own food with the community so others can find it in Food Search.",
     "export-filename": "PKU Tools - Own Food",
     "generate-icon": "Generate icon",
     "remove-icon": "Remove",
@@ -571,7 +570,7 @@
   "community": {
     "statistics": "Statistics:",
     "share": "Share with community",
-    "shareLanguage": "Will be shared in {language}",
+    "shareLanguage": "Will be shared in {language}. Others can find it in Food Search.",
     "shared": "Shared with community",
     "sharedBadge": "Shared",
     "communityFood": "Community",
