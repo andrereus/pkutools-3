@@ -904,18 +904,21 @@ defineOgImage('NuxtSeo', {
         >
           {{ $t('diary.suggestions') }}
         </h3>
-        <SecondaryButton
-          v-for="(item, index) in lastAdded.slice(0, visibleItems)"
-          :key="index"
-          :text="`${item.weight}g ${item.name.length > 14 ? item.name.slice(0, 13) + '…' : item.name}`"
-          class="!t-font-normal"
-          @click="addLastAdded(item)"
-        />
-        <SecondaryButton
-          v-if="visibleItems < lastAdded.length"
-          :text="$t('diary.more')"
-          @click="showMoreItems"
-        />
+        <div class="flex flex-wrap">
+          <SecondaryButton
+            v-for="(item, index) in lastAdded.slice(0, visibleItems)"
+            :key="index"
+            :text="`${item.weight}g ${item.name}`"
+            class="max-w-[calc(50%-0.75rem)] truncate font-normal!"
+            @click="addLastAdded(item)"
+          />
+          <SecondaryButton
+            v-if="visibleItems < lastAdded.length"
+            :text="$t('diary.more')"
+            class="font-normal!"
+            @click="showMoreItems"
+          />
+        </div>
       </div>
 
       <div v-if="selectedDiaryEntry" class="mt-6 flex items-center">
