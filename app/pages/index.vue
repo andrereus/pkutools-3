@@ -30,9 +30,9 @@ const pheTools = [
 ]
 
 const suggestionsDemo = [
-  { nameKey: 'home.diet-mgmt-food-1', weight: 50 },
-  { nameKey: 'home.diet-mgmt-food-2', weight: 100 },
-  { nameKey: 'home.diet-mgmt-food-3', weight: 200 }
+  { nameKey: 'home.diet-mgmt-food-1', emoji: '🍞' },
+  { nameKey: 'home.diet-mgmt-food-2', emoji: '🍎' },
+  { nameKey: 'home.diet-mgmt-food-3', emoji: '🍝' }
 ]
 
 // Before/after: each manual tool of the PKU routine and the in-app action that
@@ -473,7 +473,7 @@ defineOgImage('NuxtSeo', {
                 type="button"
                 class="rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer"
               >
-                {{ entry.weight }}g {{ $t(entry.nameKey) }}
+                {{ entry.emoji }} {{ $t(entry.nameKey) }}
               </button>
             </div>
           </div>

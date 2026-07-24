@@ -908,7 +908,7 @@ defineOgImage('NuxtSeo', {
           <SecondaryButton
             v-for="(item, index) in lastAdded.slice(0, visibleItems)"
             :key="index"
-            :text="`${item.weight}g ${item.name}`"
+            :text="`${item.emoji || '🍽️'} ${item.name}`"
             class="max-w-[calc(50%-0.75rem)] truncate font-normal!"
             @click="addLastAdded(item)"
           />
