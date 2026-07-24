@@ -271,7 +271,9 @@ const deleteItem = async () => {
             phe: deletedItem.phe,
             kcal: deletedItem.kcal,
             note: deletedItem.note || null,
-            shared: false // Don't restore shared status
+            shared: false, // Don't restore shared status
+            createdAt: deletedItem.createdAt,
+            updatedAt: deletedItem.updatedAt
           })
         } catch (error) {
           console.error('Undo error:', error)

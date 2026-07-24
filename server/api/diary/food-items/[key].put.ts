@@ -36,9 +36,16 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  // Update the log item
+  // Update the log item; the stored createdAt wins over anything the client
+  // sent (edit forms rebuild the entry without timestamps). Legacy items
+  // without createdAt stay without one.
+  const now = Date.now()
   const updatedLog = [...log]
-  updatedLog[logIndex] = entry
+  updatedLog[logIndex] = {
+    ...entry,
+    ...(log[logIndex].createdAt != null && { createdAt: log[logIndex].createdAt }),
+    updatedAt: now
+  }
 
   // Calculate totals
   const totalPhe = updatedLog.reduce((sum: number, item) => sum + (item.phe || 0), 0)
@@ -48,7 +55,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   await diaryRef.update({
     log: updatedLog,
     phe: totalPhe,
-    kcal: totalKcal
+    kcal: totalKcal,
+    updatedAt: now
   })
 
   return {

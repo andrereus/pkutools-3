@@ -4,6 +4,15 @@ import { z } from 'zod'
 // Base Entity Schemas
 // ============================================================================
 
+// Server-owned timestamps (ms epoch, matching communityFoods). Accepted in
+// request schemas only so round trips (log sync, undo-restore) don't strip
+// them; endpoints decide whether to honor or override the client value.
+// Optional because legacy records were written without them.
+const timestampFields = {
+  createdAt: z.number().int().nonnegative().optional(),
+  updatedAt: z.number().int().nonnegative().optional()
+}
+
 // Diary entry schema
 export const DiaryEntrySchema = z.object({
   name: z.string().min(1, 'Food name is required').max(200, 'Food name is too long'),
@@ -26,7 +35,8 @@ export const DiaryEntrySchema = z.object({
   phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
   kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
   note: z.string().max(500, 'Note is too long').nullable().optional(),
-  communityFoodKey: z.string().nullable().optional() // Optional: tracks which community food was used (stored in diary entry)
+  communityFoodKey: z.string().nullable().optional(), // Optional: tracks which community food was used (stored in diary entry)
+  ...timestampFields
 })
 
 // Lab value schema
@@ -34,7 +44,8 @@ export const LabValueSchema = z
   .object({
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
     phe: z.coerce.number().positive('Phe value must be positive').nullable().optional(),
-    tyrosine: z.coerce.number().positive('Tyrosine value must be positive').nullable().optional()
+    tyrosine: z.coerce.number().positive('Tyrosine value must be positive').nullable().optional(),
+    ...timestampFields
   })
   // Loose `!= null` so an omitted (undefined) field counts as "not provided"
   // too — otherwise a request with neither key passes (undefined !== null).
@@ -51,7 +62,8 @@ export const OwnFoodSchema = z.object({
   phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
   kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
   note: z.string().max(500, 'Note is too long').nullable().optional(),
-  shared: z.boolean().default(false)
+  shared: z.boolean().default(false),
+  ...timestampFields
 })
 
 // Own food save request schema (includes locale)
@@ -96,7 +108,8 @@ export const CommunityVoteSchema = z.object({
 export const CreateDaySchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
   phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
-  kcal: z.coerce.number().nonnegative('Kcal value must be non-negative')
+  kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
+  ...timestampFields
 })
 
 // Update diary day request schema

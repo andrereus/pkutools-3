@@ -559,7 +559,9 @@ const deleteItem = async () => {
           await saveLabValue({
             date: deletedItem.date,
             phe: deletedItem.phe,
-            tyrosine: deletedItem.tyrosine
+            tyrosine: deletedItem.tyrosine,
+            createdAt: deletedItem.createdAt,
+            updatedAt: deletedItem.updatedAt
           })
         } catch (error) {
           console.error('Undo error:', error)

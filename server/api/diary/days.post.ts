@@ -5,7 +5,7 @@ import { checkPremiumStatus } from '../../utils/license'
 import { CreateDaySchema } from '../../types/schemas'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
-  const { date, phe, kcal } = await validateBody(event, CreateDaySchema)
+  const { date, phe, kcal, createdAt, updatedAt } = await validateBody(event, CreateDaySchema)
 
   const db = getAdminDatabase()
   const isPremium = await checkPremiumStatus(userId)
@@ -36,13 +36,17 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
   }
 
-  // Create a new day entry
+  // Create a new day entry. Timestamps are server-owned; client values are
+  // honored only so undo-restore can keep the original ones.
+  const now = Date.now()
   const newEntryRef = diaryRef.push()
   await newEntryRef.set({
     date,
     phe,
     kcal,
-    log: [] // Empty log array - this is a day entry, not a food item entry
+    log: [], // Empty log array - this is a day entry, not a food item entry
+    createdAt: createdAt ?? now,
+    updatedAt: updatedAt ?? now
   })
 
   return {

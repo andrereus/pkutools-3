@@ -35,9 +35,16 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
   }
 
-  // Write to Firebase via Admin SDK (only if no duplicate date exists and limit not reached)
+  // Write to Firebase via Admin SDK (only if no duplicate date exists and limit
+  // not reached). Timestamps are server-owned; client values are honored only
+  // so undo-restore can keep the original ones.
+  const now = Date.now()
   const newRef = labValuesRef.push()
-  await newRef.set(validated)
+  await newRef.set({
+    ...validated,
+    createdAt: validated.createdAt ?? now,
+    updatedAt: validated.updatedAt ?? now
+  })
 
   return {
     success: true,

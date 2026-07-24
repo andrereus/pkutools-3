@@ -148,7 +148,12 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     // Write both atomically (multi-location update) so a failed write can't
     // leave an orphaned community food without its backing own-food entry.
     await db.ref().update({
-      [`${userId}/ownFood/${ownFoodKey}`]: { ...foodData, communityKey },
+      [`${userId}/ownFood/${ownFoodKey}`]: {
+        ...foodData,
+        communityKey,
+        createdAt: foodData.createdAt ?? now,
+        updatedAt: foodData.updatedAt ?? now
+      },
       [`communityFoods/${communityKey}`]: communityFoodData
     })
 
@@ -159,11 +164,15 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
   }
 
-  // Not shared - just save the own food
+  // Not shared - just save the own food. Timestamps are server-owned; client
+  // values are honored only so undo-restore can keep the original ones.
+  const now = Date.now()
   const newRef = ownFoodRef.push()
   await newRef.set({
     ...foodData,
-    communityKey: null
+    communityKey: null,
+    createdAt: foodData.createdAt ?? now,
+    updatedAt: foodData.updatedAt ?? now
   })
 
   return {

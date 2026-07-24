@@ -42,8 +42,13 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
   }
 
-  // Update the entry
-  await labValueRef.update(data)
+  // Update the entry; the stored createdAt wins over anything the client
+  // sent, and update() merges, so a legacy entry stays without one.
+  await labValueRef.update({
+    ...data,
+    ...(labValue.createdAt != null && { createdAt: labValue.createdAt }),
+    updatedAt: Date.now()
+  })
 
   return {
     success: true,

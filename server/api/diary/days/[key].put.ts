@@ -28,9 +28,11 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   }
 
   // Build update object with all fields that need to be updated
+  // (update() merges, so an existing createdAt is preserved)
   const updateData: Record<string, unknown> = {
     phe: phe,
-    kcal: kcal
+    kcal: kcal,
+    updatedAt: Date.now()
   }
 
   // Include date if provided, but check for duplicates first

@@ -159,10 +159,13 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
   }
 
-  // Update the own food entry
+  // Update the own food entry; the stored createdAt wins over anything the
+  // client sent, and update() merges, so a legacy entry stays without one.
   await ownFoodRef.update({
     ...data,
-    communityKey
+    communityKey,
+    ...(ownFood.createdAt != null && { createdAt: ownFood.createdAt }),
+    updatedAt: Date.now()
   })
 
   return {

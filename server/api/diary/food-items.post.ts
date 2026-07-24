@@ -23,6 +23,15 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   const { date: requestDate, ...diaryEntryData } = validated
   const communityFoodKey = diaryEntryData.communityFoodKey || null
 
+  // Timestamps are server-owned; client values are honored only so
+  // undo-restore can keep the original creation time of a deleted item.
+  const now = Date.now()
+  const logEntry = {
+    ...diaryEntryData,
+    createdAt: diaryEntryData.createdAt ?? now,
+    updatedAt: diaryEntryData.updatedAt ?? now
+  }
+
   const db = getAdminDatabase()
   const isPremium = await checkPremiumStatus(userId)
 
@@ -90,7 +99,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
     // Use the value we already fetched from the query
     const existingEntry = existingEntryVal as DiaryEntry
-    const updatedLog = [...(existingEntry.log || []), diaryEntryData]
+    const updatedLog = [...(existingEntry.log || []), logEntry]
 
     // Calculate totals
     const totalPhe = updatedLog.reduce((sum: number, item) => sum + (item.phe || 0), 0)
@@ -99,7 +108,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     await db.ref(`/${userId}/pheDiary/${existingEntryKey}`).update({
       log: updatedLog,
       phe: totalPhe,
-      kcal: totalKcal
+      kcal: totalKcal,
+      updatedAt: now
     })
 
     return {
@@ -112,7 +122,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     // Note: There's a potential race condition here if two requests come in simultaneously
     // Both might find no existing entry and both create new entries
     // For production, consider using Firebase transactions for atomicity
-    const logEntry = diaryEntryData
     const totalPhe = logEntry.phe || 0
     const totalKcal = logEntry.kcal || 0
 
@@ -121,7 +130,12 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       date,
       phe: totalPhe,
       kcal: totalKcal,
-      log: [logEntry]
+      log: [logEntry],
+      // The day comes into existence with its first item, so it inherits that
+      // item's createdAt — on undo-restore this recovers the original day
+      // creation time (the first restored item is the oldest one).
+      createdAt: logEntry.createdAt,
+      updatedAt: now
     })
 
     return {

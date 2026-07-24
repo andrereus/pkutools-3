@@ -608,7 +608,9 @@ const deleteItem = async () => {
             await createDiaryDay({
               date: deletedItem.date,
               phe: deletedItem.phe || 0,
-              kcal: deletedItem.kcal || 0
+              kcal: deletedItem.kcal || 0,
+              createdAt: deletedItem.createdAt,
+              updatedAt: deletedItem.updatedAt
             })
           }
         } catch (error) {

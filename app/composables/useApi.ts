@@ -48,6 +48,8 @@ export const useApi = () => {
     date: string
     phe: number
     kcal: number
+    createdAt?: number // Only for undo-restore: preserves the original timestamps
+    updatedAt?: number
   }): Promise<{ success: boolean; key?: string }> =>
     request('/api/diary/days', 'Create diary day', 'POST', data)
 
@@ -63,6 +65,8 @@ export const useApi = () => {
     kcal: number
     note?: string | null
     communityFoodKey?: string | null // Optional: tracks usage count and stored in diary entry
+    createdAt?: number // Only for undo-restore: preserves the original timestamps
+    updatedAt?: number
   }): Promise<{ success: boolean; key?: string; updated?: boolean }> =>
     request('/api/diary/food-items', 'Add food item to diary', 'POST', data)
 
@@ -121,6 +125,8 @@ export const useApi = () => {
     date: string
     phe?: number | null
     tyrosine?: number | null
+    createdAt?: number // Only for undo-restore: preserves the original timestamps
+    updatedAt?: number
   }): Promise<{ success: boolean; key?: string }> =>
     request('/api/lab-values/save', 'Save lab value', 'POST', data)
 
@@ -156,6 +162,8 @@ export const useApi = () => {
     kcal: number
     note?: string | null
     shared?: boolean
+    createdAt?: number // Only for undo-restore: preserves the original timestamps
+    updatedAt?: number
   }): Promise<{ success: boolean; key?: string; communityKey?: string }> =>
     request('/api/own-food/save', 'Save own food', 'POST', { ...data, locale: locale.value })
 

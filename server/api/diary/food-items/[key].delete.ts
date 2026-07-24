@@ -47,7 +47,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   await diaryEntryRef.update({
     log: currentLog,
     phe: totalPhe,
-    kcal: totalKcal
+    kcal: totalKcal,
+    updatedAt: Date.now()
   })
 
   return { success: true, key: key, deletedLogIndex: logIndex }
