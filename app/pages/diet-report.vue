@@ -563,6 +563,13 @@ const signInGoogle = async () => {
 // Store original state for restoring on cancel
 const originalEditedItem = ref(null)
 
+// Day totals are derived from the log items, so days with a log show them
+// read-only; manual days and new days keep live inputs. Computed so the state
+// follows add/delete of items while the dialog is open.
+const showDayTotalInputs = computed(
+  () => !editedItem.value.log || editedItem.value.log.length === 0
+)
+
 const editItem = (item) => {
   editedIndex.value = pheDiary.value.indexOf(item)
   editedKey.value = item['.key']
@@ -702,6 +709,10 @@ const save = async () => {
 // Start add/edit log
 
 const editedLogIndex = ref(-1)
+// When editing, references are shown read-only until the pencil reveals the
+// inputs; entries missing their references (ancient results-only data) open
+// with the inputs directly so they can be repaired
+const showLogReferenceInputs = ref(false)
 
 const defaultLogItem = {
   name: '',
@@ -721,17 +732,32 @@ const logFormTitle = computed(() => {
   return editedLogIndex.value === -1 ? t('common.add') : t('common.edit')
 })
 
+// Time the opened log item was logged, shown in the dialog's top-right corner.
+// Empty when adding a new item and for legacy entries without createdAt.
+const editedLogItemTime = computed(() => {
+  if (editedLogIndex.value === -1 || !editedLogItem.value.createdAt) return ''
+  return new Date(editedLogItem.value.createdAt).toLocaleTimeString(i18nLocale.value, {
+    hour: 'numeric',
+    minute: '2-digit'
+  })
+})
+
+// Without a reference there is nothing to calculate from — the stored result
+// stays authoritative (ancient entries stored only the result)
 const calculatePhe = () => {
+  if (!editedLogItem.value.pheReference) return Math.round(Number(editedLogItem.value.phe)) || 0
   return Math.round((editedLogItem.value.weight * editedLogItem.value.pheReference) / 100) || 0
 }
 
 const calculateKcal = () => {
+  if (!editedLogItem.value.kcalReference) return Math.round(Number(editedLogItem.value.kcal)) || 0
   return Math.round((editedLogItem.value.weight * editedLogItem.value.kcalReference) / 100) || 0
 }
 
 const editLogItem = (item, index) => {
   editedLogIndex.value = index
   editedLogItem.value = { ...item }
+  showLogReferenceInputs.value = !editedLogItem.value.pheReference
   dialog2.value.openDialog()
 }
 
@@ -758,12 +784,15 @@ const closeLogEdit = () => {
   dialog2.value.closeDialog()
   editedLogItem.value = { ...defaultLogItem }
   editedLogIndex.value = -1
+  showLogReferenceInputs.value = false
 }
 
 const openAddLogItem = () => {
   // Reset log item state for adding new item
   editedLogIndex.value = -1
   editedLogItem.value = { ...defaultLogItem }
+  // Blank add: the reference inputs are the entry form, so show them directly
+  showLogReferenceInputs.value = true
   dialog2.value.openDialog()
 }
 
@@ -789,7 +818,9 @@ const saveLogEdit = async () => {
     note:
       editedLogItem.value.note && editedLogItem.value.note.trim() !== ''
         ? editedLogItem.value.note.trim()
-        : null
+        : null,
+    // Preserve the community food link so re-adds keep counting usage
+    communityFoodKey: editedLogItem.value.communityFoodKey || null
   }
 
   try {
@@ -798,7 +829,14 @@ const saveLogEdit = async () => {
       // Update existing log item - only update local state
       // Changes will be saved when the main dialog is saved
       if (editedItem.value.log && editedItem.value.log[editedLogIndex.value]) {
-        editedItem.value.log[editedLogIndex.value] = updatedItem
+        // Keep the original createdAt: the day save sends the whole log array,
+        // so a rebuilt item would otherwise lose its timestamps
+        const original = editedItem.value.log[editedLogIndex.value]
+        editedItem.value.log[editedLogIndex.value] = {
+          ...updatedItem,
+          ...(original.createdAt != null && { createdAt: original.createdAt }),
+          updatedAt: Date.now()
+        }
 
         // Recalculate totals
         const totalPhe = editedItem.value.log.reduce((sum, item) => sum + (item.phe || 0), 0)
@@ -818,8 +856,11 @@ const saveLogEdit = async () => {
 
       // Update local state immediately so UI reflects the change
       // Create a new array to ensure Vue reactivity works
+      // Timestamps are stamped here because this item reaches the server inside
+      // the day-save log array, where new items can't be told apart
+      const now = Date.now()
       const currentLog = editedItem.value.log || []
-      editedItem.value.log = [...currentLog, updatedItem]
+      editedItem.value.log = [...currentLog, { ...updatedItem, createdAt: now, updatedAt: now }]
 
       // Recalculate totals
       const totalPhe = editedItem.value.log.reduce((sum, item) => sum + (item.phe || 0), 0)
@@ -1159,7 +1200,7 @@ defineOgImage('NuxtSeo', {
       >
         <DateInput v-model="editedItem.date" id-name="date" :label="$t('diet-report.date')" />
 
-        <div class="flex gap-4">
+        <div v-if="showDayTotalInputs" class="flex gap-4">
           <NumberInput
             v-model.number="editedItem.phe"
             id-name="total-phe"
@@ -1173,15 +1214,30 @@ defineOgImage('NuxtSeo', {
             class="flex-1"
           />
         </div>
+        <!-- Days with a log: totals are derived from the items, so they are
+             read-only (the server recomputes them on every item operation) -->
+        <div v-else class="flex gap-4 text-gray-600 dark:text-gray-400 mt-5 mb-4">
+          <span class="flex-1 ml-1">{{ editedItem.phe || 0 }} mg Phe</span>
+          <span class="flex-1 ml-1">{{ editedItem.kcal || 0 }} {{ $t('common.kcal') }}</span>
+        </div>
 
-        <div v-if="editedItem.log" class="flex justify-between items-center -mb-3">
+        <div
+          v-if="editedItem.log"
+          class="flex justify-between items-center"
+          :class="editedItem.log.length > 0 ? '-mb-3' : 'mb-3'"
+        >
           <h4 class="text-sm font-medium text-gray-900 dark:text-white">
             {{ $t('diary.title') }}
           </h4>
           <SecondaryButton :text="$t('common.add')" class="mr-0! mb-0!" @click="openAddLogItem" />
         </div>
 
-        <DataTable v-if="editedItem.log" :headers="tableHeaders2" class="mb-3">
+        <!-- Hidden while the log is empty so a manual day shows only the header line -->
+        <DataTable
+          v-if="editedItem.log && editedItem.log.length > 0"
+          :headers="tableHeaders2"
+          class="mb-3"
+        >
           <tr
             v-for="(item, index) in editedItem.log"
             :key="index"
@@ -1260,6 +1316,8 @@ defineOgImage('NuxtSeo', {
         <ModalDialog
           ref="dialog2"
           :title="logFormTitle"
+          :meta="editedLogItemTime"
+          :emoji="editedLogItem.emoji || ''"
           :buttons="[
             { label: $t('common.save'), type: 'submit', visible: true },
             { label: $t('common.delete'), type: 'delete', visible: editedLogIndex !== -1 },
@@ -1288,7 +1346,8 @@ defineOgImage('NuxtSeo', {
               />
             </div>
           </div>
-          <div class="flex gap-4">
+          <!-- Reference inputs: shown directly on blank add, revealed by the pencil when editing -->
+          <div v-if="showLogReferenceInputs" class="flex gap-4">
             <NumberInput
               v-model.number="editedLogItem.pheReference"
               id-name="phe"
@@ -1301,6 +1360,28 @@ defineOgImage('NuxtSeo', {
               :label="$t('common.kcal-per-100g')"
               class="flex-1"
             />
+          </div>
+          <!-- The pencil is overlaid absolutely so the two columns keep the exact
+               geometry of the result line below -->
+          <div v-else class="relative flex gap-4 text-gray-600 dark:text-gray-400 mt-5 mb-4">
+            <span class="flex-1 ml-1">
+              {{ editedLogItem.pheReference }} {{ $t('common.mg-phe-per-100g') }}
+            </span>
+            <span v-if="editedLogItem.kcalReference" class="flex-1 ml-1">
+              <!-- Padding on an inner block keeps the text out of the pencil's zone
+                   without widening this flex column (basis 0 is floored at padding) -->
+              <span class="block pr-9">
+                {{ editedLogItem.kcalReference }} {{ $t('common.kcal-per-100g') }}
+              </span>
+            </span>
+            <button
+              type="button"
+              class="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer rounded-md p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+              :aria-label="$t('common.edit')"
+              @click="showLogReferenceInputs = true"
+            >
+              <LucidePencil class="h-4.5 w-4.5" />
+            </button>
           </div>
           <NumberInput
             v-model.number="editedLogItem.weight"

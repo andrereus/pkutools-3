@@ -14,7 +14,7 @@ import {
 } from '@lucide/vue'
 
 const store = useStore()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const dialog2 = ref(null)
 const localePath = useLocalePath()
 const notifications = useNotifications()
@@ -35,6 +35,10 @@ const showIconNote = new Date() < new Date('2026-11-01')
 // Reactive state
 const editedIndex = ref(-1)
 const editedKey = ref(null)
+// When editing, references are shown read-only until the pencil reveals the
+// inputs; entries missing their references (ancient results-only data) open
+// with the inputs directly so they can be repaired
+const showReferenceInputs = ref(false)
 const date = ref(format(new Date(), 'yyyy-MM-dd'))
 const visibleItems = ref(5)
 const ensuredOnboarding = ref(false)
@@ -72,6 +76,16 @@ const tableHeaders = computed(() => [
 
 const formTitle = computed(() => {
   return editedIndex.value === -1 ? t('common.add') : t('common.edit')
+})
+
+// Time the opened entry was logged, shown in the dialog's top-right corner.
+// Empty when adding a new item and for legacy entries without createdAt.
+const editedItemTime = computed(() => {
+  if (editedIndex.value === -1 || !editedItem.value.createdAt) return ''
+  return new Date(editedItem.value.createdAt).toLocaleTimeString(locale.value, {
+    hour: 'numeric',
+    minute: '2-digit'
+  })
 })
 
 const selectedDayLog = computed(() => {
@@ -316,22 +330,28 @@ const showMoreItems = () => {
   visibleItems.value += 5
 }
 
+// Without a reference there is nothing to calculate from — the stored result
+// stays authoritative (ancient entries stored only the result)
 const calculatePhe = () => {
+  if (!editedItem.value.pheReference) return Math.round(Number(editedItem.value.phe)) || 0
   return Math.round((editedItem.value.weight * editedItem.value.pheReference) / 100) || 0
 }
 
 const calculateKcal = () => {
+  if (!editedItem.value.kcalReference) return Math.round(Number(editedItem.value.kcal)) || 0
   return Math.round((editedItem.value.weight * editedItem.value.kcalReference) / 100) || 0
 }
 
 const editItem = (item, index) => {
   editedIndex.value = index
   editedItem.value = JSON.parse(JSON.stringify(item))
+  showReferenceInputs.value = !editedItem.value.pheReference
   dialog2.value.openDialog()
 }
 
 const addLastAdded = (item) => {
   editedItem.value = JSON.parse(JSON.stringify(item))
+  showReferenceInputs.value = !editedItem.value.pheReference
   dialog2.value.openDialog()
 }
 
@@ -382,6 +402,7 @@ const close = () => {
   editedItem.value = { ...defaultItem }
   editedIndex.value = -1
   editedKey.value = null
+  showReferenceInputs.value = false
 }
 
 const isSaving = ref(false)
@@ -841,6 +862,8 @@ defineOgImage('NuxtSeo', {
       <ModalDialog
         ref="dialog2"
         :title="formTitle"
+        :meta="editedItemTime"
+        :emoji="editedItem.emoji || ''"
         :loading="isSaving"
         :buttons="[
           { label: $t('common.save'), type: 'submit', visible: true },
@@ -851,9 +874,6 @@ defineOgImage('NuxtSeo', {
         @delete="deleteItem"
         @close="close"
       >
-        <p v-if="!editedItem.pheReference && editedIndex !== -1" class="mb-3">
-          {{ $t('diary.data-warning') }}
-        </p>
         <TextInput v-model="editedItem.name" id-name="food" :label="$t('common.food-name')" />
         <div>
           <label
@@ -873,7 +893,8 @@ defineOgImage('NuxtSeo', {
             />
           </div>
         </div>
-        <div class="flex gap-4">
+        <!-- Reference inputs, revealed by the pencil -->
+        <div v-if="showReferenceInputs" class="flex gap-4">
           <NumberInput
             v-model.number="editedItem.pheReference"
             id-name="phe"
@@ -886,6 +907,28 @@ defineOgImage('NuxtSeo', {
             :label="$t('common.kcal-per-100g')"
             class="flex-1"
           />
+        </div>
+        <!-- The pencil is overlaid absolutely so the two columns keep the exact
+             geometry of the result line below -->
+        <div v-else class="relative flex gap-4 text-gray-600 dark:text-gray-400 mt-5 mb-4">
+          <span class="flex-1 ml-1">
+            {{ editedItem.pheReference }} {{ $t('common.mg-phe-per-100g') }}
+          </span>
+          <span v-if="editedItem.kcalReference" class="flex-1 ml-1">
+            <!-- Padding on an inner block keeps the text out of the pencil's zone
+                 without widening this flex column (basis 0 is floored at padding) -->
+            <span class="block pr-9">
+              {{ editedItem.kcalReference }} {{ $t('common.kcal-per-100g') }}
+            </span>
+          </span>
+          <button
+            type="button"
+            class="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer rounded-md p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+            :aria-label="$t('common.edit')"
+            @click="showReferenceInputs = true"
+          >
+            <LucidePencil class="h-4.5 w-4.5" />
+          </button>
         </div>
         <NumberInput
           v-model.number="editedItem.weight"

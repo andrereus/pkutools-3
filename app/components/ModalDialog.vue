@@ -4,6 +4,18 @@ const props = defineProps({
     type: String,
     required: true
   },
+  // Short text shown in the card's top-right corner, next to the title
+  // (e.g. the time a diary entry was logged)
+  meta: {
+    type: String,
+    default: ''
+  },
+  // Optional emoji shown before the meta text in the top-right corner
+  // (e.g. the food emoji of the opened entry)
+  emoji: {
+    type: String,
+    default: ''
+  },
   buttons: {
     type: Array,
     required: true
@@ -132,12 +144,21 @@ function handleButtonClick(buttonType) {
             >
               <div ref="initialFocusRef" tabindex="-1" class="focus:outline-none">
                 <div>
-                  <HeadlessDialogTitle
-                    as="h3"
-                    class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
-                  >
-                    {{ title }}
-                  </HeadlessDialogTitle>
+                  <div class="flex items-baseline justify-between gap-3">
+                    <HeadlessDialogTitle
+                      as="h3"
+                      class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+                    >
+                      {{ title }}
+                    </HeadlessDialogTitle>
+                    <span
+                      v-if="meta || emoji"
+                      class="flex shrink-0 items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"
+                    >
+                      <span v-if="emoji" class="text-xl leading-none">{{ emoji }}</span
+                      >{{ meta }}
+                    </span>
+                  </div>
                   <div class="mt-3">
                     <slot />
                   </div>

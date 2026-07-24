@@ -851,7 +851,7 @@ defineOgImage('NuxtSeo', {
 
       <ModalDialog
         ref="dialog2"
-        :title="editedItem.name"
+        :title="editedItem.emoji ? editedItem.emoji + ' ' + editedItem.name : editedItem.name"
         :loading="isSaving"
         :buttons="[
           { label: $t('common.add'), type: 'submit', visible: true },
