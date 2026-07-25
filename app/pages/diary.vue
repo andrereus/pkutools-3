@@ -35,9 +35,7 @@ const showIconNote = new Date() < new Date('2026-11-01')
 // Reactive state
 const editedIndex = ref(-1)
 const editedKey = ref(null)
-// When editing, references are shown read-only until the pencil reveals the
-// inputs; entries missing their references (ancient results-only data) open
-// with the inputs directly so they can be repaired
+// References are collapsed by default; the disclosure reveals the inputs
 const showReferenceInputs = ref(false)
 // The food name the current emoji was generated for; when the name is edited
 // away from this, a refresh button offers to regenerate the emoji
@@ -376,14 +374,14 @@ const calculateKcal = () => {
 const editItem = (item, index) => {
   editedIndex.value = index
   editedItem.value = JSON.parse(JSON.stringify(item))
-  showReferenceInputs.value = !editedItem.value.pheReference
+  showReferenceInputs.value = false
   emojiBasisName.value = editedItem.value.name || ''
   dialog2.value.openDialog()
 }
 
 const addLastAdded = (item) => {
   editedItem.value = JSON.parse(JSON.stringify(item))
-  showReferenceInputs.value = !editedItem.value.pheReference
+  showReferenceInputs.value = false
   emojiBasisName.value = editedItem.value.name || ''
   dialog2.value.openDialog()
 }

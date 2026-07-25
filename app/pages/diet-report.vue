@@ -709,9 +709,8 @@ const save = async () => {
 // Start add/edit log
 
 const editedLogIndex = ref(-1)
-// When editing, references are shown read-only until the pencil reveals the
-// inputs; entries missing their references (ancient results-only data) open
-// with the inputs directly so they can be repaired
+// References are collapsed by default; the disclosure reveals the inputs
+// (a blank add shows them directly — see openAddLogItem and the template)
 const showLogReferenceInputs = ref(false)
 // The food name the current emoji was generated for; when the name is edited
 // away from this, a refresh button offers to regenerate the emoji
@@ -788,7 +787,7 @@ const calculateKcal = () => {
 const editLogItem = (item, index) => {
   editedLogIndex.value = index
   editedLogItem.value = { ...item }
-  showLogReferenceInputs.value = !editedLogItem.value.pheReference
+  showLogReferenceInputs.value = false
   logEmojiBasisName.value = editedLogItem.value.name || ''
   dialog2.value.openDialog()
 }
@@ -1252,8 +1251,10 @@ defineOgImage('NuxtSeo', {
         <!-- Days with a log: totals are derived from the items, so they are
              read-only (the server recomputes them on every item operation) -->
         <div v-else class="flex gap-4 text-gray-600 dark:text-gray-400 mt-5 mb-4">
-          <span class="flex-1 ml-1">{{ editedItem.phe || 0 }} mg Phe</span>
-          <span class="flex-1 ml-1">{{ editedItem.kcal || 0 }} {{ $t('common.kcal') }}</span>
+          <span class="flex-1 ml-1">{{ editedItem.phe || 0 }} mg Phe {{ $t('app.total') }}</span>
+          <span class="flex-1 ml-1">
+            {{ editedItem.kcal || 0 }} {{ $t('common.kcal') }} {{ $t('app.total') }}
+          </span>
         </div>
 
         <div
@@ -1384,8 +1385,10 @@ defineOgImage('NuxtSeo', {
               />
             </div>
           </div>
-          <!-- Disclosure: reveals the per-100g reference inputs -->
+          <!-- Disclosure (edit mode only): reveals the per-100g reference inputs.
+               On a blank add the inputs are the entry form, so they show directly. -->
           <button
+            v-if="editedLogIndex !== -1"
             type="button"
             class="mt-4 mb-3 flex w-full cursor-pointer items-center justify-between text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
             :aria-expanded="showLogReferenceInputs"
@@ -1397,7 +1400,7 @@ defineOgImage('NuxtSeo', {
               :class="showLogReferenceInputs ? 'rotate-180' : ''"
             />
           </button>
-          <div v-if="showLogReferenceInputs" class="flex gap-4">
+          <div v-if="editedLogIndex === -1 || showLogReferenceInputs" class="flex gap-4">
             <NumberInput
               v-model.number="editedLogItem.pheReference"
               id-name="phe"
