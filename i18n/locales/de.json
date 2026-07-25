@@ -48,6 +48,8 @@
     "short-protein-per-100g": "Eiweiß (pro 100g)",
     "kcal": "Kcal",
     "kcal-per-100g": "Kcal pro 100g",
+    "edit-per-100g": "Werte pro 100g bearbeiten",
+    "update-emoji": "Emoji aktualisieren",
     "protein": "Eiweiß",
     "fat": "Fett",
     "carbs": "Kohlenhydrate",
@@ -623,6 +625,7 @@
     "restore-failed": "Eintrag konnte nicht wiederhergestellt werden. Bitte füge ihn manuell hinzu.",
     "restore-entry-failed": "Eintrag konnte nicht wiederhergestellt werden. Bitte füge ihn manuell hinzu.",
     "save-log-failed": "Eintrag konnte nicht gespeichert werden. Bitte versuche es erneut.",
+    "emoji-update-failed": "Emoji konnte nicht aktualisiert werden. Bitte versuche es erneut.",
     "no-entry-selected": "Kein Eintrag ausgewählt. Bitte bearbeite zuerst einen Eintrag.",
     "validate-license-failed": "Lizenz konnte nicht überprüft werden. Bitte versuche es erneut.",
     "auth": {

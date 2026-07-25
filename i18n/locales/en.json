@@ -48,6 +48,8 @@
     "short-protein-per-100g": "Protein (per 100g)",
     "kcal": "Kcal",
     "kcal-per-100g": "Kcal per 100g",
+    "edit-per-100g": "Edit values per 100g",
+    "update-emoji": "Update emoji",
     "protein": "Protein",
     "fat": "Fat",
     "carbs": "Carbohydrates",
@@ -623,6 +625,7 @@
     "restore-failed": "Failed to restore item. Please add it manually.",
     "restore-entry-failed": "Failed to restore entry. Please add it manually.",
     "save-log-failed": "Failed to save log item. Please try again.",
+    "emoji-update-failed": "Couldn't update the emoji. Please try again.",
     "no-entry-selected": "No entry selected. Please edit an entry first.",
     "validate-license-failed": "Failed to validate license. Please try again.",
     "auth": {

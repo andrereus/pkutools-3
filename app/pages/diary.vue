@@ -26,7 +26,7 @@ const {
   updateDiaryDay,
   updateGettingStarted
 } = useApi()
-const { ensureEmojiForLogEntry } = useFoodEmoji()
+const { ensureEmojiForLogEntry, fetchEmojiForFood } = useFoodEmoji()
 
 // Icon migration note at the page bottom — self-expiring. After this date the
 // disclosure block and the diary.icon-note locale keys can be deleted.
@@ -39,6 +39,10 @@ const editedKey = ref(null)
 // inputs; entries missing their references (ancient results-only data) open
 // with the inputs directly so they can be repaired
 const showReferenceInputs = ref(false)
+// The food name the current emoji was generated for; when the name is edited
+// away from this, a refresh button offers to regenerate the emoji
+const emojiBasisName = ref('')
+const isRefreshingEmoji = ref(false)
 const date = ref(format(new Date(), 'yyyy-MM-dd'))
 const visibleItems = ref(5)
 const ensuredOnboarding = ref(false)
@@ -77,6 +81,33 @@ const tableHeaders = computed(() => [
 const formTitle = computed(() => {
   return editedIndex.value === -1 ? t('common.add') : t('common.edit')
 })
+
+// Show the emoji-refresh button once the name is edited away from what the
+// current emoji represents (only when there is an emoji to replace)
+const showEmojiRefresh = computed(() => {
+  const name = editedItem.value.name?.trim()
+  return !!editedItem.value.emoji && !!name && name !== emojiBasisName.value.trim()
+})
+
+const refreshEmoji = async () => {
+  const name = editedItem.value.name?.trim()
+  if (!name) return
+  isRefreshingEmoji.value = true
+  try {
+    const emoji = await fetchEmojiForFood(name)
+    if (emoji) {
+      editedItem.value.emoji = emoji
+      // Advance the basis so the button hides until the name is edited again;
+      // on a failed fetch it stays so the user can retry
+      emojiBasisName.value = name
+    } else {
+      // Surface the failure so the user isn't left re-clicking a silent button
+      notifications.error(t('errors.emoji-update-failed'))
+    }
+  } finally {
+    isRefreshingEmoji.value = false
+  }
+}
 
 // Time the opened entry was logged, shown in the dialog's top-right corner.
 // Empty when adding a new item and for legacy entries without createdAt.
@@ -346,12 +377,14 @@ const editItem = (item, index) => {
   editedIndex.value = index
   editedItem.value = JSON.parse(JSON.stringify(item))
   showReferenceInputs.value = !editedItem.value.pheReference
+  emojiBasisName.value = editedItem.value.name || ''
   dialog2.value.openDialog()
 }
 
 const addLastAdded = (item) => {
   editedItem.value = JSON.parse(JSON.stringify(item))
   showReferenceInputs.value = !editedItem.value.pheReference
+  emojiBasisName.value = editedItem.value.name || ''
   dialog2.value.openDialog()
 }
 
@@ -403,6 +436,8 @@ const close = () => {
   editedIndex.value = -1
   editedKey.value = null
   showReferenceInputs.value = false
+  emojiBasisName.value = ''
+  isRefreshingEmoji.value = false
 }
 
 const isSaving = ref(false)
@@ -864,12 +899,15 @@ defineOgImage('NuxtSeo', {
         :title="formTitle"
         :meta="editedItemTime"
         :emoji="editedItem.emoji || ''"
+        :emoji-refreshable="showEmojiRefresh"
+        :emoji-refreshing="isRefreshingEmoji"
         :loading="isSaving"
         :buttons="[
           { label: $t('common.save'), type: 'submit', visible: true },
           { label: $t('common.delete'), type: 'delete', visible: editedIndex !== -1 },
           { label: $t('common.cancel'), type: 'close', visible: true }
         ]"
+        @refresh-emoji="refreshEmoji"
         @submit="save"
         @delete="deleteItem"
         @close="close"
@@ -893,7 +931,19 @@ defineOgImage('NuxtSeo', {
             />
           </div>
         </div>
-        <!-- Reference inputs, revealed by the pencil -->
+        <!-- Disclosure: reveals the per-100g reference inputs -->
+        <button
+          type="button"
+          class="mt-4 mb-3 flex w-full cursor-pointer items-center justify-between text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          :aria-expanded="showReferenceInputs"
+          @click="showReferenceInputs = !showReferenceInputs"
+        >
+          {{ $t('common.edit-per-100g') }}
+          <LucideChevronDown
+            class="h-4 w-4 transition-transform"
+            :class="showReferenceInputs ? 'rotate-180' : ''"
+          />
+        </button>
         <div v-if="showReferenceInputs" class="flex gap-4">
           <NumberInput
             v-model.number="editedItem.pheReference"
@@ -907,28 +957,6 @@ defineOgImage('NuxtSeo', {
             :label="$t('common.kcal-per-100g')"
             class="flex-1"
           />
-        </div>
-        <!-- The pencil is overlaid absolutely so the two columns keep the exact
-             geometry of the result line below -->
-        <div v-else class="relative flex gap-4 text-gray-600 dark:text-gray-400 mt-5 mb-4">
-          <span class="flex-1 ml-1">
-            {{ editedItem.pheReference }} {{ $t('common.mg-phe-per-100g') }}
-          </span>
-          <span v-if="editedItem.kcalReference" class="flex-1 ml-1">
-            <!-- Padding on an inner block keeps the text out of the pencil's zone
-                 without widening this flex column (basis 0 is floored at padding) -->
-            <span class="block pr-9">
-              {{ editedItem.kcalReference }} {{ $t('common.kcal-per-100g') }}
-            </span>
-          </span>
-          <button
-            type="button"
-            class="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer rounded-md p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-            :aria-label="$t('common.edit')"
-            @click="showReferenceInputs = true"
-          >
-            <LucidePencil class="h-4.5 w-4.5" />
-          </button>
         </div>
         <NumberInput
           v-model.number="editedItem.weight"

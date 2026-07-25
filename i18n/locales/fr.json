@@ -48,6 +48,8 @@
     "short-protein-per-100g": "Protéines (par 100g)",
     "kcal": "Kcal",
     "kcal-per-100g": "Kcal par 100g",
+    "edit-per-100g": "Modifier les valeurs pour 100g",
+    "update-emoji": "Mettre à jour l'emoji",
     "protein": "Protéines",
     "fat": "Matières grasses",
     "carbs": "Glucides",
@@ -623,6 +625,7 @@
     "restore-failed": "Impossible de restaurer l'élément. Ajoute-le manuellement.",
     "restore-entry-failed": "Impossible de restaurer l'entrée. Ajoute-la manuellement.",
     "save-log-failed": "Impossible d'enregistrer l'entrée. Réessaie.",
+    "emoji-update-failed": "Impossible de mettre à jour l'emoji. Réessaie.",
     "no-entry-selected": "Aucune entrée sélectionnée. Modifie d'abord une entrée.",
     "validate-license-failed": "Impossible de valider la licence. Réessaie.",
     "auth": {

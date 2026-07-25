@@ -28,7 +28,7 @@ const notifications = useNotifications()
 const confirm = useConfirm()
 const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary, deleteDiaryDay, updateDiaryDay, createDiaryDay } = useApi()
-const { ensureEmojiForLogEntry } = useFoodEmoji()
+const { ensureEmojiForLogEntry, fetchEmojiForFood } = useFoodEmoji()
 
 // Reactive state
 const editedIndex = ref(-1)
@@ -713,6 +713,10 @@ const editedLogIndex = ref(-1)
 // inputs; entries missing their references (ancient results-only data) open
 // with the inputs directly so they can be repaired
 const showLogReferenceInputs = ref(false)
+// The food name the current emoji was generated for; when the name is edited
+// away from this, a refresh button offers to regenerate the emoji
+const logEmojiBasisName = ref('')
+const isRefreshingLogEmoji = ref(false)
 
 const defaultLogItem = {
   name: '',
@@ -731,6 +735,33 @@ const editedLogItem = ref({ ...defaultLogItem })
 const logFormTitle = computed(() => {
   return editedLogIndex.value === -1 ? t('common.add') : t('common.edit')
 })
+
+// Show the emoji-refresh button once the name is edited away from what the
+// current emoji represents (only when there is an emoji to replace)
+const showLogEmojiRefresh = computed(() => {
+  const name = editedLogItem.value.name?.trim()
+  return !!editedLogItem.value.emoji && !!name && name !== logEmojiBasisName.value.trim()
+})
+
+const refreshLogEmoji = async () => {
+  const name = editedLogItem.value.name?.trim()
+  if (!name) return
+  isRefreshingLogEmoji.value = true
+  try {
+    const emoji = await fetchEmojiForFood(name)
+    if (emoji) {
+      editedLogItem.value.emoji = emoji
+      // Advance the basis so the button hides until the name is edited again;
+      // on a failed fetch it stays so the user can retry
+      logEmojiBasisName.value = name
+    } else {
+      // Surface the failure so the user isn't left re-clicking a silent button
+      notifications.error(t('errors.emoji-update-failed'))
+    }
+  } finally {
+    isRefreshingLogEmoji.value = false
+  }
+}
 
 // Time the opened log item was logged, shown in the dialog's top-right corner.
 // Empty when adding a new item and for legacy entries without createdAt.
@@ -758,6 +789,7 @@ const editLogItem = (item, index) => {
   editedLogIndex.value = index
   editedLogItem.value = { ...item }
   showLogReferenceInputs.value = !editedLogItem.value.pheReference
+  logEmojiBasisName.value = editedLogItem.value.name || ''
   dialog2.value.openDialog()
 }
 
@@ -785,6 +817,8 @@ const closeLogEdit = () => {
   editedLogItem.value = { ...defaultLogItem }
   editedLogIndex.value = -1
   showLogReferenceInputs.value = false
+  logEmojiBasisName.value = ''
+  isRefreshingLogEmoji.value = false
 }
 
 const openAddLogItem = () => {
@@ -793,6 +827,7 @@ const openAddLogItem = () => {
   editedLogItem.value = { ...defaultLogItem }
   // Blank add: the reference inputs are the entry form, so show them directly
   showLogReferenceInputs.value = true
+  logEmojiBasisName.value = ''
   dialog2.value.openDialog()
 }
 
@@ -1318,11 +1353,14 @@ defineOgImage('NuxtSeo', {
           :title="logFormTitle"
           :meta="editedLogItemTime"
           :emoji="editedLogItem.emoji || ''"
+          :emoji-refreshable="showLogEmojiRefresh"
+          :emoji-refreshing="isRefreshingLogEmoji"
           :buttons="[
             { label: $t('common.save'), type: 'submit', visible: true },
             { label: $t('common.delete'), type: 'delete', visible: editedLogIndex !== -1 },
             { label: $t('common.cancel'), type: 'close', visible: true }
           ]"
+          @refresh-emoji="refreshLogEmoji"
           @submit="saveLogEdit"
           @delete="deleteLogItem"
           @close="closeLogEdit"
@@ -1346,7 +1384,19 @@ defineOgImage('NuxtSeo', {
               />
             </div>
           </div>
-          <!-- Reference inputs: shown directly on blank add, revealed by the pencil when editing -->
+          <!-- Disclosure: reveals the per-100g reference inputs -->
+          <button
+            type="button"
+            class="mt-4 mb-3 flex w-full cursor-pointer items-center justify-between text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            :aria-expanded="showLogReferenceInputs"
+            @click="showLogReferenceInputs = !showLogReferenceInputs"
+          >
+            {{ $t('common.edit-per-100g') }}
+            <LucideChevronDown
+              class="h-4 w-4 transition-transform"
+              :class="showLogReferenceInputs ? 'rotate-180' : ''"
+            />
+          </button>
           <div v-if="showLogReferenceInputs" class="flex gap-4">
             <NumberInput
               v-model.number="editedLogItem.pheReference"
@@ -1360,28 +1410,6 @@ defineOgImage('NuxtSeo', {
               :label="$t('common.kcal-per-100g')"
               class="flex-1"
             />
-          </div>
-          <!-- The pencil is overlaid absolutely so the two columns keep the exact
-               geometry of the result line below -->
-          <div v-else class="relative flex gap-4 text-gray-600 dark:text-gray-400 mt-5 mb-4">
-            <span class="flex-1 ml-1">
-              {{ editedLogItem.pheReference }} {{ $t('common.mg-phe-per-100g') }}
-            </span>
-            <span v-if="editedLogItem.kcalReference" class="flex-1 ml-1">
-              <!-- Padding on an inner block keeps the text out of the pencil's zone
-                   without widening this flex column (basis 0 is floored at padding) -->
-              <span class="block pr-9">
-                {{ editedLogItem.kcalReference }} {{ $t('common.kcal-per-100g') }}
-              </span>
-            </span>
-            <button
-              type="button"
-              class="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer rounded-md p-2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-              :aria-label="$t('common.edit')"
-              @click="showLogReferenceInputs = true"
-            >
-              <LucidePencil class="h-4.5 w-4.5" />
-            </button>
           </div>
           <NumberInput
             v-model.number="editedLogItem.weight"

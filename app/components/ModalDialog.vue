@@ -16,6 +16,17 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  // Shows a refresh button next to the emoji (e.g. to regenerate it after the
+  // food name changed); emits 'refresh-emoji' when clicked
+  emojiRefreshable: {
+    type: Boolean,
+    default: false
+  },
+  // Spins the refresh button and disables it while the emoji is being fetched
+  emojiRefreshing: {
+    type: Boolean,
+    default: false
+  },
   buttons: {
     type: Array,
     required: true
@@ -25,7 +36,7 @@ const props = defineProps({
     default: false
   }
 })
-const emit = defineEmits(['close', 'edit', 'submit', 'delete'])
+const emit = defineEmits(['close', 'edit', 'submit', 'delete', 'refresh-emoji'])
 
 // Imperative API preserved for callers (dialog.value.openDialog()), backed by a
 // reactive flag so nuxt-headlessui can drive the open/close transitions.
@@ -152,11 +163,24 @@ function handleButtonClick(buttonType) {
                       {{ title }}
                     </HeadlessDialogTitle>
                     <span
-                      v-if="meta || emoji"
+                      v-if="meta || emoji || emojiRefreshable"
                       class="flex shrink-0 items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"
                     >
-                      <span v-if="emoji" class="text-xl leading-none">{{ emoji }}</span
-                      >{{ meta }}
+                      <button
+                        v-if="emojiRefreshable"
+                        type="button"
+                        class="cursor-pointer rounded-md p-1 text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed dark:text-gray-500 dark:hover:text-gray-300"
+                        :disabled="emojiRefreshing"
+                        :aria-label="$t('common.update-emoji')"
+                        @click="$emit('refresh-emoji')"
+                      >
+                        <LucideRefreshCw
+                          class="h-4 w-4"
+                          :class="emojiRefreshing ? 'animate-spin' : ''"
+                        />
+                      </button>
+                      <span v-if="emoji" class="text-xl leading-none">{{ emoji }}</span>
+                      <span v-if="meta">{{ meta }}</span>
                     </span>
                   </div>
                   <div class="mt-3">
