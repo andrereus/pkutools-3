@@ -3,7 +3,13 @@
 
 Reads data-src/BLS_4_0_2025_DE/BLS_4_0_Daten_2025_DE.xlsx (not committed; free
 download at https://blsdb.de after registration, © Max Rubner-Institut) and
-writes public/data/bls-nutrients.csv and public/data/bls-nutrients.json.
+writes public/data/bls-nutrients.csv (all languages, for auditing) plus one
+JSON per locale: public/data/bls-nutrients-{de,en,es,fr}.json. Each JSON holds
+only that locale's name, so no user downloads names they cannot read.
+
+The BLS ships German and English names only. Spanish and French come from
+scripts/bls-names-i18n.json (id -> {es, fr}), which is committed; see
+scripts/bls-i18n-glossary.md for the terminology those translations follow.
 
 Nutrient values are taken over unchanged from the BLS (per 100 g edible
 portion). The only transformation is decoding the raw IEEE-754 doubles stored
@@ -36,9 +42,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 XLSX = ROOT / "data-src" / "BLS_4_0_2025_DE" / "BLS_4_0_Daten_2025_DE.xlsx"
+NAMES_I18N = ROOT / "scripts" / "bls-names-i18n.json"
 OUT_CSV = ROOT / "public" / "data" / "bls-nutrients.csv"
-OUT_JSON = ROOT / "public" / "data" / "bls-nutrients.json"
+OUT_JSON = ROOT / "public" / "data" / "bls-nutrients-{locale}.json"
 OUT_DROPPED = ROOT / "scripts" / "bls-dropped-foods.txt"
+
+# Locales the app offers the BLS in; "de" and "en" come from the xlsx itself.
+LOCALES = ["de", "en", "es", "fr"]
 
 NS = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
 
@@ -509,6 +519,11 @@ def assign_emoji(code, name_de, group_rules, shared_rules):
 def main():
     if not XLSX.exists():
         sys.exit(f"Source file not found: {XLSX}")
+    if not NAMES_I18N.exists():
+        sys.exit(f"Translation file not found: {NAMES_I18N}")
+
+    with open(NAMES_I18N, encoding="utf-8") as f:
+        names_i18n = json.load(f)
 
     rows = iter_rows(XLSX)
     header = next(rows)
@@ -529,6 +544,7 @@ def main():
     fallback_hits = Counter()
     dropped_missing = []
     dropped_bad_zero = []
+    untranslated = []
     for row in rows:
         if not row or not row[0]:
             continue
@@ -547,21 +563,36 @@ def main():
         ):
             dropped_bad_zero.append(f"{code} {name_de}")
             continue
+        # Only kept foods need names: a food added by a later BLS release has no
+        # translation yet and falls back to English rather than showing nothing.
+        translations = names_i18n.get(code)
+        if translations is None:
+            untranslated.append(f"{code} {name_de}")
+            translations = {"es": name_en, "fr": name_en}
+        item["es"], item["fr"] = translations["es"], translations["fr"]
         emoji = assign_emoji(code, name_de, group_rules, shared_rules)
         if emoji == GROUP_FALLBACK.get(code[0]):
             fallback_hits[code[0]] += 1
         item["emoji"] = emoji
         items.append(item)
 
-    fieldnames = ["id", "de", "en"] + [f for _, f in NUTRIENTS] + ["emoji"]
+    fieldnames = ["id"] + LOCALES + [f for _, f in NUTRIENTS] + ["emoji"]
     with open(OUT_CSV, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(items)
 
-    with open(OUT_JSON, "w", encoding="utf-8") as f:
-        json.dump(items, f, ensure_ascii=False, indent=2, separators=(",", ":"))
-        f.write("\n")
+    # One file per locale, each with only that locale's name under "name".
+    for locale in LOCALES:
+        localized = [
+            {"id": item["id"], "name": item[locale],
+             **{field: item[field] for _, field in NUTRIENTS},
+             "emoji": item["emoji"]}
+            for item in items
+        ]
+        with open(str(OUT_JSON).format(locale=locale), "w", encoding="utf-8") as f:
+            json.dump(localized, f, ensure_ascii=False, indent=2, separators=(",", ":"))
+            f.write("\n")
 
     # Record exactly which foods were removed, so the drop rules are auditable.
     with open(OUT_DROPPED, "w", encoding="utf-8") as f:
@@ -573,7 +604,12 @@ def main():
         f.write("\n".join(dropped_bad_zero))
         f.write("\n")
 
-    print(f"{len(items)} foods written to {OUT_CSV.name} and {OUT_JSON.name}")
+    print(f"{len(items)} foods written to {OUT_CSV.name} and "
+          f"{OUT_JSON.name.format(locale='|'.join(LOCALES))}")
+    if untranslated:
+        print(f"WARNING: {len(untranslated)} foods without es/fr translation "
+              f"(English name used): {', '.join(untranslated[:5])}"
+              f"{' ...' if len(untranslated) > 5 else ''}")
     print(f"{len(dropped_missing)} foods dropped: Phe not determined ('-')")
     print(f"{len(dropped_bad_zero)} foods dropped: implausible Phe = 0 (see {OUT_DROPPED.name})")
     print("group fallback emojis used:",

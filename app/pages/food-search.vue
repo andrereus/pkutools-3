@@ -45,7 +45,6 @@ const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const note = ref(null)
 
 // Computed properties
-const blsAvailable = computed(() => locale.value === 'de' || locale.value === 'en')
 const userIsAuthenticated = computed(() => store.user !== null)
 const userId = computed(() => store.user?.id)
 const ownFood = computed(() => store.ownFood)
@@ -65,8 +64,10 @@ const visibleCommunityFoods = computed(() =>
 
 // Sources the filter offers; pills only appear when a source has content
 const visibleSources = computed(() => {
-  const sources = [{ key: 'usda', label: 'USDA' }]
-  if (blsAvailable.value) sources.push({ key: 'bls', label: 'BLS' })
+  const sources = [
+    { key: 'usda', label: 'USDA' },
+    { key: 'bls', label: 'BLS' }
+  ]
   if (ownFood.value.length > 0) sources.push({ key: 'own', label: t('food-search.own-food') })
   if (visibleCommunityFoods.value.length > 0)
     sources.push({ key: 'community', label: t('community.communityFood') })
@@ -257,8 +258,8 @@ const loadFoodData = () => {
   if (!foodDataPromise) {
     foodDataPromise = Promise.all([
       $fetch('/data/usda-phe-kcal.json'),
-      // BLS ships German and English names only, so es/fr skip the download
-      blsAvailable.value ? $fetch('/data/bls-nutrients.json') : Promise.resolve([])
+      // BLS ships one file per locale, each holding only that locale's names
+      $fetch(`/data/bls-nutrients-${locale.value}.json`)
     ])
       .then(([usdaData, blsData]) => {
         const usdaFood = usdaData.map((item) => ({
@@ -271,7 +272,7 @@ const loadFoodData = () => {
           isCommunityFood: false
         }))
         const blsFood = blsData.map((item) => ({
-          name: locale.value === 'de' ? item.de : item.en,
+          name: item.name,
           emoji: item.emoji,
           phe: Math.round(item.phe * 1000),
           kcal: item.kcal,
