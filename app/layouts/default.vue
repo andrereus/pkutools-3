@@ -686,7 +686,7 @@ const handleCookieConsent = (consent) => {
     </div>
 
     <!-- Global notification -->
-    <Notification
+    <NotificationToast
       v-if="notifications.notification.value"
       :show="notifications.showNotification.value"
       :message="notifications.notification.value.message"
