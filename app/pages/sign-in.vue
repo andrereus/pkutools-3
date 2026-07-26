@@ -19,8 +19,6 @@ const userIsAuthenticated = computed(() => store.user !== null)
 const signInGoogle = async () => {
   try {
     await store.signInGoogle()
-    // TODO: Find better way to handle post-sign-in navigation for this page
-    navigateTo(localePath('getting-started'))
   } catch (error) {
     handleError(error, 'Google sign in')
   }
@@ -29,8 +27,6 @@ const signInGoogle = async () => {
 const registerEmailPassword = async () => {
   try {
     await store.registerWithEmail(email.value, password.value, name.value)
-    // New users always need to give consent
-    navigateTo(localePath('getting-started'))
   } catch (error) {
     handleError(error, 'email registration')
   }
@@ -39,12 +35,23 @@ const registerEmailPassword = async () => {
 const signInEmailPassword = async () => {
   try {
     await store.signInWithEmail(email.value, password.value)
-    // TODO: Find better way to handle post-sign-in navigation for this page
-    navigateTo(localePath('getting-started'))
   } catch (error) {
     handleError(error, 'email sign in')
   }
 }
+
+// The settings arrive from Firebase after the sign-in call resolves, so the
+// destination can only be picked once they are loaded. Deciding earlier is what
+// forced this page to always send everyone to getting-started.
+watch(
+  () => [store.user, store.settingsLoaded],
+  ([user, settingsLoaded]) => {
+    if (!user || !settingsLoaded) return
+    const onboarded =
+      store.settings.healthDataConsent === true || store.settings.gettingStartedCompleted === true
+    navigateTo(localePath(onboarded ? 'diary' : 'getting-started'))
+  }
+)
 
 const resetPassword = async () => {
   try {

@@ -176,20 +176,26 @@ onMounted(() => {
   showCookieBanner.value = !localStorage.getItem('cookie_consent')
 })
 
-// Simple onboarding check - only when settings change
+// Onboarding check for every sign-in path, including the in-page buttons and
+// the silent onAuthStateChanged restore. Gated on settingsLoaded: a check
+// against a single settings field cannot work, because for a new user the local
+// default and the empty snapshot are both null, so nothing ever changes.
 watch(
-  () => store.settings.healthDataConsentDate,
-  (consentDate) => {
-    if (store.user && consentDate !== undefined && !consentDate) {
-      const currentPath = useRoute().path
-      if (
-        !currentPath.includes('getting-started') &&
-        !currentPath.includes('erste-schritte') &&
-        !currentPath.includes('primeros-pasos') &&
-        !currentPath.includes('premiers-pas')
-      ) {
-        navigateTo(useLocalePath()('getting-started'))
-      }
+  () => [store.settingsLoaded, store.settings],
+  ([settingsLoaded, settings]) => {
+    if (!store.user || !settingsLoaded) return
+    // Legacy users may have consent without gettingStartedCompleted (and older
+    // accounts without healthDataConsentDate), so either flag counts as done.
+    if (settings.healthDataConsent === true || settings.gettingStartedCompleted === true) return
+
+    const currentPath = route.path
+    if (
+      !currentPath.includes('getting-started') &&
+      !currentPath.includes('erste-schritte') &&
+      !currentPath.includes('primeros-pasos') &&
+      !currentPath.includes('premiers-pas')
+    ) {
+      navigateTo(localePath('getting-started'))
     }
   }
 )

@@ -41,6 +41,10 @@ export const useStore = defineStore('main', {
     labValues: [],
     ownFood: [],
     settings: { ...defaultSettings },
+    // False until a settings snapshot has come back from Firebase. Anything
+    // that branches on settings (onboarding checks, post-sign-in routing) must
+    // wait for this, otherwise it decides against the local defaults.
+    settingsLoaded: false,
     communityFoods: [],
     unsubscribeFunctions: {}
   }),
@@ -101,6 +105,7 @@ export const useStore = defineStore('main', {
         } else {
           this.unsubscribeAll()
           this.user = null
+          this.resetUserData()
         }
       })
     },
@@ -110,6 +115,7 @@ export const useStore = defineStore('main', {
         await signOut(auth)
         this.unsubscribeAll()
         this.user = null
+        this.resetUserData()
       } catch (error) {
         console.error(error)
       }
@@ -125,6 +131,9 @@ export const useStore = defineStore('main', {
       // without this every login would register a second set of listeners and
       // orphan the first (leak + duplicate state writes).
       this.unsubscribeAll()
+      // Drop the previous account's data before binding the new listeners, so
+      // nothing of theirs is readable in the window before the first snapshot.
+      this.resetUserData()
 
       const db = getDatabase()
       const userId = this.user.id
@@ -157,6 +166,10 @@ export const useStore = defineStore('main', {
               this[key] = {}
             }
           }
+
+          if (key === 'settings') {
+            this.settingsLoaded = true
+          }
         })
         this.unsubscribeFunctions[key] = unsubscribe
       }
@@ -179,6 +192,13 @@ export const useStore = defineStore('main', {
         }
       })
       this.unsubscribeFunctions['communityFoods'] = communityFoodsUnsubscribe
+    },
+    resetUserData() {
+      this.pheDiary = []
+      this.labValues = []
+      this.ownFood = []
+      this.settings = { ...defaultSettings }
+      this.settingsLoaded = false
     },
     unsubscribeAll() {
       Object.values(this.unsubscribeFunctions).forEach((unsubscribe) => {
