@@ -1,0 +1,13 @@
+# Only tracked files need listing here — Prettier already reads .gitignore, so
+# .nuxt, .output and node_modules are covered.
+
+# Generated food databases (~8 MB). Produced by scripts/bls-convert.py, so
+# reformatting them would create an enormous diff and be undone on the next
+# regeneration.
+public/data/
+scripts/bls-names-i18n.json
+app/assets/data/food-icons-map.json
+
+# Managed by their own tools
+pnpm-lock.yaml
+.infisical.json
