@@ -77,9 +77,8 @@ useSeoMeta({
   title: () => t('sign-in.title')
 })
 
-defineOgImage('NuxtSeo', {
-  title: () => t('sign-in.title') + ' - PKU Tools',
-  theme: '#0ea5e9'
+defineOgImage('Default', {
+  title: () => t('sign-in.title') + ' - PKU Tools'
 })
 </script>
 

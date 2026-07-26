@@ -533,10 +533,9 @@ useSeoMeta({
   description: () => t('ai-calculator.description')
 })
 
-defineOgImage('NuxtSeo', {
+defineOgImage('Default', {
   title: () => t('ai-calculator.title') + ' - PKU Tools',
-  description: () => t('ai-calculator.description'),
-  theme: '#0ea5e9'
+  description: () => t('ai-calculator.description')
 })
 </script>
 

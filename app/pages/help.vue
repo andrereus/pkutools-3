@@ -47,9 +47,8 @@ useSeoMeta({
   title: () => t('help.title')
 })
 
-defineOgImage('NuxtSeo', {
-  title: () => t('help.title') + ' - PKU Tools',
-  theme: '#0ea5e9'
+defineOgImage('Default', {
+  title: () => t('help.title') + ' - PKU Tools'
 })
 </script>
 

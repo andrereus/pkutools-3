@@ -373,10 +373,9 @@ useSeoMeta({
   description: () => t('food-search.description')
 })
 
-defineOgImage('NuxtSeo', {
+defineOgImage('Default', {
   title: () => t('food-search.title') + ' - PKU Tools',
-  description: () => t('food-search.description'),
-  theme: '#0ea5e9'
+  description: () => t('food-search.description')
 })
 </script>
 

@@ -20,9 +20,8 @@ useSeoMeta({
   title: () => t('imprint.title')
 })
 
-defineOgImage('NuxtSeo', {
-  title: () => t('imprint.title') + ' - PKU Tools',
-  theme: '#0ea5e9'
+defineOgImage('Default', {
+  title: () => t('imprint.title') + ' - PKU Tools'
 })
 </script>
 

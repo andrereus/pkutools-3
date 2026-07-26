@@ -580,10 +580,9 @@ useSeoMeta({
   description: () => t('diary.description')
 })
 
-defineOgImage('NuxtSeo', {
+defineOgImage('Default', {
   title: () => t('diary.title') + ' - PKU Tools',
-  description: () => t('diary.description'),
-  theme: '#0ea5e9'
+  description: () => t('diary.description')
 })
 </script>
 
