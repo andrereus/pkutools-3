@@ -15,6 +15,7 @@ import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
 import { LucideStickyNote, LucideUsers, LucideThumbsUp, LucideThumbsDown } from '@lucide/vue'
+import { scaleToWeight } from '../utils/nutrition'
 
 const store = useStore()
 const { t } = useI18n()
@@ -273,7 +274,13 @@ const deleteItem = async () => {
             note: deletedItem.note || null,
             shared: false, // Don't restore shared status
             createdAt: deletedItem.createdAt,
-            updatedAt: deletedItem.updatedAt
+            updatedAt: deletedItem.updatedAt,
+            // Provenance has to travel with the restore: it decides later
+            // whether the food may be shared, and cannot be reconstructed
+            nutrients: deletedItem.nutrients || null,
+            factor: deletedItem.factor ?? null,
+            source: deletedItem.source || null,
+            sourceId: deletedItem.sourceId || null
           })
         } catch (error) {
           console.error('Undo error:', error)
@@ -409,7 +416,8 @@ const save = async () => {
         phe: entryPhe,
         kcal: entryKcal,
         note: entryNote,
-        shared: entryShared
+        shared: entryShared,
+        source: 'manual'
       })
     }
     notifications.success(t('common.saved'))
@@ -466,13 +474,9 @@ watch(
   { immediate: true }
 )
 
-const calculatePhe = () => {
-  return Math.round((weight.value * editedItem.value.phe) / 100)
-}
+const calculatePhe = () => scaleToWeight(Number(editedItem.value.phe), weight.value)
 
-const calculateKcal = () => {
-  return Math.round((weight.value * editedItem.value.kcal) / 100) || 0
-}
+const calculateKcal = () => scaleToWeight(Number(editedItem.value.kcal), weight.value)
 
 const add = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
@@ -492,7 +496,11 @@ const add = async () => {
     note:
       editedItem.value.note && editedItem.value.note.trim() !== ''
         ? editedItem.value.note.trim()
-        : null
+        : null,
+    source: 'own-food',
+    nutrients: editedItem.value.nutrients || null,
+    factor: editedItem.value.factor ?? null,
+    sourceId: editedItem.value.sourceId || null
   }
 
   isSaving.value = true

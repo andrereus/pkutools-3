@@ -121,11 +121,12 @@ describe('handleServerError', () => {
     }
   })
 
-  // `null` and `undefined` are left out: reading `.code` off them throws a
-  // TypeError before this runs, so they never reach the generic 500. Guarding
-  // with `?.` was raised on 2026-07-26 and left open; add them here if it lands.
+  // null and undefined included: a bare `throw` or a `Promise.reject()` with no
+  // reason reaches this as the catch-all for every authenticated route, and
+  // reading `.code` off them used to raise a TypeError that escaped instead of
+  // becoming a 500. Guarded on 2026-07-27.
   it('gives a generic 500 for anything else it is handed', () => {
-    for (const value of ['a string', 42, new Error('boom'), { some: 'object' }]) {
+    for (const value of ['a string', 42, new Error('boom'), { some: 'object' }, null, undefined]) {
       expect(() => handleServerError(value)).toThrowError(
         expect.objectContaining({ statusCode: 500, message: 'Internal server error' })
       )

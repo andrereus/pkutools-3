@@ -163,8 +163,10 @@ describe('BLS food database', () => {
   // locale to the English row it sits beside.
   itHasValidRows(bls.en, (food) => `${food.id} ${food.name}`)
 
-  // fat and fiber are genuinely absent for a handful of foods and render as a
-  // dash; what must never happen is a negative or non-numeric value.
+  // Any optional nutrient can be absent: the BLS either did not determine it,
+  // or marked it as a trace the converter deliberately does not write as 0
+  // (unknown is not "contains none"). The app leaves such a row out. What must
+  // never happen is a negative or non-numeric value.
   it('has no negative or implausible optional nutrients', () => {
     const broken: string[] = []
     for (const food of bls.en) {
@@ -178,5 +180,22 @@ describe('BLS food database', () => {
       }
     }
     expect(broken).toEqual([])
+  })
+
+  // The single most dangerous error this app can ship: a food that reads 0 mg
+  // Phe while it demonstrably contains protein, since any real protein contains
+  // phenylalanine. The converter drops those, but that rule lives in the Python
+  // importer, which no test here can reach — so this asserts the outcome.
+  //
+  // It covers one of the two drop criteria: the protein threshold. The other
+  // criterion (two or more of the 17 other amino acids measured) cannot be
+  // checked here, because the amino acid columns are not written to the output.
+  // A trace marker on a food below the protein threshold is likewise invisible
+  // to this test.
+  it('ships no food with zero Phe that still contains protein', () => {
+    const falseZeros = bls.en
+      .filter((food) => food.phe === 0 && (food.protein ?? 0) > 0.5)
+      .map((food) => `${food.id} ${food.name} — protein ${food.protein} g, phe 0`)
+    expect(falseZeros).toEqual([])
   })
 })

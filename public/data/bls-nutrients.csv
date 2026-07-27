@@ -24,7 +24,7 @@ H662100,"Linsensprossen/Linsenkeimlinge, roh",Lentils sprouted raw,"Brotes de le
 H861000,Tofu,Tofu,Tofu,Tofu,0.87,115,15.51,5.63,0,0,1.3,0.032,🫘
 H861100,Seidentofu,Silken tofu,Tofu sedoso,Tofu soyeux,0.26,46,4.57,2.9,0,0,0.6,0.018,🫘
 M012100,Roquefort mind. 50 % Fett i. Tr.,Roquefort min. 50 % fat in dry matter,Roquefort mín. 50 % grasa en extracto seco,Roquefort min. 50 % MG sur extrait sec,1.118,363,21.5,30.6,0,0,0,3.74,🥛
-M5B1600,Gorgonzola mind. 48 % Fett i. Tr.,Gorgonzola cheese min. 48 % fat in dry matter,Gorgonzola mín. 48 % grasa en extracto seco,Gorgonzola min. 48 % MG sur extrait sec,0.97,329,18.65,28.06,0,0,0,1.868,🥛
+M5B1600,Gorgonzola mind. 48 % Fett i. Tr.,Gorgonzola cheese min. 48 % fat in dry matter,Gorgonzola mín. 48 % grasa en extracto seco,Gorgonzola min. 48 % MG sur extrait sec,0.97,329,18.65,28.06,0,0,,1.868,🥛
 M881000,"Milchpulver mit hohem Fettgehalt (Sahnepulver, Rahmpulver)",Milk powder with high fat content (cream powder),Leche en polvo rica en grasa (nata en polvo),Lait en poudre riche en matière grasse (crème en poudre),1.1,586,21.6,42,28.3,28.3,0,0.675,🥛
 M882000,Vollmilchpulver,Whole milk powder,Leche entera en polvo,Lait entier en poudre,1.22,483,24.687,26.2,35.1,35.1,0,0.928,🥛
 M884000,Magermilchpulver,Skimmed milk powder,Leche desnatada en polvo,Lait écrémé en poudre,1.7,347,34.287,0.48,50.5,50.5,0,1.392,🥛
@@ -84,7 +84,7 @@ G542100,"Gemüsepaprika gelb, roh","Sweet pepper yellow, raw","Pimiento amarillo
 G554100,"Pfefferschote rot, roh","Chilli pepper red, raw","Guindilla roja, cruda","Piment rouge, cru",0.062,40,1.87,0.44,6.19,6.19,1.5,0.022,🥬
 H650100,"Mungbohnensprossen/Mungbohnenkeimlinge, roh",Mung bean sprouts raw,"Brotes de judía mungo, crudos","Germes de haricot mungo, crus",0.193,19,3.2,0.3,0.3,0.3,1.24,0.012,🌱
 H620100,"Sojabohnensprossen/Sojabohnenkeimlinge, roh",Soya bean sprouts raw,"Brotes de soja, crudos","Germes de soja, crus",0.284,40,6.306,1.025,0.3,0.3,2.38,0.075,🌱
-M012200,Feta mind. 45 % Fett i. Tr.,Feta min. 45 % fat in dry matter,Feta mín. 45 % grasa en extracto seco,Feta min. 45 % MG sur extrait sec,0.89,284,15.68,24.09,0,0,0,2.392,🧀
+M012200,Feta mind. 45 % Fett i. Tr.,Feta min. 45 % fat in dry matter,Feta mín. 45 % grasa en extracto seco,Feta min. 45 % MG sur extrait sec,0.89,284,15.68,24.09,0,0,,2.392,🧀
 M502700,Edelpilzkäse mind. 50 % Fett i. Tr.,Blue cheese min. 50 % fat in dry matter,Queso azul mín. 50 % grasa en extracto seco,Fromage bleu min. 50 % MG sur extrait sec,1.09,346,21.4,28.7,0,0,0,2.2,🧀
 M502600,Edelpilzkäse mind. 45 % Fett i. Tr.,Blue cheese min. 45 % fat in dry matter,Queso azul mín. 45 % grasa en extracto seco,Fromage bleu min. 45 % MG sur extrait sec,1.015,329,18.65,28.06,0,0,0,1.868,🧀
 M502800,Edelpilzkäse mind. 60 % Fett i. Tr.,Blue cheese min. 60 % fat in dry matter,Queso azul mín. 60 % grasa en extracto seco,Fromage bleu min. 60 % MG sur extrait sec,0.842,409,17.6,37.4,0.1,0.1,0,1.955,🧀
@@ -108,7 +108,7 @@ T307100,Schwarzer Heilbutt roh,Greenland halibut raw,Fletán negro crudo,Flétan
 T604100,"Katfisch/Steinbeißer, roh","Catfish/wolffish, raw","Pez lobo, crudo","Loup de l'Atlantique, cru",0.71,82,15.8,2.13,0,0,0,0.262,🐟
 T512100,Schleie roh,Tench raw,Tenca cruda,Tanche crue,0.874,77,17.7,0.74,0,0,0,0.082,🐟
 T506100,Wels roh,European catfish raw,Siluro crudo,Silure cru,0.636,128,15.3,7.4,0,0,0,0.048,🐟
-T507100,"Pangasius/Schlankwels, roh",Striped catfish raw,"Panga, cruda","Pangasius, cru",0.62,76,14.91,1.82,0,0,0,0.585,🐟
+T507100,"Pangasius/Schlankwels, roh",Striped catfish raw,"Panga, cruda","Pangasius, cru",0.62,76,14.91,1.82,0,0,,0.585,🐟
 T603100,Zander roh,Pike-perch raw,Lucioperca cruda,Sandre cru,0.988,86,20,0.66,0,0,0,0.06,🐟
 T633100,Meeräsche roh,Grey mullet raw,Mújol crudo,Mulet cru,0.86,108,20.4,2.89,0,0,0,0.172,🐟
 T617100,Schafskopf (Meerbrasse) roh,Sheepshead raw,Sargo (dorada) crudo,Sargue crue,0.789,102,20.2,2.41,0,0,0,0.178,🐟
@@ -230,15 +230,13 @@ E113100,"Hühnerei Eiklar, roh","Chicken egg white, raw","Clara de huevo de gall
 E113400,"Hühnerei Eiklar, getrocknet","Chicken egg white, dried","Clara de huevo de gallina, seca","Blanc d'œuf de poule, séché",4.74,338,81.1,0.12,3.1,3.1,0,3.55,🥚
 F081100,Rhabarber roh,Rhubarb raw,Ruibarbo crudo,Rhubarbe crue,0.017,20,0.6,0.14,1.359,1.129,3.2,0.005,🥬
 F110100,Apfel roh,Apple raw,Manzana cruda,Pomme crue,0.009,58,0.424,0.5,11.7,10.487,2.275,0.002,🍎
-F110400,Apfel getrocknet,Apple dried,Manzana seca,Pomme séchée,0.034,242,1.29,0,53.43,51.58,9.28,0.202,🍎
+F110400,Apfel getrocknet,Apple dried,Manzana seca,Pomme séchée,0.034,242,1.29,,53.43,51.58,9.28,0.202,🍎
 F201400,Aprikose getrocknet,Apricot dried,Albaricoque seco,Abricot séché,0.054,216,2.66,0.23,44,38.46,6.04,0.0052,🍑
-F203902,"Pfirsich gezuckert, Konserve, abgetropft","Peach sugared, canned, drained","Melocotón azucarado, conserva, escurrido","Pêche sucrée, conserve, égouttée",0,65,0.54,0,14.8,14.58,1.34,0.0045,🍑
 F212902,"Sauerkirsche gezuckert, Konserve, abgetropft","Sour cherry sugared, canned, drained","Guinda azucarada, conserva, escurrida","Griotte sucrée, conserve, égouttée",0.023,52,0.84,0.21,11.06,10.1,1.08,0.002,🍒
-F220400,Pflaume getrocknet,Plum dried (prunes),Ciruela seca (ciruela pasa),Prune séchée (pruneau),0.055,205,2.29,0,44.2,37.2,6.12,0.0045,🍑
+F220400,Pflaume getrocknet,Plum dried (prunes),Ciruela seca (ciruela pasa),Prune séchée (pruneau),0.055,205,2.29,,44.2,37.2,6.12,0.0045,🍑
 F402100,Hagebutte roh,Rose hip raw,Escaramujo crudo,Cynorhodon cru,0.133,111,3.6,0.6,16.2,16.2,6.1,0.06,🫐
 F405100,Sanddornbeere roh,Sea buckthorn berry raw,Baya de espino amarillo cruda,Baie d'argousier crue,0.039,51,1.42,3.2,2.4,2.3,3.6,0.01,🫐
-F414400,"Cranberries getrocknet, gezuckert","Cranberries dried, sugared","Arándanos rojos americanos secos, azucarados","Canneberges séchées, sucrées",0,287,0.53,0.34,68.61,67.46,3.9,0.0382,🫐
-F501902,"Ananas gezuckert, Konserve, abgetropft","Pineapple sugared, canned, drained","Piña azucarada, conserva, escurrida","Ananas sucré, conserve, égoutté",0.014,61,0.4,0,14.01,14.01,1.27,0.0032,🍍
+F501902,"Ananas gezuckert, Konserve, abgetropft","Pineapple sugared, canned, drained","Piña azucarada, conserva, escurrida","Ananas sucré, conserve, égoutté",0.014,61,0.4,,14.01,14.01,1.27,0.0032,🍍
 F502100,Avocado roh,Avocado raw,Aguacate crudo,Avocat cru,0.06,132,1.37,12.5,1.37,1.37,4.1,0.012,🥑
 F503100,Banane roh,Banana raw,Plátano crudo,Banane crue,0.034,79,1.319,0.4,15.89,13.89,2,0.0013,🍌
 F504400,Dattel getrocknet,Date dried,Dátil seco,Datte séchée,0.04,356,2.64,0.36,79.3,78.92,11.16,0.0118,🥭
@@ -253,8 +251,7 @@ F549100,Jackfrucht roh,Jackfruit raw,Yaca cruda,Jaque cru,0.03,78,1.1,0.45,15.31
 F553100,"Karambole/Sternfrucht, roh","Carambola/star fruit, raw","Carambola/fruta estrella, cruda","Carambole, crue",0.031,27,1.2,0.5,3.5,3.5,1.9,0.005,🍇
 F556100,Kaktusfeige roh,Prickly pear raw,Higo chumbo crudo,Figue de Barbarie crue,0.027,52,1,0.4,8.63,8.63,5,0,🥭
 F563100,"Feijoa/Ananas-Guave, roh","Feijoa/pineapple guava, raw","Feijoa/guayaba piña, cruda","Feijoa/goyave-ananas, crue",0.019,53,0.8,0.42,8.4,8.2,6.4,0.008,🍍
-F603600,Orangensaft,Orange juice,Zumo de naranja,Jus d'orange,0.0077,41,0.75,0,8.5,8.5,0.31,0.005,🧃
-F606902,"Mandarine gezuckert, Konserve, abgetropft","Mandarin sugared, canned, drained","Mandarina azucarada, conserva, escurrida","Mandarine sucrée, conserve, égouttée",0,72,0.51,0.31,16.15,16.15,0.51,0.0128,🍊
+F603600,Orangensaft,Orange juice,Zumo de naranja,Jus d'orange,0.0077,41,0.75,,8.5,8.5,0.31,0.005,🧃
 F850100,"Bananenchips frittiert, gesüßt","Banana crips/banana chips, deep-fried, sweetened","Chips de plátano fritos, endulzados","Chips de banane frites, sucrées",0.061,490,1.88,30.32,49.35,10.7,5.16,0.002,🍌
 G061000,Basilikum roh,Basil raw,Albahaca cruda,Basilic cru,0.13,23,3.15,0.64,0.31,0.31,1.6,0.01,🥬
 G081100,Schnittlauch roh,Chives raw,Cebollino crudo,Ciboulette crue,0.084,29,2.6,0.74,1.54,1.54,2.6,0.024,🧅
@@ -285,7 +282,7 @@ G570902,"Zuckermais Konserve, abgetropft","Sweetcorn canned, drained","Maíz dul
 G581100,Kürbis Pumpkin (C. pepo) roh,Pumpkin (C. pepo) raw,Calabaza (C. pepo) cruda,Citrouille (C. pepo) crue,0.029,36,1.1,0.13,5.81,5.1,3.43,0.002228,🎃
 G613100,"Rote Rübe/Rote Bete, roh",Beetroot raw,"Remolacha, cruda","Betterave rouge, crue",0.026,43,2.063,0.1,7.22,7.22,2.5,0.142,🥕
 G620100,"Karotte/Möhre, roh",Carrot raw,"Zanahoria, cruda","Carotte, crue",0.031,40,0.84,0.4,6.471,6.37,2.9,0.0568,🥕
-G890702,"Salzgurke/Salzdillgurke, milchsauer fermentiert, abgetropft","Gherkin lactic acid fermented, drained","Pepino en salmuera con eneldo, fermentado en ácido láctico, escurrido","Cornichon au sel et à l'aneth, fermenté lactique, égoutté",0.012,12,0.52,0,1.38,1.36,0.7,2.2488,🥒
+G890702,"Salzgurke/Salzdillgurke, milchsauer fermentiert, abgetropft","Gherkin lactic acid fermented, drained","Pepino en salmuera con eneldo, fermentado en ácido láctico, escurrido","Cornichon au sel et à l'aneth, fermenté lactique, égoutté",0.012,12,0.52,,1.38,1.36,0.7,2.2488,🥒
 G995000,Nori-Blatt geröstet,Sushi nori (toasted),Alga nori tostada,Feuille de nori grillée,1.3,261,38.26,4.36,1.76,0.48,30.6,1.83,🥬
 H012000,Sojalecithin,Soya bean lecithin,Lecitina de soja,Lécithine de soja,0,760,0,83,3.2,3.2,0,0,🫘
 H880200,Erdnussbutter/Erdnusscreme,Peanut butter,Mantequilla de cacahuete,Beurre de cacahuète,1.235,606,24.08,47.78,16.09,11.72,7.44,0.7912,🥜
@@ -349,25 +346,24 @@ M713100,"Speisequark Magerstufe, Magerquark < 10 % Fett i. Tr.",Quark < 10 % fat
 M7A1600,"Frischkäse aus Ziegenmilch, Natur, mind. 45 % Fett i. Tr.","Cream cheese made from goat's milk, min. 45 % fat in dry matter","Queso fresco de leche de cabra, natural, mín. 45 % grasa en extracto seco","Fromage frais au lait de chèvre, nature, min. 45 % MG sur extrait sec",0.62,230,17.94,16.42,2.02,1.74,0,1.0488,🧀
 M810600,Schmelzkäsezubereitung 45 - 52 % Fett i. Tr.,Processed cheese preparation 45 - 52 % fat in dry matter,Preparado de queso fundido 45 - 52 % grasa en extracto seco,Préparation de fromage fondu 45 - 52 % MG sur extrait sec,0.56,284,11.8,23.7,5.3,5.3,0,2.3088,🧀
 M827800,"Frischkäsezubereitung mind. 60 % Fett i. Tr., mit Gemüse/Kräutern","Cream cheese preparation min. 60 % fat in dry matter, with vegetables/herbs","Preparado de queso fresco mín. 60 % grasa en extracto seco, con verduras/hierbas","Préparation de fromage frais min. 60 % MG sur extrait sec, aux légumes/herbes",0.278,234,5.57,21.46,3.89,3.69,0.58,0.875,🧀
-N019000,"Eistee mit Zitronen-/Pfirsichgeschmack, gesüßt","Iced tea lemon-peach-flavoured, sweetened","Té helado con sabor a limón/melocotón, endulzado","Thé glacé arôme citron/pêche, sucré",0,25,0,0,6.2,6.2,0,0.0435,🥤
+N019000,"Eistee mit Zitronen-/Pfirsichgeschmack, gesüßt","Iced tea lemon-peach-flavoured, sweetened","Té helado con sabor a limón/melocotón, endulzado","Thé glacé arôme citron/pêche, sucré",0,25,0,,6.2,6.2,0,0.0435,🥤
 N110000,Trinkwasser,Drinking water,Agua potable,Eau potable,0,0,0,0,0,0,0,0.0058,💧
 N410100,Kaffee (Getränk),Coffee (infusion),Café (bebida),Café (boisson),0.003,1,0.12,0,0,0,0.31425,0.01,☕
-N420100,Kaffee (Getränk) aus Instantpulver,Coffee (infusion) made from instant powder,Café (bebida) de polvo instantáneo,Café (boisson) à partir de poudre instantanée,0,2,0.33,0,0,0,0.1,0.0212,☕
+N420100,Kaffee (Getränk) aus Instantpulver,Coffee (infusion) made from instant powder,Café (bebida) de polvo instantáneo,Café (boisson) à partir de poudre instantanée,0,2,0.33,,0,0,0.1,0.0212,☕
 N420900,Instantkaffeepulver,Coffee instant powder,Café instantáneo en polvo,Café instantané en poudre,0.8,150,19.5,1.2,4.1,0,22.3,0.12,☕
 N503900,"Cappuccino Instantpulver, gesüßt","Cappuccino instant powder, sweetened","Capuchino en polvo instantáneo, endulzado","Cappuccino en poudre instantanée, sucré",0.41,403,10.34,10.9,60.5,51.4,1.8,1.702,☕
 N610100,Grüntee (Getränk),Green tea (infusion),Té verde (bebida),Thé vert (boisson),0,0,0.1,0,0,0,0,0.005,🍵
-N630000,Schwarztee (Getränk),Black tea (infusion),Té negro (bebida),Thé noir (boisson),0,0,0,0,0,0,0,0.005,🍵
-P122000,"Malzgetränk, alkoholfrei","Malt drink, alcohol-free","Bebida de malta, sin alcohol","Boisson au malt, sans alcool",0,43,0.38,0,10.32,8.35,0,0.006,🍸
-P150000,Weizenbier kristallklar,Wheat beer filtered,Cerveza de trigo filtrada,Bière de blé filtrée,0.025,40,0.496,0,2.433,0.058,0,0.0032,🍺
-P151100,"Hefeweizen/Weizenbier, naturtrüb","Wheat beer, naturally cloudy","Cerveza de trigo, sin filtrar","Bière de blé, non filtrée",0.031,42,0.614,0,2.452,0.077,0,0.0032,🍺
-P162000,Export hell,Pale export beer,Cerveza export rubia,Bière blonde de type export,0.016,42,0.485,0,2.238,0.172,0,0.0035,🍸
-P163000,Pilsner Bier,Pilsner beer,Cerveza pilsner,Bière pils,0.014,38,0.422,0,2.218,0.108,0,0.0038,🍺
-P167000,Schwarzbier,Black beer,Cerveza negra,Bière noire,0.03,39,0.502,0,2.284,0.156,0,0.004,🍺
-P210000,Weißwein trocken,White wine dry,Vino blanco seco,Vin blanc sec,0,64,0.1,0,0.33,0.32,0,0.005,🍷
-P220000,Weißwein halbtrocken,White wine medium dry,Vino blanco semiseco,Vin blanc demi-sec,0,74,0.15,0,1.288,1.288,0,0.005,🍷
-P253000,Rotwein halbtrocken,Red wine medium dry,Vino tinto semiseco,Vin rouge demi-sec,0,84,0,0,1.77,1.74,0,0.005,🍷
-P2A3000,Rotwein trocken,Red wine dry,Vino tinto seco,Vin rouge sec,0,70,0.22,0,0.7,0.67,0,0.004,🍷
-P2A6000,"Qualitätsschaumwein, Sekt, trocken",Quality sparkling wine dry,"Espumoso de calidad, seco","Mousseux de qualité, sec",0,75,0,0,2.09,2.08,0,0.005,🥂
+N630000,Schwarztee (Getränk),Black tea (infusion),Té negro (bebida),Thé noir (boisson),0,0,,0,0,0,0,0.005,🍵
+P150000,Weizenbier kristallklar,Wheat beer filtered,Cerveza de trigo filtrada,Bière de blé filtrée,0.025,40,0.496,,2.433,0.058,,0.0032,🍺
+P151100,"Hefeweizen/Weizenbier, naturtrüb","Wheat beer, naturally cloudy","Cerveza de trigo, sin filtrar","Bière de blé, non filtrée",0.031,42,0.614,,2.452,0.077,,0.0032,🍺
+P162000,Export hell,Pale export beer,Cerveza export rubia,Bière blonde de type export,0.016,42,0.485,,2.238,0.172,0,0.0035,🍸
+P163000,Pilsner Bier,Pilsner beer,Cerveza pilsner,Bière pils,0.014,38,0.422,,2.218,0.108,0,0.0038,🍺
+P167000,Schwarzbier,Black beer,Cerveza negra,Bière noire,0.03,39,0.502,,2.284,0.156,0,0.004,🍺
+P210000,Weißwein trocken,White wine dry,Vino blanco seco,Vin blanc sec,0,64,0.1,,0.33,0.32,0,0.005,🍷
+P220000,Weißwein halbtrocken,White wine medium dry,Vino blanco semiseco,Vin blanc demi-sec,0,74,0.15,,1.288,1.288,0,0.005,🍷
+P253000,Rotwein halbtrocken,Red wine medium dry,Vino tinto semiseco,Vin rouge demi-sec,0,84,,,1.77,1.74,0,0.005,🍷
+P2A3000,Rotwein trocken,Red wine dry,Vino tinto seco,Vin rouge sec,0,70,0.22,,0.7,0.67,0,0.004,🍷
+P2A6000,"Qualitätsschaumwein, Sekt, trocken",Quality sparkling wine dry,"Espumoso de calidad, seco","Mousseux de qualité, sec",0,75,0,,2.09,2.08,0,0.005,🥂
 Q140000,Haselnussöl,Hazelnut oil,Aceite de avellana,Huile de noisette,0,899,0,99.9,0,0,0,0,🫗
 Q190000,Mandelöl,Almond oil,Aceite de almendra,Huile d'amande,0,900,0,100,0,0,0,0,🫗
 Q250000,Kürbiskernöl,Pumpkin seed oil,Aceite de pipa de calabaza,Huile de graine de courge,0,900,0,100,0,0,0,0.001108,🫗
@@ -380,12 +376,10 @@ R118000,Nitritpökelsalz,Nitrite curing salt,Sal de curado con nitrito,Sel nitri
 R118100,Nitritpökelsalz jodiert,"Nitrite curing salt, iodised","Sal de curado con nitrito, yodada","Sel nitrité de salaison, iodé",0,0,0,0,0,0,0,99,🧂
 R123100,Apfelessig,Apple cider vinegar,Vinagre de manzana,Vinaigre de cidre,0,18,0.2,0,0.147,0.147,0,0.045,🫙
 R132000,Senf mittelscharf,Mustard medium hot,Mostaza semipicante,Moutarde mi-forte,0.212,111,5.51,6.96,2.94,2.76,4.5,3.275,🥫
-R141100,Tomatenketchup,Tomato ketchup,Kétchup de tomate,Ketchup de tomate,0,98,1.4,0.1,21.16,20.82,1.81,1.9,🥫
 R143000,Sojasauce/Sojasoße,Soya sauce,Salsa de soja,Sauce soja,0.26,66,6.3,0.88,5.47,4.89,1.14,11.5325,🥫
 R148600,"Feinkostsauce/Grillsauce, Mayonnaise-Basis","Barbecue sauce, mayonnaise-based","Salsa para barbacoa, base de mayonesa","Sauce barbecue, base mayonnaise",0.022,274,1.1,24.58,11.15,8.89,0.64,1.3925,🥫
 R172000,Glutamat/Mononatriumglutamat/Natriumglutamat,Monosodium glutamate,Glutamato monosódico,Glutamate monosodique,0,0,0,,0,0,,34,🧂
 R231000,Basilikum getrocknet,Basil dried,Albahaca seca,Basilic séché,1.25,211,23,4.07,1.71,1.71,37.7,0.19,🌿
-R258100,"Pfeffer schwarz, getrocknet","Pepper black, dried","Pimienta negra, seca","Poivre noir, séché",0,304,10.92,2.77,46.07,0.67,25.5,0.032,🌶️
 R411000,Kutterhilfsmittel (E 450),Cutter additives phosphate-based (E 450),Aditivo para picado de embutido (E 450),Additif pour hachage de charcuterie (E 450),0,0,0,,0,0,,0,🧂
 R421200,"Hirschhornsalz (Ammoniumhydrogencarbonat, E 503)","Hartshorn (ammonium bicarbonate, E 503)","Sal de amoníaco (bicarbonato de amonio, E 503)","Sel d'ammoniaque (bicarbonate d'ammonium, E 503)",0,0,0,0,0,0,0,0,🧂
 R421300,"Pottasche (99 % Kaliumcarbonat, E 501)","Potash (99 % potassium carbonate, E 501)","Potasa (99 % carbonato de potasio, E 501)","Potasse (99 % carbonate de potassium, E 501)",0,0,0,,0,0,,0.312,🧂
@@ -400,7 +394,7 @@ R811000,"Fleisch Bouillon/Brühe/Suppe (Brühwürfel, Pulver)","Beef bouillon/st
 R821000,"Gemüse Bouillon/Brühe/Suppe (Brühwürfel, Pulver)","Vegetable bouillon/stock/soup (stock cubes, powder)","Caldo de verduras/sopa (pastilla, polvo)","Bouillon de légumes/soupe (cube, poudre)",0.18,195,5.82,5.8,27.91,0.4,2.9,51.7312,🍲
 R822000,"Hühner Bouillon/Brühe/Suppe (Brühwürfel, Pulver)","Chicken bouillon/stock/soup (stock cubes, powder)","Caldo de pollo/sopa (pastilla, polvo)","Bouillon de poule/soupe (cube, poudre)",0.188,201,6.96,4.3,32.75,0.72,0.78,55.2875,🍲
 S111000,Zucker weiß (Raffinadezucker/Weißzucker),Sugar white (refined sugar),Azúcar blanco (refinado),Sucre blanc (raffiné),0,400,0,0,100,100,0,0.012,🍬
-S112000,Zucker braun (Kandisfarin/Rohzucker),Sugar brown (candyfarin/raw sugar),Azúcar moreno (azúcar crudo),Sucre brun (sucre roux),0,387,0,0,96.7,96.7,0,0.005,🍬
+S112000,Zucker braun (Kandisfarin/Rohzucker),Sugar brown (candyfarin/raw sugar),Azúcar moreno (azúcar crudo),Sucre brun (sucre roux),0,387,0,0,96.7,96.7,,0.005,🍬
 S115100,Traubenzucker (Dextrose/Glukose),Dextrose/glucose),Dextrosa/glucosa,Dextrose/glucose,0,400,0,0,100,100,0,0,🍬
 S116000,Milchzucker (Laktose),Lactose,Lactosa,Lactose,0,400,0,0,100,100,0,0,🍬
 S117000,Malzzucker (Maltose),Maltose,Maltosa,Maltose,0,400,0,0,100,100,0,0,🍬
@@ -408,10 +402,10 @@ S118000,Fruchtzucker (Fruktose),Fructose,Fructosa,Fructose,0,400,0,0,100,100,0,0
 S145000,Nuss-Nougat-Creme,Nut nougat cream (spread),Crema de avellana y nougat,Pâte à tartiner noisette-nougat,0.3,530,6.9,30.55,54.75,53.07,3.52,0.0715,🍫
 S151000,Glukosesirup maltosehaltig,Glucose syrup containing maltose,Jarabe de glucosa con maltosa,Sirop de glucose contenant du maltose,0,413,0,0,79.5,31.8,,0,🍯
 S162000,Sorbit Pulver (E 420),Sorbitol powder (E 420),Sorbitol en polvo (E 420),Sorbitol en poudre (E 420),0,235,0,0,98,0,0,0,🍬
-S163000,Xylit Pulver (E 967),Xylitol powder (E 967),Xilitol en polvo (E 967),Xylitol en poudre (E 967),0,238,0,0,99,0,0,0,🍬
-S164000,Mannit Pulver (E 421),Mannitol powder (E 421),Manitol en polvo (E 421),Mannitol en poudre (E 421),0,240,0,0,100,0,0,0,🍬
-S170000,"Tafelsüße Tabletten (Süßstoffe: Cyclamat, Saccharin)","Table sweetener tablets (cyclamate, saccharin)","Edulcorante de mesa en comprimidos (ciclamato, sacarina)","Édulcorant de table en comprimés (cyclamate, saccharine)",0,52,0,0,0,0,0,33.5,🍬
-S171000,"Tafelsüße Flüssigsüße (Süßstoffe: Cyclamat, Saccharin)","Table sweetener liquid (cyclamate, saccharin)","Edulcorante de mesa líquido (ciclamato, sacarina)","Édulcorant de table liquide (cyclamate, saccharine)",0,0,0,0,0,0,0,2,🍬
+S163000,Xylit Pulver (E 967),Xylitol powder (E 967),Xilitol en polvo (E 967),Xylitol en poudre (E 967),0,238,,0,99,0,0,0,🍬
+S164000,Mannit Pulver (E 421),Mannitol powder (E 421),Manitol en polvo (E 421),Mannitol en poudre (E 421),0,240,,0,100,0,0,0,🍬
+S170000,"Tafelsüße Tabletten (Süßstoffe: Cyclamat, Saccharin)","Table sweetener tablets (cyclamate, saccharin)","Edulcorante de mesa en comprimidos (ciclamato, sacarina)","Édulcorant de table en comprimés (cyclamate, saccharine)",0,52,,0,0,0,0,33.5,🍬
+S171000,"Tafelsüße Flüssigsüße (Süßstoffe: Cyclamat, Saccharin)","Table sweetener liquid (cyclamate, saccharin)","Edulcorante de mesa líquido (ciclamato, sacarina)","Édulcorant de table liquide (cyclamate, saccharine)",0,0,,0,0,0,0,2,🍬
 S242000,Schokoladeneis,Chocolate ice cream,Helado de chocolate,Glace au chocolat,0.153,232,3.62,10.48,29.25,25.11,2.41,0.092,🍨
 S242300,Walnusseis,Walnut ice cream,Helado de nuez,Glace aux noix,0.117,240,3.4,12.8,26.74,22.21,1.77,0.0855,🍨
 S410000,Lakritze,Liquorice,Regaliz,Réglisse,0.097,311,5.21,0.5,70.64,49.7,1.27,0.51,🍬
@@ -426,13 +420,13 @@ T061100,"Hornfisch/Hornhecht, roh",Garfish raw,"Aguja, cruda","Orphie, crue",0.7
 T093100,Kabeljaurogen roh,Cod roe raw,Huevas de bacalao crudas,Œufs de morue crus,0.855,113,22.4,2.6,0,0,0,0.265,🐟
 T107100,Makrele roh,Mackerel raw,Caballa cruda,Maquereau cru,0.783,149,18.6,8.31,0,0,0,0.382,🐟
 T204100,"Dorsch/Kabeljau, roh",Cod raw,"Bacalao, crudo","Cabillaud, cru",0.695,79,17.8,0.84,0,0,0,0.18,🐟
-T207100,"Köhler/Seelachs, roh","Saithe/pollack, raw","Carbonero, crudo","Lieu noir, cru",0.79,99,19.32,2.39,0,0,0,0.1298,🐟
-T410100,Lachs roh,Salmon raw,Salmón crudo,Saumon cru,0.8,180,19.9,11.2,0,0,0,0.0798,🐟
+T207100,"Köhler/Seelachs, roh","Saithe/pollack, raw","Carbonero, crudo","Lieu noir, cru",0.79,99,19.32,2.39,0,0,,0.1298,🐟
+T410100,Lachs roh,Salmon raw,Salmón crudo,Saumon cru,0.8,180,19.9,11.2,0,0,,0.0798,🐟
 T410600,Lachs geräuchert (Räucherlachs),Salmon smoked,Salmón ahumado,Saumon fumé,0.883,170,21.25,9.2,0.16,0.16,0,2.925,🐟
 T422600,Forelle geräuchert,Trout smoked,Trucha ahumada,Truite fumée,0.893,137,21.2,5.52,0,0,0.03,2.0975,🐟
 T811100,Matjesfilet (Heringsfilet) nordische Art,Matjes fillet (herring fillet) Nordic style,Filete de arenque matjes al estilo nórdico,Filet de hareng matjes à la nordique,0.6,177,14.64,12.6,0,0,0,8.65,🐟
 T822900,"Heringsfilet in Tomatencreme/Tomatensauce, Konserve","Herring fillet in tomato sauce, canned","Filete de arenque en salsa de tomate, conserva","Filet de hareng à la sauce tomate, conserve",0.591,205,13.5,14.6,4.46,4.14,0.27,0.9312,🐟
-T890100,Surimi (Krebsfleischimitat aus Fischmuskeleiweiß geformt),Surimi (crab meat imitation),Surimi (imitación de carne de cangrejo),Surimi (imitation de chair de crabe),0.31,89,7.77,3.63,6.25,6.25,0,2.178,🦐
+T890100,Surimi (Krebsfleischimitat aus Fischmuskeleiweiß geformt),Surimi (crab meat imitation),Surimi (imitación de carne de cangrejo),Surimi (imitation de chair de crabe),0.31,89,7.77,3.63,6.25,6.25,,2.178,🦐
 T900262,"Tintenfischringe paniert, tiefgefroren, gebacken (Ofen)","Common cuttlefish rings, breaded, deep-frozen, baked (oven)","Aros de sepia empanados, congelados, al horno","Anneaux de seiche panés, surgelés, cuits au four",0.428,284,10.62,15.44,21.54,0,1.52,2.48,🦑
 U020100,"Schwein Hackfleisch, roh","Pork mince, raw","Cerdo, carne picada, cruda","Porc, viande hachée, crue",0.77095,271,17.88,22.14,0,0,0,0.1318,🥩
 U209100,"Rind Blut, roh","Beef blood liquid, raw","Vacuno, sangre, cruda","Bœuf, sang, cru",1.44,72,17.8,0.13,0,0,0,0.825,🥩
@@ -566,7 +560,6 @@ E151100,Putenei roh,Turkey egg raw,Huevo de pava crudo,Œuf de dinde cru,0.773,1
 E112500,"Hühnerei Eigelb, Pulver","Chicken egg yolk, powder","Yema de huevo de gallina, en polvo","Jaune d'œuf de poule, en poudre",1.5,671,34.2,59.3,0.23,0.23,0,0.228,🥚
 E113500,"Hühnerei Eiklar, Pulver","Chicken egg white, powder","Clara de huevo de gallina, en polvo","Blanc d'œuf de poule, en poudre",4.7,338,81.1,0.12,3.1,3.1,0,3.55,🥚
 F130100,Birne roh,Pear raw,Pera cruda,Poire crue,0.008,58,0.3,0.29,13.16,10.08,2.8,0.001945,🍐
-F923900,"Apfelkompott/Apfelmark, ungesüßt, Konserve","Apple sauce/apple compote, unsweetened, canned","Compota de manzana sin endulzar, conserva","Compote de pommes non sucrée, conserve",0,63,0.4,0.27,14.07,11.1,1.14,0.001,🍎
 F120100,"Apfel geschält, roh","Apple peeled, raw","Manzana pelada, cruda","Pomme pelée, crue",0.007,43,0.3,0.13,8.9,7.5,2.19,0.002,🍎
 F150100,Mispel roh,Medlar raw,Níspero crudo,Nèfle crue,0.014,45,0.5,0.2,9.2,8.58,2.07,0.01,🍇
 F120400,"Apfel geschält, getrocknet","Apple peeled, dried","Manzana pelada, seca","Pomme pelée, séchée",0.03,242,1.29,0,53.43,51.58,9.28,0.202,🍎
@@ -586,7 +579,7 @@ F508600,Maracujasaft/Passionsfruchtsaft,Passion fruit juice,Zumo de maracuyá,Ju
 F603100,Orange roh,Orange raw,Naranja cruda,Orange crue,0.02,49,1,0.2,8.85,8.85,2.2,0.005,🍊
 F604600,Grapefruitsaft,Grapefruit juice,Zumo de pomelo,Jus de pamplemousse,0.014,37,0.53,0.1,7.305,7.305,0.31,0.002,🧃
 F606600,Mandarinensaft,Mandarin juice,Zumo de mandarina,Jus de mandarine,0.009,49,0.9,0.3,9.59,9.59,0.31,0.005,🧃
-F110600,Apfelsaft,Apple juice,Zumo de manzana,Jus de pomme,0.003,44,0.097,0,10.585,9.585,0.31,0.015,🧃
+F110600,Apfelsaft,Apple juice,Zumo de manzana,Jus de pomme,0.003,44,0.097,,10.585,9.585,0.31,0.015,🧃
 G102100,"Endivie/Escariol, roh","Endive/escarole, raw","Escarola, cruda","Scarole, crue",0.053,13,1.25,0.2,0.83,0.83,1.22,0.108,🥬
 G101100,Chicoree roh,Witloof chicory raw,Endibia cruda,Endive crue,0.101,20,2.39,0.18,1.3,0.92,1.3,0.115,🥕
 G108100,"Schnittsalat/Pflücksalat, roh",Looseleaf lettuce raw,"Lechuga de hoja, cruda","Laitue à couper, crue",0.034,15,1.2,0.1,1.26,1.232,1.83,0.07,🥬
@@ -617,7 +610,7 @@ G630100,Meerrettich roh,Horseradish raw,Rábano picante crudo,Raifort cru,0.045,
 G720100,Wachsbohne roh,Wax bean raw,Judía amarilla cruda,Haricot beurre cru,0.057,27,2.1,0.2,3.4,2.26,1.89,0.00495,🫘
 G750100,Sojabohne unreif (Edamame) roh,Soya bean immature (edamame) raw,Soja inmadura (edamame) cruda,Soja immature (édamamé) cru,0.586,146,13,6.8,6.2,1.3,4.2,0.038,🫘
 G760200,"Erbse grün, tiefgefroren","Pea green, deep-frozen","Guisante verde, congelado","Petit pois, surgelé",0.241,77,4.9,0.7,10,5.4,5.3,0.01,🫛
-G520802,Gurke gesäuert (Gewürzgurke) abgetropft,"Cucumber/gherkin pickled, drained","Pepinillo encurtido, escurrido","Cornichon au vinaigre, égoutté",0.033,33,0.9,0,5.52,5.49,0.88,1.135,🥒
+G520802,Gurke gesäuert (Gewürzgurke) abgetropft,"Cucumber/gherkin pickled, drained","Pepinillo encurtido, escurrido","Cornichon au vinaigre, égoutté",0.033,33,0.9,,5.52,5.49,0.88,1.135,🥒
 H110800,Erdnussmus,Peanut butter (100 % pure),Crema de cacahuete,Purée de cacahuète,1.5,620,29,49.7,9.9,4.9,8.4,0.008,🥜
 H160100,Pekannuss,Pecan,Nuez pecana,Noix de pécan,0.509,723,10.967,72,3,2.68,9.46,0.008,🥜
 F960800,Cashewnussmus,Cashew butter (100 % pure),Crema de anacardo,Purée de noix de cajou,0.908,623,17.6,49.4,26,6.15,2,0.038,🥜
@@ -654,7 +647,7 @@ K709100,Hallimasch roh,Dark honey mushroom raw,Seta de miel cruda,Armillaire cou
 K702100,Trüffel roh,Black truffle (Perigord black truffle) raw,Trufa negra cruda,Truffe noire crue,0.19,73,8.288,0.51,0.6,0.6,16.54,0.192,🥔
 M111100,"Milch entrahmt, frisch, höchstens 0,1 % Fett, pasteurisiert","Milk skimmed, fresh, max. 0.1 % fat, pasteurised","Leche desnatada, fresca, como máximo 0,1 % grasa, pasteurizada","Lait écrémé, frais, au maximum 0,1 % de matière grasse, pasteurisé",0.179,34,3.418,0.07,4.8,4.8,0,0.132,🥛
 M114200,"Milch fettarm, 1,5 % Fett, laktosefrei, pasteurisiert","Milk low-fat, fresh, 1.5 % fat, lactose-free, pasteurised","Leche semidesnatada, 1,5 % grasa, sin lactosa, pasteurizada","Lait demi-écrémé, 1,5 % de matière grasse, sans lactose, pasteurisé",0.19,44,3.49,1.54,4.11,4.11,0,0.118,🥛
-M117700,Sahneersatz (Mischung aus pflanzlichen Fetten und Milch),Cream substitute (mixture of vegetable fats and milk),Sustituto de nata (mezcla de grasas vegetales y leche),Substitut de crème (mélange de matières grasses végétales et de lait),0.08,182,1.57,18,3.43,3.43,0,0.0702,🥛
+M117700,Sahneersatz (Mischung aus pflanzlichen Fetten und Milch),Cream substitute (mixture of vegetable fats and milk),Sustituto de nata (mezcla de grasas vegetales y leche),Substitut de crème (mélange de matières grasses végétales et de lait),0.08,182,1.57,18,3.43,3.43,,0.0702,🥛
 M114300,"Vollmilch 3,5 % Fett, laktosefrei, pasteurisiert","Whole milk, fresh, 3.5 % fat, lactose-free, pasteurised","Leche entera 3,5 % grasa, sin lactosa, pasteurizada","Lait entier 3,5 % de matière grasse, sans lactose, pasteurisé",0.16,62,3.55,3.49,4.15,4.15,0,0.0872,🥛
 M021000,Ziegenmilch mind. 3 % Fett,Goat's milk min. 3 % fat,Leche de cabra mín. 3 % grasa,Lait de chèvre min. 3 % de matière grasse,0.18,67,3.615,3.92,4.2,4.2,0,0.105,🥛
 M011000,"Schafmilch mind. 4,5 % Fett",Sheep's milk min. 4.5 % fat,"Leche de oveja mín. 4,5 % grasa","Lait de brebis min. 4,5 % de matière grasse",0.26,92,5.163,5.967,4.432,4.432,0,0.128,🥛
@@ -680,7 +673,7 @@ M303700,Chester (Cheddar) mind. 50 % Fett i. Tr.,Chester (Cheddar) cheese min. 5
 M302600,Bergkäse mind. 45 % Fett i. Tr.,Bergkäse (Alpine cheese) min. 45 % fat in dry matter,Queso de montaña (Bergkäse) mín. 45 % grasa en extracto seco,Fromage de montagne (Bergkäse) min. 45 % MG sur extrait sec,1.858,395,28.9,30.805,0,0,0,0.75,🧀
 M302700,Bergkäse mind. 50 % Fett i. Tr.,Bergkäse (Alpine cheese) min. 50 % fat in dry matter,Queso de montaña (Bergkäse) mín. 50 % grasa en extracto seco,Fromage de montagne (Bergkäse) min. 50 % MG sur extrait sec,1.7,423,26.9,34.8,0,0,0,0.988,🧀
 M303600,Chester (Cheddar) mind. 45 % Fett i. Tr.,Chester (Cheddar) cheese min. 45 % fat in dry matter,Chester (cheddar) mín. 45 % grasa en extracto seco,Chester (cheddar) min. 45 % MG sur extrait sec,1.5,370,26.6,28.8,0,0,0,1.75,🥛
-M313600,Provolone mind. 45 % Fett i. Tr.,Provolone cheese min. 45 % fat in dry matter,Provolone mín. 45 % grasa en extracto seco,Provolone min. 45 % MG sur extrait sec,1.47,398,26.08,31.98,0,0,0,2.075,🥛
+M313600,Provolone mind. 45 % Fett i. Tr.,Provolone cheese min. 45 % fat in dry matter,Provolone mín. 45 % grasa en extracto seco,Provolone min. 45 % MG sur extrait sec,1.47,398,26.08,31.98,0,0,,2.075,🥛
 M300600,Hartkäse mind. 45 % Fett i. Tr.,Hard cheese min. 45 % fat in dry matter,Queso duro mín. 45 % grasa en extracto seco,Fromage à pâte dure min. 45 % MG sur extrait sec,1.4,374,27.5,29.15,0,0,0,0.532,🧀
 M309600,Jarlsberg mind. 45 % Fett i. Tr.,Jarlsberg cheese min. 45 % fat in dry matter,Jarlsberg mín. 45 % grasa en extracto seco,Jarlsberg min. 45 % MG sur extrait sec,1.509,352,26.7,26.9,0,0,0,1.5,🥛
 M403800,Tilsiter mind. 60 % Fett i. Tr.,Tilsit cheese min. 60 % fat in dry matter,Tilsit mín. 60 % grasa en extracto seco,Tilsit min. 60 % MG sur extrait sec,1.047,419,19,37.8,0,0,0,1.5,🥛
@@ -728,11 +721,11 @@ M603300,Limburger mind. 20 % Fett i. Tr.,Limburger cheese min. 20 % fat in dry m
 M600500,Weichkäse mind. 40 % Fett i. Tr.,Soft cheese min. 40 % fat in dry matter,Queso blando mín. 40 % grasa en extracto seco,Fromage à pâte molle min. 40 % MG sur extrait sec,0.84,249,21.18,18.22,0.01,0,0,1.985,🧀
 M410700,"Schnittkäse aus Schafmilch, mind. 50 % Fett i. Tr.","Semi-hard cheese made from sheep's milk, min. 50 % fat in dry matter","Queso semiduro de leche de oveja, mín. 50 % grasa en extracto seco","Fromage à pâte pressée au lait de brebis, min. 50 % MG sur extrait sec",1.15,383,19.16,33.63,0.012,0,0,1.2912,🧀
 M6A5700,"Weichkäse aus Schafmilch, mind. 45 % Fett i. Tr.","Soft cheese made from sheep's milk, min. 45 % fat in dry matter","Queso blando de leche de oveja, mín. 45 % grasa en extracto seco","Fromage à pâte molle au lait de brebis, min. 45 % MG sur extrait sec",1.01,279,17.86,22.66,0.6,0.6,0,1.4775,🧀
-M715800,"Brotaufstrich aus pflanzlichen Fetten, Rahm, Joghurt entrahmt","Spread made from vegetable fats, cream, skimmed yogurt","Crema para untar de grasas vegetales, nata y yogur desnatado","Pâte à tartiner aux matières grasses végétales, crème et yaourt écrémé",0.2,230,4.8,22.1,2.47,2.47,0,0.418,🥛
+M715800,"Brotaufstrich aus pflanzlichen Fetten, Rahm, Joghurt entrahmt","Spread made from vegetable fats, cream, skimmed yogurt","Crema para untar de grasas vegetales, nata y yogur desnatado","Pâte à tartiner aux matières grasses végétales, crème et yaourt écrémé",0.2,230,4.8,22.1,2.47,2.47,,0.418,🥛
 M713700,"Speisequark Rahmstufe, 50 % Fett i. Tr.",Quark 50 % fat in dry matter,"Requesón con nata, 50 % grasa en extracto seco","Fromage blanc à la crème, 50 % MG sur extrait sec",0.429,178,8.3,14.5,2.9,2.9,0,0.1,🍨
-M710700,"Frischkäsezubereitung Natur, mind. 50 % Fett i. Tr.",Cream cheese preparation min. 50 % fat in dry matter,"Preparado de queso fresco natural, mín. 50 % grasa en extracto seco","Préparation de fromage frais nature, min. 50 % MG sur extrait sec",0.5,202,9.74,16.61,2.73,2.73,0,0.8,🧀
-M032100,Mozzarella mind. 45 % Fett i. Tr.,Mozzarella min. 45 % fat in dry matter,Mozzarella mín. 45 % grasa en extracto seco,Mozzarella min. 45 % MG sur extrait sec,0.93,259,17.12,20.99,0,0,0,0.468,🧀
-M176800,"Sauerrahm/Creme fraiche, 30 % Fett",Creme fraiche 30 % fat,Crème fraîche 30 % grasa,Crème fraîche 30 % de matière grasse,0.12,265,2.4,27.03,2.55,2.55,0,0.078,🍮
+M710700,"Frischkäsezubereitung Natur, mind. 50 % Fett i. Tr.",Cream cheese preparation min. 50 % fat in dry matter,"Preparado de queso fresco natural, mín. 50 % grasa en extracto seco","Préparation de fromage frais nature, min. 50 % MG sur extrait sec",0.5,202,9.74,16.61,2.73,2.73,,0.8,🧀
+M032100,Mozzarella mind. 45 % Fett i. Tr.,Mozzarella min. 45 % fat in dry matter,Mozzarella mín. 45 % grasa en extracto seco,Mozzarella min. 45 % MG sur extrait sec,0.93,259,17.12,20.99,0,0,,0.468,🧀
+M176800,"Sauerrahm/Creme fraiche, 30 % Fett",Creme fraiche 30 % fat,Crème fraîche 30 % grasa,Crème fraîche 30 % de matière grasse,0.12,265,2.4,27.03,2.55,2.55,,0.078,🍮
 M772800,"Schmelzkäse aus Frischkäse, streichfähig, mind. 60 % Fett i. Tr.","Processed cheese made from cream cheese, spreadable, min. 60 % fat in dry matter","Queso fundido de queso fresco, untable, mín. 60 % grasa en extracto seco","Fromage fondu au fromage frais, à tartiner, min. 60 % MG sur extrait sec",0.5,328,10.7,29.6,4.1,4.1,0,1.8,🧀
 M780100,Kochkäse < 10 % Fett i. Tr.,German cooked cheese < 10 % fat in dry matter,Queso cocido alemán < 10 % grasa en extracto seco,Fromage cuit allemand < 10 % MG sur extrait sec,0.722,84,15.2,0.5,4.2,4.2,0,1,🧀
 M711100,Körniger Frischkäse < 10 % Fett i. Tr.,Cottage cheese < 10 % fat in dry matter,Requesón granulado (cottage) < 10 % grasa en extracto seco,Cottage cheese < 10 % MG sur extrait sec,0.6,73,11.8,1.2,3,3,0,0.5,🧀
@@ -749,9 +742,9 @@ M771700,"Schmelzkäse schnittfest, mind. 50 % Fett i. Tr.",Processed cheese slic
 M810500,Schmelzkäsezubereitung mind. 40 % Fett i. Tr.,Processed cheese preparation min. 40 % fat in dry matter,Preparado de queso fundido mín. 40 % grasa en extracto seco,Préparation de fromage fondu min. 40 % MG sur extrait sec,0.712,254,15,19,5.1,5.1,0,2.75,🧀
 M771400,"Schmelzkäse schnittfest, mind. 30 % Fett i. Tr.",Processed cheese sliceable min. 30 % fat in dry matter,"Queso fundido en lonchas, mín. 30 % grasa en extracto seco","Fromage fondu en tranches, min. 30 % MG sur extrait sec",0.7,221,14.8,13.6,9,9,0,3,🧀
 M771600,"Schmelzkäse schnittfest, mind. 45 % Fett i. Tr.",Processed cheese sliceable min. 45 % fat in dry matter,"Queso fundido en lonchas, mín. 45 % grasa en extracto seco","Fromage fondu en tranches, min. 45 % MG sur extrait sec",0.7,299,15.7,23.6,5.1,5.1,0,2.8,🧀
-N314000,Limonade chininhaltig,Carbonated soft drink with quinine,Refresco con quinina,Boisson gazeuse à la quinine,0,41,0,0,9.88,9.88,0,0.002,🥤
-N310400,Zitronenlimonade,Carbonated lemonade,Refresco de limón,Limonade,0,38,0,0,9.27,9.27,0,0.022,🥤
-N315000,Ginger Ale,Ginger Ale,Ginger ale,Ginger ale,0,37,0,0,8.87,8.87,0,0.002,🥤
+N314000,Limonade chininhaltig,Carbonated soft drink with quinine,Refresco con quinina,Boisson gazeuse à la quinine,0,41,,0,9.88,9.88,0,0.002,🥤
+N310400,Zitronenlimonade,Carbonated lemonade,Refresco de limón,Limonade,0,38,,0,9.27,9.27,0,0.022,🥤
+N315000,Ginger Ale,Ginger Ale,Ginger ale,Ginger ale,0,37,,0,8.87,8.87,0,0.002,🥤
 N128000,Natürliches Mineralwasser still,Natural mineral water still,Agua mineral natural sin gas,Eau minérale naturelle plate,0,0,0,0,0,0,0,0.0068,💧
 N127000,Natürliches Mineralwasser mit Kohlensäure,Natural mineral water carbonated,Agua mineral natural con gas,Eau minérale naturelle gazeuse,0,0,0,0,0,0,0,0.0068,💧
 N130000,Natürliches Mineralwasser mit geringem Mineraliengehalt,Natural mineral water with low mineral content,Agua mineral natural de mineralización débil,Eau minérale naturelle faiblement minéralisée,0,0,0,0,0,0,0,0.0035,💧
@@ -760,8 +753,8 @@ N411100,Espresso (Getränk),Espresso (infusion),Espresso (bebida),Expresso (bois
 N440100,"Kaffee (Getränk) entkoffeiniert, aus Instantpulver",Coffee (infusion) made from decaffeinated instant powder,"Café (bebida) descafeinado, de polvo instantáneo","Café (boisson) décaféiné, à partir de poudre instantanée",0.01,2,0.33,0,0,0,0,0.002,☕
 N440900,Instantkaffeepulver entkoffeiniert,Coffee instant powder decaffeinated,"Café instantáneo en polvo, descafeinado","Café instantané en poudre, décaféiné",0.8,150,19.5,1.2,4.1,0,22.3,0.12,☕
 N611000,Mate-Tee (Getränk),Mate tea (infusion),Mate (bebida),Maté (boisson),0,0,0.1,0,0,0,0,0.005,🍵
-N720100,Kräutertee (Getränk),Herbal tea (infusion),Infusión de hierbas (bebida),Tisane (boisson),0,0,0,0,0,0,0,0.00622,🍵
-N601000,Roibusch-/Rooibos-/Rotbusch-Tee (Getränk),Rooibos tea (infusion),Té rooibos (bebida),Thé rooibos (boisson),0,0,0,0,0,0,0,0.005,🍵
+N720100,Kräutertee (Getränk),Herbal tea (infusion),Infusión de hierbas (bebida),Tisane (boisson),0,0,,0,0,0,0,0.00622,🍵
+N601000,Roibusch-/Rooibos-/Rotbusch-Tee (Getränk),Rooibos tea (infusion),Té rooibos (bebida),Thé rooibos (boisson),0,0,,0,0,0,0,0.005,🍵
 N670100,Schwarztee (Getränk) entkoffeiniert,Black tea (infusion) decaffeinated,Té negro (bebida) descafeinado,Thé noir (boisson) déthéiné,0,0,0,0,0,0,0,0.005,🍵
 P151120,"Hefeweizen/Weizenbier, 0,0 % vol",Wheat beer 0.0 % vol,"Cerveza de trigo, 0,0 % vol","Bière de blé, 0,0 % vol",0.024,26,0.478,0,5.9,3.6,0,0.0032,🍺
 P151110,"Hefeweizen/Weizenbier, alkoholfrei",Wheat beer alcohol-free,"Cerveza de trigo, sin alcohol","Bière de blé, sans alcool",0.024,22,0.484,0,4.7,2.4,0,0.0032,🍺
@@ -796,15 +789,14 @@ P273000,Rosewein trocken,Rose wine dry,Vino rosado seco,Vin rosé sec,0,64,0.1,0
 Q310000,Walnussöl,Walnut oil,Aceite de nuez,Huile de noix,0,899,0,99.9,0,0,0,0,🫗
 Q120000,Olivenöl,Olive oil,Aceite de oliva,Huile d'olive,0,899,0,99.9,0,0,0,0.00372,🫒
 Q210000,Erdnussöl,Peanut oil,Aceite de cacahuete,Huile d'arachide,0,899,0,99.9,0,0,0,0,🫗
-Q550000,Kokosöl,Coconut oil,Aceite de coco,Huile de coco,0,900,0,100,0,0,0,0,🫗
+Q550000,Kokosöl,Coconut oil,Aceite de coco,Huile de coco,0,900,,100,0,0,0,0,🫗
 Q180000,Rapsöl/Rüböl,Rapeseed oil/canola oil,Aceite de colza,Huile de colza,0,900,0,100,0,0,0,0.00412,🫗
 Q260000,Maiskeimöl,Corn oil,Aceite de germen de maíz,Huile de maïs,0,900,0,100,0,0,0,0.002,🫗
 Q270000,Sojaöl,Soya oil,Aceite de soja,Huile de soja,0,900,0,100,0,0,0,0,🫗
 Q320000,Sonnenblumenöl,Sunflower oil,Aceite de girasol,Huile de tournesol,0,900,0,100,0,0,0,0.00322,🫗
 Q640000,Halbfettbutter,Butter half fat,Mantequilla semigrasa,Beurre allégé,0.2,377,4,39.8,0.571,0.571,0,0.2,🧈
-Q630000,Süßrahmbutter,Sweet cream butter,Mantequilla de nata dulce,Beurre de crème douce,0,747,0.59,82.5,0.6,0.6,0,0.03,🧈
-Q860000,Schweinefett/Schweineschmalz,Pork lard,Manteca de cerdo,Saindoux,0,900,0,100,0,0,0,0.002,🧈
-Q830000,Hühnerfett,Chicken fat,Grasa de pollo,Graisse de poulet,0,900,0,100,0,0,0,0.025,🧈
+Q860000,Schweinefett/Schweineschmalz,Pork lard,Manteca de cerdo,Saindoux,0,900,,100,0,0,0,0.002,🧈
+Q830000,Hühnerfett,Chicken fat,Grasa de pollo,Graisse de poulet,0,900,,100,0,0,0,0.025,🧈
 U205000,"Rind Fettgewebe, subkutan roh","Beef fatty tissue, subcutaneous, raw","Vacuno, tejido graso subcutáneo, crudo","Bœuf, tissu adipeux sous-cutané, cru",0.059,852,1.5,94,0,0,0,0.025,🥩
 Q880000,Hammelfett/Hammeltalg,Mutton tallow/fat,Sebo de cordero,Suif de mouton,0.142,747,3.85,81.3,0,0,0,0.005,🧈
 R113000,"Speisesalz jodiert/Jodsalz, mit Fluorid",Iodised salt with fluoride,"Sal yodada, con flúor","Sel iodé, fluoré",0,0,0,0,0,0,0,95.3625,🧂
@@ -847,7 +839,7 @@ T861100,Kaviar echt (Stör),Caviar (sturgeon),Caviar auténtico (esturión),Cavi
 T091100,Heringsrogen roh,Herring roe raw,Huevas de arenque crudas,Œufs de hareng crus,1.04,131,26,3.05,0,0,0,0.228,🐟
 T094100,Lachsrogen roh,Salmon roe raw,Huevas de salmón crudas,Œufs de saumon crus,0.8,113,22.4,2.6,0,0,0,0.265,🐟
 T121100,Thunfisch roh,Tuna raw,Atún crudo,Thon cru,0.98,139,22.4,5.52,0,0,0,0.108,🐟
-T107600,Makrele geräuchert,Mackerel smoked,Caballa ahumada,Maquereau fumé,0.72,338,18.89,29.2,0,0,0,1.805,🐟
+T107600,Makrele geräuchert,Mackerel smoked,Caballa ahumada,Maquereau fumé,0.72,338,18.89,29.2,0,0,,1.805,🐟
 T206100,Schellfisch roh,Haddock raw,Eglefino crudo,Églefin cru,0.764,74,17.1,0.58,0,0,0,0.17,🐟
 T800200,Stockfisch (getrocknet),"Stockfish (cod unsalted, dried)",Pescado seco (stockfish),Stockfisch (morue séchée non salée),2.94,339,79.2,2.5,0,0,0,5.082,🐟
 T208100,"Merlan/Wittling, roh",Whiting raw,"Merlán, crudo","Merlan, cru",0.715,85,18.4,1.31,0,0,0,0.202,🐟
@@ -875,7 +867,7 @@ U602200,"Schwein Fleisch, geringer Feinsehnenanteil, sichtbarer Fettanteil max. 
 U602000,"Schwein Fleisch, fett- und sehnenfrei (S I) roh","Pork meat, fat and tendon free (S I) raw","Cerdo, carne sin grasa ni tendones (S I) cruda","Porc, viande sans gras ni tendons (S I) crue",1.78267,105,22.16,1.85,0,0,0,0.108,🥩
 U522100,"Schwein Stielkotelett, roh",Pork chop (loin) raw,"Cerdo, chuleta de palo, cruda","Porc, côte première, crue",0.87,175,21.02,10.08,0,0,0,0.1218,🍖
 U578100,"Schwein Lachsbraten, roh",Pork meat for roasting (loin) raw,"Cerdo, asado de lomo, crudo","Porc, rôti de longe, cru",0.97,115,23.56,2.35,0,0,0,0.1095,🐟
-W510000,"Kasseler, Rohpökelware, geräuchert","Pork loin chop, raw cured, smoked",Kasseler (chuleta curada) ahumado,Kasseler (côte de porc saumurée) fumé,0.88,107,21.97,2.17,0,0,0,3.075,🍖
+W510000,"Kasseler, Rohpökelware, geräuchert","Pork loin chop, raw cured, smoked",Kasseler (chuleta curada) ahumado,Kasseler (côte de porc saumurée) fumé,0.88,107,21.97,2.17,0,0,,3.075,🍖
 U533100,"Schwein Schmetterlingssteak, roh",Pork steak (loin) raw,"Cerdo, filete mariposa (lomo) crudo","Porc, steak papillon (longe) cru",0.9,145,22.4,6.2,0,0,0,0.1095,🍖
 U577100,"Schwein Kammbraten, roh",Pork meat for roasting (neck) raw,"Cerdo, asado de aguja, crudo","Porc, rôti d'échine, cru",0.79,175,19.21,10.9,0,0,0,0.1358,🍖
 U532100,"Schwein Kammsteak, roh",Pork steak (neck) raw,"Cerdo, filete de aguja, crudo","Porc, steak d'échine, cru",0.79,175,19.21,10.9,0,0,0,0.1358,🍖
@@ -890,7 +882,7 @@ U603000,"Schwein Fleisch, höherer Sehnenanteil, sichtbarer Fettanteil max. 7 - 
 U571100,Schwein Bratenfleisch (Bug mit Fett und Schwarte) roh,Pork meat for roasting (shoulder with fat and rind) raw,"Cerdo, carne para asar (paleta con grasa y corteza) cruda","Porc, viande à rôtir (épaule avec gras et couenne) crue",0.84,198,20.4,12.92,0,0,0,0.1422,🍖
 U574100,Schwein Bratenfleisch (Bug ohne Fett und Schwarte) roh,Pork meat for roasting (shoulder without fat and rind) raw,"Cerdo, carne para asar (paleta sin grasa ni corteza) cruda","Porc, viande à rôtir (épaule sans gras ni couenne) crue",0.87,135,20.51,5.83,0,0,0,0.1605,🍖
 U554100,Schwein Gulasch (Restbug) roh,Pork goulash (shoulder strips) raw,"Cerdo, gulash (recortes de paleta) crudo","Porc, goulasch (chutes d'épaule) cru",0.93,121,21.51,3.83,0,0,0,0.1542,🍲
-W441000,Parmaschinken,Parma ham,Jamón de Parma,Jambon de Parme,1.04,307,26.72,21.8,0.13,0.13,0,5.3,🍖
+W441000,Parmaschinken,Parma ham,Jamón de Parma,Jambon de Parme,1.04,307,26.72,21.8,0.13,0.13,,5.3,🍖
 W442000,"Schwarzwälder Schinken, Rohpökelware, geräuchert","Black Forest ham, raw cured, smoked","Jamón de la Selva Negra, curado en crudo, ahumado","Jambon de la Forêt-Noire, salaison crue, fumée",0.954,307,26.5,21.9,0.13,0.13,0,5.35,🍖
 U575100,Schwein Bratenfleisch (Nuss) roh,Pork meat for roasting (thick flank) raw,"Cerdo, carne para asar (babilla) cruda","Porc, viande à rôtir (noix) crue",0.93,109,21.77,2.43,0,0,0,0.1358,🍖
 U543100,Schwein Schnitzel (Nuss) roh,Pork schnitzel (thick flank) raw,"Cerdo, escalope (babilla) crudo","Porc, escalope (noix) crue",0.93,109,21.77,2.43,0,0,0,0.1358,🍖
@@ -936,7 +928,7 @@ V438100,"Suppenhuhn Innereien, roh","Boiling fowl giblets, raw","Gallina para ca
 V635100,"Ente Leber, roh","Duck liver, raw","Pato, hígado, crudo","Canard, foie, cru",0.932,121,18.7,4.64,1.2,0,0,0.27,🍗
 V551100,"Rind Magen/Kutteln, roh","Beef stomach/tripe, raw","Vacuno, callos (estómago) crudos","Bœuf, tripes (estomac) crues",0.578,80,13.5,2.84,0,0,0,0.222,🍖
 V553100,"Schwein Magen, roh","Pork stomach, raw","Cerdo, estómago, crudo","Porc, estomac, cru",0.7,158,16.8,10.1,0,0,0,0.188,🍖
-W149300,Salami (Schwein),Pork salami,Salami (cerdo),Salami (porc),0.9,374,23.54,30.9,0,0,0,4.1,🌭
+W149300,Salami (Schwein),Pork salami,Salami (cerdo),Salami (porc),0.9,374,23.54,30.9,0,0,,4.1,🌭
 W288100,Geflügelmortadella,Poultry mortadella,Mortadela de ave,Mortadelle de volaille,0.481,229,12.57,19.09,0.009,0,0.48,2.3,🍗
 W874200,Cocktailwürstchen Konserve,Cocktail sausage small canned,"Salchichas de cóctel, conserva","Saucisses cocktail, conserve",0.53,228,12.5,19.5,0,0,0,1.778,🌭
 W874300,Wiener Würstchen Konserve,Vienna sausage canned,"Salchicha de Viena, conserva","Saucisse de Vienne, conserve",0.53,228,12.5,19.5,0,0,0,1.778,🌭
@@ -945,11 +937,11 @@ W870400,"Lyoner/Lyoner Wurst, Konserve",Lyon sausage canned,Lyoner (embutido) co
 W231200,Mortadella/Schinkenwurst fein zerkleinert,Mortadella/Ham bologna finely minced,"Mortadela/embutido de jamón, picado fino","Mortadelle/saucisse au jambon, hachée finement",0.518,264,13.5,23,0.25,0.24,0,2.0125,🌭
 W245000,Lyoner weiß,White Lyoner sausage,Lyoner blanco,Saucisse de Lyon blanche,0.47,281,12.25,25.5,0.25,0.24,0,2.0125,🌭
 W255100,Lyoner grob,Lyoner sausage coarsely minced,Lyoner picado grueso,Saucisse de Lyon hachée grossièrement,0.47,281,12.25,25.5,0.25,0.24,0,2.0125,🌭
-W234000,Fleischwurst,Bologna,Fleischwurst (embutido de carne),Saucisse de viande (Fleischwurst),0.45,306,12.11,28.3,0.25,0.24,0,2.438,🌭
-W241000,Gelbwurst,Gelbwurst sausage (uncured),Gelbwurst (embutido sin curar),Gelbwurst (saucisse non saumurée),0.43,298,11.55,27.7,0.25,0.24,0,2.5,🌭
+W234000,Fleischwurst,Bologna,Fleischwurst (embutido de carne),Saucisse de viande (Fleischwurst),0.45,306,12.11,28.3,0.25,0.24,,2.438,🌭
+W241000,Gelbwurst,Gelbwurst sausage (uncured),Gelbwurst (embutido sin curar),Gelbwurst (saucisse non saumurée),0.43,298,11.55,27.7,0.25,0.24,,2.5,🌭
 W871700,"Bierwurst/Blasenwurst, Konserve",Bierwurst canned,"Bierwurst/Blasenwurst, conserva","Bierwurst/Blasenwurst, conserve",0.54,275,13.73,24,0.46,0.46,0.18,1.84,🌭
 W880100,Leberwurst Konserve,"Liver sausage high quality, canned","Embutido de hígado, conserva","Saucisse de foie, conserve",0.54,357,12.3,33.15,2.05,1.915,0,1.875,🌭
-W314000,Kalbsleberwurst,Veal liver sausage,Embutido de hígado de ternera,Saucisse de foie de veau,0.58,351,13.55,32,1.933,1.915,0,1.96,🌭
+W314000,Kalbsleberwurst,Veal liver sausage,Embutido de hígado de ternera,Saucisse de foie de veau,0.58,351,13.55,32,1.933,1.915,,1.96,🌭
 W424000,"Schwein Kochschinken, Kochpökelware","Pork ham, cooked cured","Cerdo, jamón cocido, curado cocido","Porc, jambon cuit, salaison cuite",0.988,130,22.5,3.7,0.74,0.74,0,2.26,🍖
 C211100,Weizen Vollkornschrot,Wheat coarse meal,"Trigo integral, molido grueso","Blé complet, concassé",0.583,331,12.8125,1.833,59.213,1.053,13.26,0.02,🌾
 C113000,Weizen Flocken,Wheat flakes,Copos de trigo,Flocons de blé,0.583,331,12.8125,1.833,59.213,1.053,13.26,0.02,🥣
@@ -979,7 +971,7 @@ F212100,Sauerkirsche roh,Sour cherry raw,Guinda cruda,Griotte crue,0.025,69,0.9,
 F223100,Zwetschge roh,Blue plum raw,Ciruela morada cruda,Quetsche crue,0.01,48,0.3,0.17,10.71,8.1,1.7,0.002,🍑
 F211100,Süßkirsche roh,Sweet cherry raw,Cereza dulce cruda,Cerise douce crue,0.016,70,0.9,0.31,15.33,13.66,1.9,0.00059,🍒
 F310100,Weintraube roh,Grape raw,Uva cruda,Raisin cru,0.014,61,0.75,0.28,12.18,12.08,1.6,0.015,🍇
-F225100,Reineclaude roh,Greengage raw,Ciruela claudia cruda,Reine-claude crue,0.02,61,0.84,0,13.4,10.8,2.25,0.002,🍇
+F225100,Reineclaude roh,Greengage raw,Ciruela claudia cruda,Reine-claude crue,0.02,61,0.84,,13.4,10.8,2.25,0.002,🍇
 F224100,Mirabelle roh,Mirabelle plum raw,Ciruela mirabel cruda,Mirabelle crue,0.018,74,0.73,0.2,16.78,14.17,1.7,0,🍑
 F305100,Stachelbeere roh,Gooseberry raw,Grosella espinosa cruda,Groseille à maquereau crue,0.032,50,0.875,0.15,9.836,7.226,2.95,0.005,🫐
 F601100,Zitrone roh,Lemon raw,Limón crudo,Citron cru,0.025,40,0.7,0.4,3.16,3.16,1.29,0.01,🍋
@@ -1004,7 +996,7 @@ H220100,Mandel bitter,Bitter almond,Almendra amarga,Amande amère,0.882,544,22.3
 H210200,"Mandel süß, blanchiert",Sweet almond blanched,"Almendra dulce, escaldada","Amande douce, émondée",0.882,544,22.333,46.6,3.87,3.634,10,0.00518,🥜
 H210600,"Mandel süß, geröstet ohne Fett",Sweet almond roasted without fat,"Almendra dulce, tostada sin grasa","Amande douce, grillée sans matière grasse",0.87,550,22,46.6,3.87,3.634,13.7,0.325,🥜
 H730000,Linse rot reif,Lentil red mature,Lenteja roja madura,Lentille rouge mûre,1.1,334,25.6,2.17,48.8,1.2,8.5,0.018,🫘
-H011000,Sojaproteinisolat,Soya bean protein isolate,Aislado de proteína de soja,Isolat de protéine de soja,4.59,384,88.3,3.39,0,0,0,2.5,🫘
+H011000,Sojaproteinisolat,Soya bean protein isolate,Aislado de proteína de soja,Isolat de protéine de soja,4.59,384,88.3,3.39,0,0,,2.5,🫘
 H841400,"Sojadrink ungesüßt, angereichert mit Vitaminen und Calcium","Soya drink unsweetened, fortified with vitamins and calcium","Bebida de soja sin endulzar, enriquecida con vitaminas y calcio","Boisson au soja non sucrée, enrichie en vitamines et calcium",0.16,30,3.22,1.297,0.4,0.389,1.75,0.063690872,🥛
 K706100,Butterpilz roh,Brown-yellow boletus (slippery jack) raw,Boleto anillado crudo,Bolet jaune cru,0.034,31,2.548,0.36,3.27,0.53,4.48,0.015,🧈
 K704100,Birkenpilz roh,Brown birch bolete raw,Boleto áspero crudo,Bolet rude cru,0.063,46,4.7,0.62,3.27,0.53,6.49,0.005,🍄
@@ -1059,14 +1051,14 @@ M780300,Kochkäse mind. 20 % Fett i. Tr.,German cooked cheese min. 20 % fat in d
 M780500,Kochkäse mind. 40 % Fett i. Tr.,German cooked cheese min. 40 % fat in dry matter,Queso cocido alemán mín. 40 % grasa en extracto seco,Fromage cuit allemand min. 40 % MG sur extrait sec,0.6,156,12.8,10.5,1.7,1.7,0,1.365,🧀
 M810400,Schmelzkäsezubereitung mind. 30 % Fett i. Tr.,Processed cheese preparation min. 30 % fat in dry matter,Preparado de queso fundido mín. 30 % grasa en extracto seco,Préparation de fromage fondu min. 30 % MG sur extrait sec,0.712,219,15,14,7.4,7.4,0,2.75,🧀
 M827100,"Frischkäsezubereitung < 10 % Fett i. Tr., mit Gemüse/Kräutern","Cream cheese preparation < 10 % fat in dry matter, with vegetables/herbs","Preparado de queso fresco < 10 % grasa en extracto seco, con verduras/hierbas","Préparation de fromage frais < 10 % MG sur extrait sec, aux légumes/herbes",0.821,84,16.461,0.2,3.4,3.4,0,1.002,🧀
-N310300,Orangenlimonade,Orange soft drink,Refresco de naranja,Boisson gazeuse à l'orange,0,33,0,0,8.35,8.35,0,0.002,🥤
+N310300,Orangenlimonade,Orange soft drink,Refresco de naranja,Boisson gazeuse à l'orange,0,33,,0,8.35,8.35,0,0.002,🥤
 N330000,Colagetränk koffeinhaltig,Cola beverage caffeinated,Refresco de cola con cafeína,Boisson au cola caféinée,0,41,0,0,10.3,10.3,0,0.002,🥤
 N120000,Natürliches Mineralwasser,Natural mineral water,Agua mineral natural,Eau minérale naturelle,0,0,0,0,0,0,0,0.0068,💧
 N323000,Brause,Carbonated sherbet,Gaseosa,Boisson pétillante,0,37,0,0,9,9,0,0.022,🥤
 N311000,Limonade mit Süßungsmitteln,Carbonated soft drink with artificial sweeteners,Refresco con edulcorantes,Boisson gazeuse avec édulcorants,0,1,0,0,0.1,0.1,0,0.025,🥤
 N321000,Brause mit Zucker und Süßungsmitteln,Carbonated sherbet with sugar and artificial sweeteners,Gaseosa con azúcar y edulcorantes,Boisson pétillante avec sucre et édulcorants,0,15,0,0,3.5,3.5,0,0.025,🥤
 N316000,Limonade mit Gewürzauszügen und Süßungsmitteln,Carbonated soft drink with spice extracts and artificial sweeteners,Refresco con extractos de especias y edulcorantes,Boisson gazeuse aux extraits d'épices et édulcorants,0,2,0,0,0,0,0,0.002,🥤
-N710000,Früchtetee (Getränk),Fruit tea (infusion),Infusión de frutas (bebida),Infusion de fruits (boisson),0,0,0,0,0,0,0,0.00515,🍵
+N710000,Früchtetee (Getränk),Fruit tea (infusion),Infusión de frutas (bebida),Infusion de fruits (boisson),0,0,,0,0,0,0,0.00515,🍵
 N721000,Pfefferminztee (Getränk),Peppermint tea (infusion),Infusión de menta (bebida),Infusion de menthe (boisson),0,0,0,0,0,0,0,0.0072,🍵
 P163110,"Pilsner Bier, 0,0 % vol",Pilsner beer 0.0 % vol,"Cerveza pilsner, 0,0 % vol","Bière pils, 0,0 % vol",0.013,19,0.413,0,4.4,2.3,0,0.0038,🍺
 P273100,Rotling trocken,Rotling wine dry,Vino Rotling seco,Vin Rotling sec,0,64,0.1,0,0.7,0.7,0,0.01,🍸
@@ -1084,19 +1076,19 @@ Q170000,Hanföl,Hemp oil,Aceite de cáñamo,Huile de chanvre,0,900,0,100,0,0,0,0
 Q230000,Sesamöl,Sesame oil,Aceite de sésamo,Huile de sésame,0,900,0,100,0,0,0,0.002,🫗
 Q220000,Weizenkeimöl,Wheat germ oil,Aceite de germen de trigo,Huile de germe de blé,0,900,0,100,0,0,0,0.002,🫗
 Q350000,Mohnöl,Poppy seed oil,Aceite de amapola,Huile de pavot,0,900,0,100,0,0,0,0,🫗
-Q940000,"Bratöl/Frittieröl, pflanzlich",Vegetable deep-frying oil,"Aceite para freír, vegetal","Huile de friture, végétale",0,900,0,100,0,0,0,0.0007,🫗
+Q940000,"Bratöl/Frittieröl, pflanzlich",Vegetable deep-frying oil,"Aceite para freír, vegetal","Huile de friture, végétale",0,900,,100,0,0,0,0.0007,🫗
 Q150000,"Palmfett/Palmöl, raffiniert","Palm fat/palm oil, refined","Grasa/aceite de palma, refinado","Graisse/huile de palme, raffinée",0,900,0,100,0,0,0,0,🫗
-Q150100,Palmfett gehärtet,Palm fat hydrogenated,Grasa de palma hidrogenada,Graisse de palme hydrogénée,0,900,0,100,0,0,0,0,🧈
-Q530000,Kakaobutter,Cocoa butter,Manteca de cacao,Beurre de cacao,0,900,0,100,0,0,0,0,🧈
-Q520000,Sheabutter,Shea butter,Manteca de karité,Beurre de karité,0,900,0,100,0,0,0,0,🧈
-Q550200,Kokosfett gehärtet,Coconut fat hydrogenated,Grasa de coco hidrogenada,Graisse de coco hydrogénée,0,900,0,100,0,0,0,0,🧈
-Q550100,Kokosöl desodoriert,Coconut oil deodorized,Aceite de coco desodorizado,Huile de coco désodorisée,0,900,0,100,0,0,0,0,🫗
+Q150100,Palmfett gehärtet,Palm fat hydrogenated,Grasa de palma hidrogenada,Graisse de palme hydrogénée,0,900,,100,0,0,0,0,🧈
+Q530000,Kakaobutter,Cocoa butter,Manteca de cacao,Beurre de cacao,0,900,,100,0,0,0,0,🧈
+Q520000,Sheabutter,Shea butter,Manteca de karité,Beurre de karité,0,900,,100,0,0,0,0,🧈
+Q550200,Kokosfett gehärtet,Coconut fat hydrogenated,Grasa de coco hidrogenada,Graisse de coco hydrogénée,0,900,,100,0,0,0,0,🧈
+Q550100,Kokosöl desodoriert,Coconut oil deodorized,Aceite de coco desodorizado,Huile de coco désodorisée,0,900,,100,0,0,0,0,🫗
 Q810000,Entenfett,Duck fat,Grasa de pato,Graisse de canard,0,900,0,100,0,0,0,0.025,🧈
 Q820000,Gänsefett/Gänseschmalz,Goose lard/fat,Grasa de oca,Graisse d'oie,0,900,0,100,0,0,0,0.025,🧈
 R122000,Branntweinessig,Distilled vinegar,Vinagre de alcohol,Vinaigre d'alcool,0,25,0,0,0,0,0,0.208,🫙
-R125000,Balsamicoessig,Balsamic vinegar,Vinagre balsámico,Vinaigre balsamique,0,95,0,0,20.04,20.04,0,0.055,🫙
+R125000,Balsamicoessig,Balsamic vinegar,Vinagre balsámico,Vinaigre balsamique,0,95,0,,20.04,20.04,,0.055,🫙
 R160000,Tomatenmark,Tomato paste,Concentrado de tomate,Concentré de tomate,0.1,81,3.4,0.2,13.2,12.9,4.7,0.8,🥫
-R381200,Zitronat/Sukkade,Candied lemon peel,Limón confitado,Écorce de citron confite,0,259,0,0,62.9,62.9,3.3,0.14,🧂
+R381200,Zitronat/Sukkade,Candied lemon peel,Limón confitado,Écorce de citron confite,0,259,0,,62.9,62.9,3.3,0.14,🧂
 S151100,Ahornsirup,Maple syrup,Sirope de arce,Sirop d'érable,0,240,0.04,0.06,59.9,59.9,,0.03,🍯
 S740000,Trinkschokoladenpulver,Instant hot chocolate powder (for drinking chocolate),Chocolate a la taza en polvo,Poudre pour chocolat chaud,0.26915,370,7.97,5.87,68.131,64.954,6.57,0.0218,🍫
 S723000,Getränkepulver kakaohaltig,Beverage powder containing cocoa,Preparado en polvo para bebida con cacao,Poudre pour boisson au cacao,0.1772,377,5.2,2.36,80.395,78.422,6.57,0.203,🍫
@@ -1105,7 +1097,7 @@ S610000,Pralinen,Pralines,Bombones,Bonbons de chocolat,0.23,555,6.34,35.13,52.01
 S622900,Sahnepralinen,Cream pralines,Bombones de nata,Bonbons de chocolat à la crème,0.34,567,7,36.02,51.917,51.051,3.38,0.167,🍫
 S560000,Zartbitter-/Halbbitterschokolade,Bittersweet/semisweet chocolate,Chocolate semiamargo,Chocolat mi-amer,0.20943,534,6.62,32.26,49.6,46.9,9.27,0.0218,🍫
 S331000,Toffee/Sahnetoffee,Toffee/cream toffee,Toffee/toffee de nata,Toffee/toffee à la crème,0.1,500,2,15.9,75.1,51.3,0.56,0.78,🥛
-T121902,"Thunfisch im eigenen Saft, Konserve, abgetropft","Tuna canned, drained","Atún en su jugo, conserva, escurrido","Thon au naturel, conserve, égoutté",0.96,95,22.87,0.41,0,0,0,0.9,🐟
+T121902,"Thunfisch im eigenen Saft, Konserve, abgetropft","Tuna canned, drained","Atún en su jugo, conserva, escurrido","Thon au naturel, conserve, égoutté",0.96,95,22.87,0.41,0,0,,0.9,🐟
 T124100,Gelbflossen-Thun roh,Yellowfin tuna raw,Atún de aleta amarilla crudo,Thon albacore cru,0.913,102,24.4,0.49,0,0,0,0.12,🐟
 T122100,Weißer Thun roh,Albacore raw,Atún blanco crudo,Germon cru,1,121,27.2,1.37,0,0,0,0.1942,🐟
 T120100,Pelamide roh,Atlantic bonito raw,Bonito crudo,Bonite crue,0.9,139,22.4,5.52,0,0,0,0.108,🐟
@@ -1189,26 +1181,26 @@ M1A3100,"H-Milch entrahmt, höchstens 0,5 % Fett, laktosefrei, ultrahocherhitzt"
 M1B1100,"Joghurt aus entrahmter Milch, max. 0,5 % Fett, laktosefrei","Yogurt from skimmed milk, max. 0.5 % fat, lactose-free","Yogur de leche desnatada, máx. 0,5 % grasa, sin lactosa","Yaourt de lait écrémé, max. 0,5 % de matière grasse, sans lactose",0.26,49,5.27,0.1,6.13,6.13,0,0.138,🥛
 M148100,"Joghurt aus entrahmter Milch, max. 0,5 % Fett, mit Magermilchpulverzusatz","Yogurt from skimmed milk, max. 0.5 % fat, fortified with skimmed milk powder","Yogur de leche desnatada, máx. 0,5 % grasa, con leche desnatada en polvo","Yaourt de lait écrémé, max. 0,5 % de matière grasse, avec lait écrémé en poudre",0.209,46,4.3,0.1,6.2,6.2,0,0.15,🥛
 M121100,"Dickmilch/Sauermilch, entrahmt, max. 0,5 % Fett","Soured milk (thick) skimmed, max. 0.5 % fat","Leche cuajada, desnatada, máx. 0,5 % grasa","Lait caillé, écrémé, max. 0,5 % de matière grasse",0.1,37,3.2,0.1,5.2,5.2,0,0.132,🥛
-M7A6800,Mascarpone mind. 80 % Fett i. Tr.,Mascarpone min. 80 % fat in dry matter,Mascarpone mín. 80 % grasa en extracto seco,Mascarpone min. 80 % MG sur extrait sec,0.22,395,4.5,40.33,3.38,3.38,0,0.1088,🥛
+M7A6800,Mascarpone mind. 80 % Fett i. Tr.,Mascarpone min. 80 % fat in dry matter,Mascarpone mín. 80 % grasa en extracto seco,Mascarpone min. 80 % MG sur extrait sec,0.22,395,4.5,40.33,3.38,3.38,,0.1088,🥛
 M301300,Appenzeller mind. 20 % Fett i. Tr.,Appenzeller cheese min. 20 % fat in dry matter,Appenzeller mín. 20 % grasa en extracto seco,Appenzeller min. 20 % MG sur extrait sec,1.76,242,33.8,11.4,0.0004,0.0004,0,2.025,🥛
 M300700,Hartkäse mind. 50 % Fett i. Tr.,Hard cheese min. 50 % fat in dry matter,Queso duro mín. 50 % grasa en extracto seco,Fromage à pâte dure min. 50 % MG sur extrait sec,1.388,399,26.9,32.1,0,0,0,1.475,🧀
 M300400,Hartkäse mind. 30 % Fett i. Tr.,Hard cheese min. 30 % fat in dry matter,Queso duro mín. 30 % grasa en extracto seco,Fromage à pâte dure min. 30 % MG sur extrait sec,1.837,391,35.6,27.43,0.056,0.056,0,1.668,🧀
 M827500,"Frischkäsezubereitung mind. 40 % Fett i. Tr., mit Gemüse/Kräutern","Cream cheese preparation min. 40 % fat in dry matter, with vegetables/herbs","Preparado de queso fresco mín. 40 % grasa en extracto seco, con verduras/hierbas","Préparation de fromage frais min. 40 % MG sur extrait sec, aux légumes/herbes",0.484,146,9.7,10.2,3.2,3.2,0,0.975,🧀
-M741600,"Ricotta, Molkeneiweißkäse, mind. 45 % Fett i. Tr.",Ricotta min. 45 % fat in dry matter,"Ricota, queso de suero, mín. 45 % grasa en extracto seco","Ricotta, fromage de lactosérum, min. 45 % MG sur extrait sec",0.36,159,8.58,12.3,3.43,3.43,0,0.462,🥛
+M741600,"Ricotta, Molkeneiweißkäse, mind. 45 % Fett i. Tr.",Ricotta min. 45 % fat in dry matter,"Ricota, queso de suero, mín. 45 % grasa en extracto seco","Ricotta, fromage de lactosérum, min. 45 % MG sur extrait sec",0.36,159,8.58,12.3,3.43,3.43,,0.462,🥛
 M771300,"Schmelzkäse schnittfest, mind. 20 % Fett i. Tr.",Processed cheese sliceable min. 20 % fat in dry matter,"Queso fundido en lonchas, mín. 20 % grasa en extracto seco","Fromage fondu en tranches, min. 20 % MG sur extrait sec",1.2,217,24.5,11.5,3.1,3.1,0,3,🧀
 M780200,Kochkäse mind. 10 % Fett i. Tr.,German cooked cheese min. 10 % fat in dry matter,Queso cocido alemán mín. 10 % grasa en extracto seco,Fromage cuit allemand min. 10 % MG sur extrait sec,0.698,104,14.7,3,3.9,3.9,0,1,🧀
 N331000,"Colagetränk koffeinhaltig, mit Süßungsmitteln","Cola beverage caffeinated, with artificial sweeteners","Refresco de cola con cafeína, con edulcorantes","Boisson au cola caféinée, avec édulcorants",0,0,0,0,0,0,0,0.002,🥤
 N340000,Colagetränk koffeinfrei,Cola beverage decaffeinated,Refresco de cola sin cafeína,Boisson au cola décaféinée,0,41,0,0,10.3,10.3,0,0.002,🥤
 P550000,"Kaffeelikör/Kakaolikör, klar","Coffee/cocoa liqueur, without milk/cream","Licor de café/cacao, claro","Liqueur de café/cacao, claire",0,335,0.1,0.4,46,46,0,0.022,🍸
-Q4A4000,"Sonnenblumenmargarine Vollfett, angereichert mit Vitamin D","Margarine made from sunflower oil, fortified with vitamin D","Margarina de girasol entera, enriquecida con vitamina D","Margarine de tournesol entière, enrichie en vitamine D",0.01,720,0.17,79.94,0,0,0,0.2025,🧈
-Q4C2000,"Pflanzliches Streichfett mit > 41 % und < 60 % Fett, angereichert mit Vitaminen","Vegetable fat spread with > 41 % and < 60 % fat, fortified with vitamins","Grasa vegetal para untar con > 41 % y < 60 % grasa, enriquecida con vitaminas","Matière grasse végétale à tartiner > 41 % et < 60 % de matière grasse, enrichie en vitamines",0,405,0.03,44.94,0,0,0,0.072,🧈
-Q4C4000,"Rapsölmargarine Vollfett, angereichert mit Vitaminen","Margarine made from rapeseed oil/canola oil, fortified with vitamins","Margarina de colza entera, enriquecida con vitaminas","Margarine de colza entière, enrichie en vitamines",0,725,0.04,80.48,0,0,0,0.3198,🫗
-Q4C5000,"Mischfett mit überwiegend Pflanzenfett, ungesalzen, angereichert mit Vitaminen","Mixed fat spread (mainly vegetable fat) unsalted, fortified with vitamins","Grasa mixta con predominio vegetal, sin sal, enriquecida con vitaminas","Matière grasse mixte à dominante végétale, non salée, enrichie en vitamines",0.02,499,0.39,54.66,1.24,0.513,0,0.4435,🧈
-Q440000,"Pflanzenmargarine Halbfett, angereichert mit Vitaminen","Margarine half-fat, fortified with vitamins","Margarina vegetal semigrasa, enriquecida con vitaminas","Margarine végétale allégée, enrichie en vitamines",0.01,371,0.26,39.66,3.14,0.360864,0,0.4805,🧈
-Q4C3000,"Pflanzliches Streichfett mit < 39 % Fett, angereichert mit Vitaminen","Vegetable fat spread with < 39 % fat, fortified with vitamins","Grasa vegetal para untar con < 39 % grasa, enriquecida con vitaminas","Matière grasse végétale à tartiner < 39 % de matière grasse, enrichie en vitamines",0.03,286,0.75,30.18,2.68,0.305,0,0.3998,🧈
+Q4A4000,"Sonnenblumenmargarine Vollfett, angereichert mit Vitamin D","Margarine made from sunflower oil, fortified with vitamin D","Margarina de girasol entera, enriquecida con vitamina D","Margarine de tournesol entière, enrichie en vitamine D",0.01,720,0.17,79.94,0,0,,0.2025,🧈
+Q4C2000,"Pflanzliches Streichfett mit > 41 % und < 60 % Fett, angereichert mit Vitaminen","Vegetable fat spread with > 41 % and < 60 % fat, fortified with vitamins","Grasa vegetal para untar con > 41 % y < 60 % grasa, enriquecida con vitaminas","Matière grasse végétale à tartiner > 41 % et < 60 % de matière grasse, enrichie en vitamines",0,405,0.03,44.94,0,0,,0.072,🧈
+Q4C4000,"Rapsölmargarine Vollfett, angereichert mit Vitaminen","Margarine made from rapeseed oil/canola oil, fortified with vitamins","Margarina de colza entera, enriquecida con vitaminas","Margarine de colza entière, enrichie en vitamines",0,725,0.04,80.48,0,0,,0.3198,🫗
+Q4C5000,"Mischfett mit überwiegend Pflanzenfett, ungesalzen, angereichert mit Vitaminen","Mixed fat spread (mainly vegetable fat) unsalted, fortified with vitamins","Grasa mixta con predominio vegetal, sin sal, enriquecida con vitaminas","Matière grasse mixte à dominante végétale, non salée, enrichie en vitamines",0.02,499,0.39,54.66,1.24,0.513,,0.4435,🧈
+Q440000,"Pflanzenmargarine Halbfett, angereichert mit Vitaminen","Margarine half-fat, fortified with vitamins","Margarina vegetal semigrasa, enriquecida con vitaminas","Margarine végétale allégée, enrichie en vitamines",0.01,371,0.26,39.66,3.14,0.360864,,0.4805,🧈
+Q4C3000,"Pflanzliches Streichfett mit < 39 % Fett, angereichert mit Vitaminen","Vegetable fat spread with < 39 % fat, fortified with vitamins","Grasa vegetal para untar con < 39 % grasa, enriquecida con vitaminas","Matière grasse végétale à tartiner < 39 % de matière grasse, enrichie en vitamines",0.03,286,0.75,30.18,2.68,0.305,,0.3998,🧈
 Q482000,Ziehmargarine,Margarine for making puff pastry,Margarina para hojaldre,Margarine de feuilletage,0,718,0,79.8,0,0,0,0.512,🧈
 Q481000,Backmargarine,Margarine for baking,Margarina para hornear,Margarine de boulangerie,0,717,0,79.7,0,0,0,0.512,🧈
-Q570000,Palmkernfett/Palmkernöl,Palm kernel fat/palm kernel oil,Grasa/aceite de palmiste,Graisse/huile de palmiste,0,900,0,100,0,0,0,0,🫗
+Q570000,Palmkernfett/Palmkernöl,Palm kernel fat/palm kernel oil,Grasa/aceite de palmiste,Graisse/huile de palmiste,0,900,,100,0,0,0,0,🫗
 S330000,Weichkaramelle,Soft caramels,Caramelo blando,Caramel tendre,0.1,500,2,15.9,75.1,51.3,0.56,0.78,🍬
 S671000,Zartbitter-/Halbbitter-Kuvertüre,"Glazing chocolate, bittersweet/semi-sweet ",Cobertura de chocolate semiamargo,Chocolat de couverture mi-amer,0.21,534,6.62,32.26,49.6,46.9,9.27,0.0218,🍬
 T118100,"Schildmakrele/Stöcker, roh",Atlantic horse mackerel raw,"Jurel, crudo","Chinchard, cru",0.73,119,19.75,4.46,0,0,0,0.16,🐟
@@ -1227,7 +1219,7 @@ V311100,"Fasan Fleisch, mit Haut, roh","Pheasant meat, with skin, raw","Faisán,
 V463000,"Ente Fleisch, ohne Haut, roh","Duck meat, without skin, raw","Pato, carne sin piel, cruda","Canard, viande sans peau, crue",0.766,122,19,5.1,0,0,0,0.225,🍗
 V474100,"Gans Fleisch, mit Haut, roh","Goose meat, with skin, raw","Oca, carne con piel, cruda","Oie, viande avec peau, crue",0.66,342,15.7,31,0,0,0,0.215,🍗
 V481000,"Pute Fleisch, ohne Haut, roh","Turkey meat, without skin, raw","Pavo, carne sin piel, cruda","Dinde, viande sans peau, crue",0.806,102,20.5,2.2,0,0,0,0.232,🍗
-W561000,"Putenbrust, Kochpökelware, geräuchert","Turkey breast cold cuts, cooked cured, smoked","Pechuga de pavo, curada cocida, ahumada","Poitrine de dinde, salaison cuite, fumée",0.91,107,23.02,1.63,0,0,0,3.05,🍗
+W561000,"Putenbrust, Kochpökelware, geräuchert","Turkey breast cold cuts, cooked cured, smoked","Pechuga de pavo, curada cocida, ahumada","Poitrine de dinde, salaison cuite, fumée",0.91,107,23.02,1.63,0,0,,3.05,🍗
 V465100,"Ente Schenkel, mit Haut, roh","Duck leg, with skin, raw","Pato, muslo con piel, crudo","Canard, cuisse avec peau, crue",0.71,212,17.17,15.96,0,0,0,0.258,🍗
 V475100,"Gans Schenkel, mit Haut, roh","Goose leg, with skin, raw","Oca, muslo con piel, crudo","Oie, cuisse avec peau, crue",0.72,231,17.17,18.073,0,0,0,0.19,🍗
 V512100,"Kalb Herz, roh","Veal heart, raw","Ternera, corazón, crudo","Veau, cœur, cru",0.72,109,15.9,5.06,0,0,0,0.26,🍖
@@ -4538,7 +4530,7 @@ C111082,"Weizen ganzes Korn, gekocht, gebraten ohne Fett (Pfanne)","Wheat whole 
 W361000,Sülzwurst,Jellied brawn,Embutido con gelatina (Sülzwurst),Saucisse en gelée,1.28,169,17.9,10.7,0.25,0.092,0.09,2,🌭
 Y813942,Buchweizenplinsen gebraten,Small buckwheat pancakes fried,Tortitas de trigo sarraceno fritas,Petites crêpes de sarrasin poêlées,0.35,319,7.8,16.8,33,10.5,2.12,0.095,🍖
 Y693342,Seezunge gebraten in Butter,Sole fried in butter,Lenguado frito en mantequilla,Sole poêlée au beurre,0.842,104,19.399,2.7,0.132,0.129,0.039,0.63,🧈
-F323700,Johannisbeernektar schwarz,Black currant nectar,Néctar de grosella negra,Nectar de cassis,0.008,55,0.43,0,12.82,12.8,0.1,0.012,🧃
+F323700,Johannisbeernektar schwarz,Black currant nectar,Néctar de grosella negra,Nectar de cassis,0.008,55,0.43,,12.82,12.8,0.1,0.012,🧃
 X5B1000,"Gemüse-Kartoffel-Fisch-Brei, mit Karotte und Lachs (ohne Salz, geeignet für Beikost)","Vegetable-potato-fish purree, with carrots and salmon (without salt, suitable as baby food)","Papilla de verduras, patata y pescado, con zanahoria y salmón (sin sal, apta para alimentación infantil)","Purée légumes-pommes de terre-poisson, aux carottes et saumon (sans sel, adaptée à l'alimentation infantile)",0.135,100,3.32,5.876,7.576,3.819,1.6,0.04,🥣
 W850200,Schinken-Käse-Sülze,Ham and cheese aspic,Jamón y queso en gelatina,Jambon et fromage en gelée,0.708,121,16,5.6,0.84,0.84,0.07,1.745,🍖
 D313300,Erdbeersahnetorte (Wasserbiskuit),Strawberry cream torte (water sponge cake),Tarta de fresa y nata (bizcocho al agua),Gâteau fraises-crème (génoise à l'eau),0.174,234,3.6,14.1,22.3,16.5,1,0.11,🍰

@@ -35,15 +35,22 @@ P560000 Bitterlikör/Kräuterlikör/Gewürzlikör
 F511600 Acerolasaft
 F515600 Litschisaft
 
-# Implausible Phe = 0 (protein > 0.5 g or >= 2 other amino acids present): 118
+# Implausible Phe = 0, written as 0 or as a trace marker (protein > 0.5 g or >= 2 other amino acids present): 126
 F408000 Moltebeere roh
 F411100 Wald-Himbeere roh
 F403100 Schlehe roh
 F201100 Aprikose roh
+F203902 Pfirsich gezuckert, Konserve, abgetropft
+F414400 Cranberries getrocknet, gezuckert
 F516100 Mango roh
 F517100 Papaya roh
+F606902 Mandarine gezuckert, Konserve, abgetropft
 G582100 Zucchini roh
+P122000 Malzgetränk, alkoholfrei
+R141100 Tomatenketchup
+R258100 Pfeffer schwarz, getrocknet
 F140100 Quitte roh
+F923900 Apfelkompott/Apfelmark, ungesüßt, Konserve
 F404100 Eberesche süß, roh
 F220100 Pflaume roh
 F203100 Pfirsich roh
@@ -54,6 +61,7 @@ P172000 Bockbier
 P177000 Stout
 Q683000 Butterschmalz
 Q6A7000 Mischfett mit überwiegend Milchfett, ungesalzen
+Q630000 Süßrahmbutter
 Q620000 Sauerrahmbutter
 F605100 Pampelmuse/Pomelo, roh
 F604100 Grapefruit roh

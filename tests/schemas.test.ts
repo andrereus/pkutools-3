@@ -93,30 +93,42 @@ describe('DiaryEntrySchema', () => {
     }
   })
 
-  // Describes what z.coerce.number() does today, not what it should do:
-  // blanks, booleans and [] become 0 or 1 — values these schemas already accept
-  // explicitly. Narrowing it was raised on 2026-07-26 and left open; if that
-  // happens, rewrite this to assert rejection rather than keep it passing.
-  it('currently coerces blanks, booleans and arrays to numbers', () => {
-    for (const value of [null, '', '   ', false, []]) {
+  // Zod's coercing number ran Number() over anything, so a malformed body was
+  // stored as a plausible value instead of being refused: `false` and `[]`
+  // became 0, `true` became 1. On a Phe field that is a silent wrong number,
+  // which is the failure this app guards hardest against. Narrowed on
+  // 2026-07-27; these assertions are what stops it drifting back.
+  it('rejects the values that used to coerce to 0 or 1', () => {
+    for (const value of [null, '', '   ', false, true, [], [150], {}]) {
       expect(
-        DiaryEntrySchema.parse({ ...validEntry, phe: value }).phe,
+        DiaryEntrySchema.safeParse({ ...validEntry, phe: value }).success,
         `phe ${JSON.stringify(value)}`
-      ).toBe(0)
+      ).toBe(false)
     }
-    expect(DiaryEntrySchema.parse({ ...validEntry, phe: true }).phe).toBe(1)
-    expect(DiaryEntrySchema.parse({ ...validEntry, phe: ' 150 ' }).phe).toBe(150)
-    // `true` is the one value that also survives weight's .positive() guard.
-    expect(DiaryEntrySchema.parse({ ...validEntry, weight: true }).weight).toBe(1)
     // The same surface on the other schemas that take numbers.
-    expect(CreateDaySchema.parse({ date: '2026-07-26', phe: '', kcal: null })).toMatchObject({
-      phe: 0,
-      kcal: 0
-    })
-    expect(OwnFoodSchema.parse({ name: 'Shake', phe: [], kcal: false })).toMatchObject({
-      phe: 0,
-      kcal: 0
-    })
+    expect(CreateDaySchema.safeParse({ date: '2026-07-26', phe: '', kcal: null }).success).toBe(
+      false
+    )
+    expect(OwnFoodSchema.safeParse({ name: 'Shake', phe: [], kcal: false }).success).toBe(false)
+    expect(
+      SettingsUpdateSchema.safeParse({ maxPhe: true }).success,
+      'settings are numbers too'
+    ).toBe(false)
+  })
+
+  // Narrowing must not break the strings legacy records and form fields hold.
+  it('still accepts a number written as a string', () => {
+    expect(DiaryEntrySchema.parse({ ...validEntry, phe: '150' }).phe).toBe(150)
+    expect(DiaryEntrySchema.parse({ ...validEntry, phe: ' 150 ' }).phe).toBe(150)
+    expect(DiaryEntrySchema.parse({ ...validEntry, weight: '150' }).weight).toBe(150)
+    expect(DiaryEntrySchema.parse({ ...validEntry, phe: '0' }).phe).toBe(0)
+  })
+
+  // An explicit 0 is a real value — spirits and oils contain no Phe — and has
+  // to stay distinguishable from the blanks rejected above.
+  it('keeps accepting an explicit zero', () => {
+    expect(DiaryEntrySchema.parse({ ...validEntry, phe: 0, kcal: 0 }).phe).toBe(0)
+    expect(DiaryEntrySchema.parse({ ...validEntry, pheReference: 0 }).pheReference).toBe(0)
   })
 
   it('caps the note at 500 characters', () => {
@@ -149,6 +161,110 @@ describe('DiaryEntrySchema', () => {
     )
     expect(DiaryEntrySchema.safeParse({ ...validEntry, createdAt: -1 }).success).toBe(false)
     expect(DiaryEntrySchema.safeParse({ ...validEntry, createdAt: 1.5 }).success).toBe(false)
+  })
+})
+
+// Provenance travels with an entry so the diary and the diet report can say
+// where a value came from, and so a later feature can decide what may be
+// re-shared. Zod strips whatever it doesn't declare, so anything missing here
+// is silently dropped on its way to Firebase.
+describe('DiaryEntrySchema provenance', () => {
+  it('accepts nutrients, factor, source and sourceId', () => {
+    const result = DiaryEntrySchema.parse({
+      ...validEntry,
+      nutrients: { protein: 11.375, fat: 7.09, carbs: 53.7, sugar: 1.08, fiber: 9.3, salt: 0.02 },
+      factor: 46,
+      source: 'bls',
+      sourceId: 'C131000'
+    })
+    expect(result.nutrients).toEqual({
+      protein: 11.375,
+      fat: 7.09,
+      carbs: 53.7,
+      sugar: 1.08,
+      fiber: 9.3,
+      salt: 0.02
+    })
+    expect(result).toMatchObject({ factor: 46, source: 'bls', sourceId: 'C131000' })
+  })
+
+  // Sources publish different subsets — a scanned product often carries only
+  // protein — so a partial nutrients object has to survive.
+  it('accepts a partial nutrients object and drops unknown nutrients', () => {
+    const result = DiaryEntrySchema.parse({
+      ...validEntry,
+      nutrients: { protein: 2.4, vitaminC: 12 }
+    })
+    expect(result.nutrients).toEqual({ protein: 2.4 })
+  })
+
+  it('keeps the decimals the source published rather than rounding', () => {
+    const result = DiaryEntrySchema.parse({
+      ...validEntry,
+      pheReference: 105.8,
+      nutrients: { protein: 2.3 },
+      factor: 46
+    })
+    expect(result.pheReference).toBe(105.8)
+    expect(result.nutrients?.protein).toBe(2.3)
+  })
+
+  it('rejects negative nutrients', () => {
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, nutrients: { protein: -1 } }).success).toBe(
+      false
+    )
+  })
+
+  it('rejects an unknown source', () => {
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, source: 'bls' }).success).toBe(true)
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, source: 'wikipedia' }).success).toBe(false)
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, source: '' }).success).toBe(false)
+  })
+
+  // 27/35/46/50 are the real factors; the cap only keeps junk out.
+  it('rejects a non-positive or implausible factor', () => {
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, factor: 0 }).success).toBe(false)
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, factor: -46 }).success).toBe(false)
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, factor: 101 }).success).toBe(false)
+  })
+
+  it('caps sourceId so a barcode field cannot carry a payload', () => {
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, sourceId: 'a'.repeat(64) }).success).toBe(
+      true
+    )
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, sourceId: 'a'.repeat(65) }).success).toBe(
+      false
+    )
+  })
+
+  // Entries written before provenance existed must stay valid, and null has to
+  // survive because the diary rebuilds the whole entry on every edit.
+  it('accepts an entry without provenance, and null for every field', () => {
+    expect(DiaryEntrySchema.safeParse(validEntry).success).toBe(true)
+    expect(
+      DiaryEntrySchema.safeParse({
+        ...validEntry,
+        nutrients: null,
+        factor: null,
+        source: null,
+        sourceId: null
+      }).success
+    ).toBe(true)
+  })
+
+  // Own foods carry the same provenance, which is what a later feature reads to
+  // decide whether an entry may be shared with the community.
+  it('carries the same fields on own food', () => {
+    const result = OwnFoodSchema.parse({
+      name: 'Protein shake',
+      phe: 420,
+      kcal: 120,
+      nutrients: { protein: 8.4 },
+      factor: 50,
+      source: 'manual'
+    })
+    expect(result).toMatchObject({ factor: 50, source: 'manual' })
+    expect(result.nutrients).toEqual({ protein: 8.4 })
   })
 })
 

@@ -1,6 +1,7 @@
 <script setup>
 import { useStore } from '../../stores/index'
 import { format } from 'date-fns'
+import { pheFactor, roundReference, scaleToWeight } from '../utils/nutrition'
 
 const store = useStore()
 const { t } = useI18n()
@@ -39,33 +40,22 @@ const type = computed(() => [
   { title: t('phe-calculator.fruit'), value: 'fruit' }
 ])
 
-const factor = computed(() => {
-  if (select.value === 'fruit') {
-    return 27
-  } else if (select.value === 'vegetable') {
-    return 35
-  } else if (select.value === 'meat') {
-    return 46
-  } else if (select.value === 'other') {
-    return 50
-  } else {
-    return null
-  }
+// Null in direct-Phe mode, where no protein conversion happens at all
+const factor = computed(() => (select.value === 'phe' ? null : pheFactor(select.value)))
+
+// Per-100 g Phe the entry is calculated from. In protein mode it is derived
+// from protein × factor; the result below is computed from this exact value, so
+// re-opening the entry in the diary recalculates to the same number.
+const pheReference = computed(() => {
+  if (select.value === 'phe') return Number(phe.value) || 0
+  const derived = Number(protein.value) * factor.value
+  return Number.isFinite(derived) ? roundReference(derived) : 0
 })
 
 // Methods
-const calculatePhe = () => {
-  if (select.value === 'phe') {
-    return Math.round((weight.value * phe.value) / 100) || 0
-  } else {
-    // Proteinmodus
-    return Math.round((weight.value * (protein.value * factor.value)) / 100) || 0
-  }
-}
+const calculatePhe = () => scaleToWeight(pheReference.value, weight.value)
 
-const calculateKcal = () => {
-  return Math.round((weight.value * kcalReference.value) / 100) || 0
-}
+const calculateKcal = () => scaleToWeight(Number(kcalReference.value), weight.value)
 
 const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
@@ -100,31 +90,23 @@ const save = async () => {
     return
   }
 
-  let logEntry
-  if (select.value === 'phe') {
-    logEntry = {
-      name: name.value,
-      emoji: emoji.value || null,
-      icon: null,
-      pheReference: phe.value,
-      kcalReference: Number(kcalReference.value) || 0,
-      weight: Number(weight.value),
-      phe: calculatePhe(),
-      kcal: calculateKcal(),
-      note: null
-    }
-  } else {
-    logEntry = {
-      name: name.value,
-      emoji: emoji.value || null,
-      icon: null,
-      pheReference: Math.round(protein.value * factor.value),
-      kcalReference: Number(kcalReference.value) || 0,
-      weight: Number(weight.value),
-      phe: calculatePhe(),
-      kcal: calculateKcal(),
-      note: null
-    }
+  let logEntry = {
+    name: name.value,
+    emoji: emoji.value || null,
+    icon: null,
+    pheReference: pheReference.value,
+    kcalReference: Number(kcalReference.value) || 0,
+    weight: Number(weight.value),
+    phe: calculatePhe(),
+    kcal: calculateKcal(),
+    note: null,
+    source: 'manual',
+    // Protein mode: keep what the Phe was derived from, so the entry stays
+    // self-explaining (and the factor is available for a later feature)
+    ...(select.value !== 'phe' && {
+      nutrients: { protein: Number(protein.value) },
+      factor: factor.value
+    })
   }
 
   isSaving.value = true
@@ -147,7 +129,8 @@ const save = async () => {
         phe: Number(phe.value),
         kcal: Number(kcalReference.value) || 0,
         note: entryNote,
-        shared: shareWithCommunity.value
+        shared: shareWithCommunity.value,
+        source: 'manual'
       })
       // Uncheck so a retry after a failed diary write doesn't save it twice
       saveToOwnFood.value = false

@@ -149,8 +149,18 @@ export function installServerGlobals() {
     'getHeader',
     (event: { headers?: Record<string, string> }, name: string) => event.headers?.[name]
   )
+  vi.stubGlobal(
+    'getRouterParam',
+    (event: { params?: Record<string, string> }, name: string) => event.params?.[name]
+  )
 }
 
-/** An H3Event stand-in carrying just the body and headers the routes read. */
-export const requestEvent = (body: unknown, headers: Record<string, string> = {}) =>
-  ({ body, headers }) as never
+/**
+ * An H3Event stand-in carrying the body, headers and route params the routes
+ * read. `params` is what a `[key]` route segment resolves to.
+ */
+export const requestEvent = (
+  body: unknown,
+  headers: Record<string, string> = {},
+  params: Record<string, string> = {}
+) => ({ body, headers, params }) as never

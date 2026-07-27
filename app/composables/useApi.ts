@@ -1,5 +1,28 @@
 import { getAuth } from 'firebase/auth'
 
+// Common nutrients per 100 g, at the precision the source publishes them.
+// Consumed amounts are derived from `weight` on display, never stored.
+export interface FoodNutrients {
+  protein?: number | null
+  fat?: number | null
+  carbs?: number | null
+  sugar?: number | null
+  fiber?: number | null
+  salt?: number | null
+}
+
+// Data origin, mirroring FoodSourceSchema on the server
+export type FoodSource =
+  'bls' | 'usda' | 'own-food' | 'community' | 'barcode' | 'ai-estimate' | 'ai-label' | 'manual'
+
+// Carried by diary entries and own foods alike
+interface Provenance {
+  nutrients?: FoodNutrients | null
+  factor?: number | null // mg Phe per g protein, only when Phe came from protein
+  source?: FoodSource | null
+  sourceId?: string | null // barcode / BLS id / USDA id
+}
+
 export const useApi = () => {
   const errorHandler = useErrorHandler()
   const { locale } = useI18n()
@@ -53,21 +76,23 @@ export const useApi = () => {
   }): Promise<{ success: boolean; key?: string }> =>
     request('/api/diary/days', 'Create diary day', 'POST', data)
 
-  const addFoodItemToDiary = (data: {
-    date?: string
-    name: string
-    emoji?: string | null
-    icon?: string | null
-    pheReference?: number | null
-    kcalReference?: number | null
-    weight: number
-    phe: number
-    kcal: number
-    note?: string | null
-    communityFoodKey?: string | null // Optional: tracks usage count and stored in diary entry
-    createdAt?: number // Only for undo-restore: preserves the original timestamps
-    updatedAt?: number
-  }): Promise<{ success: boolean; key?: string; updated?: boolean }> =>
+  const addFoodItemToDiary = (
+    data: Provenance & {
+      date?: string
+      name: string
+      emoji?: string | null
+      icon?: string | null
+      pheReference?: number | null
+      kcalReference?: number | null
+      weight: number
+      phe: number
+      kcal: number
+      note?: string | null
+      communityFoodKey?: string | null // Optional: tracks usage count and stored in diary entry
+      createdAt?: number // Only for undo-restore: preserves the original timestamps
+      updatedAt?: number
+    }
+  ): Promise<{ success: boolean; key?: string; updated?: boolean }> =>
     request('/api/diary/food-items', 'Add food item to diary', 'POST', data)
 
   const updateDiaryDay = (data: {
@@ -89,7 +114,7 @@ export const useApi = () => {
   const updateFoodItemInDiary = (data: {
     entryKey: string
     logIndex: number
-    entry: {
+    entry: Provenance & {
       name: string
       emoji?: string | null
       icon?: string | null
@@ -154,17 +179,19 @@ export const useApi = () => {
   // Own Food Operations
   // ============================================================================
 
-  const saveOwnFood = (data: {
-    name: string
-    icon?: string | null
-    emoji?: string | null
-    phe: number
-    kcal: number
-    note?: string | null
-    shared?: boolean
-    createdAt?: number // Only for undo-restore: preserves the original timestamps
-    updatedAt?: number
-  }): Promise<{ success: boolean; key?: string; communityKey?: string }> =>
+  const saveOwnFood = (
+    data: Provenance & {
+      name: string
+      icon?: string | null
+      emoji?: string | null
+      phe: number
+      kcal: number
+      note?: string | null
+      shared?: boolean
+      createdAt?: number // Only for undo-restore: preserves the original timestamps
+      updatedAt?: number
+    }
+  ): Promise<{ success: boolean; key?: string; communityKey?: string }> =>
     request('/api/own-food/save', 'Save own food', 'POST', { ...data, locale: locale.value })
 
   const updateOwnFood = (data: {

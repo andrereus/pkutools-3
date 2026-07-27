@@ -106,6 +106,55 @@ describe('adding a food item to an existing day', () => {
   })
 })
 
+// The tools send where a value came from along with it. Zod strips anything the
+// schema doesn't declare, so this is the guard that provenance actually reaches
+// storage instead of being dropped somewhere between the form and Firebase.
+describe('provenance on a stored item', () => {
+  it('stores nutrients, factor, source and sourceId with the item', async () => {
+    const result = await addFoodItem(
+      requestEvent({
+        ...ENTRY,
+        date: '2026-07-26',
+        pheReference: 105.8,
+        nutrients: { protein: 2.3, fat: 0.4 },
+        factor: 46,
+        source: 'barcode',
+        sourceId: '4006381333931'
+      })
+    )
+
+    const stored = day(result.key).log[0] as unknown as Record<string, unknown>
+    expect(stored).toMatchObject({
+      pheReference: 105.8,
+      nutrients: { protein: 2.3, fat: 0.4 },
+      factor: 46,
+      source: 'barcode',
+      sourceId: '4006381333931'
+    })
+  })
+
+  // The reference is stored unrounded so that recalculating the result from it
+  // — which the diary does on every edit — reproduces the stored result. A
+  // reference rounded to a whole mg would drift here.
+  it('keeps a reference the result can be recalculated from', async () => {
+    const weight = 500
+    const pheReference = 2.3 * 46 // 105.8, not 106
+    const result = await addFoodItem(
+      requestEvent({
+        name: 'Chicken',
+        weight,
+        pheReference,
+        phe: Math.round((weight * pheReference) / 100),
+        kcal: 0
+      })
+    )
+
+    const stored = day(result.key).log[0] as unknown as { phe: number; pheReference: number }
+    expect(stored.phe).toBe(529)
+    expect(Math.round((weight * stored.pheReference) / 100)).toBe(stored.phe)
+  })
+})
+
 describe('free-tier diary limit', () => {
   const fullDiary = (days: number) =>
     Object.fromEntries(

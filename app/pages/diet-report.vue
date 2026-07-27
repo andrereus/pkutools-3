@@ -19,6 +19,7 @@ import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
 import { LucideStickyNote, LucideEyeOff } from '@lucide/vue'
+import { scaleToWeight, nutrientRows, parseReference } from '../utils/nutrition'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
@@ -726,7 +727,11 @@ const defaultLogItem = {
   weight: null,
   phe: null,
   kcal: null,
-  note: null
+  note: null,
+  nutrients: null,
+  factor: null,
+  source: null,
+  sourceId: null
 }
 
 const editedLogItem = ref({ ...defaultLogItem })
@@ -773,20 +778,33 @@ const editedLogItemTime = computed(() => {
 })
 
 // Without a reference there is nothing to calculate from — the stored result
-// stays authoritative (ancient entries stored only the result)
+// stays authoritative (ancient entries stored only the result). A reference of
+// 0 is a reference: spirits and oils really do contain no Phe, and treating
+// that as "missing" would keep the previous total against the new 0.
 const calculatePhe = () => {
-  if (!editedLogItem.value.pheReference) return Math.round(Number(editedLogItem.value.phe)) || 0
-  return Math.round((editedLogItem.value.weight * editedLogItem.value.pheReference) / 100) || 0
+  const reference = parseReference(editedLogItem.value.pheReference)
+  if (reference === null) return Math.round(Number(editedLogItem.value.phe)) || 0
+  return scaleToWeight(reference, editedLogItem.value.weight)
 }
 
 const calculateKcal = () => {
-  if (!editedLogItem.value.kcalReference) return Math.round(Number(editedLogItem.value.kcal)) || 0
-  return Math.round((editedLogItem.value.weight * editedLogItem.value.kcalReference) / 100) || 0
+  const reference = parseReference(editedLogItem.value.kcalReference)
+  if (reference === null) return Math.round(Number(editedLogItem.value.kcal)) || 0
+  return scaleToWeight(reference, editedLogItem.value.weight)
 }
+
+const logNutrientRows = computed(() =>
+  nutrientRows(editedLogItem.value.nutrients, editedLogItem.value.weight, t)
+)
+
+// The reference the dialog was opened with. Editing it by hand makes the value
+// the user's own, so the provenance is rewritten on save (see saveLogEdit).
+const openedLogPheReference = ref(null)
 
 const editLogItem = (item, index) => {
   editedLogIndex.value = index
   editedLogItem.value = { ...item }
+  openedLogPheReference.value = parseReference(editedLogItem.value.pheReference)
   showLogReferenceInputs.value = false
   logEmojiBasisName.value = editedLogItem.value.name || ''
   dialog2.value.openDialog()
@@ -814,6 +832,7 @@ const deleteLogItem = () => {
 const closeLogEdit = () => {
   dialog2.value.closeDialog()
   editedLogItem.value = { ...defaultLogItem }
+  openedLogPheReference.value = null
   editedLogIndex.value = -1
   showLogReferenceInputs.value = false
   logEmojiBasisName.value = ''
@@ -824,6 +843,7 @@ const openAddLogItem = () => {
   // Reset log item state for adding new item
   editedLogIndex.value = -1
   editedLogItem.value = { ...defaultLogItem }
+  openedLogPheReference.value = null
   // Blank add: the reference inputs are the entry form, so show them directly
   showLogReferenceInputs.value = true
   logEmojiBasisName.value = ''
@@ -836,16 +856,20 @@ const saveLogEdit = async () => {
     return
   }
 
+  // The reference can be edited by hand here. Once it is, the number is the
+  // user's own: it is no longer the database's value, and no longer the product
+  // of the stored factor. So the provenance is rewritten to 'manual' and the
+  // source id and factor are dropped, rather than left claiming an origin the
+  // value no longer has. The nutrients stay — they still describe the food.
+  const pheReference = parseReference(editedLogItem.value.pheReference)
+  const referenceEdited = pheReference !== openedLogPheReference.value
+
   let updatedItem = {
     name: editedLogItem.value.name,
     emoji: editedLogItem.value.emoji || null,
     icon: editedLogItem.value.icon || null,
-    pheReference: editedLogItem.value.pheReference
-      ? Number(editedLogItem.value.pheReference)
-      : null,
-    kcalReference: editedLogItem.value.kcalReference
-      ? Number(editedLogItem.value.kcalReference)
-      : null,
+    pheReference,
+    kcalReference: parseReference(editedLogItem.value.kcalReference),
     weight: Number(editedLogItem.value.weight),
     phe: calculatePhe(),
     kcal: calculateKcal(),
@@ -854,7 +878,11 @@ const saveLogEdit = async () => {
         ? editedLogItem.value.note.trim()
         : null,
     // Preserve the community food link so re-adds keep counting usage
-    communityFoodKey: editedLogItem.value.communityFoodKey || null
+    communityFoodKey: editedLogItem.value.communityFoodKey || null,
+    nutrients: editedLogItem.value.nutrients || null,
+    factor: referenceEdited ? null : Number(editedLogItem.value.factor) || null,
+    source: referenceEdited ? 'manual' : editedLogItem.value.source || null,
+    sourceId: referenceEdited ? null : editedLogItem.value.sourceId || null
   }
 
   try {
@@ -1424,6 +1452,18 @@ defineOgImage('Default', {
           <div class="flex gap-4 mt-4">
             <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>
             <span class="flex-1 ml-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
+          </div>
+
+          <!-- Nutrient breakdown for the entered weight, when the food was saved
+               with one. Only the nutrients the item actually carries are listed. -->
+          <div
+            v-if="logNutrientRows.length > 0"
+            class="mt-4 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
+          >
+            <div v-for="row in logNutrientRows" :key="row.key" class="flex justify-between">
+              <span>{{ row.label }}</span>
+              <span>{{ row.value }} g</span>
+            </div>
           </div>
         </ModalDialog>
       </ModalDialog>

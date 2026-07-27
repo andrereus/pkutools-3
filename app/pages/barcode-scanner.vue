@@ -2,6 +2,13 @@
 import { useStore } from '../../stores/index'
 import { QrcodeStream } from 'vue-qrcode-reader'
 import { format } from 'date-fns'
+import {
+  pheFactor,
+  roundReference,
+  scaleToWeight,
+  nutrientRows,
+  isReported
+} from '../utils/nutrition'
 
 const store = useStore()
 const { t } = useI18n()
@@ -107,17 +114,7 @@ const type = computed(() => [
   { title: t('phe-calculator.fruit'), value: 'fruit' }
 ])
 
-const factor = computed(() => {
-  if (select.value === 'fruit') {
-    return 27
-  } else if (select.value === 'vegetable') {
-    return 35
-  } else if (select.value === 'meat') {
-    return 46
-  } else {
-    return 50
-  }
-})
+const factor = computed(() => pheFactor(select.value))
 
 // Methods
 const paintBoundingBox = (detectedCodes, ctx) => {
@@ -254,15 +251,39 @@ const cancel = () => {
   dialog.value.closeDialog()
 }
 
-const calculatePhe = () => {
-  return Math.round(
-    (weight.value * (result.value.product.nutriments.proteins_100g * factor.value)) / 100
-  )
-}
+const nutriments = computed(() => result.value?.product?.nutriments || {})
 
-const calculateKcal = () => {
-  return Math.round((weight.value * result.value.product.nutriments['energy-kcal_100g']) / 100) || 0
-}
+// Open Food Facts publishes protein, not Phe, so the per-100 g reference is
+// derived from protein × factor. The result is computed from this exact value,
+// so re-opening the entry in the diary recalculates to the same number.
+const pheReference = computed(() => {
+  const protein = nutriments.value.proteins_100g
+  if (!isReported(protein)) return 0
+  return roundReference(Number(protein) * factor.value)
+})
+
+// The common nutrients the product carries, per 100 g. Absent ones are left
+// out rather than stored as null.
+const scannedNutrients = computed(() => {
+  const fields = {
+    protein: nutriments.value.proteins_100g,
+    fat: nutriments.value.fat_100g,
+    carbs: nutriments.value.carbohydrates_100g,
+    sugar: nutriments.value.sugars_100g,
+    fiber: nutriments.value.fiber_100g,
+    salt: nutriments.value.salt_100g
+  }
+  const available = Object.entries(fields).filter(([, value]) => isReported(value))
+  if (available.length === 0) return null
+  return Object.fromEntries(available.map(([key, value]) => [key, Number(value)]))
+})
+
+const productNutrientRows = computed(() => nutrientRows(scannedNutrients.value, weight.value, t))
+
+const calculatePhe = () => scaleToWeight(pheReference.value, weight.value)
+
+const calculateKcal = () =>
+  scaleToWeight(Number(nutriments.value['energy-kcal_100g']), weight.value)
 
 const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
@@ -274,12 +295,18 @@ const save = async () => {
     name: result.value.product.product_name,
     emoji: null,
     icon: null,
-    pheReference: Math.round(result.value.product.nutriments.proteins_100g * factor.value),
-    kcalReference: result.value.product.nutriments['energy-kcal_100g'] || 0,
+    pheReference: pheReference.value,
+    kcalReference: nutriments.value['energy-kcal_100g'] || 0,
     weight: Number(weight.value),
     phe: calculatePhe(),
     kcal: calculateKcal(),
-    note: null
+    note: null,
+    source: 'barcode',
+    // The barcode is a real product identifier, so it can match this entry
+    // against the same product scanned elsewhere later
+    sourceId: code.value || null,
+    factor: factor.value,
+    ...(scannedNutrients.value && { nutrients: scannedNutrients.value })
   }
 
   isSaving.value = true
@@ -468,7 +495,7 @@ defineOgImage('Default', {
         Code: {{ code }}
       </p>
 
-      <div v-if="result.product.nutriments?.proteins_100g != null">
+      <div v-if="isReported(result.product.nutriments?.proteins_100g)">
         <div class="flex gap-4 text-gray-600 dark:text-gray-400 mb-4">
           <span class="flex-1">
             {{ result.product.nutriments.proteins_100g }}
@@ -507,6 +534,17 @@ defineOgImage('Default', {
           </span>
         </div>
 
+        <!-- Nutrient breakdown for the entered weight -->
+        <div
+          v-if="productNutrientRows.length > 0"
+          class="mb-4 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
+        >
+          <div v-for="row in productNutrientRows" :key="row.key" class="flex justify-between">
+            <span>{{ row.label }}</span>
+            <span>{{ row.value }} g</span>
+          </div>
+        </div>
+
         <PrimaryButton
           v-if="userIsAuthenticated"
           :text="$t('common.add')"
@@ -516,7 +554,7 @@ defineOgImage('Default', {
         />
       </div>
 
-      <p v-if="result.product.nutriments?.proteins_100g == null">
+      <p v-if="!isReported(result.product.nutriments?.proteins_100g)">
         {{ $t('barcode-scanner.no-protein') }}
         {{ ' ' }}
         <i18n-t keypath="barcode-scanner.no-protein-link" tag="span" scope="global">

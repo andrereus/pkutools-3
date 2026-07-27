@@ -3,6 +3,7 @@ import { useStore } from '../../stores/index'
 import Fuse from 'fuse.js'
 import { format } from 'date-fns'
 import { isCommunityFoodHidden } from '../utils/community-food'
+import { roundReference, scaleToWeight, nutrientRows, isReported } from '../utils/nutrition'
 
 const store = useStore()
 const { t, locale } = useI18n()
@@ -31,6 +32,9 @@ const loading = ref(false)
 const fuseInstance = ref(null)
 const cachedStaticFood = ref(null)
 const nutrients = ref(null)
+const foodSource = ref(null)
+const foodSourceId = ref(null)
+const foodFactor = ref(null)
 
 // Source filter (all on by default, resets on every visit)
 const showUsda = ref(true)
@@ -113,30 +117,37 @@ const loadItem = (item) => {
   weight.value = 100
   kcalReference.value = item.kcal
   nutrients.value = item.nutrients || null
+  // Own and community foods carry no `source` of their own — the list uses that
+  // field only for the BLS/USDA badge — so derive it from the entry's flags
+  foodSource.value = item.isCommunityFood
+    ? 'community'
+    : item.isOwnFood
+      ? 'own-food'
+      : item.source || null
+  foodSourceId.value = item.sourceId || null
+  foodFactor.value = item.factor ?? null
   note.value = item.note || null
   selectedDate.value = format(new Date(), 'yyyy-MM-dd')
   dialog.value.openDialog()
 }
 
-const calculatePhe = () => {
-  return Math.round((weight.value * phe.value) / 100)
-}
+const calculatePhe = () => scaleToWeight(Number(phe.value), weight.value)
 
-const calculateKcal = () => {
-  return Math.round((weight.value * kcalReference.value) / 100) || 0
-}
+const calculateKcal = () => scaleToWeight(Number(kcalReference.value), weight.value)
 
-// Scale a per-100g nutrient value (in g) to the entered weight
-const scaleNutrient = (value) => {
-  if (value === null || value === undefined) return '–'
-  return Math.round(((value * weight.value) / 100) * 10) / 10
-}
+const foodNutrientRows = computed(() => nutrientRows(nutrients.value, weight.value, t))
 
 const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
     return
   }
+
+  // Sources publish different subsets, and missing values are left out rather
+  // than stored as null
+  const storedNutrients = nutrients.value
+    ? Object.fromEntries(Object.entries(nutrients.value).filter(([, value]) => isReported(value)))
+    : null
 
   let logEntry = {
     name: name.value,
@@ -147,7 +158,14 @@ const save = async () => {
     weight: Number(weight.value),
     phe: calculatePhe(),
     kcal: calculateKcal(),
-    note: note.value && note.value.trim() !== '' ? note.value.trim() : null
+    note: note.value && note.value.trim() !== '' ? note.value.trim() : null,
+    source: foodSource.value,
+    sourceId: foodSourceId.value,
+    factor: foodFactor.value,
+    ...(storedNutrients &&
+      Object.keys(storedNutrients).length > 0 && {
+        nutrients: storedNutrients
+      })
   }
 
   isSaving.value = true
@@ -217,6 +235,11 @@ const buildFuseIndex = () => {
             phe: item.phe,
             kcal: item.kcal,
             note: item.note || null,
+            // Own foods can carry provenance of their own; nothing writes it
+            // yet, but it must not be dropped once something does
+            nutrients: item.nutrients || null,
+            factor: item.factor ?? null,
+            sourceId: item.sourceId || null,
             isOwnFood: true,
             isCommunityFood: false,
             isShared: item.shared || false,
@@ -262,21 +285,27 @@ const loadFoodData = () => {
       $fetch(`/data/bls-nutrients-${locale.value}.json`)
     ])
       .then(([usdaData, blsData]) => {
+        // Both files store Phe as g/100 g, so × 1000 gives mg. BLS carries up to
+        // five decimals there, which a whole-mg rounding would throw away — keep
+        // two decimals so the stored reference is the published value.
+        const toMgPhe = (value) => roundReference(value * 1000)
         const usdaFood = usdaData.map((item) => ({
           name: item[locale.value] || item.en,
           emoji: item.emoji,
-          phe: Math.round(item.phe * 1000),
+          phe: toMgPhe(item.phe),
           kcal: item.kcal,
           source: 'usda',
+          sourceId: item.id != null ? String(item.id) : null,
           isOwnFood: false,
           isCommunityFood: false
         }))
         const blsFood = blsData.map((item) => ({
           name: item.name,
           emoji: item.emoji,
-          phe: Math.round(item.phe * 1000),
+          phe: toMgPhe(item.phe),
           kcal: item.kcal,
           source: 'bls',
+          sourceId: item.id != null ? String(item.id) : null,
           nutrients: {
             protein: item.protein,
             fat: item.fat,
@@ -546,8 +575,11 @@ defineOgImage('Default', {
               </span>
             </span>
           </td>
+          <!-- Whole mg, the convention for a milligram value. The stored
+               reference keeps its decimals; every calculation uses that, so
+               what is shown here never feeds a result. -->
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-            {{ item.phe }}
+            {{ Math.round(item.phe) }}
           </td>
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
             {{ item.kcal }}
@@ -623,34 +655,16 @@ defineOgImage('Default', {
           <span class="flex-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
         </div>
 
-        <!-- Nutrient breakdown (BLS foods) -->
+        <!-- Nutrient breakdown for the entered weight. Lists what the food
+             actually carries, so it renders the same here as in the diary
+             once the item is saved. -->
         <div
-          v-if="nutrients"
+          v-if="foodNutrientRows.length > 0"
           class="mb-4 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
         >
-          <div class="flex justify-between">
-            <span>{{ $t('common.protein') }}</span>
-            <span>{{ scaleNutrient(nutrients.protein) }} g</span>
-          </div>
-          <div class="flex justify-between">
-            <span>{{ $t('common.fat') }}</span>
-            <span>{{ scaleNutrient(nutrients.fat) }} g</span>
-          </div>
-          <div class="flex justify-between">
-            <span>{{ $t('common.carbs') }}</span>
-            <span>{{ scaleNutrient(nutrients.carbs) }} g</span>
-          </div>
-          <div class="flex justify-between">
-            <span>{{ $t('common.sugar') }}</span>
-            <span>{{ scaleNutrient(nutrients.sugar) }} g</span>
-          </div>
-          <div class="flex justify-between">
-            <span>{{ $t('common.fiber') }}</span>
-            <span>{{ scaleNutrient(nutrients.fiber) }} g</span>
-          </div>
-          <div class="flex justify-between">
-            <span>{{ $t('common.salt') }}</span>
-            <span>{{ scaleNutrient(nutrients.salt) }} g</span>
+          <div v-for="row in foodNutrientRows" :key="row.key" class="flex justify-between">
+            <span>{{ row.label }}</span>
+            <span>{{ row.value }} g</span>
           </div>
         </div>
 

@@ -4,6 +4,22 @@ import { z } from 'zod'
 // Base Entity Schemas
 // ============================================================================
 
+// Every numeric field in this file goes through here rather than through Zod's
+// coercing number, which runs Number() over whatever it is given: `true`
+// becomes 1, and `[]`, `''` and `null` all become 0. On a Phe or kcal field
+// that turns a malformed request into a silent, plausible-looking value — a
+// false 0 being the error this app guards hardest against elsewhere (the BLS
+// import drops foods over it). Rejecting the wrong shape outright makes it a
+// 400 instead.
+//
+// Numeric strings are still accepted: legacy records and form fields hold
+// values like "150", and the endpoints have always taken them.
+const numeric = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess(
+    (value) => (typeof value === 'string' && value.trim() !== '' ? Number(value) : value),
+    schema
+  )
+
 // Server-owned timestamps (ms epoch, matching communityFoods). Accepted in
 // request schemas only so round trips (log sync, undo-restore) don't strip
 // them; endpoints decide whether to honor or override the client value.
@@ -13,29 +29,74 @@ const timestampFields = {
   updatedAt: z.number().int().nonnegative().optional()
 }
 
+// Common nutrients per 100 g, kept at the precision the source publishes them.
+// Every field is optional because sources carry different subsets: BLS has all
+// of them, a scanned product often only protein. Consumed amounts are never
+// stored — they follow from `weight`, so there is nothing to keep in sync when
+// the weight is edited.
+const NutrientsSchema = z.object({
+  protein: numeric(z.number().nonnegative('Protein must be non-negative').nullable().optional()),
+  fat: numeric(z.number().nonnegative('Fat must be non-negative').nullable().optional()),
+  carbs: numeric(z.number().nonnegative('Carbs must be non-negative').nullable().optional()),
+  sugar: numeric(z.number().nonnegative('Sugar must be non-negative').nullable().optional()),
+  fiber: numeric(z.number().nonnegative('Fiber must be non-negative').nullable().optional()),
+  salt: numeric(z.number().nonnegative('Salt must be non-negative').nullable().optional())
+})
+
+// Where a food's values came from. This is what decides later whether an entry
+// may be re-shared with the community: 'manual', 'ai-label' and 'barcode' are
+// the user's own calculation, while the food-search origins are already
+// searchable for everyone and 'ai-estimate' is a guess, so neither is reshared.
+export const FoodSourceSchema = z.enum([
+  'bls',
+  'usda',
+  'own-food',
+  'community',
+  'barcode',
+  'ai-estimate',
+  'ai-label',
+  'manual'
+])
+
+// Provenance carried by diary entries and own foods alike. All optional, so
+// records written before this existed stay valid.
+const provenanceFields = {
+  nutrients: NutrientsSchema.nullable().optional(),
+  // mg Phe per g protein (27/35/46/50), set only when Phe was derived from
+  // protein rather than read directly
+  factor: numeric(
+    z
+      .number()
+      .positive('Factor must be positive')
+      .max(100, 'Factor is too large')
+      .nullable()
+      .optional()
+  ),
+  source: FoodSourceSchema.nullable().optional(),
+  // Identifier in the source database (barcode, BLS id, USDA id); absent where
+  // the source has no stable id of its own
+  sourceId: z.string().max(64, 'Source id is too long').nullable().optional()
+}
+
 // Diary entry schema
 export const DiaryEntrySchema = z.object({
   name: z.string().min(1, 'Food name is required').max(200, 'Food name is too long'),
   emoji: z.string().nullable().optional(),
   icon: z.string().nullable().optional(),
-  pheReference: z.coerce
-    .number()
-    .nonnegative('Phe reference must be non-negative')
-    .nullable()
-    .optional(),
-  kcalReference: z.coerce
-    .number()
-    .nonnegative('Kcal reference must be non-negative')
-    .nullable()
-    .optional(),
-  weight: z.coerce
-    .number()
-    .positive('Weight must be a positive number')
-    .max(10000, 'Weight is too large'),
-  phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
-  kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
+  pheReference: numeric(
+    z.number().nonnegative('Phe reference must be non-negative').nullable().optional()
+  ),
+  kcalReference: numeric(
+    z.number().nonnegative('Kcal reference must be non-negative').nullable().optional()
+  ),
+  weight: numeric(
+    z.number().positive('Weight must be a positive number').max(10000, 'Weight is too large')
+  ),
+  phe: numeric(z.number().nonnegative('Phe value must be non-negative')),
+  kcal: numeric(z.number().nonnegative('Kcal value must be non-negative')),
   note: z.string().max(500, 'Note is too long').nullable().optional(),
   communityFoodKey: z.string().nullable().optional(), // Optional: tracks which community food was used (stored in diary entry)
+  ...provenanceFields,
   ...timestampFields
 })
 
@@ -43,8 +104,8 @@ export const DiaryEntrySchema = z.object({
 export const LabValueSchema = z
   .object({
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
-    phe: z.coerce.number().positive('Phe value must be positive').nullable().optional(),
-    tyrosine: z.coerce.number().positive('Tyrosine value must be positive').nullable().optional(),
+    phe: numeric(z.number().positive('Phe value must be positive').nullable().optional()),
+    tyrosine: numeric(z.number().positive('Tyrosine value must be positive').nullable().optional()),
     ...timestampFields
   })
   // Loose `!= null` so an omitted (undefined) field counts as "not provided"
@@ -59,10 +120,11 @@ export const OwnFoodSchema = z.object({
   name: z.string().min(1, 'Food name is required').max(200, 'Food name is too long'),
   icon: z.string().nullable().optional(),
   emoji: z.string().nullable().optional(),
-  phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
-  kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
+  phe: numeric(z.number().nonnegative('Phe value must be non-negative')),
+  kcal: numeric(z.number().nonnegative('Kcal value must be non-negative')),
   note: z.string().max(500, 'Note is too long').nullable().optional(),
   shared: z.boolean().default(false),
+  ...provenanceFields,
   ...timestampFields
 })
 
@@ -107,8 +169,8 @@ export const CommunityVoteSchema = z.object({
 // Create diary day request schema
 export const CreateDaySchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
-  phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
-  kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
+  phe: numeric(z.number().nonnegative('Phe value must be non-negative')),
+  kcal: numeric(z.number().nonnegative('Kcal value must be non-negative')),
   ...timestampFields
 })
 
@@ -118,8 +180,8 @@ export const UpdateDaySchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format')
     .optional(), // Optional date to allow date changes
-  phe: z.coerce.number().nonnegative('Phe value must be non-negative'),
-  kcal: z.coerce.number().nonnegative('Kcal value must be non-negative'),
+  phe: numeric(z.number().nonnegative('Phe value must be non-negative')),
+  kcal: numeric(z.number().nonnegative('Kcal value must be non-negative')),
   log: z.array(DiaryEntrySchema).optional(), // Optional log array to sync deletions - validate structure
   incomplete: z.boolean().optional() // When true, the day is flagged as incomplete (not every food was logged) and hidden from chart + stats
 })
@@ -162,28 +224,20 @@ export const OwnFoodUpdateSchema = z.object({
 
 // Update settings request schema
 export const SettingsUpdateSchema = z.object({
-  maxPhe: z.coerce.number().nonnegative('Max Phe must be non-negative').nullable().optional(),
-  maxKcal: z.coerce.number().nonnegative('Max Kcal must be non-negative').nullable().optional(),
-  bloodPheMin: z.coerce
-    .number()
-    .nonnegative('Min blood Phe must be non-negative')
-    .nullable()
-    .optional(),
-  bloodPheMax: z.coerce
-    .number()
-    .nonnegative('Max blood Phe must be non-negative')
-    .nullable()
-    .optional(),
-  bloodTyrMin: z.coerce
-    .number()
-    .nonnegative('Min tyrosine must be non-negative')
-    .nullable()
-    .optional(),
-  bloodTyrMax: z.coerce
-    .number()
-    .nonnegative('Max tyrosine must be non-negative')
-    .nullable()
-    .optional(),
+  maxPhe: numeric(z.number().nonnegative('Max Phe must be non-negative').nullable().optional()),
+  maxKcal: numeric(z.number().nonnegative('Max Kcal must be non-negative').nullable().optional()),
+  bloodPheMin: numeric(
+    z.number().nonnegative('Min blood Phe must be non-negative').nullable().optional()
+  ),
+  bloodPheMax: numeric(
+    z.number().nonnegative('Max blood Phe must be non-negative').nullable().optional()
+  ),
+  bloodTyrMin: numeric(
+    z.number().nonnegative('Min tyrosine must be non-negative').nullable().optional()
+  ),
+  bloodTyrMax: numeric(
+    z.number().nonnegative('Max tyrosine must be non-negative').nullable().optional()
+  ),
   labUnit: z.enum(['mgdl', 'umoll']).optional(),
   progressStyle: z.enum(['bars', 'circles']).optional(),
   preferredTool: z

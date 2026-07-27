@@ -4,6 +4,14 @@ import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai'
 import { getApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { format } from 'date-fns'
+import {
+  PHE_FACTORS,
+  pheFactor,
+  roundReference,
+  scaleToWeight,
+  nutrientRows,
+  isReported
+} from '../utils/nutrition'
 
 const store = useStore()
 const { t, locale } = useI18n()
@@ -41,7 +49,7 @@ const correctionDialog = ref(null)
 const correctionHint = ref('')
 
 // Result state
-const result = ref(null) // { name, emoji, phePer100g, proteinPer100g, kcalPer100g, weightInGrams, explanation }
+const result = ref(null) // { name, emoji, phePer100g, proteinPer100g, kcalPer100g, weightInGrams, explanation, nutrients }
 const weight = ref(null)
 
 // Constants
@@ -81,28 +89,20 @@ const labelFoodTypes = computed(() => [
   { title: t('phe-calculator.fruit'), value: 'fruit' }
 ])
 
-const labelFactor = computed(() => {
-  if (labelFoodType.value === 'fruit') {
-    return 27
-  } else if (labelFoodType.value === 'vegetable') {
-    return 35
-  } else if (labelFoodType.value === 'meat') {
-    return 46
-  } else {
-    return 50
-  }
-})
+const labelFactor = computed(() => pheFactor(labelFoodType.value))
 
-// Computed Phe: use phePer100g directly, or fall back to protein × factor
-// (selectable food type factor for label results, general 50 for estimates)
+// Computed Phe: use phePer100g directly, or fall back to protein × factor (the
+// selectable food type factor for label results, the general one for estimates).
+// The result below is computed from this exact value, so it and any later
+// recalculation agree.
 const pheReference = computed(() => {
   if (!result.value) return 0
   if (result.value.phePer100g !== null && !isNaN(result.value.phePer100g)) {
-    return Math.round(result.value.phePer100g)
+    return result.value.phePer100g
   }
   if (result.value.proteinPer100g !== null && !isNaN(result.value.proteinPer100g)) {
-    const factor = isLabelResult.value ? labelFactor.value : 50
-    return Math.round(result.value.proteinPer100g * factor)
+    const factor = isLabelResult.value ? labelFactor.value : PHE_FACTORS.other
+    return roundReference(result.value.proteinPer100g * factor)
   }
   return 0
 })
@@ -110,7 +110,7 @@ const pheReference = computed(() => {
 const kcalReference = computed(() => {
   if (!result.value) return 0
   if (result.value.kcalPer100g !== null && !isNaN(result.value.kcalPer100g)) {
-    return Math.round(result.value.kcalPer100g)
+    return result.value.kcalPer100g
   }
   return 0
 })
@@ -124,13 +124,11 @@ const isProteinFallback = computed(() => {
   )
 })
 
-const totalPhe = computed(() => {
-  return Math.round((weight.value * pheReference.value) / 100) || 0
-})
+const totalPhe = computed(() => scaleToWeight(pheReference.value, weight.value))
 
-const totalKcal = computed(() => {
-  return Math.round((weight.value * kcalReference.value) / 100) || 0
-})
+const totalKcal = computed(() => scaleToWeight(kcalReference.value, weight.value))
+
+const resultNutrientRows = computed(() => nutrientRows(result.value?.nutrients, weight.value, t))
 
 // Methods
 const resizeAndConvertToBase64 = (file) => {
@@ -262,6 +260,43 @@ const appLanguageName = () => {
   return languageMap[locale.value] || 'English'
 }
 
+// A model can return arbitrary precision, so everything it hands back is capped
+// at the same two decimals the app uses for every value it computes itself
+// (protein × factor in the Phe calculator and the scanner, g → mg in food
+// search). Values copied from a food database or typed by the user are not
+// rounded at all — they are stored exactly as published or entered.
+const parseNutrientNumber = (value) => {
+  // Model output is free-form JSON, so `true`, `[]` or `[5]` can turn up where a
+  // number belongs — all of which coerce to a plausible-looking number
+  if (!isReported(value) || Number(value) < 0) return null
+  const parsed = Number(value)
+  const capped = roundReference(parsed)
+  // The cap is there to tame model noise like 12.3456789, not to turn a
+  // reported trace into "none". BLS keeps salt down to five decimals, so a
+  // small value is kept at that depth and reaches the grid as "< 0.01" — the
+  // same as it would from any other source, instead of a flat 0.
+  return capped === 0 && parsed > 0 ? Math.round(parsed * 100000) / 100000 : capped
+}
+
+const COMMON_NUTRIENT_FIELDS = {
+  protein: 'proteinPer100g',
+  fat: 'fatPer100g',
+  carbs: 'carbsPer100g',
+  sugar: 'sugarPer100g',
+  fiber: 'fiberPer100g',
+  salt: 'saltPer100g'
+}
+
+// The common nutrients per 100 g, from either response shape. What the model
+// left out is omitted rather than stored as null, so a label that only prints
+// protein and salt yields just those two.
+const parseCommonNutrients = (data) => {
+  const entries = Object.entries(COMMON_NUTRIENT_FIELDS)
+    .map(([key, field]) => [key, parseNutrientNumber(data[field])])
+    .filter(([, value]) => value !== null)
+  return entries.length > 0 ? Object.fromEntries(entries) : null
+}
+
 const estimateFoodValues = async () => {
   if (isBusy.value) return
 
@@ -297,6 +332,11 @@ Return JSON:
   "phePer100g": number (phenylalanine in mg per 100g) or null,
   "kcalPer100g": number (calories in kcal per 100g) or null,
   "proteinPer100g": number (protein in g per 100g) or null,
+  "fatPer100g": number (fat in g per 100g) or null,
+  "carbsPer100g": number (carbohydrates in g per 100g) or null,
+  "sugarPer100g": number (sugars in g per 100g) or null,
+  "fiberPer100g": number (fiber in g per 100g) or null,
+  "saltPer100g": number (salt in g per 100g) or null,
   "weightInGrams": number (total weight or typical serving size in g) or null,
   "emoji": string (exactly one emoji character) or null,
   "explanation": string (maximum 140 characters) or null
@@ -319,6 +359,10 @@ Return JSON:
 
     const foodData = JSON.parse(jsonMatch[0])
 
+    // A serving size of 0 or less is not a serving, so it falls back to the
+    // default weight rather than being offered as one
+    const servingSize = parseNutrientNumber(foodData.weightInGrams)
+
     // Build result object
     result.value = {
       source: 'estimate',
@@ -327,37 +371,17 @@ Return JSON:
         foodData.emoji && typeof foodData.emoji === 'string' && foodData.emoji.trim() !== ''
           ? foodData.emoji.trim()
           : null,
-      phePer100g:
-        foodData.phePer100g !== null &&
-        foodData.phePer100g !== undefined &&
-        !isNaN(Number(foodData.phePer100g))
-          ? Math.round(Number(foodData.phePer100g))
-          : null,
-      proteinPer100g:
-        foodData.proteinPer100g !== null &&
-        foodData.proteinPer100g !== undefined &&
-        !isNaN(Number(foodData.proteinPer100g))
-          ? Math.round(Number(foodData.proteinPer100g) * 10) / 10
-          : null,
-      kcalPer100g:
-        foodData.kcalPer100g !== null &&
-        foodData.kcalPer100g !== undefined &&
-        !isNaN(Number(foodData.kcalPer100g))
-          ? Math.round(Number(foodData.kcalPer100g))
-          : null,
-      weightInGrams:
-        foodData.weightInGrams !== null &&
-        foodData.weightInGrams !== undefined &&
-        !isNaN(Number(foodData.weightInGrams)) &&
-        Number(foodData.weightInGrams) > 0
-          ? Math.round(Number(foodData.weightInGrams))
-          : null,
+      phePer100g: parseNutrientNumber(foodData.phePer100g),
+      proteinPer100g: parseNutrientNumber(foodData.proteinPer100g),
+      kcalPer100g: parseNutrientNumber(foodData.kcalPer100g),
+      weightInGrams: servingSize !== null && servingSize > 0 ? servingSize : null,
       explanation:
         foodData.explanation &&
         typeof foodData.explanation === 'string' &&
         foodData.explanation.trim() !== ''
           ? foodData.explanation.trim()
-          : null
+          : null,
+      nutrients: parseCommonNutrients(foodData)
     }
 
     // Set editable weight from serving size
@@ -373,12 +397,6 @@ Return JSON:
   } finally {
     isEstimating.value = false
   }
-}
-
-const parseLabelNumber = (value, decimals) => {
-  if (value === null || value === undefined || isNaN(Number(value))) return null
-  const factor = 10 ** decimals
-  return Math.round(Number(value) * factor) / factor
 }
 
 const readLabel = async () => {
@@ -399,6 +417,11 @@ Return JSON:
   "proteinPer100g": number (protein in g per 100g) or null,
   "kcalPer100g": number (energy in kcal per 100g) or null,
   "phePer100g": number (phenylalanine in mg per 100g, ONLY if phenylalanine is explicitly printed on the label) or null,
+  "fatPer100g": number (fat in g per 100g) or null,
+  "carbsPer100g": number (carbohydrates in g per 100g) or null,
+  "sugarPer100g": number (sugars in g per 100g) or null,
+  "fiberPer100g": number (fiber in g per 100g) or null,
+  "saltPer100g": number (salt in g per 100g) or null,
   "servingSizeInGrams": number (serving size in g if printed) or null
 }`
 
@@ -414,10 +437,10 @@ Return JSON:
 
     const labelData = JSON.parse(jsonMatch[0])
 
-    const phePer100g = parseLabelNumber(labelData.phePer100g, 0)
-    const proteinPer100g = parseLabelNumber(labelData.proteinPer100g, 1)
-    const kcalPer100g = parseLabelNumber(labelData.kcalPer100g, 0)
-    const servingSize = parseLabelNumber(labelData.servingSizeInGrams, 0)
+    const phePer100g = parseNutrientNumber(labelData.phePer100g)
+    const proteinPer100g = parseNutrientNumber(labelData.proteinPer100g)
+    const kcalPer100g = parseNutrientNumber(labelData.kcalPer100g)
+    const servingSize = parseNutrientNumber(labelData.servingSizeInGrams)
 
     if (labelData.isNutritionLabel !== true || (phePer100g === null && proteinPer100g === null)) {
       notifications.error(t('ai-calculator.label-error'))
@@ -432,7 +455,8 @@ Return JSON:
       proteinPer100g,
       kcalPer100g,
       weightInGrams: servingSize && servingSize > 0 ? servingSize : null,
-      explanation: null
+      explanation: null,
+      nutrients: parseCommonNutrients(labelData)
     }
 
     weight.value = result.value.weightInGrams || 100
@@ -496,7 +520,14 @@ const save = async () => {
     weight: Number(weight.value),
     phe: totalPhe.value,
     kcal: totalKcal.value,
-    note: result.value.explanation || null
+    note: result.value.explanation || null,
+    // A read label is a calculation from printed values; an estimate is a guess
+    source: isLabelResult.value ? 'ai-label' : 'ai-estimate',
+    ...(result.value.nutrients && { nutrients: result.value.nutrients }),
+    // Only when the Phe above was derived from that protein
+    ...(isProteinFallback.value && {
+      factor: isLabelResult.value ? labelFactor.value : PHE_FACTORS.other
+    })
   }
 
   isSaving.value = true
@@ -824,6 +855,17 @@ defineOgImage('Default', {
         <span v-if="kcalReference" class="flex-1 text-lg"
           >= {{ totalKcal }} {{ $t('common.kcal') }}</span
         >
+      </div>
+
+      <!-- Nutrient breakdown for the entered weight -->
+      <div
+        v-if="resultNutrientRows.length > 0"
+        class="mb-4 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
+      >
+        <div v-for="row in resultNutrientRows" :key="row.key" class="flex justify-between">
+          <span>{{ row.label }}</span>
+          <span>{{ row.value }} g</span>
+        </div>
       </div>
 
       <PrimaryButton

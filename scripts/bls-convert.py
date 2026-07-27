@@ -21,12 +21,13 @@ false 0 is the most dangerous error in a PKU app), and the full list of what
 was removed is written to scripts/bls-dropped-foods.txt for auditing:
 
   1. Phe not determined: the BLS marks it "-". No value can be shown.
-  2. Implausible Phe = 0: the BLS stores literal 0 while the food clearly
-     contains protein (> 0.5 g, or two or more other amino acids measured).
-     Any real protein contains phenylalanine, so this 0 is a data error — the
-     BLS should have written "-" but wrote 0. Genuine zeros (oils, sugar,
-     spirits, water, salt, single-amino-acid additives like MSG) have no
-     protein/amino-acid profile and are kept, as are trace markers.
+  2. Implausible Phe = 0: the BLS stores literal 0, or a trace marker that
+     becomes 0, while the food clearly contains protein (> 0.5 g, or two or
+     more other amino acids measured). Any real protein contains phenylalanine,
+     so that 0 is a data error — the BLS should have written "-". Genuine zeros
+     (oils, sugar, spirits, water, salt, single-amino-acid additives like MSG)
+     have no protein/amino-acid profile and are kept, and so are trace markers
+     on foods that hold no meaningful protein.
 
 Uses only the Python standard library: python3 scripts/bls-convert.py
 """
@@ -110,10 +111,11 @@ def iter_rows(path):
                 elem.clear()
 
 
-# Non-numeric BLS value markers: below limit of detection/quantification and
-# trace amounts count as 0 (food-composition convention); "-" means the value
-# was not determined and stays empty (foods without a Phe value are dropped —
-# a made-up 0 would be unsafe in a PKU app).
+# Non-numeric BLS value markers. "TR" means detected but not quantified, and
+# "<LOD"/"<LOQ" mean below the analytical limit — none of them is a measured
+# zero, so they are only written as 0 where a value is mandatory. "-" means the
+# value was not determined at all and stays empty (a food without a Phe value is
+# dropped; a made-up 0 would be unsafe in a PKU app).
 TRACE_MARKERS = {"<LOD", "<LOQ", "<LOD or <LOQ", "TR"}
 
 # The 17 amino acids the BLS lists besides Phe. Used only to detect implausible
@@ -124,24 +126,47 @@ OTHER_AMINO_ACIDS = [
     "MET", "PRO", "SER", "THR", "TRP", "TYR", "VAL",
 ]
 
-# A Phe of literal "0" is a data error, not a natural zero, when the food
-# demonstrably contains mixed protein — either >0.5 g protein, or two or more
-# other amino acids measured (any real protein must contain Phe). Such foods
-# are dropped: the BLS should have marked Phe as "-" (not determined) but wrote
-# 0 instead, and a false 0 is the most dangerous error in a PKU app. Genuine
-# zeros (oils, sugar, spirits, water, salt, and single-amino-acid additives
-# such as monosodium glutamate) have no protein or amino-acid profile and are
-# kept. Trace markers are NOT literal zeros and are always kept.
+# A Phe that reaches 0 — whether written as literal "0" or as a trace marker —
+# is a data error, not a natural zero, when the food demonstrably contains
+# mixed protein: either >0.5 g protein, or two or more other amino acids
+# measured (any real protein must contain Phe). Such foods are dropped: the BLS
+# should have marked Phe as "-" (not determined), and a false 0 is the most
+# dangerous error in a PKU app. Genuine zeros (oils, sugar, spirits, water,
+# salt, and single-amino-acid additives such as monosodium glutamate) have no
+# protein or amino-acid profile and are kept.
+#
+# Trace markers get the same treatment as a literal 0 rather than a free pass.
+# "TR" means "present but too small to quantify" and "<LOD"/"<LOQ" mean "below
+# the analytical limit" — neither is a measured zero, so on a food with real
+# protein they are exactly as implausible as a written 0.
+#
+# Below the threshold a trace Phe is written as 0, and that is a counting
+# policy, not a claim of chemical absence: PKU practice treats foods at or
+# under ~0.5 g protein/100 g as exchange-free, which is what the foods kept
+# here are (tea, coffee, wine, rice drink), so the 0 means "counts as zero".
+#
+# A few of them report some protein — instant coffee 0.33 g — which looks like
+# a contradiction until you read the column: PROT625 is nitrogen x 6.25, and in
+# coffee and tea most of that nitrogen is caffeine rather than amino acids. The
+# BLS measured all 17 other amino acids in exactly these foods and could
+# quantify none of them, so the reported protein is not evidence of Phe.
 IMPLAUSIBLE_ZERO_MIN_PROTEIN = 0.5
 IMPLAUSIBLE_ZERO_MIN_OTHER_AMINO_ACIDS = 2
 
 
-def to_number(raw):
-    """Shortest decimal that round-trips to the stored double (Excel display)."""
+def to_number(raw, trace_as_zero=False):
+    """Shortest decimal that round-trips to the stored double (Excel display).
+
+    A trace marker becomes None (the value is unknown, not zero) unless the
+    caller needs a number. Only Phe does: it is required, so an unknown there
+    means dropping the food, and the drop rules above decide that separately.
+    For the optional nutrients an omitted value is honest — the app leaves the
+    row out rather than claiming the food contains none of it.
+    """
     if raw is None or raw == "-":
         return None
     if raw in TRACE_MARKERS:
-        return 0
+        return 0 if trace_as_zero else None
     value = float(raw)
     return int(value) if value == int(value) else value
 
@@ -551,13 +576,14 @@ def main():
         code, name_de, name_en = row[0], row[1], row[2]
         item = {"id": code, "de": name_de, "en": name_en}
         for _, field in NUTRIENTS:
-            item[field] = to_number(row[columns[field]])
+            item[field] = to_number(row[columns[field]], trace_as_zero=(field == "phe"))
         if item["phe"] is None:
             dropped_missing.append(f"{code} {name_de}")
             continue
-        # A literal-0 Phe (not a trace marker) is an error when the food clearly
-        # contains protein; such entries should have been "-" and are dropped.
-        if row[phe_col] == "0" and (
+        # A Phe of 0 — written as such or reached via a trace marker — is an
+        # error when the food clearly contains protein; such entries should
+        # have been "-" and are dropped.
+        if (row[phe_col] == "0" or row[phe_col] in TRACE_MARKERS) and (
             (item["protein"] or 0) > IMPLAUSIBLE_ZERO_MIN_PROTEIN
             or amino_acid_count(row, amino_columns) >= IMPLAUSIBLE_ZERO_MIN_OTHER_AMINO_ACIDS
         ):
@@ -578,7 +604,9 @@ def main():
 
     fieldnames = ["id"] + LOCALES + [f for _, f in NUTRIENTS] + ["emoji"]
     with open(OUT_CSV, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        # The csv module defaults to CRLF, which makes git report every row as
+        # trailing whitespace (`git diff --check`).
+        writer = csv.DictWriter(f, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(items)
 
@@ -598,7 +626,8 @@ def main():
     with open(OUT_DROPPED, "w", encoding="utf-8") as f:
         f.write(f"# Phe not determined (marker '-'): {len(dropped_missing)}\n")
         f.write("\n".join(dropped_missing))
-        f.write(f"\n\n# Implausible Phe = 0 (protein > {IMPLAUSIBLE_ZERO_MIN_PROTEIN} g or "
+        f.write(f"\n\n# Implausible Phe = 0, written as 0 or as a trace marker "
+                f"(protein > {IMPLAUSIBLE_ZERO_MIN_PROTEIN} g or "
                 f">= {IMPLAUSIBLE_ZERO_MIN_OTHER_AMINO_ACIDS} other amino acids present): "
                 f"{len(dropped_bad_zero)}\n")
         f.write("\n".join(dropped_bad_zero))

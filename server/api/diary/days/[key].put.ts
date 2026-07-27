@@ -30,8 +30,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   // Build update object with all fields that need to be updated
   // (update() merges, so an existing createdAt is preserved)
   const updateData: Record<string, unknown> = {
-    phe: phe,
-    kcal: kcal,
     updatedAt: Date.now()
   }
 
@@ -63,10 +61,22 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     updateData.date = date
   }
 
-  // If log array is provided, use it (to sync deletions)
-  // If log is not provided, preserve the existing log (whether empty or not)
+  // The totals are written only alongside the log they belong to, and a day
+  // that carries items has its total summed here rather than taken from the
+  // request — the same thing the food-item routes do, and the reason a day's
+  // header cannot drift from the list beneath it. A day with no items is a
+  // manual entry whose total is the data itself, so there the submitted value
+  // stands.
+  //
+  // A request that omits the log is not about the totals at all — the diary's
+  // "incomplete" toggle is the only one — so they are left untouched along with
+  // the stored log. Writing back a total the client happens to be holding could
+  // otherwise overwrite a day whose items it has not seen.
   if (log !== undefined) {
+    const hasItems = log.length > 0
     updateData.log = log
+    updateData.phe = hasItems ? log.reduce((sum, item) => sum + (item.phe || 0), 0) : phe
+    updateData.kcal = hasItems ? log.reduce((sum, item) => sum + (item.kcal || 0), 0) : kcal
   }
   // If log is not provided, don't update log (preserve existing log structure)
 
