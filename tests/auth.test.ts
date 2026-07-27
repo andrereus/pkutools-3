@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { H3Event } from 'h3'
+import { HttpError, installServerGlobals } from './helpers/server-harness'
 
 // getAuthenticatedUser is the gate in front of every write endpoint: it decides
 // whose Firebase subtree a request may touch. handleServerError decides what
@@ -8,35 +9,9 @@ import type { H3Event } from 'h3'
 const verifyIdToken = vi.fn()
 vi.mock(import('../server/utils/firebase-admin'), () => ({ verifyIdToken }))
 
-// h3 is not a direct dependency, so the two Nuxt auto-imports these modules rely
-// on are stubbed with the minimum h3 contract: createError returns a throwable
-// carrying statusCode/message, getHeader reads a header off the event.
-class HttpError extends Error {
-  statusCode: number
-  data?: unknown
-  constructor({
-    statusCode,
-    message,
-    data
-  }: {
-    statusCode: number
-    message: string
-    data?: unknown
-  }) {
-    super(message)
-    this.statusCode = statusCode
-    this.data = data
-  }
-}
-
-vi.stubGlobal(
-  'createError',
-  (options: { statusCode: number; message: string; data?: unknown }) => new HttpError(options)
-)
-vi.stubGlobal(
-  'getHeader',
-  (event: { headers: Record<string, string> }, name: string) => event.headers[name]
-)
+// h3 is not a direct dependency, so the Nuxt auto-imports these modules rely on
+// come from the shared harness rather than being stubbed again here.
+installServerGlobals()
 
 const { getAuthenticatedUser } = await import('../server/utils/auth')
 const { handleServerError } = await import('../server/utils/error-handler')
