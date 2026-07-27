@@ -57,17 +57,47 @@ const NUMERIC_FIELDS = ['phe', 'kcal', ...OPTIONAL_NUTRIENTS] as const
 const isNonNegativeNumber = (value: unknown) =>
   typeof value === 'number' && Number.isFinite(value) && value >= 0
 
+type FoodRow = { id: string | number; phe: number; kcal: number; emoji?: string }
+
+/**
+ * The row-level checks both databases have to satisfy. Registered inside each
+ * describe so failures still name the source, with `describeRow` supplying the
+ * locale-appropriate name for the failure message.
+ */
+const itHasValidRows = <T extends FoodRow>(rows: T[], describeRow: (row: T) => string) => {
+  it('has a unique id per food', () => {
+    const ids = rows.map((food) => food.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  it('has a finite, non-negative phe and kcal for every food', () => {
+    const broken = rows.filter(
+      (food) => !isNonNegativeNumber(food.phe) || !isNonNegativeNumber(food.kcal)
+    )
+    expect(broken.map((f) => f.id)).toEqual([])
+  })
+
+  it('keeps phe and kcal within a plausible range', () => {
+    const outliers = rows.filter(
+      (food) => food.phe > MAX_PLAUSIBLE_PHE_G || food.kcal > MAX_PLAUSIBLE_KCAL
+    )
+    expect(outliers.map((f) => `${describeRow(f)}: ${f.phe}g phe, ${f.kcal}kcal`)).toEqual([])
+  })
+
+  // The UI shows entry.emoji with no icon fallback, so a missing one renders
+  // as a blank tile.
+  it('has an emoji for every food', () => {
+    const missing = rows.filter((food) => !food.emoji || food.emoji.trim() === '')
+    expect(missing.map((f) => f.id)).toEqual([])
+  })
+}
+
 describe('USDA food database', () => {
   // Load-bearing: every check below collects the bad rows and expects none, so
   // all of them would pass on a file that got truncated to an empty array.
   it('is a non-empty array', () => {
     expect(Array.isArray(usda)).toBe(true)
     expect(usda.length).toBeGreaterThan(4000)
-  })
-
-  it('has a unique id per food', () => {
-    const ids = usda.map((food) => food.id)
-    expect(new Set(ids).size).toBe(ids.length)
   })
 
   it('has a non-empty name in every supported locale', () => {
@@ -77,26 +107,7 @@ describe('USDA food database', () => {
     expect(broken.map((f) => f.id)).toEqual([])
   })
 
-  it('has a finite, non-negative phe and kcal for every food', () => {
-    const broken = usda.filter(
-      (food) => !isNonNegativeNumber(food.phe) || !isNonNegativeNumber(food.kcal)
-    )
-    expect(broken.map((f) => f.id)).toEqual([])
-  })
-
-  it('keeps phe and kcal within a plausible range', () => {
-    const outliers = usda.filter(
-      (food) => food.phe > MAX_PLAUSIBLE_PHE_G || food.kcal > MAX_PLAUSIBLE_KCAL
-    )
-    expect(outliers.map((f) => `${f.id} ${f.en}: ${f.phe}g phe, ${f.kcal}kcal`)).toEqual([])
-  })
-
-  // The UI shows entry.emoji with no icon fallback, so a missing one renders
-  // as a blank tile.
-  it('has an emoji for every food', () => {
-    const missing = usda.filter((food) => !food.emoji || food.emoji.trim() === '')
-    expect(missing.map((f) => f.id)).toEqual([])
-  })
+  itHasValidRows(usda, (food) => `${food.id} ${food.en}`)
 })
 
 describe('BLS food database', () => {
@@ -150,24 +161,7 @@ describe('BLS food database', () => {
   // The value checks below run on English alone. Names are the only per-locale
   // field, and the two tests above already pin every other field of every other
   // locale to the English row it sits beside.
-  it('has a unique id per food', () => {
-    const ids = bls.en.map((food) => food.id)
-    expect(new Set(ids).size).toBe(ids.length)
-  })
-
-  it('has a finite, non-negative phe and kcal for every food', () => {
-    const broken = bls.en.filter(
-      (food) => !isNonNegativeNumber(food.phe) || !isNonNegativeNumber(food.kcal)
-    )
-    expect(broken.map((f) => f.id)).toEqual([])
-  })
-
-  it('keeps phe and kcal within a plausible range', () => {
-    const outliers = bls.en.filter(
-      (food) => food.phe > MAX_PLAUSIBLE_PHE_G || food.kcal > MAX_PLAUSIBLE_KCAL
-    )
-    expect(outliers.map((f) => `${f.id} ${f.name}: ${f.phe}g phe, ${f.kcal}kcal`)).toEqual([])
-  })
+  itHasValidRows(bls.en, (food) => `${food.id} ${food.name}`)
 
   // fat and fiber are genuinely absent for a handful of foods and render as a
   // dash; what must never happen is a negative or non-numeric value.
@@ -184,10 +178,5 @@ describe('BLS food database', () => {
       }
     }
     expect(broken).toEqual([])
-  })
-
-  it('has an emoji for every food', () => {
-    const missing = bls.en.filter((food) => !food.emoji || food.emoji.trim() === '')
-    expect(missing.map((f) => f.id)).toEqual([])
   })
 })
