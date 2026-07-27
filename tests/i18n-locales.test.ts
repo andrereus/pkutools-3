@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 // A missing translation key doesn't crash the app — vue-i18n falls back to
@@ -94,22 +94,15 @@ describe('translation keys used in the app', () => {
   const KEY_CALL = /(?<![\w$.])\$?t\(\s*(['"`])([^'"`]+)\1/g
   const SOURCE_EXTENSIONS = ['.vue', '.ts', '.js']
 
-  const sourceFiles = (dir: string): string[] => {
-    const entries = readdirSync(dir)
-    return entries.flatMap((entry) => {
-      const full = join(dir, entry)
-      if (statSync(full).isDirectory()) return sourceFiles(full)
-      return SOURCE_EXTENSIONS.some((ext) => entry.endsWith(ext)) ? [full] : []
-    })
-  }
-
-  const usedKeys = new Map<string, string[]>()
-  for (const file of sourceFiles(join(root, 'app'))) {
-    const contents = readFileSync(file, 'utf8')
-    for (const match of contents.matchAll(KEY_CALL)) {
-      const key = match[2]!
-      if (key.includes('${')) continue
-      usedKeys.set(key, [...(usedKeys.get(key) ?? []), file.replace(`${root}/`, '')])
+  // key -> the first file it was seen in, for the failure message
+  const usedKeys = new Map<string, string>()
+  const sourceFiles = readdirSync(join(root, 'app'), { recursive: true, encoding: 'utf8' })
+  for (const relativePath of sourceFiles) {
+    if (!SOURCE_EXTENSIONS.some((ext) => relativePath.endsWith(ext))) continue
+    const contents = readFileSync(join(root, 'app', relativePath), 'utf8')
+    for (const [, , key] of contents.matchAll(KEY_CALL)) {
+      if (key!.includes('${') || usedKeys.has(key!)) continue
+      usedKeys.set(key!, `app/${relativePath}`)
     }
   }
 
@@ -122,7 +115,7 @@ describe('translation keys used in the app', () => {
   it.each(LOCALES)('%s defines every key the app asks for', (locale) => {
     const missing = [...usedKeys.entries()]
       .filter(([key]) => !(key in messages[locale]!))
-      .map(([key, files]) => `${key} (used in ${files[0]})`)
+      .map(([key, file]) => `${key} (used in ${file})`)
 
     expect(missing).toEqual([])
   })
