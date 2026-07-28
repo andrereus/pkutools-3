@@ -32,9 +32,9 @@ defineOgImage('Default', {
 
     <h2>Who is responsible</h2>
     <p>
-      PKU Tools is operated by André Reus. Under the GDPR the operator is the controller for the
-      data described here. This policy covers the website and the app, which work the same way and
-      store your data in the same place.
+      PKU Tools is an independent hobby project run by André Reus, who is the controller under the
+      GDPR. This policy covers the website and the app, which work the same way and store your data
+      in the same place.
     </p>
     <!-- prettier-ignore -->
     <p>The operator can be reached by email at {{ part1 }}@<span class="hidden">null</span>{{ part2 }}.{{ part3 }}.</p>
@@ -51,39 +51,34 @@ defineOgImage('Default', {
         </thead>
         <tbody>
           <tr>
-            <td>Email address and sign-in details, or your Google account identifier</td>
+            <td>
+              Account data: your email address, sign-in details and internal user ID, plus your name
+              and profile picture if you sign in with Google
+            </td>
             <td>To create your account and let you sign back in</td>
             <td>Performance of a contract (Art. 6(1)(b))</td>
           </tr>
           <tr>
-            <td>Your nutrition diary</td>
-            <td>To show your daily intake and your progress over time</td>
-            <td>Your explicit consent (Art. 9(2)(a))</td>
+            <td>Your nutrition diary, blood values, custom foods and targets</td>
+            <td>To provide the health features you choose to use</td>
+            <td>
+              Your consent (Art. 6(1)(a)), and explicit consent for health data (Art. 9(2)(a))
+            </td>
           </tr>
           <tr>
-            <td>Your blood values</td>
-            <td>To chart your values against your target range</td>
-            <td>Your explicit consent (Art. 9(2)(a))</td>
-          </tr>
-          <tr>
-            <td>Custom foods you create</td>
-            <td>So you can reuse your own foods</td>
-            <td>Your explicit consent (Art. 9(2)(a))</td>
-          </tr>
-          <tr>
-            <td>Your targets, target ranges and app preferences</td>
-            <td>To calculate your targets and remember how you want the app to behave</td>
-            <td>Your explicit consent (Art. 9(2)(a))</td>
+            <td>App preferences, plan status and how much of your AI allowance you have used</td>
+            <td>To remember your choices and apply the limits of your plan</td>
+            <td>Performance of a contract (Art. 6(1)(b))</td>
           </tr>
           <tr>
             <td>Whether you consented, and when</td>
-            <td>To prove consent was given, as the GDPR requires</td>
+            <td>To respect your choices and show that consent was given</td>
             <td>Legal obligation (Art. 6(1)(c))</td>
           </tr>
           <tr>
-            <td>Your usage of AI estimates, and your premium status</td>
-            <td>To apply the usage limits that come with your plan</td>
-            <td>Performance of a contract (Art. 6(1)(b))</td>
+            <td>Request data such as your IP address, pages opened and technical errors</td>
+            <td>To keep the service working and secure, and to understand how it is used</td>
+            <td>Legitimate interests (Art. 6(1)(f)) — you can object to this</td>
           </tr>
         </tbody>
       </table>
@@ -91,9 +86,13 @@ defineOgImage('Default', {
     <p>
       Your diary, blood values and targets say something about your health, so the GDPR treats them
       as a special category of data. That is why the app asks for explicit consent before storing
-      any of it, and why most features stay switched off until you give it. You can withdraw that
-      consent at any time in Settings. Withdrawing stops further storage but does not delete what is
-      already stored, which you can do separately in Settings.
+      any of it, and why the health features stay switched off until you give it.
+    </p>
+    <p>
+      You can withdraw that consent at any time in Settings. Withdrawing stops new health data being
+      saved and makes those features unavailable. It does not delete what is already stored — you
+      can do that separately in Settings. Withdrawing also does not undo processing that was lawful
+      before.
     </p>
 
     <h2>Services used</h2>
@@ -119,13 +118,14 @@ defineOgImage('Default', {
               >
             </td>
             <td>
-              Your account details and everything you save. It provides sign-in and the database.
+              Your account details and everything you save. It provides sign-in, account emails and
+              the database.
             </td>
             <td>Whenever you are signed in</td>
           </tr>
           <tr>
             <td>
-              <strong>Google Gemini</strong>, via Firebase AI Logic
+              <strong>Google Gemini</strong>
               <br />
               <a
                 href="https://ai.google.dev/gemini-api/terms"
@@ -135,7 +135,7 @@ defineOgImage('Default', {
               >
             </td>
             <td>
-              The description or photo you submit to the AI Calculator, and the food name when the
+              What you submit to the AI Calculator, including any photo, and the food name when the
               app generates an icon for it.
             </td>
             <td>Only when you use the AI Calculator or save a food</td>
@@ -210,49 +210,51 @@ defineOgImage('Default', {
         </tbody>
       </table>
     </div>
+    <p>Your data is not sold, and not shared for advertising.</p>
 
     <h2>Where your data is stored</h2>
     <p>
-      The database holding your diary, blood values and custom foods runs in the United States. The
-      transfer is covered by the European Commission's standard contractual clauses and by Google's
-      certification under the EU-US Data Privacy Framework. PostHog is the exception and runs on
-      European servers.
+      The database holding your diary, blood values and custom foods runs in the United States. AI
+      requests are processed by Google outside the European Union too. Both are covered by the
+      European Commission's standard contractual clauses and by Google's certification under the
+      EU-US Data Privacy Framework. PostHog is the exception and runs on European servers.
     </p>
 
     <h2>Cookies and local storage</h2>
-    <p>The app stores a few things in your browser, and none of them is used to track you:</p>
-    <ul>
-      <li><code>theme</code> — whether you chose light, dark or system appearance.</li>
-      <li><code>cookie_consent</code> — whether you accepted or declined analytics cookies.</li>
-      <li><code>barcode_camera</code> — which camera you last used for scanning.</li>
-    </ul>
     <p>
-      Signing in also stores a session token, so you stay signed in. That is required for the app to
-      work.
+      PKU Tools stores a few things in your browser to keep you signed in and to remember choices
+      such as appearance, camera and your analytics decision. None of those are used to track you.
     </p>
     <p>
-      Analytics run without cookies until you accept them. Declining changes nothing about how the
-      app works for you.
+      Analytics run without a lasting identifier unless you accept analytics storage. If you accept,
+      PostHog also stores an identifier in your browser, on the basis of your consent. Declining
+      changes nothing about how the app works for you, and you can change your mind later by
+      clearing this site's data in your browser.
     </p>
 
     <h2>Sharing a food with the community</h2>
     <p>
       Custom foods are private. You can share one with the community by ticking the sharing option
       on that food. Only that food is shared: what you entered about it, and the language you shared
-      it in.
+      it in. Your name and email are never part of it, and nothing identifying you is shown in the
+      app.
     </p>
     <p>
-      A shared food stays linked to your own copy of it by your user ID. That link is what lets you
-      keep editing the food, or stop sharing it again later. Your ID is not shown to anyone, and
-      your name and email are not attached to a shared food.
+      A shared food carries your internal user ID. That is what links it to your own copy, so you
+      can keep editing it. Ratings you give carry it too.
+    </p>
+    <p>
+      The ID is never shown in the app, but it is stored alongside the shared food and can be read
+      by other signed-in users. It also stays there after you delete your account, so the community
+      data keeps working.
     </p>
 
     <h2>Emails</h2>
     <p>
       Emails about app updates are optional and separate from your health data consent. You can turn
-      them on or off in Settings.
+      them on or off in Settings. Emails needed to run your account, such as a password reset, are
+      sent regardless.
     </p>
-    <p>Emails needed to run your account, such as a password reset, are sent regardless.</p>
 
     <h2>How long data is kept</h2>
     <p>
@@ -260,13 +262,13 @@ defineOgImage('Default', {
       and your sign-in record are removed from the live database straight away.
     </p>
     <p>
-      The database is backed up automatically and those backups are kept for 30 days. So for up to
-      30 days after you delete your account, your data still exists inside a backup, after which it
-      is gone for good.
+      The database is backed up automatically and those backups are kept for 30 days, so a copy can
+      still exist during that period. Providers may hold their own residual copies in logs or
+      deletion queues for the periods set out in their privacy policies.
     </p>
     <p>
-      Foods you shared with the community stay, because other people may be using them, but they are
-      not linked to you in any way that is visible.
+      Shared foods and ratings stay, with the user ID attached to them, because other people may be
+      using them.
     </p>
 
     <h2>Your rights</h2>
@@ -277,11 +279,12 @@ defineOgImage('Default', {
       <li>have your data deleted</li>
       <li>ask for the use of your data to be restricted</li>
       <li>receive your data in a portable, machine-readable format</li>
+      <li>object to processing based on legitimate interests</li>
       <li>withdraw your consent at any time, without giving a reason</li>
     </ul>
     <p>
-      Deletion and consent withdrawal are built into Settings, so you do not have to ask. For
-      anything else, contact the operator by email.
+      Account deletion and health data consent withdrawal are built into Settings, so you do not
+      have to ask. For anything else, contact the operator by email.
     </p>
     <p>
       You also have the right to lodge a complaint with a data protection authority. The competent
@@ -290,11 +293,29 @@ defineOgImage('Default', {
       live.
     </p>
 
+    <h2>Automated decisions</h2>
+    <p>
+      AI results are estimates for you to check. Nothing in the app makes an automated decision with
+      legal or similarly significant effects for you.
+    </p>
+
+    <h2>Children</h2>
+    <p>
+      A parent or guardian can set up an account for a child. If you are not old enough to give data
+      protection consent yourself, they have to give it for you.
+    </p>
+
     <h2>Security</h2>
-    <p>Data is transmitted over encrypted connections.</p>
+    <p>
+      Data is transmitted over encrypted connections, and each account can only reach its own data
+      and what has been shared with the community. No online service can promise absolute security.
+    </p>
 
     <h2>Changes to this policy</h2>
-    <p>If this policy changes, the date at the top changes with it.</p>
+    <p>
+      The date at the top changes when this policy changes. If a new use of your data needs your
+      consent, the app will ask before that use starts.
+    </p>
 
     <h2>Questions</h2>
     <!-- prettier-ignore -->

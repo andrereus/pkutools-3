@@ -477,8 +477,8 @@
     "sources": "Sources: USDA, FoodData Central (fdc.nal.usda.gov), base de données allemande BLS (Max Rubner-Institut) & openfoodfacts.org",
     "open-source": "Cette application est open source et disponible sur"
   },
-  "disclaimer": {
-    "title": "Avertissement"
+  "terms": {
+    "title": "Conditions d'utilisation"
   },
   "privacy-policy": {
     "title": "Politique de confidentialité"

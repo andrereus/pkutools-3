@@ -477,8 +477,8 @@
     "sources": "Sources: USDA, FoodData Central (fdc.nal.usda.gov), German Nutrient Database BLS (Max Rubner-Institut) & openfoodfacts.org",
     "open-source": "This application is open source and available on"
   },
-  "disclaimer": {
-    "title": "Disclaimer"
+  "terms": {
+    "title": "Terms of Service"
   },
   "privacy-policy": {
     "title": "Privacy Policy"

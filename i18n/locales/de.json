@@ -477,8 +477,8 @@
     "sources": "Quellen: USDA, FoodData Central (fdc.nal.usda.gov), Bundeslebensmittelschlüssel (BLS) des Max Rubner-Instituts & openfoodfacts.org",
     "open-source": "Diese Anwendung ist Open Source und verfügbar auf"
   },
-  "disclaimer": {
-    "title": "Disclaimer"
+  "terms": {
+    "title": "Nutzungsbedingungen"
   },
   "privacy-policy": {
     "title": "Datenschutz"

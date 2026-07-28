@@ -83,7 +83,7 @@ const userNavigation = computed(() => {
     { name: 'settings.title', icon: 'LucideSettings', route: 'settings' },
     { name: 'help.title', icon: 'LucideLifeBuoy', route: 'help' },
     { name: 'imprint.title', icon: 'LucideInfo', route: 'imprint' },
-    { name: 'disclaimer.title', icon: 'LucideInfo', route: 'disclaimer' },
+    { name: 'terms.title', icon: 'LucideInfo', route: 'terms-of-service' },
     { name: 'privacy-policy.title', icon: 'LucideInfo', route: 'privacy-policy' }
   ]
 })
@@ -110,7 +110,7 @@ const footerNavigation = computed(() => {
       { name: 'app.start', route: 'index' },
       { name: 'help.title', route: 'help' },
       { name: 'imprint.title', route: 'imprint' },
-      { name: 'disclaimer.title', route: 'disclaimer' },
+      { name: 'terms.title', route: 'terms-of-service' },
       { name: 'privacy-policy.title', route: 'privacy-policy' }
     ]
   }
