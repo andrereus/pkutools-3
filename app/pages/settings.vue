@@ -375,17 +375,15 @@ defineOgImage('Default', {
       <!-- Missing Consent Warning -->
       <div
         v-if="settings.healthDataConsent !== true"
-        class="rounded-xl bg-amber-50 dark:bg-amber-900/20 p-4 shadow-sm ring-1 ring-amber-200 dark:ring-amber-800 mb-8"
+        class="rounded-xl bg-sky-50 dark:bg-sky-900/20 p-4 shadow-sm ring-1 ring-sky-200 dark:ring-sky-800 mb-8"
       >
         <div class="flex items-start">
-          <LucideAlertTriangle
-            class="h-5 w-5 text-amber-600 dark:text-amber-400 mr-3 mt-0.5 shrink-0"
-          />
+          <LucideInfo class="h-5 w-5 text-sky-600 dark:text-sky-400 mr-3 mt-0.5 shrink-0" />
           <div>
-            <p class="text-sm font-medium text-amber-800 dark:text-amber-200">
+            <p class="text-sm font-medium text-sky-800 dark:text-sky-200">
               {{ $t('health-consent.no-consent-status') }}
             </p>
-            <p class="mt-1 text-sm text-amber-700 dark:text-amber-300">
+            <p class="mt-1 text-sm text-sky-700 dark:text-sky-300">
               {{ $t('health-consent.no-consent-explanation') }}
             </p>
             <PrimaryButton
