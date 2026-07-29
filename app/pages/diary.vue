@@ -848,7 +848,9 @@ defineOgImage('Default', {
         />
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
           <template v-if="userName">
-            {{ $t(selectedGreeting.greeting, { name: userName }) }}
+            <span class="ph-no-capture">
+              {{ $t(selectedGreeting.greeting, { name: userName }) }}
+            </span>
           </template>
           <template v-else>
             {{ $t(selectedGreeting.greeting, { name: $t('diary.empty-state.friend') }) }}
