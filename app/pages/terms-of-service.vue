@@ -28,7 +28,7 @@ defineOgImage('Default', {
 <template>
   <div class="prose dark:prose-invert">
     <h1>Terms of Service</h1>
-    <p>Last updated: July 28, 2026</p>
+    <p>Last updated: July 29, 2026</p>
 
     <h2>About PKU Tools</h2>
     <p>
@@ -39,6 +39,13 @@ defineOgImage('Default', {
       Most of the app is free. An optional paid membership helps cover running costs and raises some
       limits. Payments go through Ko-fi under their own terms. The app itself does not process
       payments.
+    </p>
+
+    <h2>Who can use PKU Tools</h2>
+    <p>
+      You need to be at least 18 to have an account. If you are a parent or legal guardian managing
+      a child's PKU diet, use your own account rather than setting one up for the child. Only do
+      this if you are legally allowed to provide the child's health information.
     </p>
 
     <h2>This is not medical advice</h2>
@@ -125,9 +132,9 @@ defineOgImage('Default', {
     <h2>Sharing foods with the community</h2>
     <p>
       Only share food information you are allowed to share and reasonably believe is correct. Do not
-      put personal information in it. By sharing a food, you allow the operator to store, display
-      and adapt that entry as needed to run the community database, including after your account is
-      deleted.
+      put personal information in it. By sharing a food, you grant the operator a non-exclusive,
+      royalty-free licence to store, display and adapt that entry for as long as it is needed to run
+      the community database, including after your account is deleted.
     </p>
     <p>
       Shared entries can stay available after you delete your account, because other people may be
@@ -162,6 +169,12 @@ defineOgImage('Default', {
       The app uses data from third parties and shows content entered by other users. None of it is
       checked in full before it appears, and the operator does not control external websites linked
       from the app.
+    </p>
+
+    <h2>Governing law</h2>
+    <p>
+      German law applies. If you are a consumer in the EU, the mandatory consumer protection rules
+      of the country you live in apply as well.
     </p>
 
     <h2>Questions</h2>

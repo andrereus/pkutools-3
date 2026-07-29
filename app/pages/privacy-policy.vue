@@ -28,7 +28,7 @@ defineOgImage('Default', {
 <template>
   <div class="prose dark:prose-invert">
     <h1>Privacy Policy</h1>
-    <p>Last updated: July 28, 2026</p>
+    <p>Last updated: July 29, 2026</p>
 
     <h2>Who is responsible</h2>
     <p>
@@ -59,10 +59,13 @@ defineOgImage('Default', {
             <td>Performance of a contract (Art. 6(1)(b))</td>
           </tr>
           <tr>
-            <td>Your nutrition diary, blood values, custom foods and targets</td>
+            <td>
+              Nutrition diary, blood values, custom foods and targets entered for you or a child
+            </td>
             <td>To provide the health features you choose to use</td>
             <td>
-              Your consent (Art. 6(1)(a)), and explicit consent for health data (Art. 9(2)(a))
+              Consent (Art. 6(1)(a)), and explicit consent for health data (Art. 9(2)(a)), given by
+              the person the data is about or someone legally allowed to act for them
             </td>
           </tr>
           <tr>
@@ -136,7 +139,7 @@ defineOgImage('Default', {
             </td>
             <td>
               What you submit to the AI Calculator, including any photo, and the food name when the
-              app generates an icon for it.
+              app generates an icon for it. Google does not use it to train or improve its models.
             </td>
             <td>Only when you use the AI Calculator or save a food</td>
           </tr>
@@ -244,9 +247,14 @@ defineOgImage('Default', {
       can keep editing it. Ratings you give carry it too.
     </p>
     <p>
-      The ID is never shown in the app, but it is stored alongside the shared food and can be read
-      by other signed-in users. It also stays there after you delete your account, so the community
-      data keeps working.
+      The ID is not shown in the app, and other signed-in users have no way to connect it to your
+      name or email. After you delete your account it no longer points to a live account, though
+      temporary copies can remain in backups or provider logs for the periods described below.
+    </p>
+    <p>
+      If you would rather not leave a shared food behind, delete it from Own Food before deleting
+      your account: that removes the community entry as well. Ratings you gave on other people's
+      foods stay where they are.
     </p>
 
     <h2>Emails</h2>
@@ -266,10 +274,7 @@ defineOgImage('Default', {
       still exist during that period. Providers may hold their own residual copies in logs or
       deletion queues for the periods set out in their privacy policies.
     </p>
-    <p>
-      Shared foods and ratings stay, with the user ID attached to them, because other people may be
-      using them.
-    </p>
+    <p>Shared foods and ratings stay, because other people may be using them.</p>
 
     <h2>Your rights</h2>
     <p>Under the GDPR you can:</p>
@@ -301,8 +306,9 @@ defineOgImage('Default', {
 
     <h2>Children</h2>
     <p>
-      A parent or guardian can set up an account for a child. If you are not old enough to give data
-      protection consent yourself, they have to give it for you.
+      Account holders need to be at least 18. A parent or legal guardian can use their own account
+      to manage a child's PKU diet if they are legally allowed to provide the child's health
+      information. The health information in that account may therefore be about the child.
     </p>
 
     <h2>Security</h2>
