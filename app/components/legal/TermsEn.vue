@@ -8,9 +8,9 @@
     not run by a clinic or a healthcare provider. These terms apply when you use it.
   </p>
   <p>
-    Most of the app is free. An optional paid membership helps cover running costs and raises some
-    limits. Payments go through Ko-fi under their own terms. The app itself does not process
-    payments.
+    Most of the app is free. An optional paid subscription helps cover running costs and raises some
+    limits. Payments run through Ko-fi. You will find the subscription terms there at checkout. They
+    cover what is included, cancellation and refunds. The app itself does not process payments.
   </p>
 
   <h2>Who can use PKU Tools</h2>

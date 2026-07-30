@@ -9,9 +9,10 @@
     usas la aplicación.
   </p>
   <p>
-    La mayor parte de la aplicación es gratuita. Una membresía de pago opcional ayuda a cubrir los
-    costes de funcionamiento y amplía algunos límites. Los pagos se realizan a través de Ko-fi, con
-    sus propias condiciones. La aplicación en sí no procesa pagos.
+    La mayor parte de la aplicación es gratuita. Una suscripción de pago opcional ayuda a cubrir los
+    costes de funcionamiento y amplía algunos límites. Los pagos se realizan a través de Ko-fi. Allí
+    encontrarás las condiciones de la suscripción al contratarla. Cubren qué incluye, la cancelación
+    y los reembolsos. La aplicación en sí no procesa pagos.
   </p>
 
   <h2>Quién puede usar PKU Tools</h2>

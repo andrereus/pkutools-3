@@ -9,9 +9,10 @@
     Bedingungen gelten, wenn du die App nutzt.
   </p>
   <p>
-    Der größte Teil der App ist kostenlos. Eine freiwillige Mitgliedschaft hilft, die laufenden
-    Kosten zu decken, und erhöht einige Grenzen. Zahlungen laufen über Ko-fi zu deren Bedingungen.
-    Die App selbst wickelt keine Zahlungen ab.
+    Der größte Teil der App ist kostenlos. Ein optionales Abo hilft, die laufenden Kosten zu decken,
+    und erhöht einige Grenzen. Zahlungen laufen über Ko-fi. Die Bedingungen des Abos findest du dort
+    beim Abschluss. Sie regeln Leistung, Kündigung und Rückerstattung. Die App selbst wickelt keine
+    Zahlungen ab.
   </p>
 
   <h2>Wer PKU Tools nutzen darf</h2>

@@ -16,6 +16,9 @@ logs
 # Source data for the food database (large, freely downloadable, see scripts/bls-convert.py)
 data-src
 
+# Local working notes (kept out of the public repo)
+*.local.md
+
 # Misc
 .DS_Store
 .fleet

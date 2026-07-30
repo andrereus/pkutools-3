@@ -9,9 +9,10 @@
     s'appliquent lorsque tu utilises l'application.
   </p>
   <p>
-    L'essentiel de l'application est gratuit. Une adhésion payante facultative aide à couvrir les
-    frais de fonctionnement et relève certaines limites. Les paiements passent par Ko-fi, selon
-    leurs propres conditions. L'application elle-même ne traite aucun paiement.
+    L'essentiel de l'application est gratuit. Un abonnement payant facultatif aide à couvrir les
+    frais de fonctionnement et relève certaines limites. Les paiements passent par Ko-fi. Tu y
+    trouveras les conditions de l'abonnement au moment de la souscription. Elles couvrent ce qui est
+    inclus, la résiliation et les remboursements. L'application elle-même ne traite aucun paiement.
   </p>
 
   <h2>Qui peut utiliser PKU Tools</h2>
