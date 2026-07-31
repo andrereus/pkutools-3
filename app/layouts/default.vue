@@ -718,11 +718,13 @@ const handleCookieConsent = (consent) => {
     env(safe-area-inset-left);
 }
 
-/* Liquid Glass - Top navigation */
+/* Liquid Glass - Top and bottom navigation.
+   Keep -webkit-backdrop-filter before the standard property: the build minifier
+   collapses the pair to whichever comes last, and Chromium ignores the prefixed one. */
 .liquid-glass-top {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.42) 100%);
-  backdrop-filter: blur(24px) saturate(200%);
   -webkit-backdrop-filter: blur(24px) saturate(200%);
+  backdrop-filter: blur(24px) saturate(200%);
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.06),
     0 1px 2px rgba(0, 0, 0, 0.04);
@@ -738,8 +740,8 @@ const handleCookieConsent = (consent) => {
 /* Liquid Glass - Bottom navigation */
 .liquid-glass {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.42) 100%);
-  backdrop-filter: blur(24px) saturate(200%);
   -webkit-backdrop-filter: blur(24px) saturate(200%);
+  backdrop-filter: blur(24px) saturate(200%);
   border: 0.5px solid rgba(255, 255, 255, 0.6);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.08),
