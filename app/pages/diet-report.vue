@@ -19,7 +19,13 @@ import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
 import { LucideStickyNote, LucideEyeOff } from '@lucide/vue'
-import { scaleToWeight, nutrientRows, parseReference } from '../utils/nutrition'
+import {
+  scaleToWeight,
+  nutrientRows,
+  parseReference,
+  diaryProvenanceAfterEdit
+} from '../utils/nutrition'
+import { hasMaterialFoodChange } from '#shared/utils/material-food'
 
 const store = useStore()
 const { t, locale: i18nLocale } = useI18n()
@@ -731,7 +737,8 @@ const defaultLogItem = {
   nutrients: null,
   factor: null,
   source: null,
-  sourceId: null
+  sourceId: null,
+  addedFrom: null
 }
 
 const editedLogItem = ref({ ...defaultLogItem })
@@ -797,14 +804,18 @@ const logNutrientRows = computed(() =>
   nutrientRows(editedLogItem.value.nutrients, editedLogItem.value.weight, t)
 )
 
-// The reference the dialog was opened with. Editing it by hand makes the value
-// the user's own, so the provenance is rewritten on save (see saveLogEdit).
-const openedLogPheReference = ref(null)
+const logMaterialValues = (item) => ({
+  name: item.name,
+  phe: parseReference(item.pheReference),
+  kcal: parseReference(item.kcalReference),
+  nutrients: item.nutrients
+})
+const openedLogMaterialValues = ref(null)
 
 const editLogItem = (item, index) => {
   editedLogIndex.value = index
   editedLogItem.value = { ...item }
-  openedLogPheReference.value = parseReference(editedLogItem.value.pheReference)
+  openedLogMaterialValues.value = logMaterialValues(editedLogItem.value)
   showLogReferenceInputs.value = false
   logEmojiBasisName.value = editedLogItem.value.name || ''
   dialog2.value.openDialog()
@@ -832,7 +843,7 @@ const deleteLogItem = () => {
 const closeLogEdit = () => {
   dialog2.value.closeDialog()
   editedLogItem.value = { ...defaultLogItem }
-  openedLogPheReference.value = null
+  openedLogMaterialValues.value = null
   editedLogIndex.value = -1
   showLogReferenceInputs.value = false
   logEmojiBasisName.value = ''
@@ -843,7 +854,7 @@ const openAddLogItem = () => {
   // Reset log item state for adding new item
   editedLogIndex.value = -1
   editedLogItem.value = { ...defaultLogItem }
-  openedLogPheReference.value = null
+  openedLogMaterialValues.value = null
   // Blank add: the reference inputs are the entry form, so show them directly
   showLogReferenceInputs.value = true
   logEmojiBasisName.value = ''
@@ -856,20 +867,23 @@ const saveLogEdit = async () => {
     return
   }
 
-  // The reference can be edited by hand here. Once it is, the number is the
-  // user's own: it is no longer the database's value, and no longer the product
-  // of the stored factor. So the provenance is rewritten to 'manual' and the
-  // source id and factor are dropped, rather than left claiming an origin the
-  // value no longer has. The nutrients stay — they still describe the food.
   const pheReference = parseReference(editedLogItem.value.pheReference)
-  const referenceEdited = pheReference !== openedLogPheReference.value
+  const kcalReference = parseReference(editedLogItem.value.kcalReference)
+  const materialChange =
+    openedLogMaterialValues.value !== null &&
+    hasMaterialFoodChange(openedLogMaterialValues.value, {
+      name: editedLogItem.value.name,
+      phe: pheReference,
+      kcal: kcalReference,
+      nutrients: editedLogItem.value.nutrients
+    })
 
   let updatedItem = {
     name: editedLogItem.value.name,
     emoji: editedLogItem.value.emoji || null,
     icon: editedLogItem.value.icon || null,
     pheReference,
-    kcalReference: parseReference(editedLogItem.value.kcalReference),
+    kcalReference,
     weight: Number(editedLogItem.value.weight),
     phe: calculatePhe(),
     kcal: calculateKcal(),
@@ -880,9 +894,7 @@ const saveLogEdit = async () => {
     // Preserve the community food link so re-adds keep counting usage
     communityFoodKey: editedLogItem.value.communityFoodKey || null,
     nutrients: editedLogItem.value.nutrients || null,
-    factor: referenceEdited ? null : Number(editedLogItem.value.factor) || null,
-    source: referenceEdited ? 'manual' : editedLogItem.value.source || null,
-    sourceId: referenceEdited ? null : editedLogItem.value.sourceId || null
+    ...diaryProvenanceAfterEdit(editedLogItem.value, materialChange)
   }
 
   try {

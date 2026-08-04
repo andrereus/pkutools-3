@@ -131,7 +131,9 @@ export function createFakeDatabase(initial: Data = {}, failWrite?: WriteFailure)
     }
   }
 
-  return { data, db: { ref: (path: string) => makeRef(path) } }
+  // `ref()` with no path is the database root, which is how a route addresses a
+  // multi-location update (one write across several paths).
+  return { data, db: { ref: (path = '') => makeRef(path) } }
 }
 
 /**

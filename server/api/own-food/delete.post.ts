@@ -25,12 +25,29 @@ export default defineAuthedHandler(async ({ event, userId }) => {
 
   const ownFood = ownFoodSnapshot.val()
 
-  // If the food was shared, remove the community food entry (voterIds deleted automatically as child)
-  if (ownFood.shared && ownFood.communityKey) {
-    await db.ref(`communityFoods/${ownFood.communityKey}`).remove()
+  // The own food and its public copy are one logical record. Remove them with
+  // one multi-location update so a failed database write leaves both intact
+  // instead of deleting the community copy first and leaving a broken pointer
+  // behind.
+  const writes: Record<string, null> = {
+    [`${userId}/ownFood/${entryKey}`]: null
   }
 
-  await ownFoodRef.remove()
+  // The pointer is server-owned, but verify both sides before using it as a
+  // destructive target. This still cleans up a legacy record whose `shared`
+  // flag drifted while ensuring malformed data cannot delete another food.
+  if (typeof ownFood.communityKey === 'string' && ownFood.communityKey) {
+    const communityFoodSnapshot = await db
+      .ref(`communityFoods/${ownFood.communityKey}`)
+      .once('value')
+    const communityFood = communityFoodSnapshot.val()
+
+    if (communityFood?.contributorId === userId && communityFood?.ownFoodKey === entryKey) {
+      writes[`communityFoods/${ownFood.communityKey}`] = null
+    }
+  }
+
+  await db.ref().update(writes)
 
   return { success: true, key: entryKey }
 })

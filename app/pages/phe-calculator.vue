@@ -7,7 +7,8 @@ const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
-const { addFoodItemToDiary, saveOwnFood } = useApi()
+const { addFoodItemToDiary } = useApi()
+const { saveAlongsideDiary, reportSaved } = useSaveToOwnFood()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
 
 // Reactive state
@@ -23,11 +24,6 @@ const isSaving = ref(false)
 const saveToOwnFood = ref(false)
 const shareWithCommunity = ref(false)
 const note = ref(null)
-
-// Community sharing rides on the own-food entry, so it can't stay checked alone
-watch(saveToOwnFood, (value) => {
-  if (!value) shareWithCommunity.value = false
-})
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
@@ -111,37 +107,48 @@ const save = async () => {
 
   isSaving.value = true
 
+  // Reported together with the diary entry below, rather than as a failure of
+  // the whole save
+  let ownFoodOutcome = null
+
   // Use server API for all writes - validates with Zod
   try {
     logEntry = await ensureEmojiForLogEntry(logEntry)
 
-    // Own food only in exact-Phe mode (converted protein values are too
-    // imprecise to store as reference values). Saved before the diary entry so
-    // a failure (limit reached, community duplicate) aborts the whole save and
-    // retrying can't duplicate the diary entry.
-    if (select.value === 'phe' && saveToOwnFood.value) {
+    // In protein mode the stored reference is the converted value, the same
+    // number the diary entry is calculated from — what it was converted from
+    // travels with it, so the food stays self-explaining.
+    if (saveToOwnFood.value) {
+      // The note is whatever the field shows, so it can only ever describe the
+      // food in front of the user
       const entryNote = note.value && note.value.trim() !== '' ? note.value.trim() : null
       logEntry.note = entryNote
-      await saveOwnFood({
+      ownFoodOutcome = await saveAlongsideDiary({
         name: logEntry.name,
         icon: null,
         emoji: logEntry.emoji || null,
-        phe: Number(phe.value),
+        phe: pheReference.value,
         kcal: Number(kcalReference.value) || 0,
         note: entryNote,
         shared: shareWithCommunity.value,
-        source: 'manual'
+        source: 'manual',
+        ...(select.value !== 'phe' && {
+          nutrients: { protein: Number(protein.value) },
+          factor: factor.value
+        })
       })
-      // Uncheck so a retry after a failed diary write doesn't save it twice
-      saveToOwnFood.value = false
-      shareWithCommunity.value = false
+      if (!ownFoodOutcome.failure) {
+        // Uncheck so a retry after a failed diary write doesn't save it twice
+        saveToOwnFood.value = false
+        shareWithCommunity.value = false
+      }
     }
 
     await addFoodItemToDiary({
       date: selectedDate.value,
       ...logEntry
     })
-    notifications.success(t('common.saved'))
+    reportSaved(ownFoodOutcome)
     // Navigate after successful save
     navigateTo(localePath('diary'))
   } catch (error) {
@@ -280,61 +287,13 @@ defineOgImage('Default', {
       <span class="flex-1 ml-1 text-lg">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
     </div>
 
-    <div v-if="userIsAuthenticated && select === 'phe'" class="mb-6">
-      <div class="flex items-start">
-        <div class="flex h-6 items-center">
-          <input
-            id="save-own-food"
-            v-model="saveToOwnFood"
-            name="save-own-food"
-            type="checkbox"
-            class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
-          />
-        </div>
-        <div class="ml-3 text-sm leading-6">
-          <label for="save-own-food" class="font-medium text-gray-900 dark:text-gray-300">
-            {{ $t('phe-calculator.save-to-own-food') }}
-          </label>
-        </div>
-      </div>
-      <div v-if="saveToOwnFood" class="mt-3">
-        <label
-          for="note"
-          class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
-          >{{ $t('diary.note') }}</label
-        >
-        <div class="mt-1">
-          <textarea
-            id="note"
-            v-model="note"
-            v-auto-grow
-            name="note"
-            rows="1"
-            :placeholder="$t('diary.note-placeholder')"
-            class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
-          />
-        </div>
-      </div>
-      <div v-if="saveToOwnFood" class="mt-3 flex items-start">
-        <div class="flex h-6 items-center">
-          <input
-            id="share-community"
-            v-model="shareWithCommunity"
-            name="share-community"
-            type="checkbox"
-            class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
-          />
-        </div>
-        <div class="ml-3 text-sm leading-6">
-          <label for="share-community" class="font-medium text-gray-900 dark:text-gray-300">
-            {{ $t('community.share') }}
-          </label>
-          <p class="text-gray-500 dark:text-gray-400">
-            {{ $t('community.shareLanguage', { language: $t('app.language-name') }) }}
-          </p>
-        </div>
-      </div>
-    </div>
+    <SaveToOwnFood
+      v-if="userIsAuthenticated"
+      v-model="saveToOwnFood"
+      v-model:note="note"
+      v-model:shared="shareWithCommunity"
+      :hint="select === 'phe' ? null : $t('phe-calculator.check-mode')"
+    />
 
     <PrimaryButton
       v-if="userIsAuthenticated"

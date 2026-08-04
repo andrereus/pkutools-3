@@ -2,6 +2,7 @@ import { getAdminDatabase } from '../../../utils/firebase-admin'
 import { UpdateFoodItemSchema } from '../../../types/schemas'
 import { defineAuthedHandler } from '../../../utils/handler'
 import { validateBody } from '../../../utils/validation'
+import { applyDiaryEditProvenance } from '../../../utils/food-provenance'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const key = getRouterParam(event, 'key')
@@ -41,8 +42,9 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   // without createdAt stay without one.
   const now = Date.now()
   const updatedLog = [...log]
+  const entryWithProvenance = applyDiaryEditProvenance(log[logIndex], entry)
   updatedLog[logIndex] = {
-    ...entry,
+    ...entryWithProvenance,
     ...(log[logIndex].createdAt != null && { createdAt: log[logIndex].createdAt }),
     updatedAt: now
   }

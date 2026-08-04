@@ -43,10 +43,17 @@ const NutrientsSchema = z.object({
   salt: numeric(z.number().nonnegative('Salt must be non-negative').nullable().optional())
 })
 
-// Where a food's values came from. This is what decides later whether an entry
-// may be re-shared with the community: 'manual', 'ai-label' and 'barcode' are
-// the user's own calculation, while the food-search origins are already
-// searchable for everyone and 'ai-estimate' is a guess, so neither is reshared.
+// Where a food's values originally came from, kept whatever the entry passes
+// through afterwards. This is what decides whether an entry may be
+// shared with the community: 'manual', 'ai-label' and 'barcode' are the user's
+// own calculation, while the food-search origins are already searchable for
+// everyone and 'ai-estimate' is a guess, so neither is reshared. The rule lives
+// in utils/community-food.ts (SHAREABLE_FOOD_SOURCES), mirrored client-side.
+//
+// 'own-food' and 'community' are not value origins — a food picked from either
+// list has values that came from somewhere else, which is what `addedFrom`
+// below is for. They stay in the enum because diary entries written before that
+// split carry them here, and every edit revalidates the whole entry.
 export const FoodSourceSchema = z.enum([
   'bls',
   'usda',
@@ -58,12 +65,23 @@ export const FoodSourceSchema = z.enum([
   'manual'
 ])
 
-// Provenance carried by diary entries and own foods alike. All optional, so
-// records written before this existed stay valid.
+// Which collection a diary entry was taken from, when that is not where its
+// values came from. Kept apart from `source` so picking a food out of a list
+// never overwrites what the numbers actually came from: a scanned product saved
+// to Own Food and logged from there a week later is still `source: 'barcode'`
+// with its barcode, and `addedFrom: 'own-food'` on top. Null for an entry a
+// tool wrote directly, where `source` already says how it was added.
+export const AddedFromSchema = z.enum(['own-food', 'community'])
+
+// Provenance carried by diary entries and own foods alike. `source`, sourceId
+// and factor describe the original values and are not rewritten by later
+// edits. `materiallyEdited` records that the current snapshot has diverged in
+// name or nutritional content. All are optional, so legacy records stay valid.
 const provenanceFields = {
   nutrients: NutrientsSchema.nullable().optional(),
-  // mg Phe per g protein (27/35/46/50), set only when Phe was derived from
-  // protein rather than read directly
+  // Original mg Phe per g protein (27/35/46/50), set when Phe was initially
+  // derived from protein. If materiallyEdited is true it remains provenance,
+  // not necessarily a formula for the current Phe value.
   factor: numeric(
     z
       .number()
@@ -73,9 +91,10 @@ const provenanceFields = {
       .optional()
   ),
   source: FoodSourceSchema.nullable().optional(),
-  // Identifier in the source database (barcode, BLS id, USDA id); absent where
-  // the source has no stable id of its own
-  sourceId: z.string().max(64, 'Source id is too long').nullable().optional()
+  // Identifier of the food within `source` — a barcode, a BLS id, a USDA id.
+  // Absent where the source has no stable id of its own.
+  sourceId: z.string().max(64, 'Source id is too long').nullable().optional(),
+  materiallyEdited: z.boolean().optional()
 }
 
 // Diary entry schema
@@ -97,6 +116,9 @@ export const DiaryEntrySchema = z.object({
   note: z.string().max(500, 'Note is too long').nullable().optional(),
   communityFoodKey: z.string().nullable().optional(), // Optional: tracks which community food was used (stored in diary entry)
   ...provenanceFields,
+  // Only diary entries are added from somewhere: an own food and a community
+  // food are the collections, not entries in one
+  addedFrom: AddedFromSchema.nullable().optional(),
   ...timestampFields
 })
 
@@ -148,6 +170,11 @@ export const OwnFoodSaveSchema = OwnFoodSchema.extend({
 //   phe            number >= 0
 //   kcal           number >= 0
 //   note           string (<= 500) | null
+//   source         FoodSource | null            (how the values were arrived at)
+//   sourceId       string | null                (barcode, where there is one)
+//   factor         number | null                (original protein conversion)
+//   nutrients      Nutrients | null
+//   materiallyEdited boolean?                   (true after a material edit)
 //   language       'en' | 'de' | 'es' | 'fr'   (server-computed)
 //   contributorId  string                       (verified userId)
 //   ownFoodKey     string                       (server push key)
@@ -212,10 +239,22 @@ export const LabValueUpdateSchema = z.object({
 // ============================================================================
 
 // Update own food request schema
+// Original provenance is immutable on an update. Nutrients are editable food
+// content; the route compares them with the stored record and derives the
+// monotonic materiallyEdited flag itself.
+const OwnFoodEditableSchema = OwnFoodSchema.omit({
+  factor: true,
+  source: true,
+  sourceId: true,
+  materiallyEdited: true,
+  createdAt: true,
+  updatedAt: true
+})
+
 export const OwnFoodUpdateSchema = z.object({
   entryKey: z.string().min(1, 'Entry key is required'),
   locale: z.enum(['en', 'de', 'es', 'fr']).optional(), // Optional locale from frontend
-  data: OwnFoodSchema
+  data: OwnFoodEditableSchema
 })
 
 // ============================================================================

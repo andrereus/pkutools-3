@@ -7,7 +7,8 @@ import {
   formatNutrient,
   nutrientRows,
   isReported,
-  parseReference
+  parseReference,
+  diaryProvenanceAfterEdit
 } from '../app/utils/nutrition'
 
 // These rules were duplicated across every page that calculates or displays a
@@ -111,6 +112,44 @@ describe('parseReference', () => {
     expect(parseReference('780')).toBe(parseReference(780))
     expect(parseReference(0)).toBe(parseReference('0'))
     expect(parseReference(null)).toBe(parseReference(''))
+  })
+})
+
+describe('diaryProvenanceAfterEdit', () => {
+  const provenance = {
+    source: 'barcode',
+    sourceId: '4009233001234',
+    factor: '50',
+    addedFrom: 'own-food'
+  }
+
+  it('preserves both value origin and collection on an ordinary edit', () => {
+    expect(diaryProvenanceAfterEdit(provenance, false)).toEqual({
+      source: 'barcode',
+      sourceId: '4009233001234',
+      factor: 50,
+      addedFrom: 'own-food'
+    })
+  })
+
+  it('keeps original provenance and records a material edit', () => {
+    expect(diaryProvenanceAfterEdit(provenance, true)).toEqual({
+      source: 'barcode',
+      sourceId: '4009233001234',
+      factor: 50,
+      addedFrom: 'own-food',
+      materiallyEdited: true
+    })
+  })
+
+  it('never resets an existing material edit', () => {
+    expect(diaryProvenanceAfterEdit({ ...provenance, materiallyEdited: true }, false)).toEqual({
+      source: 'barcode',
+      sourceId: '4009233001234',
+      factor: 50,
+      addedFrom: 'own-food',
+      materiallyEdited: true
+    })
   })
 })
 

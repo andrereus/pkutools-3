@@ -2,6 +2,7 @@ import { getAdminDatabase } from '../../../utils/firebase-admin'
 import { UpdateDaySchema } from '../../../types/schemas'
 import { defineAuthedHandler } from '../../../utils/handler'
 import { validateBody } from '../../../utils/validation'
+import { applyDiaryEditProvenance } from '../../../utils/food-provenance'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const key = getRouterParam(event, 'key')
@@ -73,10 +74,28 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   // the stored log. Writing back a total the client happens to be holding could
   // otherwise overwrite a day whose items it has not seen.
   if (log !== undefined) {
-    const hasItems = log.length > 0
-    updateData.log = log
-    updateData.phe = hasItems ? log.reduce((sum, item) => sum + (item.phe || 0), 0) : phe
-    updateData.kcal = hasItems ? log.reduce((sum, item) => sum + (item.kcal || 0), 0) : kcal
+    const existingLog = (existingDiaryEntry.log || []) as Array<Record<string, unknown>>
+    const existingByCreatedAt = new Map(
+      existingLog
+        .filter((item) => item.createdAt != null)
+        .map((item) => [item.createdAt, item] as const)
+    )
+    const updatedLog = log.map((item, index) => {
+      const existingItem =
+        (item.createdAt != null ? existingByCreatedAt.get(item.createdAt) : undefined) ||
+        // Legacy log items have no stable id. Index is the best available
+        // fallback; current entries use createdAt and survive insertions/deletes.
+        (existingLog.length === log.length ? existingLog[index] : undefined)
+      return existingItem ? applyDiaryEditProvenance(existingItem, item) : item
+    })
+    const hasItems = updatedLog.length > 0
+    updateData.log = updatedLog
+    updateData.phe = hasItems
+      ? updatedLog.reduce((sum, item) => sum + (Number(item.phe) || 0), 0)
+      : phe
+    updateData.kcal = hasItems
+      ? updatedLog.reduce((sum, item) => sum + (Number(item.kcal) || 0), 0)
+      : kcal
   }
   // If log is not provided, don't update log (preserve existing log structure)
 

@@ -11,16 +11,25 @@ export interface FoodNutrients {
   salt?: number | null
 }
 
-// Data origin, mirroring FoodSourceSchema on the server
+// Where the values originally came from, mirroring FoodSourceSchema on the server.
+// 'own-food' and 'community' are legacy values here — a food picked from either
+// list keeps the origin of its values and records the list in `addedFrom`.
 export type FoodSource =
   'bls' | 'usda' | 'own-food' | 'community' | 'barcode' | 'ai-estimate' | 'ai-label' | 'manual'
+
+// Which collection a diary entry was taken from, when that is not its values'
+// origin
+export type AddedFrom = 'own-food' | 'community'
 
 // Carried by diary entries and own foods alike
 interface Provenance {
   nutrients?: FoodNutrients | null
-  factor?: number | null // mg Phe per g protein, only when Phe came from protein
+  // Original calculation metadata. A material edit can make it historical
+  // rather than a formula for the current Phe value.
+  factor?: number | null
   source?: FoodSource | null
-  sourceId?: string | null // barcode / BLS id / USDA id
+  sourceId?: string | null // barcode / BLS id / USDA id, within `source`
+  materiallyEdited?: boolean
 }
 
 export const useApi = () => {
@@ -42,11 +51,17 @@ export const useApi = () => {
 
   // Authenticated $fetch: attaches the bearer token and routes failures through
   // the shared error handler. Body is omitted entirely when undefined (DELETEs).
+  //
+  // `silent` leaves the reporting to the caller. It is for the requests whose
+  // failure is only part of an outcome — an own food that couldn't be saved
+  // next to a diary entry that could — where the handler's own notification
+  // would be replaced moments later by the one that tells the whole story.
   const request = async <T>(
     url: string,
     label: string,
     method: 'POST' | 'PUT' | 'DELETE',
-    body?: unknown
+    body?: unknown,
+    options?: { silent?: boolean }
   ): Promise<T> => {
     try {
       const token = await getAuthToken()
@@ -58,7 +73,7 @@ export const useApi = () => {
         ...(body !== undefined ? { body } : {})
       })) as T
     } catch (error: unknown) {
-      errorHandler.handleError(error, label)
+      if (!options?.silent) errorHandler.handleError(error, label)
       throw error
     }
   }
@@ -88,6 +103,7 @@ export const useApi = () => {
       phe: number
       kcal: number
       note?: string | null
+      addedFrom?: AddedFrom | null // Set when the entry was picked from a list
       communityFoodKey?: string | null // Optional: tracks usage count and stored in diary entry
       createdAt?: number // Only for undo-restore: preserves the original timestamps
       updatedAt?: number
@@ -124,6 +140,7 @@ export const useApi = () => {
       phe: number
       kcal: number
       note?: string | null
+      addedFrom?: AddedFrom | null
     }
   }): Promise<{ success: boolean; key?: string }> =>
     request(`/api/diary/food-items/${data.entryKey}`, 'Update food item in diary', 'PUT', {
@@ -190,20 +207,36 @@ export const useApi = () => {
       shared?: boolean
       createdAt?: number // Only for undo-restore: preserves the original timestamps
       updatedAt?: number
-    }
-  ): Promise<{ success: boolean; key?: string; communityKey?: string }> =>
-    request('/api/own-food/save', 'Save own food', 'POST', { ...data, locale: locale.value })
+    },
+    options?: { silent?: boolean }
+  ): Promise<{
+    success: boolean
+    key?: string
+    communityKey?: string
+    // Set when the food was recognised by its source id (a rescanned product):
+    // the stored entry is returned untouched and nothing was written
+    alreadyExists?: boolean
+  }> =>
+    request(
+      '/api/own-food/save',
+      'Save own food',
+      'POST',
+      { ...data, locale: locale.value },
+      options
+    )
 
-  const updateOwnFood = (data: {
-    entryKey: string
-    name: string
-    icon?: string | null
-    emoji?: string | null
-    phe: number
-    kcal: number
-    note?: string | null
-    shared?: boolean
-  }): Promise<{ success: boolean; key?: string; communityKey?: string | null }> =>
+  const updateOwnFood = (
+    data: Pick<Provenance, 'nutrients'> & {
+      entryKey: string
+      name: string
+      icon?: string | null
+      emoji?: string | null
+      phe: number
+      kcal: number
+      note?: string | null
+      shared?: boolean
+    }
+  ): Promise<{ success: boolean; key?: string; communityKey?: string | null }> =>
     request('/api/own-food/update', 'Update own food', 'POST', {
       entryKey: data.entryKey,
       locale: locale.value,
@@ -214,7 +247,11 @@ export const useApi = () => {
         phe: data.phe,
         note: data.note,
         kcal: data.kcal,
-        shared: data.shared
+        shared: data.shared,
+        // Nutrients are editable content. Original provenance and the material
+        // edit flag are preserved/derived by the server and cannot be reset by
+        // a stale client.
+        ...(data.nutrients !== undefined && { nutrients: data.nutrients })
       }
     })
 

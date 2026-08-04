@@ -40,6 +40,26 @@ export const isReported = (value: unknown): boolean => {
 export const parseReference = (value: unknown): number | null =>
   isReported(value) ? Number(value) : null
 
+interface DiaryProvenance {
+  factor?: unknown
+  source?: string | null
+  sourceId?: string | null
+  addedFrom?: string | null
+  materiallyEdited?: boolean
+}
+
+// A diary item is a snapshot: edits do not erase its original value source or
+// the collection it was selected from. The flag is monotonic, because after a
+// manual change we cannot prove that typing an old-looking value restored the
+// source verbatim. The server independently enforces the same rule on updates.
+export const diaryProvenanceAfterEdit = (item: DiaryProvenance, materialChange: boolean) => ({
+  factor: Number(item.factor) || null,
+  source: item.source || null,
+  sourceId: item.sourceId || null,
+  addedFrom: item.addedFrom || null,
+  ...((item.materiallyEdited === true || materialChange) && { materiallyEdited: true })
+})
+
 // Round half up, on the decimal value rather than on its binary approximation.
 // 33.3 × 1500 / 100 is 499.49999999999994 in binary, so a plain Math.round
 // sends it to 499 where the exact result is 499.5 → 500. Trimming to 12

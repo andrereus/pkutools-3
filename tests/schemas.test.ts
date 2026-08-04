@@ -266,6 +266,64 @@ describe('DiaryEntrySchema provenance', () => {
     expect(result).toMatchObject({ factor: 50, source: 'manual' })
     expect(result.nutrients).toEqual({ protein: 8.4 })
   })
+
+  // `source` is where the values came from, `addedFrom` which list the entry
+  // was picked out of. Keeping them apart is what stops a food logged from Own
+  // Food a week after it was scanned from losing the barcode it was read off.
+  it('records the values origin and the list separately', () => {
+    const result = DiaryEntrySchema.parse({
+      ...validEntry,
+      source: 'barcode',
+      sourceId: '4009233001234',
+      addedFrom: 'own-food'
+    })
+    expect(result).toMatchObject({
+      source: 'barcode',
+      sourceId: '4009233001234',
+      addedFrom: 'own-food'
+    })
+  })
+
+  it('accepts an optional material-edit flag and rejects non-booleans', () => {
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, materiallyEdited: true }).success).toBe(true)
+    expect(OwnFoodSchema.safeParse({ ...validEntry, materiallyEdited: false }).success).toBe(true)
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, materiallyEdited: 'true' }).success).toBe(
+      false
+    )
+  })
+
+  it('accepts only a collection as addedFrom', () => {
+    const withAddedFrom = (addedFrom: unknown) =>
+      DiaryEntrySchema.safeParse({ ...validEntry, addedFrom }).success
+
+    expect(withAddedFrom('community')).toBe(true)
+    expect(withAddedFrom(null)).toBe(true)
+    expect(withAddedFrom(undefined)).toBe(true)
+    // A value origin is not a collection
+    expect(withAddedFrom('barcode')).toBe(false)
+    expect(withAddedFrom('bls')).toBe(false)
+    expect(withAddedFrom('')).toBe(false)
+  })
+
+  // Entries written before the split carry the list in `source`, and the diary
+  // revalidates the whole entry on every edit — so those values have to stay
+  // parseable even though nothing writes them anymore.
+  it('still accepts a legacy entry whose source is the list it came from', () => {
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, source: 'own-food' }).success).toBe(true)
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, source: 'community' }).success).toBe(true)
+  })
+
+  // Own foods and community foods are the collections; nothing adds them from
+  // one, so the field is not part of their shape.
+  it('leaves addedFrom off an own food', () => {
+    const result = OwnFoodSchema.parse({
+      name: 'Protein shake',
+      phe: 420,
+      kcal: 120,
+      addedFrom: 'own-food'
+    })
+    expect(result).not.toHaveProperty('addedFrom')
+  })
 })
 
 describe('LabValueSchema', () => {
@@ -347,6 +405,26 @@ describe('OwnFoodSchema', () => {
     expect(OwnFoodUpdateSchema.safeParse({ entryKey: '-Nabc', data }).success).toBe(true)
     expect(OwnFoodUpdateSchema.safeParse({ entryKey: '', data }).success).toBe(false)
     expect(OwnFoodUpdateSchema.safeParse({ data }).success).toBe(false)
+  })
+
+  it('strips attempts to rewrite original provenance on update', () => {
+    const result = OwnFoodUpdateSchema.parse({
+      entryKey: '-Nabc',
+      data: {
+        name: 'My shake',
+        phe: 12,
+        kcal: 90,
+        source: 'manual',
+        sourceId: null,
+        factor: null,
+        materiallyEdited: false
+      }
+    })
+
+    expect(result.data).not.toHaveProperty('source')
+    expect(result.data).not.toHaveProperty('sourceId')
+    expect(result.data).not.toHaveProperty('factor')
+    expect(result.data).not.toHaveProperty('materiallyEdited')
   })
 })
 

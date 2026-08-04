@@ -19,6 +19,7 @@ const localePath = useLocalePath()
 const notifications = useNotifications()
 const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary } = useApi()
+const { saveAlongsideDiary, reportSaved } = useSaveToOwnFood()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
 
 const signInGoogle = async () => {
@@ -51,6 +52,16 @@ const correctionHint = ref('')
 // Result state
 const result = ref(null) // { name, emoji, phePer100g, proteinPer100g, kcalPer100g, weightInGrams, explanation, nutrients }
 const weight = ref(null)
+const saveToOwnFood = ref(false)
+const shareWithCommunity = ref(false)
+const ownFoodNote = ref(null)
+
+// A new estimate or label is a new food, so the own-food option starts over
+const resetOwnFoodOption = () => {
+  saveToOwnFood.value = false
+  shareWithCommunity.value = false
+  ownFoodNote.value = null
+}
 
 // Constants
 const ESTIMATE_MODEL = 'gemini-3.5-flash'
@@ -81,6 +92,11 @@ const remainingEstimates = computed(() => {
 const isBusy = computed(() => isEstimating.value || isReadingLabel.value)
 
 const isLabelResult = computed(() => result.value?.source === 'label')
+
+// A read label is a calculation from printed values, so it can be shared. An
+// estimate is a guess and stays in the user's own foods (see
+// SHAREABLE_FOOD_SOURCES) — the option is not offered for it at all.
+const canShareResult = computed(() => isLabelResult.value)
 
 const labelFoodTypes = computed(() => [
   { title: t('phe-calculator.other'), value: 'other' },
@@ -303,6 +319,7 @@ const estimateFoodValues = async () => {
   isEstimating.value = true
   const previousResult = result.value
   result.value = null
+  resetOwnFoodOption()
 
   try {
     const hasText = description.value && description.value.trim() !== ''
@@ -404,6 +421,7 @@ const readLabel = async () => {
 
   isReadingLabel.value = true
   result.value = null
+  resetOwnFoodOption()
 
   try {
     const model = await requestAiModel()
@@ -532,14 +550,45 @@ const save = async () => {
 
   isSaving.value = true
 
+  // Reported together with the diary entry below, rather than as a failure of
+  // the whole save
+  let ownFoodOutcome = null
+
   try {
     logEntry = await ensureEmojiForLogEntry(logEntry)
+
+    // The own food stores the same reference the diary entry is calculated
+    // from, with the same provenance.
+    if (saveToOwnFood.value) {
+      // Only the own food gets this note. The diary entry keeps the model's
+      // explanation of how it arrived at these values, which is what makes the
+      // entry readable later; it can still be edited there.
+      const entryNote =
+        ownFoodNote.value && ownFoodNote.value.trim() !== '' ? ownFoodNote.value.trim() : null
+      ownFoodOutcome = await saveAlongsideDiary({
+        name: logEntry.name,
+        icon: null,
+        emoji: logEntry.emoji || null,
+        phe: logEntry.pheReference,
+        kcal: logEntry.kcalReference,
+        note: entryNote,
+        shared: canShareResult.value && shareWithCommunity.value,
+        source: logEntry.source,
+        ...(logEntry.nutrients && { nutrients: logEntry.nutrients }),
+        ...(logEntry.factor && { factor: logEntry.factor })
+      })
+      if (!ownFoodOutcome.failure) {
+        // Uncheck so a retry after a failed diary write doesn't save it twice
+        saveToOwnFood.value = false
+        shareWithCommunity.value = false
+      }
+    }
 
     await addFoodItemToDiary({
       date: selectedDate.value,
       ...logEntry
     })
-    notifications.success(t('common.saved'))
+    reportSaved(ownFoodOutcome)
     navigateTo(localePath('diary'))
   } catch (error) {
     console.error('Save error:', error)
@@ -867,6 +916,14 @@ defineOgImage('Default', {
           <span>{{ row.value }} g</span>
         </div>
       </div>
+
+      <SaveToOwnFood
+        v-model="saveToOwnFood"
+        v-model:note="ownFoodNote"
+        v-model:shared="shareWithCommunity"
+        :can-share="canShareResult"
+        :hint="isLabelResult && result.phePer100g === null ? $t('common.check-food-type') : null"
+      />
 
       <PrimaryButton
         :text="$t('common.add')"

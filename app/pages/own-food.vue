@@ -16,6 +16,8 @@ import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
 import { LucideStickyNote, LucideUsers, LucideThumbsUp, LucideThumbsDown } from '@lucide/vue'
 import { scaleToWeight } from '../utils/nutrition'
+import { isShareableSource } from '../utils/community-food'
+import { hasMaterialFoodChange } from '#shared/utils/material-food'
 
 const store = useStore()
 const { t } = useI18n()
@@ -69,6 +71,11 @@ const editedCommunityFood = computed(() => {
 const formTitle = computed(() => {
   return editedIndex.value === -1 ? t('common.add') : t('common.edit')
 })
+
+// An AI estimate is a guess, so it is never offered to the community — not from
+// the tool that produced it and not from this form either. Foods entered here
+// carry no source yet at that point, which counts as shareable.
+const canShareEditedItem = computed(() => isShareableSource(editedItem.value.source))
 
 const filteredOwnFood = computed(() => {
   if (!search.value.trim()) {
@@ -280,7 +287,8 @@ const deleteItem = async () => {
             nutrients: deletedItem.nutrients || null,
             factor: deletedItem.factor ?? null,
             source: deletedItem.source || null,
-            sourceId: deletedItem.sourceId || null
+            sourceId: deletedItem.sourceId || null,
+            ...(deletedItem.materiallyEdited === true && { materiallyEdited: true })
           })
         } catch (error) {
           console.error('Undo error:', error)
@@ -338,14 +346,20 @@ const save = async () => {
   const wasShared = originalFood?.shared === true
   const isUnsharing = wasShared && !entryShared
 
+  // Name and nutritional content are the identity people endorse in Community.
+  // The server repeats this comparison and derives the persistent edit flag;
+  // this client copy is only for the pre-save vote-reset warning.
+  const materialChange =
+    !!originalFood &&
+    hasMaterialFoodChange(originalFood, {
+      name: entryName,
+      phe: entryPhe,
+      kcal: entryKcal,
+      nutrients: originalFood.nutrients
+    })
+
   // Check if name, phe or kcal changed on a shared food (will reset votes)
-  const willResetVotes =
-    wasShared &&
-    entryShared &&
-    originalFood &&
-    (originalFood.name !== entryName ||
-      originalFood.phe !== entryPhe ||
-      originalFood.kcal !== entryKcal)
+  const willResetVotes = wasShared && entryShared && materialChange
 
   // Confirmation flows close the modal first so the confirmation dialog
   // appears on top. Otherwise the modal stays open during the save so API
@@ -497,10 +511,16 @@ const add = async () => {
       editedItem.value.note && editedItem.value.note.trim() !== ''
         ? editedItem.value.note.trim()
         : null,
-    source: 'own-food',
+    // The entry keeps where the food's values came from — a barcode, a label, a
+    // hand-entered number — and records separately that it was added from here.
+    // Legacy foods have no stored origin, which stays null rather than becoming
+    // a claim.
+    source: editedItem.value.source || null,
+    addedFrom: 'own-food',
     nutrients: editedItem.value.nutrients || null,
     factor: editedItem.value.factor ?? null,
-    sourceId: editedItem.value.sourceId || null
+    sourceId: editedItem.value.sourceId || null,
+    ...(editedItem.value.materiallyEdited === true && { materiallyEdited: true })
   }
 
   isSaving.value = true
@@ -801,7 +821,10 @@ defineOgImage('Default', {
           />
         </div>
         <!-- Share with community -->
-        <div class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+        <div
+          v-if="canShareEditedItem"
+          class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4"
+        >
           <div class="flex items-start">
             <div class="flex h-6 items-center">
               <input
@@ -841,6 +864,14 @@ defineOgImage('Default', {
             </span>
           </div>
         </div>
+
+        <!-- Why the option above is missing for this food -->
+        <p
+          v-else
+          class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 text-sm text-gray-500 dark:text-gray-400"
+        >
+          {{ $t('community.notShareable') }}
+        </p>
       </ModalDialog>
 
       <SecondaryButton v-if="license" :text="$t('common.export')" @click="exportOwnFood" />
@@ -883,7 +914,7 @@ defineOgImage('Default', {
 
         <!-- Share with community CTA when not shared (where metrics would be) - opens edit form like Edit button -->
         <div
-          v-if="!editedItem.shared"
+          v-if="!editedItem.shared && canShareEditedItem"
           class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
         >
           <button

@@ -3,7 +3,8 @@ import { OwnFoodSaveSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { checkPremiumStatus } from '../../utils/license'
-import { isCommunityFoodHidden } from '../../utils/community-food'
+import { isCommunityFoodHidden, isShareableSource } from '../../utils/community-food'
+import { storedNumberEquals } from '../../utils/numeric'
 import type { H3Event } from 'h3'
 
 // Helper to get user's language from request body or Accept-Language header (fallback)
@@ -52,7 +53,10 @@ async function checkDuplicateCommunityFood(
     const score = (existing.likes || 0) - (existing.dislikes || 0)
     if (isCommunityFoodHidden(score)) continue
     // Duplicate = same name (case-insensitive) AND exact same phe value
-    if (normalizeString(existing.name) === normalizedName && existing.phe === phe) {
+    if (
+      normalizeString(existing.name) === normalizedName &&
+      storedNumberEquals(existing.phe, phe)
+    ) {
       return true
     }
   }
@@ -62,6 +66,18 @@ async function checkDuplicateCommunityFood(
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { locale, ...foodData } = await validateBody(event, OwnFoodSaveSchema)
 
+  // Where the values came from decides whether they may be published. The tools
+  // that can't share hide the option, so this is the backstop rather than a
+  // message a user normally runs into. Checked before anything is written, so a
+  // rejected share leaves no own food behind either.
+  if (foodData.shared && !isShareableSource(foodData.source)) {
+    throw createError({
+      statusCode: 400,
+      message: 'These values may not be shared with the community',
+      data: { code: 'source-not-shareable' }
+    })
+  }
+
   const db = getAdminDatabase()
   const isPremium = await checkPremiumStatus(userId)
   const ownFoodRef = db.ref(`/${userId}/ownFood`)
@@ -69,15 +85,42 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   const ownFoodSnapshot = await ownFoodRef.once('value')
   const existingFoods = ownFoodSnapshot.val() as Record<
     string,
-    { name: string; phe: number; shared?: boolean }
+    {
+      name: string
+      phe: number
+      shared?: boolean
+      source?: string | null
+      sourceId?: string | null
+    }
   > | null
+
+  // Scanning the same product twice is a normal thing to do — the second scan
+  // is the same food, not a new one. Where the source identifies the product
+  // (a barcode), that is answered here rather than by a 409 the user has to
+  // interpret: the existing entry is reported back untouched, and the caller
+  // logs the diary entry it was really after. Values that moved on since (Open
+  // Food Facts is edited by its users) are deliberately not written over the
+  // entry the user already has — editing it is theirs to do.
+  if (existingFoods && foodData.source && foodData.sourceId) {
+    const existing = Object.entries(existingFoods).find(
+      ([, food]) => food.source === foodData.source && food.sourceId === foodData.sourceId
+    )
+    if (existing) {
+      return {
+        success: true,
+        key: existing[0],
+        alreadyExists: true
+      }
+    }
+  }
 
   // Duplicate = same name (case-insensitive) AND exact same phe value,
   // mirroring the community duplicate rule
   if (existingFoods) {
     const normalizedName = normalizeString(foodData.name)
     const isDuplicate = Object.values(existingFoods).some(
-      (food) => normalizeString(food.name) === normalizedName && food.phe === foodData.phe
+      (food) =>
+        normalizeString(food.name) === normalizedName && storedNumberEquals(food.phe, foodData.phe)
     )
     if (isDuplicate) {
       throw createError({
@@ -134,6 +177,14 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       phe: foodData.phe,
       kcal: foodData.kcal,
       note: foodData.note || null,
+      // Provenance travels with the published copy: it is what tells everyone
+      // else in food search how the values were arrived at, and it carries the
+      // nutrients the contributor's food has beyond Phe and kcal.
+      source: foodData.source || null,
+      sourceId: foodData.sourceId || null,
+      factor: foodData.factor ?? null,
+      nutrients: foodData.nutrients || null,
+      ...(foodData.materiallyEdited === true && { materiallyEdited: true }),
       language,
       contributorId: userId,
       ownFoodKey,

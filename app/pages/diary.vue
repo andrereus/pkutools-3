@@ -12,7 +12,13 @@ import {
   LucidePlus,
   LucideMinus
 } from '@lucide/vue'
-import { scaleToWeight, nutrientRows, parseReference } from '../utils/nutrition'
+import {
+  scaleToWeight,
+  nutrientRows,
+  parseReference,
+  diaryProvenanceAfterEdit
+} from '../utils/nutrition'
+import { hasMaterialFoodChange } from '#shared/utils/material-food'
 
 const store = useStore()
 const { t, locale } = useI18n()
@@ -60,7 +66,8 @@ const defaultItem = {
   nutrients: null,
   factor: null,
   source: null,
-  sourceId: null
+  sourceId: null,
+  addedFrom: null
 }
 
 const editedItem = ref({ ...defaultItem })
@@ -384,14 +391,20 @@ const entryNutrientRows = computed(() =>
   nutrientRows(editedItem.value.nutrients, editedItem.value.weight, t)
 )
 
-// The reference the dialog was opened with. Editing it by hand makes the value
-// the user's own, so the provenance is rewritten on save (see below).
-const openedPheReference = ref(null)
+// Material edits are measured against the snapshot that opened the dialog.
+// Weight, notes and presentation fields are deliberately outside this shape.
+const materialValues = (item) => ({
+  name: item.name,
+  phe: parseReference(item.pheReference),
+  kcal: parseReference(item.kcalReference),
+  nutrients: item.nutrients
+})
+const openedMaterialValues = ref(null)
 
 const editItem = (item, index) => {
   editedIndex.value = index
   editedItem.value = JSON.parse(JSON.stringify(item))
-  openedPheReference.value = parseReference(editedItem.value.pheReference)
+  openedMaterialValues.value = materialValues(editedItem.value)
   showReferenceInputs.value = false
   emojiBasisName.value = editedItem.value.name || ''
   dialog2.value.openDialog()
@@ -399,7 +412,7 @@ const editItem = (item, index) => {
 
 const addLastAdded = (item) => {
   editedItem.value = JSON.parse(JSON.stringify(item))
-  openedPheReference.value = parseReference(editedItem.value.pheReference)
+  openedMaterialValues.value = materialValues(editedItem.value)
   showReferenceInputs.value = false
   emojiBasisName.value = editedItem.value.name || ''
   dialog2.value.openDialog()
@@ -450,7 +463,7 @@ const deleteItem = async () => {
 const close = () => {
   dialog2.value.closeDialog()
   editedItem.value = { ...defaultItem }
-  openedPheReference.value = null
+  openedMaterialValues.value = null
   editedIndex.value = -1
   editedKey.value = null
   showReferenceInputs.value = false
@@ -472,20 +485,23 @@ const save = async () => {
   const logIndex = editedIndex.value
   const entryDate = date.value
 
-  // The reference can be edited by hand here. Once it is, the number is the
-  // user's own: it is no longer the database's value, and no longer the product
-  // of the stored factor. So the provenance is rewritten to 'manual' and the
-  // source id and factor are dropped, rather than left claiming an origin the
-  // value no longer has. The nutrients stay — they still describe the food.
   const pheReference = parseReference(editedItem.value.pheReference)
-  const referenceEdited = pheReference !== openedPheReference.value
+  const kcalReference = parseReference(editedItem.value.kcalReference)
+  const materialChange =
+    openedMaterialValues.value !== null &&
+    hasMaterialFoodChange(openedMaterialValues.value, {
+      name: editedItem.value.name,
+      phe: pheReference,
+      kcal: kcalReference,
+      nutrients: editedItem.value.nutrients
+    })
 
   let newLogEntry = {
     name: editedItem.value.name,
     emoji: editedItem.value.emoji || null,
     icon: editedItem.value.icon || null,
     pheReference,
-    kcalReference: parseReference(editedItem.value.kcalReference),
+    kcalReference,
     weight: Number(editedItem.value.weight),
     phe: calculatePhe(),
     kcal: calculateKcal(),
@@ -495,9 +511,9 @@ const save = async () => {
         : null,
     communityFoodKey: editedItem.value.communityFoodKey || null,
     nutrients: editedItem.value.nutrients || null,
-    factor: referenceEdited ? null : Number(editedItem.value.factor) || null,
-    source: referenceEdited ? 'manual' : editedItem.value.source || null,
-    sourceId: referenceEdited ? null : editedItem.value.sourceId || null
+    // Original provenance and collection history survive; only the monotonic
+    // edit flag changes.
+    ...diaryProvenanceAfterEdit(editedItem.value, materialChange)
   }
 
   isSaving.value = true

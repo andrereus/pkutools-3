@@ -2,7 +2,7 @@
 import { useStore } from '../../stores/index'
 import Fuse from 'fuse.js'
 import { format } from 'date-fns'
-import { isCommunityFoodHidden } from '../utils/community-food'
+import { isCommunityFoodHidden, isShareableSource } from '../utils/community-food'
 import { roundReference, scaleToWeight, nutrientRows, isReported } from '../utils/nutrition'
 
 const store = useStore()
@@ -32,9 +32,14 @@ const loading = ref(false)
 const fuseInstance = ref(null)
 const cachedStaticFood = ref(null)
 const nutrients = ref(null)
+// Where the selected food's values originally came from. For an own or
+// community food that is the origin its contributor recorded — a barcode, a
+// label, a hand-entered number — not the list it was picked from.
 const foodSource = ref(null)
 const foodSourceId = ref(null)
 const foodFactor = ref(null)
+const foodAddedFrom = ref(null)
+const foodMateriallyEdited = ref(false)
 
 // Source filter (all on by default, resets on every visit)
 const showUsda = ref(true)
@@ -117,15 +122,15 @@ const loadItem = (item) => {
   weight.value = 100
   kcalReference.value = item.kcal
   nutrients.value = item.nutrients || null
-  // Own and community foods carry no `source` of their own — the list uses that
-  // field only for the BLS/USDA badge — so derive it from the entry's flags
-  foodSource.value = item.isCommunityFood
-    ? 'community'
-    : item.isOwnFood
-      ? 'own-food'
-      : item.source || null
+  // The values' original source: for an own or community food it travels in
+  // `valueSource` (the list reads `source` only for the BLS/USDA badge), for a
+  // reference database it is the database itself.
+  foodSource.value = item.valueSource || item.source || null
   foodSourceId.value = item.sourceId || null
   foodFactor.value = item.factor ?? null
+  foodMateriallyEdited.value = item.materiallyEdited === true
+  // Which list it was picked from, kept apart from where the values came from
+  foodAddedFrom.value = item.isCommunityFood ? 'community' : item.isOwnFood ? 'own-food' : null
   note.value = item.note || null
   selectedDate.value = format(new Date(), 'yyyy-MM-dd')
   dialog.value.openDialog()
@@ -136,6 +141,30 @@ const calculatePhe = () => scaleToWeight(Number(phe.value), weight.value)
 const calculateKcal = () => scaleToWeight(Number(kcalReference.value), weight.value)
 
 const foodNutrientRows = computed(() => nutrientRows(nutrients.value, weight.value, t))
+
+// How an own or community food was arrived at, in words. BLS and USDA are left
+// out: those carry a badge in the list and are named in the search info below
+// it, so a second label would only repeat them.
+const VALUE_SOURCE_LABEL_KEYS = {
+  manual: 'food-search.source-manual',
+  barcode: 'food-search.source-barcode',
+  'ai-label': 'food-search.source-ai-label',
+  'ai-estimate': 'food-search.source-ai-estimate'
+}
+
+const valueSourceLabel = computed(() => {
+  if (!isOwnFood.value && !isCommunityFood.value) return null
+  const key = VALUE_SOURCE_LABEL_KEYS[foodSource.value]
+  if (!key) return null
+  // The barcode identifies the exact product, which is what makes a community
+  // food verifiable — worth showing next to the origin it came from.
+  const code = foodSource.value === 'barcode' && foodSourceId.value ? foodSourceId.value : null
+  return code ? `${t(key)} · ${code}` : t(key)
+})
+
+// An own food whose values came from an AI estimate is never offered to the
+// community, so neither is the shortcut that leads there
+const canShareSelectedOwnFood = computed(() => isShareableSource(foodSource.value))
 
 const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
@@ -161,7 +190,9 @@ const save = async () => {
     note: note.value && note.value.trim() !== '' ? note.value.trim() : null,
     source: foodSource.value,
     sourceId: foodSourceId.value,
+    addedFrom: foodAddedFrom.value,
     factor: foodFactor.value,
+    ...(foodMateriallyEdited.value && { materiallyEdited: true }),
     ...(storedNutrients &&
       Object.keys(storedNutrients).length > 0 && {
         nutrients: storedNutrients
@@ -235,11 +266,15 @@ const buildFuseIndex = () => {
             phe: item.phe,
             kcal: item.kcal,
             note: item.note || null,
-            // Own foods can carry provenance of their own; nothing writes it
-            // yet, but it must not be dropped once something does
+            // Own foods carry provenance of their own: the calculators and
+            // scanners write it when they save one
             nutrients: item.nutrients || null,
             factor: item.factor ?? null,
             sourceId: item.sourceId || null,
+            // Kept apart from `source`, which the list reads to badge a
+            // reference database
+            valueSource: item.source || null,
+            materiallyEdited: item.materiallyEdited === true,
             isOwnFood: true,
             isCommunityFood: false,
             isShared: item.shared || false,
@@ -257,6 +292,13 @@ const buildFuseIndex = () => {
             phe: item.phe,
             kcal: item.kcal,
             note: item.note || null,
+            // Published foods carry the contributor's provenance, so what the
+            // dialog shows about the values matches what an own food shows
+            nutrients: item.nutrients || null,
+            factor: item.factor ?? null,
+            sourceId: item.sourceId || null,
+            valueSource: item.source || null,
+            materiallyEdited: item.materiallyEdited === true,
             isOwnFood: false,
             isCommunityFood: true,
             communityFoodKey: item['.key'],
@@ -668,6 +710,11 @@ defineOgImage('Default', {
           </div>
         </div>
 
+        <!-- How the values were arrived at (own and community foods) -->
+        <p v-if="valueSourceLabel" class="mb-4 text-sm text-gray-500 dark:text-gray-400">
+          {{ $t('food-search.value-source', { source: valueSourceLabel }) }}
+        </p>
+
         <!-- Note display -->
         <div
           v-if="note"
@@ -727,7 +774,7 @@ defineOgImage('Default', {
 
         <!-- Share with community CTA when own food is not shared -->
         <div
-          v-if="isOwnFood && !isSharedOwnFood && userIsAuthenticated"
+          v-if="isOwnFood && !isSharedOwnFood && userIsAuthenticated && canShareSelectedOwnFood"
           class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
         >
           <button

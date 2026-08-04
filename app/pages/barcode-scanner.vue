@@ -9,6 +9,7 @@ import {
   nutrientRows,
   isReported
 } from '../utils/nutrition'
+import { foodTypeFromCategories } from '../utils/food-category'
 
 const store = useStore()
 const { t } = useI18n()
@@ -16,6 +17,7 @@ const dialog = ref(null)
 const localePath = useLocalePath()
 const notifications = useNotifications()
 const { addFoodItemToDiary } = useApi()
+const { saveAlongsideDiary, reportSaved } = useSaveToOwnFood()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
 
 // Reactive state
@@ -33,6 +35,16 @@ const weight = ref(100)
 const select = ref('other')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isSaving = ref(false)
+const saveToOwnFood = ref(false)
+const shareWithCommunity = ref(false)
+const note = ref(null)
+// Open Food Facts has products with nutriments but no name. The name is what
+// every entry is found by later, so it is asked for rather than guessed.
+const nameOverride = ref('')
+// A conservative suggestion from the product's categories. It never changes
+// the calculation until the user explicitly applies it: Open Food Facts is
+// community-edited, and a lower factor must not silently lower the Phe result.
+const categorySuggestion = ref(null)
 
 // Camera selection.
 // The MediaDevices API exposes no lens metadata, so there's no reliable way to
@@ -116,6 +128,23 @@ const type = computed(() => [
 
 const factor = computed(() => pheFactor(select.value))
 
+const categorySuggestionLabel = computed(
+  () => type.value.find((option) => option.value === categorySuggestion.value)?.title || ''
+)
+
+const applyCategorySuggestion = () => {
+  if (!categorySuggestion.value) return
+  select.value = categorySuggestion.value
+  categorySuggestion.value = null
+}
+
+// Any direct choice belongs to the user, so the category suggestion no longer
+// describes the selected value and must disappear.
+const selectFoodType = (foodType) => {
+  select.value = foodType
+  categorySuggestion.value = null
+}
+
 // Methods
 const paintBoundingBox = (detectedCodes, ctx) => {
   for (const detectedCode of detectedCodes) {
@@ -150,13 +179,25 @@ const onDetect = async (detectedCodes) => {
 
   try {
     const response = await $fetch(
-      `https://world.openfoodfacts.org/api/v3/product/${scannedCode}.json?fields=product_name,nutriments,image_small_url`
+      `https://world.openfoodfacts.org/api/v3/product/${scannedCode}.json?fields=product_name,nutriments,image_small_url,categories_tags`
     )
     // v3 reports found products as "success" or "success_with_warnings", so
     // don't match on "success" alone. Keep result null on failure so the
     // template (and calc helpers) never deref result.product.
     if (response?.status?.startsWith('success') && response.product) {
       result.value = response
+      // A new product is a new decision — the own-food option starts unchecked
+      // rather than carrying over from the product scanned before it.
+      saveToOwnFood.value = false
+      shareWithCommunity.value = false
+      note.value = null
+      nameOverride.value = ''
+      // Every product starts on the general factor, which is the highest one.
+      // A definite category is offered separately and only affects the result
+      // after the user accepts it; the previous product's choice never carries
+      // over silently.
+      select.value = 'other'
+      categorySuggestion.value = foodTypeFromCategories(response.product.categories_tags)
       // Success: close the dialog and show the product on the page.
       cancel()
       return
@@ -253,6 +294,15 @@ const cancel = () => {
 
 const nutriments = computed(() => result.value?.product?.nutriments || {})
 
+// What the product is called: what Open Food Facts publishes, or what the user
+// typed when it publishes nothing
+const productName = computed(() => {
+  const published = result.value?.product?.product_name
+  return typeof published === 'string' && published.trim() !== ''
+    ? published.trim()
+    : nameOverride.value.trim()
+})
+
 // Open Food Facts publishes protein, not Phe, so the per-100 g reference is
 // derived from protein × factor. The result is computed from this exact value,
 // so re-opening the entry in the diary recalculates to the same number.
@@ -291,8 +341,13 @@ const save = async () => {
     return
   }
 
+  if (!productName.value) {
+    notifications.error(t('errors.validation.required', { field: t('common.food-name') }))
+    return
+  }
+
   let logEntry = {
-    name: result.value.product.product_name,
+    name: productName.value,
     emoji: null,
     icon: null,
     pheReference: pheReference.value,
@@ -311,15 +366,47 @@ const save = async () => {
 
   isSaving.value = true
 
+  // Reported together with the diary entry below, rather than as a failure of
+  // the whole save
+  let ownFoodOutcome = null
+
   // Use server API for all writes - validates with Zod
   try {
     logEntry = await ensureEmojiForLogEntry(logEntry)
+
+    // The stored reference is the converted value; the protein it came from,
+    // the factor and the barcode travel with it, so a later scan of the same
+    // product recognises the food instead of saving it a second time.
+    if (saveToOwnFood.value) {
+      // The note is whatever the field shows, so it can only ever describe the
+      // product in front of the user
+      const entryNote = note.value && note.value.trim() !== '' ? note.value.trim() : null
+      logEntry.note = entryNote
+      ownFoodOutcome = await saveAlongsideDiary({
+        name: logEntry.name,
+        icon: null,
+        emoji: logEntry.emoji || null,
+        phe: pheReference.value,
+        kcal: Number(nutriments.value['energy-kcal_100g']) || 0,
+        note: entryNote,
+        shared: shareWithCommunity.value,
+        source: 'barcode',
+        sourceId: code.value || null,
+        factor: factor.value,
+        ...(scannedNutrients.value && { nutrients: scannedNutrients.value })
+      })
+      if (!ownFoodOutcome.failure) {
+        // Uncheck so a retry after a failed diary write doesn't save it twice
+        saveToOwnFood.value = false
+        shareWithCommunity.value = false
+      }
+    }
 
     await addFoodItemToDiary({
       date: selectedDate.value,
       ...logEntry
     })
-    notifications.success(t('common.saved'))
+    reportSaved(ownFoodOutcome)
     // Navigate after successful save
     navigateTo(localePath('diary'))
   } catch (error) {
@@ -486,9 +573,22 @@ defineOgImage('Default', {
         class="mb-4"
       />
 
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-1">
+      <h2
+        v-if="result.product.product_name"
+        class="text-xl font-semibold text-gray-900 dark:text-white mb-1"
+      >
         {{ result.product.product_name }}
       </h2>
+
+      <!-- Open Food Facts knows the product but not its name: without one there
+           is nothing to log, so it is asked for instead of failing on save. -->
+      <TextInput
+        v-else
+        v-model="nameOverride"
+        id-name="product-name"
+        :label="$t('common.food-name')"
+        :placeholder="$t('barcode-scanner.no-name')"
+      />
 
       <!-- Do not remove -->
       <p v-if="code !== ''" class="text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -515,11 +615,36 @@ defineOgImage('Default', {
           :label="$t('common.date')"
         />
 
-        <SelectMenu v-model="select" id-name="factor" :label="$t('common.food-type')">
+        <SelectMenu
+          :model-value="select"
+          id-name="factor"
+          :label="$t('common.food-type')"
+          @update:model-value="selectFoodType"
+        >
           <option v-for="option in type" :key="option.value" :value="option.value">
             {{ option.title }}
           </option>
         </SelectMenu>
+
+        <!-- A category is a suggestion, not evidence. Keep the conservative
+             general factor active until the user explicitly chooses this. -->
+        <div
+          v-if="categorySuggestion"
+          class="-mt-2 mb-3 rounded-lg bg-sky-50 p-3 text-sm text-gray-700 dark:bg-sky-950/50 dark:text-gray-300"
+        >
+          <p>
+            {{
+              $t('barcode-scanner.type-suggestion', {
+                type: categorySuggestionLabel
+              })
+            }}
+          </p>
+          <SecondaryButton
+            :text="$t('barcode-scanner.use-suggestion')"
+            class="mt-2 mr-0! mb-0!"
+            @click="applyCategorySuggestion"
+          />
+        </div>
 
         <NumberInput
           v-model.number="weight"
@@ -545,11 +670,20 @@ defineOgImage('Default', {
           </div>
         </div>
 
+        <SaveToOwnFood
+          v-if="userIsAuthenticated"
+          v-model="saveToOwnFood"
+          v-model:note="note"
+          v-model:shared="shareWithCommunity"
+          :hint="$t('common.check-food-type')"
+        />
+
         <PrimaryButton
           v-if="userIsAuthenticated"
           :text="$t('common.add')"
           :loading="isSaving"
           :loading-text="$t('common.saving')"
+          :disabled="!productName"
           @click="save"
         />
       </div>
