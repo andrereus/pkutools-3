@@ -4,6 +4,7 @@ import { format } from 'date-fns'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { checkPremiumStatus } from '../../utils/license'
+import { storedNumberOrZero } from '../../utils/numeric'
 import { z } from 'zod'
 
 // Extended schema to accept optional date (not part of DiaryEntrySchema)
@@ -26,7 +27,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   // Timestamps are server-owned; client values are honored only so
   // undo-restore can keep the original creation time of a deleted item.
   const now = Date.now()
-  const logEntry = {
+  const logEntryData = {
     ...diaryEntryData,
     createdAt: diaryEntryData.createdAt ?? now,
     updatedAt: diaryEntryData.updatedAt ?? now
@@ -34,6 +35,19 @@ export default defineAuthedHandler(async ({ event, userId }) => {
 
   const db = getAdminDatabase()
   const isPremium = await checkPremiumStatus(userId)
+
+  // Push ids are unique and stable; timestamps are not. A restored item may
+  // keep its original id as long as that id is not already present in the day.
+  const withItemId = (existingLog: Array<{ itemId?: string }> = []) => {
+    const requestedId = logEntryData.itemId
+    const idAlreadyExists =
+      requestedId !== undefined && existingLog.some((item) => item.itemId === requestedId)
+    const itemId =
+      requestedId && !idAlreadyExists
+        ? requestedId
+        : db.ref(`/${userId}/pheDiary/logItemIds`).push().key!
+    return { ...logEntryData, itemId }
+  }
 
   // Determine date
   const date = requestDate || format(new Date(), 'yyyy-MM-dd')
@@ -90,20 +104,26 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   }
 
   if (existingEntryKey) {
+    // TODO: Use a day transaction (plus a revision guard for full-day saves);
+    // rewriting the complete log can lose a concurrent diary change.
     // Update existing entry - add new log item
     interface DiaryEntry {
       date: string
-      log: Array<{ phe: number; kcal: number }>
+      log: Array<{ itemId?: string; phe: unknown; kcal: unknown }>
       phe: number
       kcal: number
     }
     // Use the value we already fetched from the query
     const existingEntry = existingEntryVal as DiaryEntry
+    const logEntry = withItemId(existingEntry.log || [])
     const updatedLog = [...(existingEntry.log || []), logEntry]
 
     // Calculate totals
-    const totalPhe = updatedLog.reduce((sum: number, item) => sum + (item.phe || 0), 0)
-    const totalKcal = updatedLog.reduce((sum: number, item) => sum + (item.kcal || 0), 0)
+    const totalPhe = updatedLog.reduce((sum: number, item) => sum + storedNumberOrZero(item.phe), 0)
+    const totalKcal = updatedLog.reduce(
+      (sum: number, item) => sum + storedNumberOrZero(item.kcal),
+      0
+    )
 
     await db.ref(`/${userId}/pheDiary/${existingEntryKey}`).update({
       log: updatedLog,
@@ -122,8 +142,9 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     // Note: There's a potential race condition here if two requests come in simultaneously
     // Both might find no existing entry and both create new entries
     // For production, consider using Firebase transactions for atomicity
-    const totalPhe = logEntry.phe || 0
-    const totalKcal = logEntry.kcal || 0
+    const logEntry = withItemId()
+    const totalPhe = storedNumberOrZero(logEntry.phe)
+    const totalKcal = storedNumberOrZero(logEntry.kcal)
 
     const newEntryRef = db.ref(`/${userId}/pheDiary`).push()
     await newEntryRef.set({

@@ -7,6 +7,7 @@ import {
   formatNutrient,
   nutrientRows,
   isReported,
+  numericOrZero,
   parseReference,
   diaryProvenanceAfterEdit
 } from '../app/utils/nutrition'
@@ -73,6 +74,16 @@ describe('isReported', () => {
     expect(isReported(NaN)).toBe(false)
     expect(isReported(Infinity)).toBe(false)
     expect(isReported('abc')).toBe(false)
+  })
+})
+
+describe('numericOrZero', () => {
+  it('normalizes legacy strings without coercing malformed shapes', () => {
+    expect(numericOrZero('150')).toBe(150)
+    expect(numericOrZero(27)).toBe(27)
+    expect(numericOrZero('')).toBe(0)
+    expect(numericOrZero(false)).toBe(0)
+    expect(numericOrZero('not a number')).toBe(0)
   })
 })
 

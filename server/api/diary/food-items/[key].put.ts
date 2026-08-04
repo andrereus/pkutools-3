@@ -3,6 +3,8 @@ import { UpdateFoodItemSchema } from '../../../types/schemas'
 import { defineAuthedHandler } from '../../../utils/handler'
 import { validateBody } from '../../../utils/validation'
 import { applyDiaryEditProvenance } from '../../../utils/food-provenance'
+import { resolveDiaryItemIndex } from '../../../utils/diary-item'
+import { storedNumberOrZero } from '../../../utils/numeric'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const key = getRouterParam(event, 'key')
@@ -14,7 +16,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  const { logIndex, entry } = await validateBody(event, UpdateFoodItemSchema)
+  const { itemId, logIndex, entry } = await validateBody(event, UpdateFoodItemSchema)
 
   const db = getAdminDatabase()
   const diaryRef = db.ref(`/${userId}/pheDiary/${key}`)
@@ -28,30 +30,26 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  // Validate log index
   const log = diaryEntry.log || []
-  if (logIndex >= log.length) {
-    throw createError({
-      statusCode: 400,
-      message: 'Log index out of range'
-    })
-  }
+  const resolvedLogIndex = resolveDiaryItemIndex(log, { itemId, logIndex })
 
-  // Update the log item; the stored createdAt wins over anything the client
-  // sent (edit forms rebuild the entry without timestamps). Legacy items
-  // without createdAt stay without one.
+  // Update the log item; immutable identity, provenance and the stored
+  // createdAt win over anything the client sent. A legacy item receives its
+  // stable id the first time it is edited.
   const now = Date.now()
   const updatedLog = [...log]
-  const entryWithProvenance = applyDiaryEditProvenance(log[logIndex], entry)
-  updatedLog[logIndex] = {
+  const storedItem = log[resolvedLogIndex]
+  const entryWithProvenance = applyDiaryEditProvenance(storedItem, entry)
+  updatedLog[resolvedLogIndex] = {
     ...entryWithProvenance,
-    ...(log[logIndex].createdAt != null && { createdAt: log[logIndex].createdAt }),
+    itemId: storedItem.itemId || db.ref(`/${userId}/pheDiary/${key}/logItemIds`).push().key!,
+    ...(storedItem.createdAt != null && { createdAt: storedItem.createdAt }),
     updatedAt: now
   }
 
   // Calculate totals
-  const totalPhe = updatedLog.reduce((sum: number, item) => sum + (item.phe || 0), 0)
-  const totalKcal = updatedLog.reduce((sum: number, item) => sum + (item.kcal || 0), 0)
+  const totalPhe = updatedLog.reduce((sum: number, item) => sum + storedNumberOrZero(item.phe), 0)
+  const totalKcal = updatedLog.reduce((sum: number, item) => sum + storedNumberOrZero(item.kcal), 0)
 
   // Update the entry
   await diaryRef.update({

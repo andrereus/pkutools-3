@@ -23,6 +23,7 @@ import {
   scaleToWeight,
   nutrientRows,
   parseReference,
+  numericOrZero,
   diaryProvenanceAfterEdit
 } from '../utils/nutrition'
 import { hasMaterialFoodChange } from '#shared/utils/material-food'
@@ -831,8 +832,8 @@ const deleteLogItem = () => {
   editedItem.value.log.splice(editedLogIndex.value, 1)
 
   // Recalculate totals
-  const totalPhe = editedItem.value.log.reduce((sum, item) => sum + (item.phe || 0), 0)
-  const totalKcal = editedItem.value.log.reduce((sum, item) => sum + (item.kcal || 0), 0)
+  const totalPhe = editedItem.value.log.reduce((sum, item) => sum + numericOrZero(item.phe), 0)
+  const totalKcal = editedItem.value.log.reduce((sum, item) => sum + numericOrZero(item.kcal), 0)
   editedItem.value.phe = totalPhe
   editedItem.value.kcal = totalKcal
 
@@ -853,7 +854,9 @@ const closeLogEdit = () => {
 const openAddLogItem = () => {
   // Reset log item state for adding new item
   editedLogIndex.value = -1
-  editedLogItem.value = { ...defaultLogItem }
+  // This form creates the values directly rather than selecting them from a
+  // collection or copying another source.
+  editedLogItem.value = { ...defaultLogItem, source: 'manual' }
   openedLogMaterialValues.value = null
   // Blank add: the reference inputs are the entry form, so show them directly
   showLogReferenceInputs.value = true
@@ -908,13 +911,20 @@ const saveLogEdit = async () => {
         const original = editedItem.value.log[editedLogIndex.value]
         editedItem.value.log[editedLogIndex.value] = {
           ...updatedItem,
+          ...(original.itemId && { itemId: original.itemId }),
           ...(original.createdAt != null && { createdAt: original.createdAt }),
           updatedAt: Date.now()
         }
 
         // Recalculate totals
-        const totalPhe = editedItem.value.log.reduce((sum, item) => sum + (item.phe || 0), 0)
-        const totalKcal = editedItem.value.log.reduce((sum, item) => sum + (item.kcal || 0), 0)
+        const totalPhe = editedItem.value.log.reduce(
+          (sum, item) => sum + numericOrZero(item.phe),
+          0
+        )
+        const totalKcal = editedItem.value.log.reduce(
+          (sum, item) => sum + numericOrZero(item.kcal),
+          0
+        )
         editedItem.value.phe = totalPhe
         editedItem.value.kcal = totalKcal
       }
@@ -937,8 +947,11 @@ const saveLogEdit = async () => {
       editedItem.value.log = [...currentLog, { ...updatedItem, createdAt: now, updatedAt: now }]
 
       // Recalculate totals
-      const totalPhe = editedItem.value.log.reduce((sum, item) => sum + (item.phe || 0), 0)
-      const totalKcal = editedItem.value.log.reduce((sum, item) => sum + (item.kcal || 0), 0)
+      const totalPhe = editedItem.value.log.reduce((sum, item) => sum + numericOrZero(item.phe), 0)
+      const totalKcal = editedItem.value.log.reduce(
+        (sum, item) => sum + numericOrZero(item.kcal),
+        0
+      )
       editedItem.value.phe = totalPhe
       editedItem.value.kcal = totalKcal
 

@@ -2,14 +2,16 @@ import { hasMaterialFoodChange } from '../../shared/utils/material-food'
 
 type FoodRecord = Record<string, unknown>
 
-const ORIGINAL_PROVENANCE_FIELDS = [
+const IMMUTABLE_DIARY_FIELDS = [
+  'itemId',
+  'createdAt',
   'source',
   'sourceId',
   'factor',
   'addedFrom',
   'communityFoodKey'
 ] as const
-const ORIGINAL_PROVENANCE_FIELD_SET = new Set<string>(ORIGINAL_PROVENANCE_FIELDS)
+const IMMUTABLE_DIARY_FIELD_SET = new Set<string>(IMMUTABLE_DIARY_FIELDS)
 
 const diaryMaterialValues = (item: FoodRecord) => ({
   name: item.name,
@@ -26,10 +28,10 @@ export const applyDiaryEditProvenance = (
   incoming: FoodRecord
 ): FoodRecord => {
   const result: FoodRecord = Object.fromEntries(
-    Object.entries(incoming).filter(([field]) => !ORIGINAL_PROVENANCE_FIELD_SET.has(field))
+    Object.entries(incoming).filter(([field]) => !IMMUTABLE_DIARY_FIELD_SET.has(field))
   )
 
-  for (const field of ORIGINAL_PROVENANCE_FIELDS) {
+  for (const field of IMMUTABLE_DIARY_FIELDS) {
     if (Object.hasOwn(existing, field)) result[field] = existing[field]
   }
 

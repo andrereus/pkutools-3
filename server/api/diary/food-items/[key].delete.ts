@@ -2,6 +2,8 @@ import { getAdminDatabase } from '../../../utils/firebase-admin'
 import { defineAuthedHandler } from '../../../utils/handler'
 import { validateBody } from '../../../utils/validation'
 import { DeleteFoodItemSchema } from '../../../types/schemas'
+import { resolveDiaryItemIndex } from '../../../utils/diary-item'
+import { storedNumberOrZero } from '../../../utils/numeric'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const key = getRouterParam(event, 'key')
@@ -13,13 +15,13 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  const { logIndex } = await validateBody(event, DeleteFoodItemSchema)
+  const { itemId, logIndex } = await validateBody(event, DeleteFoodItemSchema)
 
   const db = getAdminDatabase()
   const diaryEntryRef = db.ref(`/${userId}/pheDiary/${key}`)
   const diaryEntrySnapshot = await diaryEntryRef.once('value')
   const existingDiaryEntry = diaryEntrySnapshot.val() as {
-    log?: Array<{ phe?: number; kcal?: number }>
+    log?: Array<{ itemId?: string; phe?: unknown; kcal?: unknown }>
   } | null
 
   if (!existingDiaryEntry) {
@@ -30,19 +32,14 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   }
 
   const currentLog = existingDiaryEntry.log || []
-  if (logIndex >= currentLog.length) {
-    throw createError({
-      statusCode: 400,
-      message: 'Invalid log item index'
-    })
-  }
+  const resolvedLogIndex = resolveDiaryItemIndex(currentLog, { itemId, logIndex })
 
   // Remove the log item
-  currentLog.splice(logIndex, 1)
+  currentLog.splice(resolvedLogIndex, 1)
 
   // Recalculate totals
-  const totalPhe = currentLog.reduce((sum: number, item) => sum + (item.phe || 0), 0)
-  const totalKcal = currentLog.reduce((sum: number, item) => sum + (item.kcal || 0), 0)
+  const totalPhe = currentLog.reduce((sum: number, item) => sum + storedNumberOrZero(item.phe), 0)
+  const totalKcal = currentLog.reduce((sum: number, item) => sum + storedNumberOrZero(item.kcal), 0)
 
   await diaryEntryRef.update({
     log: currentLog,
@@ -51,5 +48,5 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     updatedAt: Date.now()
   })
 
-  return { success: true, key: key, deletedLogIndex: logIndex }
+  return { success: true, key: key, deletedLogIndex: resolvedLogIndex }
 })

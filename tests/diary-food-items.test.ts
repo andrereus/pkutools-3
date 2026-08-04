@@ -58,6 +58,13 @@ describe('adding a food item to a new day', () => {
     // the original day creation time.
     expect(created.createdAt).toBe(created.log[0]!.createdAt)
   })
+
+  it('assigns every item a stable server id', async () => {
+    const result = await addFoodItem(requestEvent({ ...ENTRY, date: '2026-07-26' }))
+    const created = day(result.key) as unknown as { log: Array<{ itemId: string }> }
+
+    expect(created.log[0]!.itemId).toMatch(/^-Nfake/)
+  })
 })
 
 describe('adding a food item to an existing day', () => {
@@ -80,6 +87,23 @@ describe('adding a food item to an existing day', () => {
     expect(day('day1').log).toHaveLength(2)
   })
 
+  it('does not accept a duplicate restored item id', async () => {
+    seedDiary({
+      day1: {
+        date: '2026-07-26',
+        phe: 100,
+        kcal: 500,
+        log: [{ ...ENTRY, itemId: '-Noriginal' }]
+      }
+    })
+
+    await addFoodItem(requestEvent({ ...ENTRY, date: '2026-07-26', itemId: '-Noriginal' }))
+
+    const ids = (day('day1').log as unknown as Array<{ itemId: string }>).map((item) => item.itemId)
+    expect(new Set(ids).size).toBe(2)
+    expect(ids).toContain('-Noriginal')
+  })
+
   // Totals are summed from the log rather than added to the stored total, so a
   // day whose stored total had drifted is corrected on the next write.
   it('recomputes totals from the log', async () => {
@@ -95,6 +119,23 @@ describe('adding a food item to an existing day', () => {
     await addFoodItem(requestEvent({ ...ENTRY, date: '2026-07-26' }))
 
     expect(day('day1')).toMatchObject({ phe: 127, kcal: 578 })
+  })
+
+  it('normalizes legacy numeric strings when recomputing totals', async () => {
+    seedDiary({
+      day1: {
+        date: '2026-07-26',
+        phe: '100',
+        kcal: '500',
+        log: [{ name: 'Bread', weight: 50, phe: '100', kcal: '500' }]
+      }
+    })
+
+    await addFoodItem(requestEvent({ ...ENTRY, date: '2026-07-26' }))
+
+    expect(day('day1')).toMatchObject({ phe: 127, kcal: 578 })
+    expect(typeof day('day1').phe).toBe('number')
+    expect(typeof day('day1').kcal).toBe('number')
   })
 
   it('starts a separate day for a different date', async () => {

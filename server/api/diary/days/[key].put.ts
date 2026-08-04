@@ -3,6 +3,7 @@ import { UpdateDaySchema } from '../../../types/schemas'
 import { defineAuthedHandler } from '../../../utils/handler'
 import { validateBody } from '../../../utils/validation'
 import { applyDiaryEditProvenance } from '../../../utils/food-provenance'
+import { storedNumberOrZero } from '../../../utils/numeric'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const key = getRouterParam(event, 'key')
@@ -75,26 +76,105 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   // otherwise overwrite a day whose items it has not seen.
   if (log !== undefined) {
     const existingLog = (existingDiaryEntry.log || []) as Array<Record<string, unknown>>
-    const existingByCreatedAt = new Map(
-      existingLog
-        .filter((item) => item.createdAt != null)
-        .map((item) => [item.createdAt, item] as const)
-    )
+    const unmatchedExisting = new Set(existingLog)
+    const incomingItemIdCounts = new Map<string, number>()
+    for (const item of log) {
+      if (item.itemId) {
+        incomingItemIdCounts.set(item.itemId, (incomingItemIdCounts.get(item.itemId) || 0) + 1)
+      }
+    }
+
+    if ([...incomingItemIdCounts.values()].some((count) => count > 1)) {
+      throw createError({
+        statusCode: 409,
+        message: 'Diary food item id is not unique',
+        data: { code: 'duplicate-diary-item-id' }
+      })
+    }
+
+    const identityConflict = (message: string, code: string): never => {
+      throw createError({ statusCode: 409, message, data: { code } })
+    }
+    const takeByItemId = (itemId: string) => {
+      const matches = [...unmatchedExisting].filter((item) => item.itemId === itemId)
+      if (matches.length > 1) {
+        return identityConflict('Diary food item id is not unique', 'duplicate-diary-item-id')
+      }
+      const match = matches[0]
+      if (!match) {
+        return identityConflict(
+          'Diary food item no longer matches the stored day',
+          'stale-diary-log'
+        )
+      }
+      unmatchedExisting.delete(match)
+      return match
+    }
+    const takeLegacyByCreatedAt = (createdAt: number) => {
+      const legacyMatches = [...unmatchedExisting].filter(
+        (item) => !item.itemId && item.createdAt === createdAt
+      )
+      // A timestamp is only an identity fallback for an entry that has never
+      // received a stable id. If an id-bearing entry arrives without its id,
+      // accepting the weaker claim could overwrite a newer or different item.
+      if (
+        legacyMatches.length === 0 &&
+        existingLog.some((item) => item.itemId && item.createdAt === createdAt)
+      ) {
+        return identityConflict('Diary food item identity is stale', 'stale-diary-log')
+      }
+      const match = legacyMatches[0]
+      if (match) unmatchedExisting.delete(match)
+      return match
+    }
+    const newItemId = () => db.ref(`/${userId}/pheDiary/${key}/logItemIds`).push().key!
+    const now = Date.now()
+
     const updatedLog = log.map((item, index) => {
-      const existingItem =
-        (item.createdAt != null ? existingByCreatedAt.get(item.createdAt) : undefined) ||
-        // Legacy log items have no stable id. Index is the best available
-        // fallback; current entries use createdAt and survive insertions/deletes.
-        (existingLog.length === log.length ? existingLog[index] : undefined)
-      return existingItem ? applyDiaryEditProvenance(existingItem, item) : item
+      const indexedExisting = existingLog[index]
+      const existingItem = item.itemId
+        ? takeByItemId(item.itemId)
+        : item.createdAt != null
+          ? takeLegacyByCreatedAt(item.createdAt)
+          : // The oldest entries have neither field. Index is the last available
+            // fallback, and only when the candidate is equally identity-less.
+            // A Diet Report addition always has a creation timestamp, so a
+            // delete-plus-add cannot inherit the deleted item's provenance.
+            existingLog.length === log.length &&
+              indexedExisting?.itemId == null &&
+              indexedExisting?.createdAt == null &&
+              unmatchedExisting.has(indexedExisting)
+            ? indexedExisting
+            : undefined
+
+      if (existingItem) {
+        unmatchedExisting.delete(existingItem)
+        const updatedItem = applyDiaryEditProvenance(existingItem, item)
+        updatedItem.itemId = existingItem.itemId || newItemId()
+        // createdAt is immutable too. Legacy entries remain without one.
+        if (existingItem.createdAt != null) updatedItem.createdAt = existingItem.createdAt
+        else delete updatedItem.createdAt
+        return updatedItem
+      }
+
+      // A new item cannot claim another item's identity. Assign one here so
+      // additions made inside Diet Report receive the same server-owned id as
+      // additions made through the single-item endpoint.
+      const { itemId: _ignoredItemId, ...newItem } = item
+      return {
+        ...newItem,
+        itemId: newItemId(),
+        createdAt: item.createdAt ?? now,
+        updatedAt: item.updatedAt ?? now
+      }
     })
     const hasItems = updatedLog.length > 0
     updateData.log = updatedLog
     updateData.phe = hasItems
-      ? updatedLog.reduce((sum, item) => sum + (Number(item.phe) || 0), 0)
+      ? updatedLog.reduce((sum, item) => sum + storedNumberOrZero(item.phe), 0)
       : phe
     updateData.kcal = hasItems
-      ? updatedLog.reduce((sum, item) => sum + (Number(item.kcal) || 0), 0)
+      ? updatedLog.reduce((sum, item) => sum + storedNumberOrZero(item.kcal), 0)
       : kcal
   }
   // If log is not provided, don't update log (preserve existing log structure)

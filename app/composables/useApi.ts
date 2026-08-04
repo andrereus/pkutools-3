@@ -21,6 +21,8 @@ export type FoodSource =
 // origin
 export type AddedFrom = 'own-food' | 'community'
 
+type DiaryItemLocator = { itemId: string; logIndex?: never } | { itemId?: never; logIndex: number }
+
 // Carried by diary entries and own foods alike
 interface Provenance {
   nutrients?: FoodNutrients | null
@@ -93,6 +95,7 @@ export const useApi = () => {
 
   const addFoodItemToDiary = (
     data: Provenance & {
+      itemId?: string
       date?: string
       name: string
       emoji?: string | null
@@ -127,36 +130,37 @@ export const useApi = () => {
       incomplete: data.incomplete
     })
 
-  const updateFoodItemInDiary = (data: {
-    entryKey: string
-    logIndex: number
-    entry: Provenance & {
-      name: string
-      emoji?: string | null
-      icon?: string | null
-      pheReference?: number | null
-      kcalReference?: number | null
-      weight: number
-      phe: number
-      kcal: number
-      note?: string | null
-      addedFrom?: AddedFrom | null
+  const updateFoodItemInDiary = (
+    data: DiaryItemLocator & {
+      entryKey: string
+      entry: Provenance & {
+        itemId?: string
+        name: string
+        emoji?: string | null
+        icon?: string | null
+        pheReference?: number | null
+        kcalReference?: number | null
+        weight: number
+        phe: number
+        kcal: number
+        note?: string | null
+        addedFrom?: AddedFrom | null
+      }
     }
-  }): Promise<{ success: boolean; key?: string }> =>
+  ): Promise<{ success: boolean; key?: string }> =>
     request(`/api/diary/food-items/${data.entryKey}`, 'Update food item in diary', 'PUT', {
-      logIndex: data.logIndex,
+      ...(data.itemId ? { itemId: data.itemId } : { logIndex: data.logIndex }),
       entry: data.entry
     })
 
   const deleteDiaryDay = (entryKey: string): Promise<{ success: boolean; key?: string }> =>
     request(`/api/diary/days/${entryKey}`, 'Delete diary day', 'DELETE')
 
-  const deleteFoodItemFromDiary = (data: {
-    entryKey: string
-    logIndex: number
-  }): Promise<{ success: boolean; key?: string; deletedLogIndex?: number }> =>
+  const deleteFoodItemFromDiary = (
+    data: DiaryItemLocator & { entryKey: string }
+  ): Promise<{ success: boolean; key?: string; deletedLogIndex?: number }> =>
     request(`/api/diary/food-items/${data.entryKey}`, 'Delete food item from diary', 'DELETE', {
-      logIndex: data.logIndex
+      ...(data.itemId ? { itemId: data.itemId } : { logIndex: data.logIndex })
     })
 
   // ============================================================================

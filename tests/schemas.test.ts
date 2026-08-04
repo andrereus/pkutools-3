@@ -162,6 +162,14 @@ describe('DiaryEntrySchema', () => {
     expect(DiaryEntrySchema.safeParse({ ...validEntry, createdAt: -1 }).success).toBe(false)
     expect(DiaryEntrySchema.safeParse({ ...validEntry, createdAt: 1.5 }).success).toBe(false)
   })
+
+  it('validates the stable diary item id', () => {
+    expect(DiaryEntrySchema.parse({ ...validEntry, itemId: '-Nitem123' }).itemId).toBe('-Nitem123')
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, itemId: '' }).success).toBe(false)
+    expect(DiaryEntrySchema.safeParse({ ...validEntry, itemId: 'a'.repeat(65) }).success).toBe(
+      false
+    )
+  })
 })
 
 // Provenance travels with an entry so the diary and the diet report can say
@@ -482,11 +490,18 @@ describe('diary day schemas', () => {
     expect(UpdateDaySchema.safeParse({ phe: 0, kcal: 0, incomplete: 'yes' }).success).toBe(false)
   })
 
-  it('addresses log entries by a non-negative integer index', () => {
+  it('addresses log entries by stable id with a legacy index fallback', () => {
+    expect(DeleteFoodItemSchema.safeParse({ itemId: '-Nitem' }).success).toBe(true)
     expect(DeleteFoodItemSchema.safeParse({ logIndex: 0 }).success).toBe(true)
+    expect(DeleteFoodItemSchema.safeParse({}).success).toBe(false)
+    expect(DeleteFoodItemSchema.safeParse({ itemId: '' }).success).toBe(false)
     expect(DeleteFoodItemSchema.safeParse({ logIndex: -1 }).success).toBe(false)
     expect(DeleteFoodItemSchema.safeParse({ logIndex: 1.5 }).success).toBe(false)
     expect(DeleteFoodItemSchema.safeParse({ logIndex: '0' }).success).toBe(false)
+    expect(UpdateFoodItemSchema.safeParse({ itemId: '-Nitem', entry: validEntry }).success).toBe(
+      true
+    )
+    expect(UpdateFoodItemSchema.safeParse({ entry: validEntry }).success).toBe(false)
     expect(UpdateFoodItemSchema.safeParse({ logIndex: -1, entry: validEntry }).success).toBe(false)
   })
 

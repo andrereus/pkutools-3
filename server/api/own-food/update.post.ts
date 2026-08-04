@@ -114,9 +114,9 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
   }
 
-  const wasShared = ownFood.shared === true
   const willBeShared = data.shared === true
-  const existingCommunityKey = ownFood.communityKey || null
+  const existingCommunityKey =
+    typeof ownFood.communityKey === 'string' && ownFood.communityKey ? ownFood.communityKey : null
 
   // Original provenance is immutable. The client may edit nutrients, but it
   // cannot turn an AI estimate into a manual food by rewriting its source or
@@ -150,12 +150,23 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   // this map; nothing writes on its own.
   const writes: Record<string, unknown> = {}
 
-  // Handle sharing state changes
-  if (!wasShared && willBeShared) {
-    // Newly sharing - create community food entry
-    const language = getLanguage(event, locale)
+  // A community pointer is a destructive/update target only when both records
+  // agree on the relationship. Older interrupted writes can point at a record
+  // that no longer exists; malformed data must never let one user's update
+  // modify or delete somebody else's contribution.
+  let existingCommunityFood: Record<string, unknown> | null = null
+  let hasValidCommunityLink = false
+  if (existingCommunityKey) {
+    const snapshot = await db.ref(`communityFoods/${existingCommunityKey}`).once('value')
+    const candidate = snapshot.val() as Record<string, unknown> | null
+    if (candidate?.contributorId === userId && candidate?.ownFoodKey === entryKey) {
+      existingCommunityFood = candidate
+      hasValidCommunityLink = true
+    }
+  }
 
-    // Check for duplicates
+  const queueNewCommunityFood = async () => {
+    const language = getLanguage(event, locale)
     const isDuplicate = await checkDuplicateCommunityFood(db, data.name, data.phe, language)
     if (isDuplicate) {
       throw createError({
@@ -165,19 +176,16 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       })
     }
 
-    const communityFoodRef = db.ref('communityFoods').push()
-    communityKey = communityFoodRef.key
-
+    const newCommunityKey = db.ref('communityFoods').push().key!
     const now = Date.now()
-    const communityFoodData = {
+    communityKey = newCommunityKey
+    writes[`communityFoods/${newCommunityKey}`] = {
       name: data.name,
       icon: data.icon || null,
       emoji: data.emoji || null,
       phe: data.phe,
       kcal: data.kcal,
       note: data.note || null,
-      // See save.post.ts: provenance is what food search shows about a
-      // published food's origin
       ...provenance,
       language,
       contributorId: userId,
@@ -189,79 +197,84 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       score: 0,
       usageCount: 0
     }
+  }
 
-    writes[`communityFoods/${communityKey}`] = communityFoodData
-  } else if (wasShared && !willBeShared) {
-    // Unsharing - remove community food entry (voterIds deleted automatically as child)
-    if (existingCommunityKey) {
+  // Handle sharing state changes
+  if (willBeShared && !hasValidCommunityLink) {
+    // Publish a new food, or repair an old shared flag whose public copy is
+    // missing/mismatched. The own-food pointer changes in the same root update.
+    await queueNewCommunityFood()
+  } else if (!willBeShared) {
+    // Remove the public copy only when ownership was verified. A missing or
+    // foreign target is left untouched while the broken local pointer clears.
+    if (existingCommunityKey && hasValidCommunityLink) {
       writes[`communityFoods/${existingCommunityKey}`] = null
     }
     communityKey = null
-  } else if (wasShared && willBeShared && existingCommunityKey) {
+  } else if (
+    willBeShared &&
+    existingCommunityKey &&
+    hasValidCommunityLink &&
+    existingCommunityFood
+  ) {
     // Still shared - update community food entry
-    const communityFoodRef = db.ref(`communityFoods/${existingCommunityKey}`)
-    const communityFoodSnapshot = await communityFoodRef.once('value')
-    const existingCommunityFood = communityFoodSnapshot.val()
+    // Votes endorse the visible food identity and all nutritional values.
+    // Formatting-only name edits do not change that identity.
+    const nameChanged =
+      normalizeFoodName(existingCommunityFood.name) !== normalizeFoodName(data.name)
+    const pheChanged = !storedNumberEquals(existingCommunityFood.phe, data.phe)
+    const communityMaterialChange = hasMaterialFoodChange(existingCommunityFood, {
+      ...data,
+      nutrients
+    })
 
-    if (existingCommunityFood) {
-      // Votes endorse the visible food identity and all nutritional values.
-      // Formatting-only name edits do not change that identity.
-      const nameChanged =
-        normalizeFoodName(existingCommunityFood.name) !== normalizeFoodName(data.name)
-      const pheChanged = !storedNumberEquals(existingCommunityFood.phe, data.phe)
-      const communityMaterialChange = hasMaterialFoodChange(existingCommunityFood, {
-        ...data,
-        nutrients
-      })
-
-      // Publishing checks for a duplicate, so editing a published food has to
-      // check too — otherwise renaming one onto another is the way past it. The
-      // language is the one it was published in, not the app's current locale,
-      // which is the set it would collide with. Checked before anything is
-      // written, so a rejected edit changes neither copy.
-      if (nameChanged || pheChanged) {
-        const isDuplicate = await checkDuplicateCommunityFood(
-          db,
-          data.name,
-          data.phe,
-          existingCommunityFood.language || getLanguage(event, locale),
-          existingCommunityKey
-        )
-        if (isDuplicate) {
-          throw createError({
-            statusCode: 409,
-            message: 'A similar food already exists in the community database',
-            data: { code: 'duplicate-community-food' }
-          })
-        }
+    // Publishing checks for a duplicate, so editing a published food has to
+    // check too — otherwise renaming one onto another is the way past it. The
+    // language is the one it was published in, not the app's current locale,
+    // which is the set it would collide with. Checked before anything is
+    // written, so a rejected edit changes neither copy.
+    if (nameChanged || pheChanged) {
+      const isDuplicate = await checkDuplicateCommunityFood(
+        db,
+        data.name,
+        data.phe,
+        (existingCommunityFood.language as string | undefined) || getLanguage(event, locale),
+        existingCommunityKey
+      )
+      if (isDuplicate) {
+        throw createError({
+          statusCode: 409,
+          message: 'A similar food already exists in the community database',
+          data: { code: 'duplicate-community-food' }
+        })
       }
+    }
 
-      const updateData: Record<string, unknown> = {
-        name: data.name,
-        icon: data.icon || null,
-        emoji: data.emoji || null,
-        phe: data.phe,
-        kcal: data.kcal,
-        note: data.note || null,
-        // Original provenance remains attached; materiallyEdited says that the
-        // current snapshot has subsequently diverged from it.
-        ...provenance,
-        updatedAt: Date.now()
-      }
+    const updateData: Record<string, unknown> = {
+      name: data.name,
+      icon: data.icon || null,
+      emoji: data.emoji || null,
+      phe: data.phe,
+      kcal: data.kcal,
+      note: data.note || null,
+      // Original provenance remains attached; materiallyEdited says that the
+      // current snapshot has subsequently diverged from it.
+      ...provenance,
+      updatedAt: Date.now()
+    }
 
-      if (communityMaterialChange) {
-        // Reset votes when the food identity or nutritional content changes.
-        updateData.likes = 0
-        updateData.dislikes = 0
-        updateData.score = 0
-        updateData.voterIds = null // Clear all votes
-      }
+    if (communityMaterialChange) {
+      // Reset votes when the food identity or nutritional content changes.
+      updateData.likes = 0
+      updateData.dislikes = 0
+      updateData.score = 0
+      updateData.voterIds = null // Clear all votes
+    }
 
-      // Field by field rather than as a whole node: the votes, the usage count
-      // and the language are not in this map and have to survive the write.
-      for (const [field, value] of Object.entries(updateData)) {
-        writes[`communityFoods/${existingCommunityKey}/${field}`] = value
-      }
+    // Field by field rather than as a whole node: the votes, the usage count
+    // and the language are not in this map and have to survive the write.
+    for (const [field, value] of Object.entries(updateData)) {
+      writes[`communityFoods/${existingCommunityKey}/${field}`] = value
     }
   }
 

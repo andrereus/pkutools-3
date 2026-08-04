@@ -428,6 +428,7 @@ const deleteItem = async () => {
   const logIndex = editedIndex.value
   const entryDate = selectedDiaryEntry.value.date
   const deletedItem = JSON.parse(JSON.stringify(selectedDayLog.value[editedIndex.value]))
+  const itemLocator = deletedItem.itemId ? { itemId: deletedItem.itemId } : { logIndex: logIndex }
 
   // Close dialog immediately for instant feedback
   close()
@@ -435,7 +436,7 @@ const deleteItem = async () => {
   try {
     await deleteFoodItemFromDiary({
       entryKey: entryKey,
-      logIndex: logIndex
+      ...itemLocator
     })
 
     notifications.success(t('diary.item-deleted'), {
@@ -483,6 +484,9 @@ const save = async () => {
   const isEditing = selectedDiaryEntry.value && editedIndex.value > -1
   const entryKey = selectedDiaryEntry.value?.['.key']
   const logIndex = editedIndex.value
+  const itemLocator = editedItem.value.itemId
+    ? { itemId: editedItem.value.itemId }
+    : { logIndex: logIndex }
   const entryDate = date.value
 
   const pheReference = parseReference(editedItem.value.pheReference)
@@ -524,7 +528,7 @@ const save = async () => {
       // Update existing item - validates server-side with Zod
       await updateFoodItemInDiary({
         entryKey: entryKey,
-        logIndex: logIndex,
+        ...itemLocator,
         entry: newLogEntry
       })
     } else {

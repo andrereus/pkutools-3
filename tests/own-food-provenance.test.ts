@@ -276,6 +276,8 @@ describe('editing a published food', () => {
           name: 'Oat drink',
           phe: 50,
           kcal: 45,
+          contributorId: 'owner-1',
+          ownFoodKey: 'entry1',
           source: 'barcode',
           sourceId: '4009233001234',
           factor: 50,

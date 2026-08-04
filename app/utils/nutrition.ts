@@ -32,6 +32,11 @@ export const isReported = (value: unknown): boolean => {
   return false
 }
 
+// Stored records may contain legacy numeric strings. Use this when adding
+// values so `100 + "50"` cannot turn a displayed total into the string
+// "10050"; malformed values contribute nothing.
+export const numericOrZero = (value: unknown): number => (isReported(value) ? Number(value) : 0)
+
 // Read a per-100 g reference out of an editable field. An empty field means "no
 // reference", but an explicit 0 is a real value — spirits and oils have no Phe
 // at all, and 193 BLS plus 104 USDA foods are stored that way. `|| null` would

@@ -48,6 +48,13 @@ const stored = () =>
     }
   ).pheDiary.day1.log[0]!
 
+const storedLog = () =>
+  (
+    fake.data['user-1'] as {
+      pheDiary: { day1: { log: Array<Record<string, unknown>> } }
+    }
+  ).pheDiary.day1.log
+
 const putItem = (entry: Record<string, unknown>) =>
   updateFoodItem(
     requestEvent({ logIndex: 0, entry: { ...ORIGINAL, ...entry } }, {}, { key: 'day1' })
@@ -96,6 +103,23 @@ describe('diary item provenance after edits', () => {
     expect(stored().materiallyEdited).toBe(true)
   })
 
+  it('preserves a stable item id against an edited request', async () => {
+    seed({ ...ORIGINAL, itemId: '-Noriginal' })
+
+    await putItem({ itemId: '-Nreplacement', note: 'Updated note' })
+
+    expect(stored().itemId).toBe('-Noriginal')
+  })
+
+  it('does not let an edit invent a creation time for a legacy item', async () => {
+    const { createdAt: _createdAt, ...legacyItem } = ORIGINAL
+    seed(legacyItem)
+
+    await putItem({ createdAt: 9999, note: 'Updated note' })
+
+    expect(stored()).not.toHaveProperty('createdAt')
+  })
+
   it('derives the same flag when Diet Report saves a complete log', async () => {
     await updateDay(
       requestEvent(
@@ -116,5 +140,218 @@ describe('diary item provenance after edits', () => {
       sourceId: '4009233001234',
       materiallyEdited: true
     })
+  })
+
+  it('upgrades the oldest identity-less item without losing its provenance', async () => {
+    const { createdAt: _createdAt, updatedAt: _updatedAt, ...oldestItem } = ORIGINAL
+    seed(oldestItem)
+
+    await updateDay(
+      requestEvent(
+        {
+          date: '2026-08-04',
+          phe: 50,
+          kcal: 45,
+          log: [{ ...oldestItem, note: 'Still the same food' }]
+        },
+        {},
+        { key: 'day1' }
+      )
+    )
+
+    expect(stored()).toMatchObject({
+      note: 'Still the same food',
+      source: 'barcode',
+      sourceId: '4009233001234',
+      addedFrom: 'own-food'
+    })
+    expect(stored().itemId).toBeTruthy()
+    expect(stored()).not.toHaveProperty('createdAt')
+  })
+
+  it('keeps provenance separate when legacy timestamps collide', async () => {
+    const second = {
+      ...ORIGINAL,
+      name: 'AI meal',
+      source: 'ai-estimate',
+      sourceId: null,
+      factor: null,
+      addedFrom: null,
+      communityFoodKey: null,
+      createdAt: 1000
+    }
+    fake = createFakeDatabase({
+      'user-1': {
+        pheDiary: {
+          day1: {
+            date: '2026-08-04',
+            phe: 100,
+            kcal: 90,
+            log: [ORIGINAL, second]
+          }
+        }
+      }
+    })
+
+    await updateDay(
+      requestEvent(
+        {
+          date: '2026-08-04',
+          phe: 100,
+          kcal: 90,
+          log: [
+            { ...ORIGINAL, note: 'First' },
+            { ...second, note: 'Second' }
+          ]
+        },
+        {},
+        { key: 'day1' }
+      )
+    )
+
+    expect(storedLog()[0]).toMatchObject({ source: 'barcode', note: 'First' })
+    expect(storedLog()[1]).toMatchObject({ source: 'ai-estimate', note: 'Second' })
+    const ids = storedLog().map((item) => item.itemId)
+    expect(ids[0]).toBeTruthy()
+    expect(ids[1]).toBeTruthy()
+    expect(ids[0]).not.toBe(ids[1])
+
+    const [first, secondStored] = structuredClone(storedLog())
+    await updateDay(
+      requestEvent(
+        {
+          date: '2026-08-04',
+          phe: 100,
+          kcal: 90,
+          log: [
+            { ...secondStored, note: 'Moved first' },
+            { ...first, note: 'Moved second' }
+          ]
+        },
+        {},
+        { key: 'day1' }
+      )
+    )
+
+    expect(storedLog()[0]).toMatchObject({ itemId: ids[1], source: 'ai-estimate' })
+    expect(storedLog()[1]).toMatchObject({ itemId: ids[0], source: 'barcode' })
+  })
+
+  it('does not give a new item the deleted item identity when the length stays equal', async () => {
+    const first = { ...ORIGINAL, itemId: '-Nfirst' }
+    const deleted = {
+      ...ORIGINAL,
+      itemId: '-Ndeleted',
+      name: 'AI meal',
+      source: 'ai-estimate',
+      sourceId: null,
+      factor: null,
+      addedFrom: null,
+      communityFoodKey: null,
+      createdAt: 2000
+    }
+    fake = createFakeDatabase({
+      'user-1': {
+        pheDiary: {
+          day1: {
+            date: '2026-08-04',
+            phe: 100,
+            kcal: 90,
+            log: [first, deleted]
+          }
+        }
+      }
+    })
+
+    await updateDay(
+      requestEvent(
+        {
+          date: '2026-08-04',
+          phe: 75,
+          kcal: 70,
+          log: [
+            first,
+            {
+              name: 'New manual food',
+              weight: 100,
+              phe: 25,
+              kcal: 25,
+              source: 'manual',
+              createdAt: 3000,
+              updatedAt: 3000
+            }
+          ]
+        },
+        {},
+        { key: 'day1' }
+      )
+    )
+
+    expect(storedLog()[0]).toMatchObject({ itemId: '-Nfirst', source: 'barcode' })
+    expect(storedLog()[1]).toMatchObject({
+      name: 'New manual food',
+      source: 'manual',
+      createdAt: 3000
+    })
+    expect(storedLog()[1]!.itemId).toBeTruthy()
+    expect(storedLog()[1]!.itemId).not.toBe('-Ndeleted')
+    expect(storedLog()[1]).not.toHaveProperty('addedFrom')
+    expect(storedLog()[1]).not.toHaveProperty('communityFoodKey')
+  })
+
+  it('rejects a stale submitted item id instead of matching by weaker metadata', async () => {
+    seed({ ...ORIGINAL, itemId: '-Nstored' })
+
+    await expect(
+      updateDay(
+        requestEvent(
+          {
+            date: '2026-08-04',
+            phe: 50,
+            kcal: 45,
+            log: [{ ...ORIGINAL, itemId: '-Nstale' }]
+          },
+          {},
+          { key: 'day1' }
+        )
+      )
+    ).rejects.toMatchObject({
+      statusCode: 409,
+      data: { code: 'stale-diary-log' }
+    })
+
+    expect(stored()).toMatchObject({ itemId: '-Nstored', source: 'barcode' })
+  })
+
+  it('rejects duplicate submitted ids instead of guessing which item they identify', async () => {
+    const first = { ...ORIGINAL, itemId: '-Nsame' }
+    const second = { ...ORIGINAL, itemId: '-Nsecond', name: 'Second', createdAt: 2000 }
+    fake = createFakeDatabase({
+      'user-1': {
+        pheDiary: {
+          day1: { date: '2026-08-04', phe: 100, kcal: 90, log: [first, second] }
+        }
+      }
+    })
+
+    await expect(
+      updateDay(
+        requestEvent(
+          {
+            date: '2026-08-04',
+            phe: 100,
+            kcal: 90,
+            log: [first, { ...second, itemId: '-Nsame' }]
+          },
+          {},
+          { key: 'day1' }
+        )
+      )
+    ).rejects.toMatchObject({
+      statusCode: 409,
+      data: { code: 'duplicate-diary-item-id' }
+    })
+
+    expect(storedLog()).toEqual([first, second])
   })
 })

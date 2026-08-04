@@ -72,10 +72,13 @@ const formTitle = computed(() => {
   return editedIndex.value === -1 ? t('common.add') : t('common.edit')
 })
 
-// An AI estimate is a guess, so it is never offered to the community — not from
-// the tool that produced it and not from this form either. Foods entered here
-// carry no source yet at that point, which counts as shareable.
+// An AI estimate is a guess, so a new share is never offered for it. A legacy
+// record that is already shared still needs the control so it can be withdrawn.
 const canShareEditedItem = computed(() => isShareableSource(editedItem.value.source))
+const wasEditedItemShared = computed(() => {
+  if (!editedKey.value) return false
+  return ownFood.value.find((item) => item['.key'] === editedKey.value)?.shared === true
+})
 
 const filteredOwnFood = computed(() => {
   if (!search.value.trim()) {
@@ -822,7 +825,7 @@ defineOgImage('Default', {
         </div>
         <!-- Share with community -->
         <div
-          v-if="canShareEditedItem"
+          v-if="canShareEditedItem || wasEditedItemShared"
           class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4"
         >
           <div class="flex items-start">
@@ -832,6 +835,7 @@ defineOgImage('Default', {
                 v-model="editedItem.shared"
                 name="shared"
                 type="checkbox"
+                :disabled="!canShareEditedItem && !editedItem.shared"
                 class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
               />
             </div>
@@ -839,8 +843,11 @@ defineOgImage('Default', {
               <label for="shared" class="font-medium text-gray-900 dark:text-gray-300">
                 {{ $t('community.share') }}
               </label>
-              <p class="text-gray-500 dark:text-gray-400">
+              <p v-if="canShareEditedItem" class="text-gray-500 dark:text-gray-400">
                 {{ $t('community.shareLanguage', { language: $t('app.language-name') }) }}
+              </p>
+              <p v-else class="text-gray-500 dark:text-gray-400">
+                {{ $t('community.notShareable') }}
               </p>
             </div>
           </div>

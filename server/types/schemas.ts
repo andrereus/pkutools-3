@@ -97,8 +97,17 @@ const provenanceFields = {
   materiallyEdited: z.boolean().optional()
 }
 
+const DiaryItemIdSchema = z
+  .string()
+  .min(1, 'Diary item id is required')
+  .max(64, 'Diary item id is too long')
+
 // Diary entry schema
 export const DiaryEntrySchema = z.object({
+  // Stable identity within a day's log. New entries receive a Firebase push id
+  // server-side; optional so existing timestamp-only entries remain valid and
+  // can be upgraded on their next edit.
+  itemId: DiaryItemIdSchema.optional(),
   name: z.string().min(1, 'Food name is required').max(200, 'Food name is too long'),
   emoji: z.string().nullable().optional(),
   icon: z.string().nullable().optional(),
@@ -213,15 +222,29 @@ export const UpdateDaySchema = z.object({
   incomplete: z.boolean().optional() // When true, the day is flagged as incomplete (not every food was logged) and hidden from chart + stats
 })
 
+const diaryItemLocatorFields = {
+  itemId: DiaryItemIdSchema.optional(),
+  // Kept for clients and records from before stable item ids existed.
+  logIndex: z.number().int().nonnegative('Log index must be non-negative').optional()
+}
+const hasDiaryItemLocator = (data: { itemId?: string; logIndex?: number }) =>
+  data.itemId !== undefined || data.logIndex !== undefined
+
 // Update food item in diary request schema
-export const UpdateFoodItemSchema = z.object({
-  logIndex: z.number().int().nonnegative('Log index must be non-negative'),
-  entry: DiaryEntrySchema
-})
+export const UpdateFoodItemSchema = z
+  .object({
+    ...diaryItemLocatorFields,
+    entry: DiaryEntrySchema
+  })
+  .refine(hasDiaryItemLocator, {
+    message: 'Diary item id or legacy log index is required',
+    path: ['itemId']
+  })
 
 // Delete food item from diary request schema
-export const DeleteFoodItemSchema = z.object({
-  logIndex: z.number().int().nonnegative('Valid log index is required')
+export const DeleteFoodItemSchema = z.object(diaryItemLocatorFields).refine(hasDiaryItemLocator, {
+  message: 'Diary item id or legacy log index is required',
+  path: ['itemId']
 })
 
 // ============================================================================

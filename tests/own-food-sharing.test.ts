@@ -28,8 +28,16 @@ const seed = (
   communityFoods: Record<string, unknown> = {},
   failWrite?: WriteFailure
 ) => {
+  const linkedCommunityFoods = Object.fromEntries(
+    Object.entries(communityFoods).map(([key, food]) => [
+      key,
+      key === ownFood.communityKey && typeof food === 'object' && food !== null
+        ? { contributorId: 'owner-1', ownFoodKey: 'entry1', ...food }
+        : food
+    ])
+  )
   fake = createFakeDatabase(
-    { 'owner-1': { ownFood: { entry1: ownFood } }, communityFoods },
+    { 'owner-1': { ownFood: { entry1: ownFood } }, communityFoods: linkedCommunityFoods },
     failWrite
   )
 }
@@ -240,7 +248,12 @@ describe('editing a food that already collides with another', () => {
         }
       },
       communityFoods: {
-        community1: { name: 'Protein shake', phe: 12, contributorId: 'owner-1' }
+        community1: {
+          name: 'Protein shake',
+          phe: 12,
+          contributorId: 'owner-1',
+          ownFoodKey: 'entry1'
+        }
       }
     })
   }
@@ -298,6 +311,113 @@ describe('unsharing an own food', () => {
     // Firebase deletes a child written as null, so the field is gone from the
     // record rather than present and null — what the client's listener sees.
     expect(storedOwnFood()).not.toHaveProperty('communityKey')
+  })
+
+  it("does not delete another contributor's food through a malformed pointer", async () => {
+    seed(
+      { ...OWN_FOOD, shared: true, communityKey: 'community1' },
+      {
+        community1: {
+          name: "Someone else's food",
+          phe: 25,
+          contributorId: 'owner-2',
+          ownFoodKey: 'entry-other'
+        }
+      }
+    )
+
+    await updateOwnFood(request({ shared: false }))
+
+    expect(community().community1).toMatchObject({ contributorId: 'owner-2' })
+    expect(storedOwnFood().shared).toBe(false)
+    expect(storedOwnFood()).not.toHaveProperty('communityKey')
+  })
+
+  it('trusts a verified pointer over a drifted shared flag when unsharing', async () => {
+    seed(
+      { ...OWN_FOOD, shared: false, communityKey: 'community1' },
+      { community1: { name: 'Protein shake', phe: 12 } }
+    )
+
+    await updateOwnFood(request({ shared: false }))
+
+    expect(community().community1).toBeUndefined()
+    expect(storedOwnFood()).not.toHaveProperty('communityKey')
+  })
+})
+
+describe('repairing an invalid community link', () => {
+  it('does not use a malformed non-string pointer as a database path', async () => {
+    seed(
+      { ...OWN_FOOD, shared: true, communityKey: { malformed: true } },
+      {
+        '[object Object]': {
+          name: 'Unrelated food',
+          phe: 25,
+          contributorId: 'owner-1',
+          ownFoodKey: 'entry1'
+        }
+      }
+    )
+
+    const result = await updateOwnFood(request({ shared: true }))
+
+    expect(result.communityKey).not.toBe('[object Object]')
+    expect(community()['[object Object]']).toMatchObject({ name: 'Unrelated food', phe: 25 })
+    expect(community()[result.communityKey!]).toMatchObject({
+      name: 'Protein shake',
+      contributorId: 'owner-1',
+      ownFoodKey: 'entry1'
+    })
+  })
+
+  it('recreates a missing public copy and updates the pointer atomically', async () => {
+    seed({ ...OWN_FOOD, shared: true, communityKey: 'missing' })
+
+    const result = await updateOwnFood(request({ shared: true }))
+
+    expect(result.communityKey).not.toBe('missing')
+    expect(community()[result.communityKey!]).toMatchObject({
+      name: 'Protein shake',
+      contributorId: 'owner-1',
+      ownFoodKey: 'entry1'
+    })
+    expect(storedOwnFood().communityKey).toBe(result.communityKey)
+  })
+
+  it("replaces a foreign pointer without touching the other contributor's food", async () => {
+    seed(
+      { ...OWN_FOOD, shared: true, communityKey: 'foreign' },
+      {
+        foreign: {
+          name: 'Different food',
+          phe: 25,
+          contributorId: 'owner-2',
+          ownFoodKey: 'entry-other'
+        }
+      }
+    )
+
+    const result = await updateOwnFood(request({ shared: true }))
+
+    expect(community().foreign).toMatchObject({ contributorId: 'owner-2' })
+    expect(result.communityKey).not.toBe('foreign')
+    expect(community()[result.communityKey!]).toMatchObject({
+      contributorId: 'owner-1',
+      ownFoodKey: 'entry1'
+    })
+  })
+
+  it('leaves the broken state untouched when its atomic repair write fails', async () => {
+    const failWrite: WriteFailure = (operation) => operation === 'update'
+    seed({ ...OWN_FOOD, shared: true, communityKey: 'missing' }, {}, failWrite)
+
+    await expect(updateOwnFood(request({ shared: true }))).rejects.toMatchObject({
+      statusCode: 500
+    })
+
+    expect(Object.keys(community())).toHaveLength(0)
+    expect(storedOwnFood()).toMatchObject({ shared: true, communityKey: 'missing' })
   })
 })
 
