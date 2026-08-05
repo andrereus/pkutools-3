@@ -31,6 +31,37 @@ interface OwnFoodInput {
   sourceId?: string | null
 }
 
+interface SaveNotesInput {
+  useOwnFoodNote: boolean
+  saveToOwnFood: boolean
+  ownFoodNote: unknown
+  defaultDiaryNote: unknown
+}
+
+const normalizedNote = (value: unknown): string | null =>
+  typeof value === 'string' && value.trim() !== '' ? value.trim() : null
+
+// One note decision for both destinations. `useOwnFoodNote` is true for a
+// label scan, where the visible Own Food note should also reach the diary. It
+// is false for an estimate, whose model explanation stays authoritative.
+export const resolveSaveNotes = ({
+  useOwnFoodNote,
+  saveToOwnFood,
+  ownFoodNote,
+  defaultDiaryNote
+}: SaveNotesInput): { diary: string | null; ownFood: string | null } => {
+  const note = useOwnFoodNote
+    ? saveToOwnFood
+      ? normalizedNote(ownFoodNote)
+      : null
+    : normalizedNote(defaultDiaryNote)
+
+  return {
+    diary: note,
+    ownFood: saveToOwnFood ? note : null
+  }
+}
+
 export const useSaveToOwnFood = () => {
   const { saveOwnFood } = useApi()
   const notifications = useNotifications()

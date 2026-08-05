@@ -12,6 +12,7 @@ import {
   nutrientRows,
   isReported
 } from '../utils/nutrition'
+import { resolveSaveNotes } from '../composables/useSaveToOwnFood'
 
 const store = useStore()
 const { t, locale } = useI18n()
@@ -529,6 +530,18 @@ const save = async () => {
 
   if (!result.value) return
 
+  // Resolve this once for both records. An estimate always keeps the model's
+  // explanation; a label uses the note visible inside the Own Food option and
+  // ignores any stale hidden value after that option is unticked.
+  const shouldSaveToOwnFood = saveToOwnFood.value
+  const shouldShareWithCommunity = shareWithCommunity.value
+  const saveNotes = resolveSaveNotes({
+    useOwnFoodNote: isLabelResult.value,
+    saveToOwnFood: shouldSaveToOwnFood,
+    ownFoodNote: ownFoodNote.value,
+    defaultDiaryNote: result.value.explanation
+  })
+
   let logEntry = {
     name: result.value.name || t('ai-calculator.title'),
     emoji: result.value.emoji || null,
@@ -538,7 +551,7 @@ const save = async () => {
     weight: Number(weight.value),
     phe: totalPhe.value,
     kcal: totalKcal.value,
-    note: result.value.explanation || null,
+    note: saveNotes.diary,
     // A read label is a calculation from printed values; an estimate is a guess
     source: isLabelResult.value ? 'ai-label' : 'ai-estimate',
     ...(result.value.nutrients && { nutrients: result.value.nutrients }),
@@ -559,24 +572,20 @@ const save = async () => {
 
     // The own food stores the same reference the diary entry is calculated
     // from, with the same provenance.
-    if (saveToOwnFood.value) {
+    if (shouldSaveToOwnFood) {
       // An estimate always carries the model's explanation of how it arrived at
       // these values — the same account the diary entry gets, and the thing a
       // saved food needs most, since it outlives the meal it was logged for.
       // Only a read label offers a note field, and there is no explanation to
       // keep there. Either way the note stays editable in Own Food.
-      const entryNote =
-        ownFoodNote.value && ownFoodNote.value.trim() !== ''
-          ? ownFoodNote.value.trim()
-          : logEntry.note || null
       ownFoodOutcome = await saveAlongsideDiary({
         name: logEntry.name,
         icon: null,
         emoji: logEntry.emoji || null,
         phe: logEntry.pheReference,
         kcal: logEntry.kcalReference,
-        note: entryNote,
-        shared: canShareResult.value && shareWithCommunity.value,
+        note: saveNotes.ownFood,
+        shared: canShareResult.value && shouldShareWithCommunity,
         source: logEntry.source,
         ...(logEntry.nutrients && { nutrients: logEntry.nutrients }),
         ...(logEntry.factor && { factor: logEntry.factor })

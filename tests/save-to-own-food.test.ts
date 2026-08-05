@@ -20,7 +20,7 @@ vi.stubGlobal('useI18n', () => ({
   te: (key: string) => key !== 'errors.no-such-code'
 }))
 
-const { useSaveToOwnFood } = await import('../app/composables/useSaveToOwnFood')
+const { resolveSaveNotes, useSaveToOwnFood } = await import('../app/composables/useSaveToOwnFood')
 
 const FOOD = { name: 'Oat drink', phe: 50, kcal: 45, note: null, source: 'barcode' as const }
 
@@ -48,7 +48,8 @@ describe('saving a food alongside a diary entry', () => {
   })
 
   // The diary write happens after this returns, so throwing here would take the
-  // entry down with the food.
+  // entry down with the food. A network failure also carries no code, which is
+  // the other way the reason falls back to the generic one.
   it('never throws, whatever the save did', async () => {
     saveOwnFood.mockRejectedValue(new Error('offline'))
     const { saveAlongsideDiary } = useSaveToOwnFood()
@@ -56,6 +57,20 @@ describe('saving a food alongside a diary entry', () => {
     await expect(saveAlongsideDiary(FOOD)).resolves.toMatchObject({
       failure: 'errors.unexpected',
       alreadyExists: false
+    })
+  })
+
+  // A code the locales don't have yet must reach the user as a sentence, not as
+  // a raw slug.
+  it('falls back to the generic reason for an untranslated code', async () => {
+    saveOwnFood.mockRejectedValue({
+      statusCode: 400,
+      data: { data: { code: 'no-such-code' } }
+    })
+    const { saveAlongsideDiary } = useSaveToOwnFood()
+
+    await expect(saveAlongsideDiary(FOOD)).resolves.toMatchObject({
+      failure: 'errors.unexpected'
     })
   })
 
@@ -124,9 +139,8 @@ describe('reporting the save', () => {
   })
 })
 
-// Notes are deliberately not carried anywhere by this composable: the note a
-// tool sends is the one its field is showing, so it can only ever describe the
-// food in front of the user.
+// Notes are deliberately not retained as composable state: the current save
+// resolves them once, so no note can leak into the next food.
 describe('the note', () => {
   it('is passed through untouched and kept nowhere', async () => {
     saveOwnFood.mockResolvedValue({ success: true, key: 'entry1' })
@@ -138,5 +152,43 @@ describe('the note', () => {
       silent: true
     })
     expect(Object.keys(useSaveToOwnFood())).toEqual(['saveAlongsideDiary', 'reportSaved'])
+  })
+
+  it.each([
+    {
+      name: 'uses an estimate explanation in both records',
+      input: {
+        useOwnFoodNote: false,
+        saveToOwnFood: true,
+        ownFoodNote: 'stale hidden note',
+        defaultDiaryNote: 'Estimated from a typical serving'
+      },
+      expected: {
+        diary: 'Estimated from a typical serving',
+        ownFood: 'Estimated from a typical serving'
+      }
+    },
+    {
+      name: 'uses a visible label note in both records',
+      input: {
+        useOwnFoodNote: true,
+        saveToOwnFood: true,
+        ownFoodNote: '  Per prepared serving  ',
+        defaultDiaryNote: null
+      },
+      expected: { diary: 'Per prepared serving', ownFood: 'Per prepared serving' }
+    },
+    {
+      name: 'ignores a hidden label note after Own Food is unticked',
+      input: {
+        useOwnFoodNote: true,
+        saveToOwnFood: false,
+        ownFoodNote: 'note from the visible field before unticking',
+        defaultDiaryNote: null
+      },
+      expected: { diary: null, ownFood: null }
+    }
+  ])('$name', ({ input, expected }) => {
+    expect(resolveSaveNotes(input)).toEqual(expected)
   })
 })

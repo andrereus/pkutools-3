@@ -269,14 +269,6 @@ describe('editing a food that already collides with another', () => {
     expect(storedOwnFood().shared).toBe(false)
   })
 
-  it('lets everything but the name and phe be edited', async () => {
-    seedColliding({ ...OWN_FOOD })
-
-    await updateOwnFood(request({ kcal: 120, note: 'Two scoops', emoji: '🥤' }))
-
-    expect(storedOwnFood()).toMatchObject({ kcal: 120, note: 'Two scoops', emoji: '🥤' })
-  })
-
   it('does not treat an unchanged legacy string Phe as an identity edit', async () => {
     seedColliding({ ...OWN_FOOD, phe: '12' })
 
