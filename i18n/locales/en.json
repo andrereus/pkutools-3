@@ -154,6 +154,7 @@
     "source-barcode": "Barcode scan",
     "source-ai-label": "Label scan",
     "source-ai-estimate": "AI estimate",
+    "materially-edited": "subsequently edited",
     "product-link": "For products with barcode, use the {tool}.",
     "not-found-link": "Not found? Estimate anything with the {ai} or add your {own} to the search.",
     "not-found-link-own": "own food"

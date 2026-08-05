@@ -159,7 +159,12 @@ const valueSourceLabel = computed(() => {
   // The barcode identifies the exact product, which is what makes a community
   // food verifiable — worth showing next to the origin it came from.
   const code = foodSource.value === 'barcode' && foodSourceId.value ? foodSourceId.value : null
-  return code ? `${t(key)} · ${code}` : t(key)
+  const originalSource = code ? `${t(key)} · ${code}` : t(key)
+  // The source remains the immutable origin, while this qualifier makes clear
+  // that the currently shown name or nutrition no longer matches it verbatim.
+  return foodMateriallyEdited.value
+    ? `${originalSource} · ${t('food-search.materially-edited')}`
+    : originalSource
 })
 
 // An own food whose values came from an AI estimate is never offered to the

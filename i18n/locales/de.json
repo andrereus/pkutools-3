@@ -154,6 +154,7 @@
     "source-barcode": "Barcode-Scan",
     "source-ai-label": "Etikett-Scan",
     "source-ai-estimate": "KI-Schätzung",
+    "materially-edited": "nachträglich bearbeitet",
     "product-link": "Verwende für Produkte mit Barcode den {tool}.",
     "not-found-link": "Nicht gefunden? Schätze alles mit dem {ai} oder füge dein {own} zur Suche hinzu.",
     "not-found-link-own": "eigenes Lebensmittel"

@@ -5,6 +5,7 @@ import { validateBody } from '../../utils/validation'
 import { checkPremiumStatus } from '../../utils/license'
 import { isCommunityFoodHidden, isShareableSource } from '../../utils/community-food'
 import { storedNumberEquals } from '../../utils/numeric'
+import { normalizeFoodName } from '../../../shared/utils/material-food'
 import type { H3Event } from 'h3'
 
 // Helper to get user's language from request body or Accept-Language header (fallback)
@@ -25,11 +26,6 @@ function getLanguage(event: H3Event, bodyLocale?: string): 'en' | 'de' | 'es' | 
   return 'en'
 }
 
-// Helper to normalize string for duplicate comparison
-function normalizeString(str: string): string {
-  return str.toLowerCase().trim()
-}
-
 // Check for duplicate community foods
 async function checkDuplicateCommunityFood(
   db: ReturnType<typeof getAdminDatabase>,
@@ -46,7 +42,7 @@ async function checkDuplicateCommunityFood(
   const foods = communityFoodsSnapshot.val()
   if (!foods) return false
 
-  const normalizedName = normalizeString(name)
+  const normalizedName = normalizeFoodName(name)
   for (const key of Object.keys(foods)) {
     const existing = foods[key]
     // Skip hidden foods (based on score) - they shouldn't block new submissions
@@ -54,7 +50,7 @@ async function checkDuplicateCommunityFood(
     if (isCommunityFoodHidden(score)) continue
     // Duplicate = same name (case-insensitive) AND exact same phe value
     if (
-      normalizeString(existing.name) === normalizedName &&
+      normalizeFoodName(existing.name) === normalizedName &&
       storedNumberEquals(existing.phe, phe)
     ) {
       return true
@@ -117,10 +113,11 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   // Duplicate = same name (case-insensitive) AND exact same phe value,
   // mirroring the community duplicate rule
   if (existingFoods) {
-    const normalizedName = normalizeString(foodData.name)
+    const normalizedName = normalizeFoodName(foodData.name)
     const isDuplicate = Object.values(existingFoods).some(
       (food) =>
-        normalizeString(food.name) === normalizedName && storedNumberEquals(food.phe, foodData.phe)
+        normalizeFoodName(food.name) === normalizedName &&
+        storedNumberEquals(food.phe, foodData.phe)
     )
     if (isDuplicate) {
       throw createError({

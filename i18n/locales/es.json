@@ -154,6 +154,7 @@
     "source-barcode": "Escaneo de código de barras",
     "source-ai-label": "Escaneo de etiqueta",
     "source-ai-estimate": "Estimación de IA",
+    "materially-edited": "modificado posteriormente",
     "product-link": "Para productos con código de barras, utiliza el {tool}.",
     "not-found-link": "¿No lo encuentras? Estima cualquier cosa con la {ai} o añade tu {own} a la búsqueda.",
     "not-found-link-own": "propio alimento"

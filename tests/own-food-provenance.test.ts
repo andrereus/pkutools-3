@@ -171,6 +171,38 @@ describe('saving the same product twice', () => {
     ).rejects.toMatchObject({ statusCode: 409, data: { code: 'duplicate-community-food' } })
     expect(Object.keys(ownFoods())).toHaveLength(0)
   })
+
+  it('does not let a nameless legacy own food block every subsequent save', async () => {
+    fake = createFakeDatabase({
+      'owner-1': {
+        ownFood: { legacy: { phe: 5, kcal: 20, shared: false } }
+      }
+    })
+
+    await saveOwnFood(requestEvent({ name: 'Shake', phe: 12, kcal: 90, locale: 'en' }))
+
+    expect(Object.keys(ownFoods())).toHaveLength(2)
+    expect(Object.values(ownFoods())).toContainEqual(
+      expect.objectContaining({ name: 'Shake', phe: 12 })
+    )
+  })
+
+  it('does not let a nameless legacy community food block sharing', async () => {
+    fake = createFakeDatabase({
+      communityFoods: {
+        legacy: { phe: 5, kcal: 20, language: 'en', likes: 0, dislikes: 0 }
+      }
+    })
+
+    await saveOwnFood(
+      requestEvent({ name: 'Shake', phe: 12, kcal: 90, shared: true, locale: 'en' })
+    )
+
+    expect(Object.keys(community())).toHaveLength(2)
+    expect(Object.values(community())).toContainEqual(
+      expect.objectContaining({ name: 'Shake', phe: 12 })
+    )
+  })
 })
 
 describe('publishing a food the community should not get', () => {
