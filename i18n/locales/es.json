@@ -252,8 +252,6 @@
     "tab-title": "Alim. propios",
     "description": "Guarda tus propios alimentos para añadir rápidamente.",
     "export-filename": "PKU Tools - Alimento propio",
-    "generate-icon": "Generar icono",
-    "update-icon": "Actualizar icono",
     "item-deleted": "Alimento eliminado",
     "diary-only": "Guardado en el diario. No se guardó en Alimentos propios: {reason}",
     "already-saved": "Guardado en el diario. Este alimento ya está en Alimentos propios.",

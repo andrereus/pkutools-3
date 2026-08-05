@@ -252,8 +252,6 @@
     "tab-title": "Alim. perso.",
     "description": "Enregistre tes propres aliments pour un ajout rapide.",
     "export-filename": "PKU Tools - Aliments personnels",
-    "generate-icon": "Générer l'icône",
-    "update-icon": "Mettre à jour l'icône",
     "item-deleted": "Aliment supprimé",
     "diary-only": "Enregistré dans le journal. Non enregistré dans Aliments personnels : {reason}",
     "already-saved": "Enregistré dans le journal. Cet aliment est déjà dans Aliments personnels.",

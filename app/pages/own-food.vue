@@ -82,6 +82,13 @@ const showIconUpdate = computed(() => {
   return !!editedItem.value.emoji && !!name && name !== emojiBasisName.value.trim()
 })
 
+// The dialog corner offers the icon action: generate one for an entry that has
+// none (legacy or a failed generation), or update the one it has
+const showIconAction = computed(() => {
+  if (editedIndex.value === -1 || !editedItem.value.name?.trim()) return false
+  return !editedItem.value.emoji || showIconUpdate.value
+})
+
 // An AI estimate is a guess, so a new share is never offered for it. A legacy
 // record that is already shared still needs the control so it can be withdrawn.
 const canShareEditedItem = computed(() => isShareableSource(editedItem.value.source))
@@ -772,50 +779,21 @@ defineOgImage('Default', {
       <ModalDialog
         ref="dialog"
         :title="formTitle"
+        :emoji="editedIndex > -1 ? editedItem.emoji || '🍽' : ''"
+        :emoji-refreshable="showIconAction"
+        :emoji-refreshing="isGeneratingEmoji"
         :loading="isSaving"
         :buttons="[
           { label: $t('common.save'), type: 'submit', visible: true },
           { label: $t('common.delete'), type: 'delete', visible: editedIndex !== -1 },
           { label: $t('common.cancel'), type: 'close', visible: true }
         ]"
+        @refresh-emoji="generateIcon"
         @submit="save"
         @delete="deleteItem"
         @close="closeModal"
       >
-        <div v-if="editedIndex > -1" class="flex items-center gap-2 my-1">
-          <span v-if="editedItem.emoji" class="text-xl flex-shrink-0">{{ editedItem.emoji }}</span>
-          <span v-else-if="editedItem.icon" class="flex-shrink-0">
-            <img
-              :src="'/images/food-icons/' + editedItem.icon + '.svg'"
-              width="25"
-              class="food-icon"
-              alt="Food Icon"
-              onerror="this.src = '/images/food-icons/organic-food.svg'"
-            />
-          </span>
-          <span v-else class="text-xl flex-shrink-0 opacity-50">🍽</span>
-          <div class="flex gap-2">
-            <SecondaryButton
-              v-if="!editedItem.emoji"
-              :text="$t('own-food.generate-icon')"
-              :disabled="!editedItem.name?.trim() || isGeneratingEmoji"
-              @click="generateIcon"
-            />
-            <SecondaryButton
-              v-else-if="showIconUpdate"
-              :text="$t('own-food.update-icon')"
-              :disabled="isGeneratingEmoji"
-              @click="generateIcon"
-            />
-          </div>
-        </div>
-
-        <TextInput
-          v-model="editedItem.name"
-          id-name="food"
-          :label="$t('common.food-name')"
-          class="mt-2"
-        />
+        <TextInput v-model="editedItem.name" id-name="food" :label="$t('common.food-name')" />
         <div>
           <label
             for="note"

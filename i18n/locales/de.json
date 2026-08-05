@@ -252,8 +252,6 @@
     "tab-title": "Eig. Leb.",
     "description": "Hinterlege eigene Lebensmittel zum schnellen Hinzufügen.",
     "export-filename": "PKU Tools - Eigene Lebensmittel",
-    "generate-icon": "Icon generieren",
-    "update-icon": "Icon aktualisieren",
     "item-deleted": "Lebensmittel gelöscht",
     "diary-only": "Ins Tagebuch gespeichert. Nicht in Eigene Lebensmittel gespeichert: {reason}",
     "already-saved": "Ins Tagebuch gespeichert. Dieses Lebensmittel ist schon in Eigene Lebensmittel.",
