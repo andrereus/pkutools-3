@@ -17,6 +17,7 @@ import DataTablePagination from '@/components/DataTablePagination.vue'
 import { LucideStickyNote, LucideUsers, LucideThumbsUp, LucideThumbsDown } from '@lucide/vue'
 import { scaleToWeight, nutrientRows } from '../utils/nutrition'
 import { isShareableSource } from '../utils/community-food'
+import { foodSourceLabel } from '../utils/food-source-label'
 import { hasMaterialFoodChange } from '#shared/utils/material-food'
 
 const store = useStore()
@@ -502,6 +503,12 @@ const ownFoodNutrientRows = computed(() =>
   nutrientRows(editedItem.value.nutrients, weight.value, t)
 )
 
+// Own Food holds hand-entered values next to scanned products, read labels and
+// AI estimates, and months later they look alike. The origin is what separates
+// a printed value from a guess — and it is the same sentence food search shows
+// for the same food.
+const editedItemSourceLabel = computed(() => foodSourceLabel(editedItem.value, t))
+
 const add = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
@@ -937,6 +944,11 @@ defineOgImage('Default', {
             <span>{{ row.value }} g</span>
           </div>
         </div>
+
+        <!-- Where these values came from, worded as in food search -->
+        <p v-if="editedItemSourceLabel" class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+          {{ $t('food-search.value-source', { source: editedItemSourceLabel }) }}
+        </p>
 
         <!-- Share with community CTA when not shared (where metrics would be) - opens edit form like Edit button -->
         <div

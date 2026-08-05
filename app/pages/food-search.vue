@@ -3,6 +3,7 @@ import { useStore } from '../../stores/index'
 import Fuse from 'fuse.js'
 import { format } from 'date-fns'
 import { isCommunityFoodHidden, isShareableSource } from '../utils/community-food'
+import { foodSourceLabel } from '../utils/food-source-label'
 import { roundReference, scaleToWeight, nutrientRows, isReported } from '../utils/nutrition'
 
 const store = useStore()
@@ -142,30 +143,21 @@ const calculateKcal = () => scaleToWeight(Number(kcalReference.value), weight.va
 
 const foodNutrientRows = computed(() => nutrientRows(nutrients.value, weight.value, t))
 
-// How an own or community food was arrived at, in words. BLS and USDA are left
-// out: those carry a badge in the list and are named in the search info below
-// it, so a second label would only repeat them.
-const VALUE_SOURCE_LABEL_KEYS = {
-  manual: 'food-search.source-manual',
-  barcode: 'food-search.source-barcode',
-  'ai-label': 'food-search.source-ai-label',
-  'ai-estimate': 'food-search.source-ai-estimate'
-}
-
-const valueSourceLabel = computed(() => {
-  if (!isOwnFood.value && !isCommunityFood.value) return null
-  const key = VALUE_SOURCE_LABEL_KEYS[foodSource.value]
-  if (!key) return null
-  // The barcode identifies the exact product, which is what makes a community
-  // food verifiable — worth showing next to the origin it came from.
-  const code = foodSource.value === 'barcode' && foodSourceId.value ? foodSourceId.value : null
-  const originalSource = code ? `${t(key)} · ${code}` : t(key)
-  // The source remains the immutable origin, while this qualifier makes clear
-  // that the currently shown name or nutrition no longer matches it verbatim.
-  return foodMateriallyEdited.value
-    ? `${originalSource} · ${t('food-search.materially-edited')}`
-    : originalSource
-})
+// Only own and community foods say where their values came from. A reference
+// database entry is badged in the list above and named in the search info
+// below it, so a label here would only repeat them.
+const valueSourceLabel = computed(() =>
+  isOwnFood.value || isCommunityFood.value
+    ? foodSourceLabel(
+        {
+          source: foodSource.value,
+          sourceId: foodSourceId.value,
+          materiallyEdited: foodMateriallyEdited.value
+        },
+        t
+      )
+    : null
+)
 
 // An own food whose values came from an AI estimate is never offered to the
 // community, so neither is the shortcut that leads there
