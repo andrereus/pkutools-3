@@ -560,11 +560,15 @@ const save = async () => {
     // The own food stores the same reference the diary entry is calculated
     // from, with the same provenance.
     if (saveToOwnFood.value) {
-      // Only the own food gets this note. The diary entry keeps the model's
-      // explanation of how it arrived at these values, which is what makes the
-      // entry readable later; it can still be edited there.
+      // An estimate always carries the model's explanation of how it arrived at
+      // these values — the same account the diary entry gets, and the thing a
+      // saved food needs most, since it outlives the meal it was logged for.
+      // Only a read label offers a note field, and there is no explanation to
+      // keep there. Either way the note stays editable in Own Food.
       const entryNote =
-        ownFoodNote.value && ownFoodNote.value.trim() !== '' ? ownFoodNote.value.trim() : null
+        ownFoodNote.value && ownFoodNote.value.trim() !== ''
+          ? ownFoodNote.value.trim()
+          : logEntry.note || null
       ownFoodOutcome = await saveAlongsideDiary({
         name: logEntry.name,
         icon: null,
@@ -922,6 +926,7 @@ defineOgImage('Default', {
         v-model:note="ownFoodNote"
         v-model:shared="shareWithCommunity"
         :can-share="canShareResult"
+        :show-note="isLabelResult"
         :hint="isLabelResult && result.phePer100g === null ? $t('common.check-food-type') : null"
       />
 

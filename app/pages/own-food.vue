@@ -15,7 +15,7 @@ import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
 import { LucideStickyNote, LucideUsers, LucideThumbsUp, LucideThumbsDown } from '@lucide/vue'
-import { scaleToWeight } from '../utils/nutrition'
+import { scaleToWeight, nutrientRows } from '../utils/nutrition'
 import { isShareableSource } from '../utils/community-food'
 import { hasMaterialFoodChange } from '#shared/utils/material-food'
 
@@ -495,6 +495,13 @@ const calculatePhe = () => scaleToWeight(Number(editedItem.value.phe), weight.va
 
 const calculateKcal = () => scaleToWeight(Number(editedItem.value.kcal), weight.value)
 
+// Own foods saved from the scanners and the calculators carry the nutrients
+// their source reported. They render here exactly as they do in food search and
+// in the tool the food came from, scaled to the weight being added.
+const ownFoodNutrientRows = computed(() =>
+  nutrientRows(editedItem.value.nutrients, weight.value, t)
+)
+
 const add = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
@@ -917,6 +924,18 @@ defineOgImage('Default', {
         <div class="flex gap-4 mt-4">
           <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>
           <span class="flex-1 ml-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
+        </div>
+
+        <!-- Nutrient breakdown for the entered weight, for the foods that carry
+             one. Same grid as food search and the tools the food came from. -->
+        <div
+          v-if="ownFoodNutrientRows.length > 0"
+          class="mt-4 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
+        >
+          <div v-for="row in ownFoodNutrientRows" :key="row.key" class="flex justify-between">
+            <span>{{ row.label }}</span>
+            <span>{{ row.value }} g</span>
+          </div>
         </div>
 
         <!-- Share with community CTA when not shared (where metrics would be) - opens edit form like Edit button -->
