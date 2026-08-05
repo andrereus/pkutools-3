@@ -169,7 +169,7 @@ function handleButtonClick(buttonType) {
                       <button
                         v-if="emojiRefreshable"
                         type="button"
-                        class="cursor-pointer rounded-md p-1 text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed dark:text-gray-500 dark:hover:text-gray-300"
+                        class="p-1.5 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
                         :disabled="emojiRefreshing"
                         :aria-label="$t('common.update-emoji')"
                         @click="$emit('refresh-emoji')"
