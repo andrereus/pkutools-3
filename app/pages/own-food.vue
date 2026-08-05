@@ -41,7 +41,9 @@ const weight = ref(100)
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isSaving = ref(false)
 const isGeneratingEmoji = ref(false)
-const hasRemovedIconThisSession = ref(false)
+// The food name the current emoji was generated for; when the name is edited
+// away from this, an update button offers to regenerate the emoji
+const emojiBasisName = ref('')
 
 const defaultItem = {
   name: '',
@@ -71,6 +73,13 @@ const editedCommunityFood = computed(() => {
 
 const formTitle = computed(() => {
   return editedIndex.value === -1 ? t('common.add') : t('common.edit')
+})
+
+// Offer the icon update once the name is edited away from what the current
+// emoji represents (only when there is an emoji to replace)
+const showIconUpdate = computed(() => {
+  const name = editedItem.value.name?.trim()
+  return !!editedItem.value.emoji && !!name && name !== emojiBasisName.value.trim()
 })
 
 // An AI estimate is a guess, so a new share is never offered for it. A legacy
@@ -313,7 +322,7 @@ const closeModal = () => {
   editedItem.value = { ...defaultItem }
   editedIndex.value = -1
   editedKey.value = null
-  hasRemovedIconThisSession.value = false
+  emojiBasisName.value = ''
   if (route.query.edit) {
     router.replace({ path: route.path, query: {} })
   }
@@ -454,7 +463,7 @@ const addItem = (item) => {
   editedIndex.value = ownFood.value.indexOf(item)
   editedKey.value = item['.key']
   editedItem.value = { ...item }
-  hasRemovedIconThisSession.value = false
+  emojiBasisName.value = editedItem.value.name || ''
   selectedDate.value = format(new Date(), 'yyyy-MM-dd')
   dialog2.value.openDialog()
 }
@@ -466,7 +475,7 @@ const openEditDialogForEntryKey = (entryKey) => {
   editedIndex.value = ownFood.value.indexOf(item)
   editedKey.value = entryKey
   editedItem.value = { ...item }
-  hasRemovedIconThisSession.value = false
+  emojiBasisName.value = editedItem.value.name || ''
   dialog.value.openDialog()
   return true
 }
@@ -608,23 +617,24 @@ const triggerDownload = (csvContent) => {
 }
 
 const generateIcon = async () => {
-  if (!editedItem.value.name?.trim()) return
+  const name = editedItem.value.name?.trim()
+  if (!name) return
   isGeneratingEmoji.value = true
   try {
-    const emoji = await fetchEmojiForFood(editedItem.value.name)
+    const emoji = await fetchEmojiForFood(name)
     if (emoji) {
       editedItem.value.emoji = emoji
       editedItem.value.icon = null
+      // Advance the basis so the update button hides until the name is edited
+      // again; on a failed fetch it stays so the user can retry
+      emojiBasisName.value = name
+    } else {
+      // Surface the failure so the user isn't left re-clicking a silent button
+      notifications.error(t('errors.emoji-update-failed'))
     }
   } finally {
     isGeneratingEmoji.value = false
   }
-}
-
-const removeIcon = () => {
-  editedItem.value.emoji = null
-  editedItem.value.icon = null
-  hasRemovedIconThisSession.value = true
 }
 
 definePageMeta({
@@ -786,23 +796,18 @@ defineOgImage('Default', {
           <span v-else class="text-xl flex-shrink-0 opacity-50">🍽</span>
           <div class="flex gap-2">
             <SecondaryButton
-              v-if="!editedItem.emoji && !hasRemovedIconThisSession"
+              v-if="!editedItem.emoji"
               :text="$t('own-food.generate-icon')"
               :disabled="!editedItem.name?.trim() || isGeneratingEmoji"
               @click="generateIcon"
             />
             <SecondaryButton
-              v-if="editedItem.emoji"
-              :text="$t('own-food.remove-icon')"
-              @click="removeIcon"
+              v-else-if="showIconUpdate"
+              :text="$t('own-food.update-icon')"
+              :disabled="isGeneratingEmoji"
+              @click="generateIcon"
             />
           </div>
-          <p
-            v-if="hasRemovedIconThisSession && !editedItem.emoji"
-            class="text-xs text-gray-500 dark:text-gray-400"
-          >
-            {{ $t('own-food.icon-removed-hint') }}
-          </p>
         </div>
 
         <TextInput
