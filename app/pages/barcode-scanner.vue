@@ -405,11 +405,6 @@ const save = async () => {
         factor: logEntry.factor,
         ...(logEntry.nutrients && { nutrients: logEntry.nutrients })
       })
-      if (!ownFoodOutcome.failure) {
-        // Uncheck so a retry after a failed diary write doesn't save it twice
-        saveToOwnFood.value = false
-        shareWithCommunity.value = false
-      }
     }
 
     await addFoodItemToDiary({
@@ -420,6 +415,14 @@ const save = async () => {
     // Navigate after successful save
     navigateTo(localePath('diary'))
   } catch (error) {
+    // The food is already in Own Food, so a retry must not save it a second
+    // time. Unticking happens here rather than the moment it was written: on the
+    // way to a successful save the option would collapse under the user while
+    // the diary write is still running.
+    if (ownFoodOutcome && !ownFoodOutcome.failure) {
+      saveToOwnFood.value = false
+      shareWithCommunity.value = false
+    }
     // Error handling is done in useApi composable
     console.error('Save error:', error)
   } finally {
