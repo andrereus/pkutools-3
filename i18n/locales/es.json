@@ -254,6 +254,7 @@
     "export-filename": "PKU Tools - Alimento propio",
     "generate-icon": "Generar icono",
     "remove-icon": "Quitar",
+    "icon-removed-hint": "Puedes generar un icono nuevo después de guardar.",
     "item-deleted": "Alimento eliminado",
     "diary-only": "Guardado en el diario. No se guardó en Alimentos propios: {reason}",
     "already-saved": "Guardado en el diario. Este alimento ya está en Alimentos propios.",

@@ -254,6 +254,7 @@
     "export-filename": "PKU Tools - Aliments personnels",
     "generate-icon": "Générer l'icône",
     "remove-icon": "Supprimer",
+    "icon-removed-hint": "Tu peux générer une nouvelle icône après l'enregistrement.",
     "item-deleted": "Aliment supprimé",
     "diary-only": "Enregistré dans le journal. Non enregistré dans Aliments personnels : {reason}",
     "already-saved": "Enregistré dans le journal. Cet aliment est déjà dans Aliments personnels.",

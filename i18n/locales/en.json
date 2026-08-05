@@ -254,6 +254,7 @@
     "export-filename": "PKU Tools - Own Food",
     "generate-icon": "Generate icon",
     "remove-icon": "Remove",
+    "icon-removed-hint": "You can generate a new icon after saving.",
     "item-deleted": "Food deleted",
     "diary-only": "Saved to the diary. Not saved to Own Food: {reason}",
     "already-saved": "Saved to the diary. This food is already in your Own Food.",

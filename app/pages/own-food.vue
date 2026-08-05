@@ -797,6 +797,12 @@ defineOgImage('Default', {
               @click="removeIcon"
             />
           </div>
+          <p
+            v-if="hasRemovedIconThisSession && !editedItem.emoji"
+            class="text-xs text-gray-500 dark:text-gray-400"
+          >
+            {{ $t('own-food.icon-removed-hint') }}
+          </p>
         </div>
 
         <TextInput
