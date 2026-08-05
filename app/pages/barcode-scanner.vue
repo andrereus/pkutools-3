@@ -364,6 +364,19 @@ const save = async () => {
     ...(scannedNutrients.value && { nutrients: scannedNutrients.value })
   }
 
+  // The intent, taken before the emoji lookup awaits below. A scan can land
+  // while that request is in flight and would replace the product underneath
+  // it; both records have to describe the one the button was pressed for.
+  const shouldSaveToOwnFood = saveToOwnFood.value
+  const shouldShareWithCommunity = shareWithCommunity.value
+  // The date picker stays editable too, and the entry belongs to the day that
+  // was selected when the button was pressed
+  const entryDate = selectedDate.value
+  // The note is whatever the field shows, so it can only ever describe the
+  // product in front of the user
+  const entryNote = shouldSaveToOwnFood && note.value?.trim() ? note.value.trim() : null
+  if (shouldSaveToOwnFood) logEntry.note = entryNote
+
   isSaving.value = true
 
   // Reported together with the diary entry below, rather than as a failure of
@@ -376,24 +389,21 @@ const save = async () => {
 
     // The stored reference is the converted value; the protein it came from,
     // the factor and the barcode travel with it, so a later scan of the same
-    // product recognises the food instead of saving it a second time.
-    if (saveToOwnFood.value) {
-      // The note is whatever the field shows, so it can only ever describe the
-      // product in front of the user
-      const entryNote = note.value && note.value.trim() !== '' ? note.value.trim() : null
-      logEntry.note = entryNote
+    // product recognises the food instead of saving it a second time. All of it
+    // comes from the entry above, so the two records can never disagree.
+    if (shouldSaveToOwnFood) {
       ownFoodOutcome = await saveAlongsideDiary({
         name: logEntry.name,
         icon: null,
         emoji: logEntry.emoji || null,
-        phe: pheReference.value,
-        kcal: Number(nutriments.value['energy-kcal_100g']) || 0,
+        phe: logEntry.pheReference,
+        kcal: Number(logEntry.kcalReference) || 0,
         note: entryNote,
-        shared: shareWithCommunity.value,
+        shared: shouldShareWithCommunity,
         source: 'barcode',
-        sourceId: code.value || null,
-        factor: factor.value,
-        ...(scannedNutrients.value && { nutrients: scannedNutrients.value })
+        sourceId: logEntry.sourceId,
+        factor: logEntry.factor,
+        ...(logEntry.nutrients && { nutrients: logEntry.nutrients })
       })
       if (!ownFoodOutcome.failure) {
         // Uncheck so a retry after a failed diary write doesn't save it twice
@@ -403,7 +413,7 @@ const save = async () => {
     }
 
     await addFoodItemToDiary({
-      date: selectedDate.value,
+      date: entryDate,
       ...logEntry
     })
     reportSaved(ownFoodOutcome)

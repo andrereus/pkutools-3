@@ -534,7 +534,12 @@ const save = async () => {
   // explanation; a label uses the note visible inside the Own Food option and
   // ignores any stale hidden value after that option is unticked.
   const shouldSaveToOwnFood = saveToOwnFood.value
-  const shouldShareWithCommunity = shareWithCommunity.value
+  // Eligibility belongs to the result being saved, so it is read here with the
+  // rest of the intent rather than after the emoji lookup below
+  const shouldShareWithCommunity = canShareResult.value && shareWithCommunity.value
+  // The date picker stays editable too, and the entry belongs to the day that
+  // was selected when the button was pressed
+  const entryDate = selectedDate.value
   const saveNotes = resolveSaveNotes({
     useOwnFoodNote: isLabelResult.value,
     saveToOwnFood: shouldSaveToOwnFood,
@@ -585,7 +590,7 @@ const save = async () => {
         phe: logEntry.pheReference,
         kcal: logEntry.kcalReference,
         note: saveNotes.ownFood,
-        shared: canShareResult.value && shouldShareWithCommunity,
+        shared: shouldShareWithCommunity,
         source: logEntry.source,
         ...(logEntry.nutrients && { nutrients: logEntry.nutrients }),
         ...(logEntry.factor && { factor: logEntry.factor })
@@ -598,7 +603,7 @@ const save = async () => {
     }
 
     await addFoodItemToDiary({
-      date: selectedDate.value,
+      date: entryDate,
       ...logEntry
     })
     reportSaved(ownFoodOutcome)

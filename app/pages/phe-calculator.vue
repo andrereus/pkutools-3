@@ -105,6 +105,19 @@ const save = async () => {
     })
   }
 
+  // The intent, taken before the emoji lookup awaits below. The form stays
+  // editable while that request is in flight, and both records have to describe
+  // the food the button was pressed for — not a half-edited one.
+  const shouldSaveToOwnFood = saveToOwnFood.value
+  const shouldShareWithCommunity = shareWithCommunity.value
+  // The date picker stays editable too, and the entry belongs to the day that
+  // was selected when the button was pressed
+  const entryDate = selectedDate.value
+  // The note is whatever the field shows, so it can only ever describe the food
+  // in front of the user
+  const entryNote = shouldSaveToOwnFood && note.value?.trim() ? note.value.trim() : null
+  if (shouldSaveToOwnFood) logEntry.note = entryNote
+
   isSaving.value = true
 
   // Reported together with the diary entry below, rather than as a failure of
@@ -117,25 +130,20 @@ const save = async () => {
 
     // In protein mode the stored reference is the converted value, the same
     // number the diary entry is calculated from — what it was converted from
-    // travels with it, so the food stays self-explaining.
-    if (saveToOwnFood.value) {
-      // The note is whatever the field shows, so it can only ever describe the
-      // food in front of the user
-      const entryNote = note.value && note.value.trim() !== '' ? note.value.trim() : null
-      logEntry.note = entryNote
+    // travels with it, so the food stays self-explaining. Both come from the
+    // entry above, so the two records can never disagree.
+    if (shouldSaveToOwnFood) {
       ownFoodOutcome = await saveAlongsideDiary({
         name: logEntry.name,
         icon: null,
         emoji: logEntry.emoji || null,
-        phe: pheReference.value,
-        kcal: Number(kcalReference.value) || 0,
+        phe: logEntry.pheReference,
+        kcal: logEntry.kcalReference,
         note: entryNote,
-        shared: shareWithCommunity.value,
+        shared: shouldShareWithCommunity,
         source: 'manual',
-        ...(select.value !== 'phe' && {
-          nutrients: { protein: Number(protein.value) },
-          factor: factor.value
-        })
+        ...(logEntry.nutrients && { nutrients: logEntry.nutrients }),
+        ...(logEntry.factor && { factor: logEntry.factor })
       })
       if (!ownFoodOutcome.failure) {
         // Uncheck so a retry after a failed diary write doesn't save it twice
@@ -145,7 +153,7 @@ const save = async () => {
     }
 
     await addFoodItemToDiary({
-      date: selectedDate.value,
+      date: entryDate,
       ...logEntry
     })
     reportSaved(ownFoodOutcome)
