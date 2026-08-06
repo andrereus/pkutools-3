@@ -487,7 +487,8 @@
   "imprint": {
     "title": "Impressum",
     "email": "E-Mail",
-    "sources": "Quellen: USDA, FoodData Central (fdc.nal.usda.gov), Bundeslebensmittelschlüssel (BLS) des Max Rubner-Instituts & openfoodfacts.org",
+    "sources": "Quellen",
+    "source-bls": "Bundeslebensmittelschlüssel (BLS)",
     "open-source": "Diese Anwendung ist Open Source und verfügbar auf"
   },
   "terms": {

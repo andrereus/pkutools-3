@@ -487,7 +487,8 @@
   "imprint": {
     "title": "Mentions légales",
     "email": "E-mail",
-    "sources": "Sources: USDA, FoodData Central (fdc.nal.usda.gov), base de données allemande BLS (Max Rubner-Institut) & openfoodfacts.org",
+    "sources": "Sources",
+    "source-bls": "Base de données allemande des nutriments (BLS)",
     "open-source": "Cette application est open source et disponible sur"
   },
   "terms": {

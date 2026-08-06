@@ -487,7 +487,8 @@
   "imprint": {
     "title": "Imprint",
     "email": "Email",
-    "sources": "Sources: USDA, FoodData Central (fdc.nal.usda.gov), German Nutrient Database BLS (Max Rubner-Institut) & openfoodfacts.org",
+    "sources": "Sources",
+    "source-bls": "German Nutrient Database (BLS)",
     "open-source": "This application is open source and available on"
   },
   "terms": {
