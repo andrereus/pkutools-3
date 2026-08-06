@@ -103,7 +103,9 @@ const showEmojiRefresh = computed(() => {
 })
 
 // Premium extra: one replacement per opened dialog for an emoji that fits the
-// name but isn't wanted. Free users get a new emoji by editing the name.
+// name but isn't wanted. Free users get a new emoji by editing the name. Own
+// Food exempts published foods from this gate because their icon is public;
+// a diary emoji is a private snapshot, so no exemption applies here.
 const canRerollEmoji = computed(() => {
   const name = editedItem.value.name?.trim()
   return isPremium.value && !!editedItem.value.emoji && !!name && !hasRerolledEmoji.value

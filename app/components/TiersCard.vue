@@ -33,6 +33,7 @@ const tiers = computed(() => [
       t('settings.tier-unlimited-feature-2'),
       t('settings.tier-unlimited-feature-3'),
       t('settings.tier-unlimited-feature-6'),
+      t('settings.tier-unlimited-feature-icon'),
       t('settings.tier-unlimited-feature-ai'),
       t('settings.tier-unlimited-feature-image')
     ],
@@ -92,7 +93,13 @@ const tiers = computed(() => [
       <p :class="[tier.featured ? '' : '', 'text-gray-500 dark:text-gray-400 mt-4 text-base/7']">
         {{ tier.description }}
       </p>
-      <ul role="list" :class="[tier.featured ? '' : '', 'text-gray-500 dark:text-gray-400 mt-4 space-y-1 text-sm/6']">
+      <ul
+        role="list"
+        :class="[
+          tier.featured ? '' : '',
+          'text-gray-500 dark:text-gray-400 mt-4 space-y-1 text-sm/6'
+        ]"
+      >
         <li v-for="feature in tier.features" :key="feature" class="flex gap-x-2">
           <LucideCheck
             :class="[tier.featured ? '' : '', 'text-sky-500 h-6 w-5 flex-none']"

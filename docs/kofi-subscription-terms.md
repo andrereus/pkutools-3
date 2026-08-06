@@ -11,7 +11,7 @@ PKU Tools is run by André Reus, Obere Gasse 38, 71120 Grafenau, Germany. Full c
 
 What you get
 
-PKU Tools Premium raises the limits of the free version: unlimited diary entries, blood values and own foods, CSV export, AI image analysis, and 20 AI estimates per day. Premium + AI includes everything in Premium with 100 AI estimates per day. Both daily limits are applied automatically.
+PKU Tools Premium raises the limits of the free version: unlimited diary entries, blood values and own foods, CSV export, food icon updates, AI image analysis, and 20 AI estimates per day. Premium + AI includes everything in Premium with 100 AI estimates per day. Both daily limits are applied automatically.
 
 What it costs and when you pay
 

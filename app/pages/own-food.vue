@@ -78,6 +78,14 @@ const formTitle = computed(() => {
   return editedIndex.value === -1 ? t('common.add') : t('common.edit')
 })
 
+// An AI estimate is a guess, so a new share is never offered for it. A legacy
+// record that is already shared still needs the control so it can be withdrawn.
+const canShareEditedItem = computed(() => isShareableSource(editedItem.value.source))
+const wasEditedItemShared = computed(() => {
+  if (!editedKey.value) return false
+  return ownFood.value.find((item) => item['.key'] === editedKey.value)?.shared === true
+})
+
 // Offer the icon update once the name is edited away from what the current
 // emoji represents (only when there is an emoji to replace)
 const showIconUpdate = computed(() => {
@@ -86,25 +94,23 @@ const showIconUpdate = computed(() => {
 })
 
 // Premium extra: one replacement per opened dialog for an emoji that fits the
-// name but isn't wanted. Free users get a new emoji by editing the name.
+// name but isn't wanted. Free users get a new emoji by editing the name, except
+// on a published food — its icon is shown to every community user, and renaming
+// is a material change that would reset the food's votes. The published state is
+// the stored one, so toggling the share switch is not a way around the gate.
 const canRerollIcon = computed(
-  () => isPremium.value && !!editedItem.value.emoji && !hasRerolledIcon.value
+  () =>
+    (isPremium.value || wasEditedItemShared.value) &&
+    !!editedItem.value.emoji &&
+    !hasRerolledIcon.value
 )
 
 // The dialog corner offers the icon action: generate one for an entry that has
 // none (legacy or a failed generation), update it after a name change, or
-// spend the premium reroll
+// spend the reroll
 const showIconAction = computed(() => {
   if (editedIndex.value === -1 || !editedItem.value.name?.trim()) return false
   return !editedItem.value.emoji || showIconUpdate.value || canRerollIcon.value
-})
-
-// An AI estimate is a guess, so a new share is never offered for it. A legacy
-// record that is already shared still needs the control so it can be withdrawn.
-const canShareEditedItem = computed(() => isShareableSource(editedItem.value.source))
-const wasEditedItemShared = computed(() => {
-  if (!editedKey.value) return false
-  return ownFood.value.find((item) => item['.key'] === editedKey.value)?.shared === true
 })
 
 const filteredOwnFood = computed(() => {
@@ -352,10 +358,15 @@ const save = async () => {
     return
   }
 
-  // Check limit before closing (for better UX)
-  if (editedIndex.value === -1 && ownFood.value.length >= 50 && !isPremium.value) {
-    notifications.error(t('app.limit'))
-    return
+  // Check limit before closing (for better UX). Shared foods don't count
+  // towards the limit, so the count has to match the server's or the dialog
+  // refuses saves the API would accept.
+  if (editedIndex.value === -1 && !isPremium.value) {
+    const nonSharedCount = ownFood.value.filter((item) => !item.shared).length
+    if (nonSharedCount >= 50) {
+      notifications.error(t('app.limit'))
+      return
+    }
   }
 
   // Capture state before closing (needed to determine if editing or adding)
