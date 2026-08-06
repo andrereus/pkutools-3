@@ -7,9 +7,15 @@ const EMOJI_MODEL = 'gemini-3.1-flash-lite'
  * Fetches a single emoji for a food name using Gemini 2.5 Flash Lite (client-side).
  * Returns null if the name is empty or if the API call fails.
  * Uses Flash Lite only for minimal cost (~$0.000004 per call).
+ *
+ * Pass `currentEmoji` to ask for a replacement of an emoji the user already has;
+ * the model is told which one it is so it returns a different one.
  */
 export function useFoodEmoji() {
-  const fetchEmojiForFood = async (foodName: string): Promise<string | null> => {
+  const fetchEmojiForFood = async (
+    foodName: string,
+    currentEmoji?: string | null
+  ): Promise<string | null> => {
     if (!foodName || typeof foodName !== 'string' || foodName.trim() === '') {
       return null
     }
@@ -25,6 +31,17 @@ export function useFoodEmoji() {
 
     if (sanitizedName === '') return null
 
+    // An emoji is one or two code points, so anything longer is not an emoji.
+    // Truncating keeps a crafted `emoji` field from smuggling instructions in.
+    const sanitizedCurrentEmoji =
+      typeof currentEmoji === 'string'
+        ? currentEmoji
+            .trim()
+            .slice(0, 8)
+            .replace(/["\\\n\r\t]/g, '')
+            .trim()
+        : ''
+
     try {
       const firebaseApp = getApp()
       const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() })
@@ -35,8 +52,12 @@ export function useFoodEmoji() {
         }
       })
 
-      const prompt = `Return one emoji for this food: "${sanitizedName}"
+      const replaceLine = sanitizedCurrentEmoji
+        ? `\nThe current emoji is ${sanitizedCurrentEmoji}. Return a different one that still fits.\n`
+        : ''
 
+      const prompt = `Return one emoji for this food: "${sanitizedName}"
+${replaceLine}
 Return JSON: {"emoji": string (one emoji character) or null}`
 
       const result = await model.generateContent(prompt)

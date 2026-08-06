@@ -44,6 +44,9 @@ const isGeneratingEmoji = ref(false)
 // The food name the current emoji was generated for; when the name is edited
 // away from this, an update button offers to regenerate the emoji
 const emojiBasisName = ref('')
+// Premium users may replace an emoji they don't like once per opened dialog,
+// without having to change the food name
+const hasRerolledIcon = ref(false)
 
 const defaultItem = {
   name: '',
@@ -82,11 +85,18 @@ const showIconUpdate = computed(() => {
   return !!editedItem.value.emoji && !!name && name !== emojiBasisName.value.trim()
 })
 
+// Premium extra: one replacement per opened dialog for an emoji that fits the
+// name but isn't wanted. Free users get a new emoji by editing the name.
+const canRerollIcon = computed(
+  () => isPremium.value && !!editedItem.value.emoji && !hasRerolledIcon.value
+)
+
 // The dialog corner offers the icon action: generate one for an entry that has
-// none (legacy or a failed generation), or update the one it has
+// none (legacy or a failed generation), update it after a name change, or
+// spend the premium reroll
 const showIconAction = computed(() => {
   if (editedIndex.value === -1 || !editedItem.value.name?.trim()) return false
-  return !editedItem.value.emoji || showIconUpdate.value
+  return !editedItem.value.emoji || showIconUpdate.value || canRerollIcon.value
 })
 
 // An AI estimate is a guess, so a new share is never offered for it. A legacy
@@ -330,6 +340,7 @@ const closeModal = () => {
   editedIndex.value = -1
   editedKey.value = null
   emojiBasisName.value = ''
+  hasRerolledIcon.value = false
   if (route.query.edit) {
     router.replace({ path: route.path, query: {} })
   }
@@ -471,6 +482,7 @@ const addItem = (item) => {
   editedKey.value = item['.key']
   editedItem.value = { ...item }
   emojiBasisName.value = editedItem.value.name || ''
+  hasRerolledIcon.value = false
   selectedDate.value = format(new Date(), 'yyyy-MM-dd')
   dialog2.value.openDialog()
 }
@@ -483,6 +495,7 @@ const openEditDialogForEntryKey = (entryKey) => {
   editedKey.value = entryKey
   editedItem.value = { ...item }
   emojiBasisName.value = editedItem.value.name || ''
+  hasRerolledIcon.value = false
   dialog.value.openDialog()
   return true
 }
@@ -626,17 +639,28 @@ const triggerDownload = (csvContent) => {
 const generateIcon = async () => {
   const name = editedItem.value.name?.trim()
   if (!name) return
+
+  // Same name plus an existing emoji means the user wants a different emoji for
+  // the same food — the premium reroll. The button is hidden when that isn't
+  // allowed, so this only guards against a stale click.
+  const isReroll = !!editedItem.value.emoji && name === emojiBasisName.value.trim()
+  if (isReroll && !canRerollIcon.value) return
+  const previousEmoji = isReroll ? editedItem.value.emoji : null
+
   isGeneratingEmoji.value = true
   try {
-    const emoji = await fetchEmojiForFood(name)
-    if (emoji) {
+    const emoji = await fetchEmojiForFood(name, previousEmoji)
+    if (emoji && emoji !== previousEmoji) {
       editedItem.value.emoji = emoji
       editedItem.value.icon = null
       // Advance the basis so the update button hides until the name is edited
       // again; on a failed fetch it stays so the user can retry
       emojiBasisName.value = name
+      if (isReroll) hasRerolledIcon.value = true
     } else {
-      // Surface the failure so the user isn't left re-clicking a silent button
+      // Surface the failure so the user isn't left re-clicking a silent button.
+      // A reroll that came back with the same emoji isn't spent, so the retry
+      // this message offers is actually available.
       notifications.error(t('errors.emoji-update-failed'))
     }
   } finally {

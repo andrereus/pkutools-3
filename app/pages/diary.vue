@@ -48,6 +48,9 @@ const showReferenceInputs = ref(false)
 // away from this, a refresh button offers to regenerate the emoji
 const emojiBasisName = ref('')
 const isRefreshingEmoji = ref(false)
+// Premium users may replace an emoji they don't like once per opened dialog,
+// without having to change the food name
+const hasRerolledEmoji = ref(false)
 const date = ref(format(new Date(), 'yyyy-MM-dd'))
 const visibleItems = ref(5)
 const ensuredOnboarding = ref(false)
@@ -99,19 +102,41 @@ const showEmojiRefresh = computed(() => {
   return !!editedItem.value.emoji && !!name && name !== emojiBasisName.value.trim()
 })
 
+// Premium extra: one replacement per opened dialog for an emoji that fits the
+// name but isn't wanted. Free users get a new emoji by editing the name.
+const canRerollEmoji = computed(() => {
+  const name = editedItem.value.name?.trim()
+  return isPremium.value && !!editedItem.value.emoji && !!name && !hasRerolledEmoji.value
+})
+
+// The corner button either updates the emoji after a name change or spends the
+// premium reroll
+const showEmojiAction = computed(() => showEmojiRefresh.value || canRerollEmoji.value)
+
 const refreshEmoji = async () => {
   const name = editedItem.value.name?.trim()
   if (!name) return
+
+  // Same name plus an existing emoji means the user wants a different emoji for
+  // the same food — the premium reroll. The button is hidden when that isn't
+  // allowed, so this only guards against a stale click.
+  const isReroll = !!editedItem.value.emoji && name === emojiBasisName.value.trim()
+  if (isReroll && !canRerollEmoji.value) return
+  const previousEmoji = isReroll ? editedItem.value.emoji : null
+
   isRefreshingEmoji.value = true
   try {
-    const emoji = await fetchEmojiForFood(name)
-    if (emoji) {
+    const emoji = await fetchEmojiForFood(name, previousEmoji)
+    if (emoji && emoji !== previousEmoji) {
       editedItem.value.emoji = emoji
       // Advance the basis so the button hides until the name is edited again;
       // on a failed fetch it stays so the user can retry
       emojiBasisName.value = name
+      if (isReroll) hasRerolledEmoji.value = true
     } else {
-      // Surface the failure so the user isn't left re-clicking a silent button
+      // Surface the failure so the user isn't left re-clicking a silent button.
+      // A reroll that came back with the same emoji isn't spent, so the retry
+      // this message offers is actually available.
       notifications.error(t('errors.emoji-update-failed'))
     }
   } finally {
@@ -407,6 +432,7 @@ const editItem = (item, index) => {
   openedMaterialValues.value = materialValues(editedItem.value)
   showReferenceInputs.value = false
   emojiBasisName.value = editedItem.value.name || ''
+  hasRerolledEmoji.value = false
   dialog2.value.openDialog()
 }
 
@@ -415,6 +441,7 @@ const addLastAdded = (item) => {
   openedMaterialValues.value = materialValues(editedItem.value)
   showReferenceInputs.value = false
   emojiBasisName.value = editedItem.value.name || ''
+  hasRerolledEmoji.value = false
   dialog2.value.openDialog()
 }
 
@@ -470,6 +497,7 @@ const close = () => {
   showReferenceInputs.value = false
   emojiBasisName.value = ''
   isRefreshingEmoji.value = false
+  hasRerolledEmoji.value = false
 }
 
 const isSaving = ref(false)
@@ -950,7 +978,7 @@ defineOgImage('Default', {
         :title="formTitle"
         :meta="editedItemTime"
         :emoji="editedItem.emoji || ''"
-        :emoji-refreshable="showEmojiRefresh"
+        :emoji-refreshable="showEmojiAction"
         :emoji-refreshing="isRefreshingEmoji"
         :loading="isSaving"
         :buttons="[
