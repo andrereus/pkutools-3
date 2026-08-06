@@ -492,7 +492,8 @@
     "open-source": "This application is open source and available on"
   },
   "terms": {
-    "title": "Terms of Service"
+    "title": "Terms of Service",
+    "notice": "By signing up or signing in you agree to the {terms} and confirm you have read the {privacy}."
   },
   "privacy-policy": {
     "title": "Privacy Policy"

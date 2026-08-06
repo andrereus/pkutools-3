@@ -521,14 +521,6 @@ const chartOptionsTyrosine = computed(() => {
 })
 
 // Methods
-const signInGoogle = async () => {
-  try {
-    await store.signInGoogle()
-  } catch (error) {
-    notifications.error(t('app.auth-error'))
-    console.error(error)
-  }
-}
 
 const editItem = (item) => {
   editedIndex.value = labValues.value.indexOf(item)
@@ -700,14 +692,12 @@ defineOgImage('Default', {
 
     <div v-if="!userIsAuthenticated">
       <p class="text-gray-600 dark:text-gray-400 mb-6">{{ $t('blood-values.description') }}</p>
-      <SecondaryButton :text="$t('app.signin-google')" @click="signInGoogle" />
-      <br />
       <NuxtLink
         type="button"
         :to="$localePath('sign-in')"
         class="rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400 mr-3 mb-6"
       >
-        {{ $t('sign-in.signin-with-email') }}
+        {{ $t('sign-in.title') }}
       </NuxtLink>
     </div>
 

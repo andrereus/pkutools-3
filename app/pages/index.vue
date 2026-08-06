@@ -88,7 +88,6 @@ const overviewBloodArea = `${overviewBloodPoints} 100,28 0,28`
 const store = useStore()
 const { t } = useI18n()
 const localePath = useLocalePath()
-const notifications = useNotifications()
 
 // Features data (8 items for even layout: short descriptions, merged Own & Community Foods, merged AI features)
 const features = [
@@ -160,16 +159,6 @@ const features = [
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
-
-// Methods
-const signInGoogle = async () => {
-  try {
-    await store.signInGoogle()
-  } catch (error) {
-    notifications.error(t('app.auth-error'))
-    console.error(error)
-  }
-}
 
 // Watchers
 watch(userIsAuthenticated, (newVal) => {
@@ -657,17 +646,11 @@ defineOgImage('Default', {
           v-if="!userIsAuthenticated"
           class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
         >
-          <a
-            class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 cursor-pointer"
-            @click.prevent="signInGoogle"
-          >
-            {{ $t('app.signin-google') }}
-          </a>
           <NuxtLink
             :to="$localePath('sign-in')"
             class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500"
           >
-            {{ $t('sign-in.signin-with-email') }}
+            {{ $t('sign-in.title') }}
           </NuxtLink>
         </div>
       </div>

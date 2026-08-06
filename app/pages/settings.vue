@@ -61,14 +61,6 @@ const preferredToolOptions = computed(() => [
 // Methods
 const { handleError } = useErrorHandler()
 
-const signInGoogle = async () => {
-  try {
-    await store.signInGoogle()
-  } catch (error) {
-    handleError(error, 'sign in')
-  }
-}
-
 const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
@@ -348,14 +340,12 @@ defineOgImage('Default', {
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <SecondaryButton :text="$t('app.signin-google')" @click="signInGoogle" />
-        <br />
         <NuxtLink
           type="button"
           :to="$localePath('sign-in')"
           class="rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400 mr-3 mb-6"
         >
-          {{ $t('sign-in.signin-with-email') }}
+          {{ $t('sign-in.title') }}
         </NuxtLink>
         <SelectMenu
           v-model="selectedTheme"

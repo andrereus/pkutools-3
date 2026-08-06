@@ -492,7 +492,8 @@
     "open-source": "Esta aplicación es de código abierto y está disponible en"
   },
   "terms": {
-    "title": "Condiciones del servicio"
+    "title": "Condiciones del servicio",
+    "notice": "Al registrarte o iniciar sesión aceptas las {terms} y confirmas que has leído la {privacy}."
   },
   "privacy-policy": {
     "title": "Política de privacidad"

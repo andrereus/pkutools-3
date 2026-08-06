@@ -134,7 +134,11 @@ defineOgImage('Default', {
 
       <HeadlessTabGroup>
         <HeadlessTabList class="mb-6">
-          <HeadlessTab v-slot="{ selected }">
+          <!-- as="template" is load-bearing on all three tabs: Tab renders its own
+               <button> by default, so without it each becomes a button inside a button.
+               That is invalid HTML, the parser un-nests it, and hydration then finds
+               fewer children in the server DOM than the client expects. -->
+          <HeadlessTab v-slot="{ selected }" as="template">
             <button
               :class="[
                 'rounded-lg px-3 py-2 text-sm font-medium dark:text-gray-300 cursor-pointer',
@@ -146,7 +150,7 @@ defineOgImage('Default', {
               {{ $t('sign-in.signin') }}
             </button>
           </HeadlessTab>
-          <HeadlessTab v-slot="{ selected }">
+          <HeadlessTab v-slot="{ selected }" as="template">
             <button
               :class="[
                 'rounded-lg px-3 py-2 text-sm font-medium dark:text-gray-300 cursor-pointer',
@@ -158,7 +162,7 @@ defineOgImage('Default', {
               {{ $t('sign-in.register') }}
             </button>
           </HeadlessTab>
-          <HeadlessTab v-slot="{ selected }">
+          <HeadlessTab v-slot="{ selected }" as="template">
             <button
               :class="[
                 'rounded-lg px-3 py-2 text-sm font-medium dark:text-gray-300 cursor-pointer',
@@ -210,6 +214,27 @@ defineOgImage('Default', {
           </HeadlessTabPanel>
         </HeadlessTabPanels>
       </HeadlessTabGroup>
+
+      <!-- Sign-in is the only place in the app that authenticates, so this notice
+           belongs here and nowhere else. -->
+      <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+        <i18n-t keypath="terms.notice" tag="span" scope="global">
+          <template #terms>
+            <NuxtLink
+              :to="$localePath('terms-of-service')"
+              class="text-sky-600 dark:text-sky-400 hover:underline"
+              >{{ $t('terms.title') }}</NuxtLink
+            >
+          </template>
+          <template #privacy>
+            <NuxtLink
+              :to="$localePath('privacy-policy')"
+              class="text-sky-600 dark:text-sky-400 hover:underline"
+              >{{ $t('privacy-policy.title') }}</NuxtLink
+            >
+          </template>
+        </i18n-t>
+      </p>
     </div>
   </div>
 </template>

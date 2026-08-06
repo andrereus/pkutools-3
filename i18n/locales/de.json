@@ -492,7 +492,8 @@
     "open-source": "Diese Anwendung ist Open Source und verfügbar auf"
   },
   "terms": {
-    "title": "Nutzungsbedingungen"
+    "title": "Nutzungsbedingungen",
+    "notice": "Mit der Registrierung oder Anmeldung stimmst du den {terms} zu und bestätigst, dass du die Hinweise zum {privacy} gelesen hast."
   },
   "privacy-policy": {
     "title": "Datenschutz"
