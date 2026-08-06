@@ -155,7 +155,7 @@ function handleButtonClick(buttonType) {
             >
               <div ref="initialFocusRef" tabindex="-1" class="focus:outline-none">
                 <div>
-                  <div class="flex items-baseline justify-between gap-3">
+                  <div class="flex items-center justify-between gap-3">
                     <HeadlessDialogTitle
                       as="h3"
                       class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
@@ -169,7 +169,7 @@ function handleButtonClick(buttonType) {
                       <button
                         v-if="emojiRefreshable"
                         type="button"
-                        class="p-1.5 rounded-full bg-black/5 dark:bg-white/15 hover:bg-black/10 dark:hover:bg-white/10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
+                        class="p-1.5 rounded-full ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
                         :disabled="emojiRefreshing"
                         :aria-label="$t('common.update-emoji')"
                         @click="$emit('refresh-emoji')"
