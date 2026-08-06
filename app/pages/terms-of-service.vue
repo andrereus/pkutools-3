@@ -22,7 +22,9 @@ defineOgImage('Default', {
 </script>
 
 <template>
-  <div class="prose dark:prose-invert">
+  <div class="prose dark:prose-invert [&_h1]:hyphens-auto [&_h1]:wrap-break-word">
+    <!-- The German heading is a single compound word ("Nutzungsbedingungen") with
+         no space to break at, so it overflows a phone screen. Hyphenate it. -->
     <LegalTermsDe v-if="locale === 'de'" />
     <LegalTermsEs v-else-if="locale === 'es'" />
     <LegalTermsFr v-else-if="locale === 'fr'" />

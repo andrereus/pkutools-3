@@ -195,7 +195,7 @@
   },
   "ai-calculator": {
     "title": "Calculadora IA",
-    "description": "Describe o fotografía tu comida y deja que la IA estime el peso y los valores nutricionales.",
+    "description": "Estima tu comida a partir de una descripción o foto. O lee los valores impresos de la etiqueta.",
     "analyze-photo": "Foto",
     "mode-estimate": "Comida",
     "mode-label": "Etiqueta",
@@ -446,7 +446,7 @@
     "faq": {
       "title": "Preguntas frecuentes",
       "q1": "¿Qué es PKU Tools?",
-      "a1": "PKU Tools es una aplicación nutricional todo en uno para personas con fenilcetonuria (PKU). Reúne báscula, tabla nutricional, calculadora y papel y lápiz en un solo lugar para una dieta baja en fenilalanina (Phe). Sirve de apoyo en tu día a día, pero no sustituye las indicaciones de tu unidad metabólica o tu dietista. Consulta el Descargo de responsabilidad para más detalles.",
+      "a1": "PKU Tools es una aplicación nutricional todo en uno para personas con fenilcetonuria (PKU). Reúne báscula, tabla nutricional, calculadora y papel y lápiz en un solo lugar para una dieta baja en fenilalanina (Phe). Sirve de apoyo en tu día a día, pero no sustituye las indicaciones de tu unidad metabólica o tu dietista. Consulta las Condiciones del servicio para más detalles.",
       "q2": "¿Necesito una cuenta?",
       "a2": "Para las herramientas básicas — búsqueda de alimentos, escáner de código de barras y calculadora de Phe — no necesitas cuenta. Necesitas una cuenta para guardar tus datos (diario, valores sanguíneos, alimentos propios) y para la calculadora con IA. Puedes iniciar sesión con Google o por correo electrónico. Al iniciar sesión, tus datos se sincronizan además en tiempo real entre tus dispositivos.",
       "q3": "¿Cómo estima la IA el peso y los valores nutricionales?",
@@ -458,7 +458,7 @@
       "q6": "El escáner de código de barras o la cámara no funciona — ¿qué puedo hacer?",
       "a6": "Primero revisa el permiso de cámara. En la web, permite la cámara a tu navegador. En Android, mantén pulsado el icono de la app y abre «Site Settings». Si no se reconoce el código de barras, cambia de cámara con el selector de cámara — a veces está seleccionada la incorrecta y muestra el código borroso. Si aun así no funciona, reinicia la app y tu dispositivo. Si no se encuentra un producto, puede que aún no esté en Open Food Facts. Introduce entonces la proteína de la etiqueta en la Calculadora de Phe, o usa la Calculadora IA para leer toda la etiqueta nutricional.",
       "q7": "¿Cómo se convierte la proteína en Phe?",
-      "a7": "La Phe se calcula a partir de la proteína: Phe (mg) = proteína (g) × factor. Como regla general, 1 g de proteína equivale a unos 50 mg de Phe. Para un resultado más preciso, la app usa un factor según el tipo de alimento: 27 para la fruta, 35 para la verdura, 46 para la carne y 50 para otros alimentos (mg de Phe por gramo de proteína). En la Calculadora de Phe eliges el tipo de alimento e introduces la proteína. El escáner de código de barras funciona igual.",
+      "a7": "La Phe se calcula a partir de la proteína: Phe (mg) = proteína (g) × factor. Como regla general, 1 g de proteína equivale a unos 50 mg de Phe. Para un resultado más preciso, la app usa un factor según el tipo de alimento: 27 para la fruta, 35 para la verdura, 46 para la carne y 50 para otros alimentos (mg de Phe por gramo de proteína). En la Calculadora de Phe eliges el tipo de alimento e introduces la proteína. El Escáner de código de barras funciona igual y sugiere el tipo a partir de la categoría del producto.",
       "q8": "¿Cómo registro un alimento?",
       "a8": "Toca el botón + de la barra de navegación. Abre tu herramienta preferida: IA, Búsqueda, Escáner o la Calculadora de Phe (la eliges en Configuración). Calcula tu alimento y toca «Añadir» para guardarlo en el diario. Toca una entrada para editarla o eliminarla. El diario también muestra sugerencias según lo que has registrado antes, que puedes añadir con un toque.",
       "q9": "¿Cómo hago un seguimiento de mi ingesta de Phe a lo largo del tiempo?",
@@ -520,7 +520,7 @@
     "own-community-name": "Alimentos propios y de la comunidad",
     "own-community-description": "Guarda alimentos y comparte con la comunidad.",
     "ai-features-name": "Calculadora IA",
-    "ai-features-description": "Describe o fotografía tu comida y deja que la IA estime el peso y los valores nutricionales."
+    "ai-features-description": "Estima tu comida a partir de una descripción o foto. O lee los valores impresos de la etiqueta."
   },
   "footer": {
     "tools": "Herramientas",

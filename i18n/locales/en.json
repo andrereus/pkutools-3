@@ -195,7 +195,7 @@
   },
   "ai-calculator": {
     "title": "AI Calculator",
-    "description": "Describe or photograph your food and let AI estimate the weight and nutritional values.",
+    "description": "Estimate your food from a description or photo. Or read the printed values off a nutrition label.",
     "analyze-photo": "Photo",
     "mode-estimate": "Meal",
     "mode-label": "Label",
@@ -446,7 +446,7 @@
     "faq": {
       "title": "Frequently asked questions",
       "q1": "What is PKU Tools?",
-      "a1": "PKU Tools is an all-in-one nutrition app for people with phenylketonuria (PKU). It combines the scale, nutrition table, calculator and pen-and-paper in one place for a low-phenylalanine (Phe) diet. It supports your everyday diet management but doesn't replace the advice of your metabolic clinic or dietitian. See the Disclaimer for details.",
+      "a1": "PKU Tools is an all-in-one nutrition app for people with phenylketonuria (PKU). It combines the scale, nutrition table, calculator and pen-and-paper in one place for a low-phenylalanine (Phe) diet. It supports your everyday diet management but doesn't replace the advice of your metabolic clinic or dietitian. See the Terms of Service for details.",
       "q2": "Do I need an account?",
       "a2": "For the basic tools — food search, barcode scanner and the Phe calculator — you don't need an account. You need an account to save your data (diary, blood values, own foods) and for the AI calculator. You can sign in with Google or by email. Once you sign in, your data also syncs across your devices in real time.",
       "q3": "How does the AI estimate weight and nutritional values?",
@@ -458,7 +458,7 @@
       "q6": "The barcode scanner or camera isn't working — what can I do?",
       "a6": "First check the camera permission. On the web, allow the camera for your browser. On Android, long-press the app icon and open \"Site Settings\". If the barcode isn't recognised, switch the camera with the camera selector — sometimes the wrong one is selected and shows the barcode blurry. If it still doesn't work, restart the app and your device. If a product isn't found, it may not be in Open Food Facts yet. Then enter the protein from the label in the Phe Calculator, or use the AI Calculator to read the whole nutrition label.",
       "q7": "How is protein converted to Phe?",
-      "a7": "Phe is calculated from protein: Phe (mg) = protein (g) × factor. As a rule of thumb, 1 g of protein is about 50 mg Phe. For a closer result the app uses a factor per food type: 27 for fruit, 35 for vegetables, 46 for meat and 50 for other foods (mg Phe per gram of protein). Pick the food type in the Phe Calculator and enter the protein. The barcode scanner works the same way.",
+      "a7": "Phe is calculated from protein: Phe (mg) = protein (g) × factor. As a rule of thumb, 1 g of protein is about 50 mg Phe. For a closer result the app uses a factor per food type: 27 for fruit, 35 for vegetables, 46 for meat and 50 for other foods (mg Phe per gram of protein). Pick the food type in the Phe Calculator and enter the protein. The Barcode Scanner works the same way and suggests the type from the product category.",
       "q8": "How do I log a food?",
       "a8": "Tap the + button in the navigation bar. It opens your preferred tool: AI, Search, Scanner or the Phe Calculator (choose it in Settings). Calculate your food and tap Add to save it to the diary. Tap an entry to edit or delete it. The diary also shows suggestions based on what you've logged before, which you can add with one tap.",
       "q9": "How do I keep track of my Phe intake over time?",
@@ -520,7 +520,7 @@
     "own-community-name": "Own & Community Foods",
     "own-community-description": "Save custom foods and share with the community.",
     "ai-features-name": "AI Calculator",
-    "ai-features-description": "Describe or photograph your food and let AI estimate the weight and nutritional values."
+    "ai-features-description": "Estimate your food from a description or photo. Or read the printed values off a nutrition label."
   },
   "footer": {
     "tools": "Tools",

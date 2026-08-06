@@ -1,6 +1,6 @@
 <template>
   <h1>Conditions d'utilisation</h1>
-  <p>Dernière mise à jour : 30 juillet 2026</p>
+  <p>Dernière mise à jour : 6 août 2026</p>
 
   <h2>À propos de PKU Tools</h2>
   <p>
@@ -25,11 +25,11 @@
 
   <h2>Ceci n'est pas un avis médical</h2>
   <p>
-    PKU Tools t'aide à calculer et à noter la Phe, les calories et d'autres nutriments.
-    L'application n'est pas destinée à diagnostiquer, prévenir, surveiller ou traiter la PKU, ni à
-    servir de base à des décisions concernant ton traitement. Elle ne peut pas te dire quelle
-    devrait être ta tolérance, si une valeur est sûre pour toi, ou quoi faire face à un résultat
-    d'analyse sanguine.
+    PKU Tools t'aide à calculer et à noter la phénylalanine (Phe), les calories et d'autres
+    nutriments. L'application n'est pas destinée à diagnostiquer, prévenir, surveiller ou traiter la
+    PKU, ni à servir de base à des décisions concernant ton traitement. Elle ne peut pas te dire
+    quelle devrait être ta tolérance, si une valeur est sûre pour toi, ou quoi faire face à un
+    résultat d'analyse sanguine.
   </p>
   <p>
     Utilise-la comme un carnet personnel et une aide au calcul. Elle ne remplace pas ton centre
@@ -75,7 +75,16 @@
           </td>
         </tr>
         <tr>
-          <td><strong>Calculateur IA</strong></td>
+          <td><strong>Scan d'étiquette</strong></td>
+          <td>
+            Un modèle d'IA lit les valeurs imprimées sur le tableau nutritionnel à partir de ta
+            photo. Si la Phe n'est pas imprimée, elle est calculée à partir des protéines avec le
+            facteur du type d'aliment.
+          </td>
+          <td>Le modèle peut mal lire une étiquette, vérifie donc les valeurs avec elle.</td>
+        </tr>
+        <tr>
+          <td><strong>Estimation par IA</strong></td>
           <td>Un modèle d'IA estime les valeurs à partir de ta description ou de ta photo.</td>
           <td>
             Les estimations peuvent sembler convaincantes tout en étant fausses. Vérifie tout ce qui

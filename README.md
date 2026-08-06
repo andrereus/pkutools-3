@@ -8,12 +8,12 @@ PKU Tools is an All-in-One Nutrition App for PKU — a Progressive Web App (PWA)
 
 - **🔍 Food Search**: USDA and BLS food databases with fuzzy search (multilingual support)
 - **📷 Barcode Scanner**: Scan product barcodes to lookup nutritional information
-- **✨ AI Calculator**: Describe or photograph your food and let AI estimate the weight and nutritional values
+- **✨ AI Calculator**: Two modes — estimate weight and nutritional values from a description or photo, or read the printed values off a nutrition label
 - **📱 Phe Calculator**: Calculate Phe or convert protein to Phe (with conversion factors for fruit, vegetables, meat, and other foods)
 - **📅 Diary**: Daily food log with date navigation, progress bars, and smart suggestions based on eating history
-- **📖 Diet Report**: Charts and sortable tables of dietary patterns over time, plus a summary card with 14-day average Phe intake and deviation from your daily limit (CSV export)
+- **📖 Diet Report**: Charts and sortable tables of dietary patterns over time, plus an averages card for a period you pick (CSV export)
 - **📈 Blood Values**: Track and visualize Phe and tyrosine lab results with interactive charts (export as CSV, SVG, or PNG)
-- **🍎 Own & Community Foods**: Save custom food entries with icon selection (included in search) and share with the PKU community (voting and quality control)
+- **🍎 Own & Community Foods**: Save custom food entries (included in search) and share with the PKU community (voting and quality control)
 
 ### User Experience
 
@@ -28,11 +28,11 @@ PKU Tools is an All-in-One Nutrition App for PKU — a Progressive Web App (PWA)
 
 **Backend**: Firebase (Realtime Database, Authentication), Nuxt server routes with Firebase Admin SDK
 
-**State & Data**: [Pinia](https://pinia.vuejs.org/), [Fuse.js](https://fusejs.io/) for fuzzy search
+**State & Data**: [Pinia](https://pinia.vuejs.org/), [Fuse.js](https://fusejs.io/) for fuzzy search, [Zod](https://zod.dev/) for server-side validation
 
-**i18n & SEO**: [@nuxtjs/i18n](https://i18n.nuxtjs.org/), [@nuxtjs/seo](https://nuxt-seo.vercel.app/)
+**i18n & SEO**: [@nuxtjs/i18n](https://i18n.nuxtjs.org/), [@nuxtjs/seo](https://nuxt-seo.vercel.app/), [Takumi](https://www.npmjs.com/package/@takumi-rs/core) for OG image rendering
 
-**Tools**: ESLint, Prettier, TypeScript (for code quality and type checking)
+**Tools**: ESLint, Prettier, TypeScript (for code quality and type checking), [Vitest](https://vitest.dev/) (for tests)
 
 ## Project History
 
@@ -49,13 +49,18 @@ pkutools-3/
 ├── app/
 │   ├── components/     # Vue components
 │   ├── composables/    # useApi, useLicense, etc.
-│   ├── lib/           # Utility functions (e.g., table-utils)
+│   ├── lib/            # Utility functions (e.g., table-utils)
 │   ├── pages/          # File-based routing
-│   └── plugins/        # Firebase, ApexCharts
+│   ├── plugins/        # Firebase, ApexCharts
+│   └── utils/          # Shared calculation and formatting helpers
 ├── i18n/locales/       # Translation files (en, de, es, fr)
 ├── public/data/        # Food database (JSON/CSV)
 ├── server/api/         # Server routes (diary, lab-values, own-food, etc.)
+├── server/utils/       # Auth, validation, error handling
+├── shared/utils/       # Code shared by app and server
 ├── stores/             # Pinia stores
+├── tests/              # Vitest suites
+├── scripts/            # BLS conversion and translation data
 └── nuxt.config.ts
 ```
 
@@ -63,8 +68,8 @@ pkutools-3/
 
 ### Prerequisites
 
-- Node.js 18+
-- pnpm 10+
+- Node.js 20+ (required by Nuxt 4 / Vite 8)
+- pnpm 11+
 - Infisical CLI
 
 ### Installation
@@ -119,14 +124,23 @@ App available at `http://localhost:3000` (automatically connects to Firebase emu
 
 - `pnpm dev` - Development server
 - `pnpm build` - Production build
+- `pnpm test` - Run the test suite (Vitest)
 - `pnpm emulators` - Firebase emulators (no data persistence)
 - `pnpm emulators:data` - Firebase emulators with data persistence
 - `pnpm lint` / `pnpm lint:fix` - Linting
 - `pnpm format:check` / `pnpm format` - Check/format code
 
+### Tests
+
+```bash
+pnpm test
+```
+
+Vitest, no emulator or network needed. `tests/helpers/server-harness.ts` stands in for the Firebase Admin Realtime Database, so server routes can be driven end to end.
+
 ## Quality Assurance
 
-- ESLint + Prettier + TypeScript for code quality
+- ESLint + Prettier + TypeScript for code quality, Vitest for tests
 - Test on multiple devices/browsers (including PWA installation)
 - Add translations for new strings in all locale files (en, de, es, fr)
 - Analytics: PostHog (respects cookie consent), Umami (privacy analytics)
@@ -186,9 +200,11 @@ Both keys are server-side only, never exposed to client.
 
 **Server API**: All write operations require Firebase ID token authentication, validate with Zod schemas, and handle license validation server-side.
 
-**Food Database**: Two static JSON sources merged during search: `/public/data/usda-phe-kcal.json` with USDA data (multilingual names: en, de, es, fr) and `/public/data/bls-nutrients-<locale>.json` with BLS data (Phe and label nutrients per 100 g). The BLS ships one file per locale (de, en, es, fr), each holding only that locale's name under `name`, so no user downloads names they cannot read. All four locales get the full BLS. User custom foods stored in Firebase and merged during search. Results are labeled by source, and a filter narrows the search to selected sources (USDA, BLS, own and community foods).
+**Food Values**: Phe and calories throughout, plus protein, fat, carbs, sugars, fiber and salt where a source reports them. Each food records its source, which decides whether it can be shared. Rules in [app/utils/nutrition.ts](app/utils/nutrition.ts).
 
-**Database Creation**: The USDA database combines two USDA exports (phenylalanine and calorie values) using an AI workflow to match appropriate icons to food items; translations were added via Google Docs, and the data is converted from CSV to JSON format. The BLS database is generated by `scripts/bls-convert.py` from the official BLS xlsx export (free download from the Max Rubner-Institut, placed in `data-src/`, not committed). The script keeps all BLS values unchanged and only adds emojis via keyword rules. The xlsx ships German and English names only; the Spanish and French names live in `scripts/bls-names-i18n.json` (committed, `id` → `{es, fr}`) and follow the terminology in `scripts/bls-i18n-glossary.md`. A food added by a later BLS release without a translation falls back to its English name and is reported as a warning by the script. It drops two kinds of food rather than show an unsafe Phe value (a false 0 is the most dangerous error in a PKU app), writing the full removed list to `scripts/bls-dropped-foods.txt` for auditing: foods where Phe is not determined (BLS marker `-`), and foods where the BLS stores a literal Phe of 0 even though the food clearly contains protein (> 0.5 g, or two or more other amino acids measured) — an internal BLS inconsistency where `-` should have been used. Genuine zeros (oils, sugar, spirits, water, salt, single-amino-acid additives such as MSG) and trace markers are kept.
+**Food Database**: Search merges the static JSON files in `/public/data/` with the user's own and community foods from Firebase. The BLS ships one file per locale, so nobody downloads names they cannot read.
+
+**Database Creation**: The BLS files are generated, not hand-edited — `scripts/bls-convert.py` builds them from an xlsx placed in `data-src/` (not committed) and documents its translation and drop rules.
 
 ## Additional Information
 

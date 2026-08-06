@@ -1,6 +1,6 @@
 <template>
   <h1>Nutzungsbedingungen</h1>
-  <p>Stand: 30. Juli 2026</p>
+  <p>Stand: 6. August 2026</p>
 
   <h2>Über PKU Tools</h2>
   <p>
@@ -25,10 +25,11 @@
 
   <h2>Das ist keine medizinische Beratung</h2>
   <p>
-    PKU Tools hilft dir, Phe, Kalorien und andere Nährwerte zu berechnen und festzuhalten. Die App
-    ist nicht dazu bestimmt, PKU zu diagnostizieren, zu verhindern, zu überwachen oder zu behandeln,
-    und nicht für Behandlungsentscheidungen. Sie kann dir nicht sagen, wie hoch deine Toleranz sein
-    sollte, ob ein Wert für dich sicher ist oder was du wegen eines Blutwerts tun sollst.
+    PKU Tools hilft dir, Phenylalanin (Phe), Kalorien und andere Nährwerte zu berechnen und
+    festzuhalten. Die App ist nicht dazu bestimmt, PKU zu diagnostizieren, zu verhindern, zu
+    überwachen oder zu behandeln, und nicht für Behandlungsentscheidungen. Sie kann dir nicht sagen,
+    wie hoch deine Toleranz sein sollte, ob ein Wert für dich sicher ist oder was du wegen eines
+    Blutwerts tun sollst.
   </p>
   <p>
     Nutze sie als persönliche Aufzeichnung und Rechenhilfe. Sie ersetzt deine Stoffwechselambulanz
@@ -64,8 +65,8 @@
         <tr>
           <td><strong>Barcode Scanner</strong></td>
           <td>
-            Der Eiweißwert auf dem Etikett wird mit einem Standardfaktor für diese Lebensmittelart
-            multipliziert. Die Rechnung ist exakt und keine Schätzung.
+            Der Eiweißwert auf dem Etikett wird mit einem Standard-Phe-Faktor für diese
+            Lebensmittelart multipliziert. Die Rechnung ist exakt und keine Schätzung.
           </td>
           <td>
             Die Etikettdaten stammen aus einer von Freiwilligen gepflegten Datenbank und können
@@ -74,7 +75,15 @@
           </td>
         </tr>
         <tr>
-          <td><strong>KI Rechner</strong></td>
+          <td><strong>Etikett-Scan</strong></td>
+          <td>
+            Ein KI-Modell liest die Werte von deinem Foto der Nährwerttabelle ab. Ist Phe nicht
+            angegeben, wird es aus dem Eiweiß mit dem Faktor für die Lebensmittelart berechnet.
+          </td>
+          <td>Das Modell kann sich verlesen. Prüfe die Werte auf dem Etikett.</td>
+        </tr>
+        <tr>
+          <td><strong>KI-Schätzung</strong></td>
           <td>Ein KI-Modell schätzt die Werte aus deiner Beschreibung oder deinem Foto.</td>
           <td>Schätzungen können überzeugend falsch sein. Prüfe alles, worauf es ankommt.</td>
         </tr>

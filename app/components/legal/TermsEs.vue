@@ -1,6 +1,6 @@
 <template>
   <h1>Condiciones del servicio</h1>
-  <p>Última actualización: 30 de julio de 2026</p>
+  <p>Última actualización: 6 de agosto de 2026</p>
 
   <h2>Sobre PKU Tools</h2>
   <p>
@@ -24,10 +24,10 @@
 
   <h2>Esto no es asesoramiento médico</h2>
   <p>
-    PKU Tools te ayuda a calcular y registrar Phe, calorías y otros nutrientes. No está destinada a
-    diagnosticar, prevenir, vigilar ni tratar la PKU, ni a servir de base para decisiones sobre el
-    tratamiento. No puede decirte cuál debería ser tu tolerancia, si un valor es seguro para ti o
-    qué hacer ante el resultado de un análisis de sangre.
+    PKU Tools te ayuda a calcular y registrar fenilalanina (Phe), calorías y otros nutrientes. No
+    está destinada a diagnosticar, prevenir, vigilar ni tratar la PKU, ni a servir de base para
+    decisiones sobre el tratamiento. No puede decirte cuál debería ser tu tolerancia, si un valor es
+    seguro para ti o qué hacer ante el resultado de un análisis de sangre.
   </p>
   <p>
     Úsala como registro personal y ayuda de cálculo. No sustituye a tu unidad metabólica ni a tu
@@ -71,7 +71,16 @@
           </td>
         </tr>
         <tr>
-          <td><strong>Calculadora IA</strong></td>
+          <td><strong>Escaneo de etiqueta</strong></td>
+          <td>
+            Un modelo de IA lee los valores impresos en la tabla nutricional a partir de tu foto. Si
+            la Phe no está impresa, se calcula a partir de la proteína con el factor del tipo de
+            alimento.
+          </td>
+          <td>El modelo puede leer mal una etiqueta, así que comprueba los valores con ella.</td>
+        </tr>
+        <tr>
+          <td><strong>Estimación de IA</strong></td>
           <td>Un modelo de IA estima los valores a partir de tu descripción o tu foto.</td>
           <td>
             Las estimaciones pueden parecer convincentes y aun así ser incorrectas. Comprueba todo

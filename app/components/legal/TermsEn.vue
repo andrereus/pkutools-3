@@ -1,6 +1,6 @@
 <template>
   <h1>Terms of Service</h1>
-  <p>Last updated: July 30, 2026</p>
+  <p>Last updated: August 6, 2026</p>
 
   <h2>About PKU Tools</h2>
   <p>
@@ -22,10 +22,10 @@
 
   <h2>This is not medical advice</h2>
   <p>
-    PKU Tools helps you calculate and record phenylalanine, calories and other nutrients. It is not
-    intended to diagnose, prevent, monitor or treat PKU, and not intended for treatment decisions.
-    It cannot tell you what your tolerance should be, whether a value is safe for you, or what to do
-    about a blood result.
+    PKU Tools helps you calculate and record phenylalanine (Phe), calories and other nutrients. It
+    is not intended to diagnose, prevent, monitor or treat PKU, and not intended for treatment
+    decisions. It cannot tell you what your tolerance should be, whether a value is safe for you, or
+    what to do about a blood result.
   </p>
   <p>
     Use it as a personal record and a calculation aid. It does not replace your metabolic clinic or
@@ -57,8 +57,8 @@
         <tr>
           <td><strong>Barcode scan</strong></td>
           <td>
-            The protein figure on the label is multiplied by a standard phenylalanine factor for
-            that food type. The multiplication is exact, not a guess.
+            The protein figure on the label is multiplied by a standard Phe factor for that food
+            type. The multiplication is exact, not a guess.
           </td>
           <td>
             The label data comes from a volunteer-maintained database and can be wrong. The factor
@@ -67,7 +67,15 @@
           </td>
         </tr>
         <tr>
-          <td><strong>AI Calculator</strong></td>
+          <td><strong>Label scan</strong></td>
+          <td>
+            An AI model reads the values printed on the nutrition label from your photo. If Phe is
+            not printed, it is calculated from protein using the factor for that food type.
+          </td>
+          <td>The model can misread a label, so check the values against it.</td>
+        </tr>
+        <tr>
+          <td><strong>AI estimate</strong></td>
           <td>An AI model estimates the values from your description or photo.</td>
           <td>Estimates can be confidently wrong. Check anything that matters.</td>
         </tr>
@@ -86,8 +94,8 @@
   </div>
   <p>
     For nutrients printed on a label, the label is the better source for that exact product. Bear in
-    mind that label figures are rounded, and that labels usually do not state phenylalanine at all.
-    If a difference matters for your treatment, ask your metabolic team.
+    mind that label figures are rounded, and that labels usually do not state Phe at all. If a
+    difference matters for your treatment, ask your metabolic team.
   </p>
   <p>
     Values are rounded for display. Your daily targets are used exactly as entered in Settings, so
