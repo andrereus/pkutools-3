@@ -724,6 +724,9 @@ const showLogReferenceInputs = ref(false)
 // away from this, a refresh button offers to regenerate the emoji
 const logEmojiBasisName = ref('')
 const isRefreshingLogEmoji = ref(false)
+// Premium users may replace an emoji they don't like once per opened dialog,
+// without having to change the food name
+const hasRerolledLogEmoji = ref(false)
 
 const defaultLogItem = {
   name: '',
@@ -755,19 +758,43 @@ const showLogEmojiRefresh = computed(() => {
   return !!editedLogItem.value.emoji && !!name && name !== logEmojiBasisName.value.trim()
 })
 
+// Premium extra: one replacement per opened dialog for an emoji that fits the
+// name but isn't wanted. Free users get a new emoji by editing the name. Own
+// Food exempts published foods from this gate because their icon is public;
+// a log item's emoji is a private snapshot, so no exemption applies here.
+const canRerollLogEmoji = computed(() => {
+  const name = editedLogItem.value.name?.trim()
+  return isPremium.value && !!editedLogItem.value.emoji && !!name && !hasRerolledLogEmoji.value
+})
+
+// The corner button either updates the emoji after a name change or spends the
+// premium reroll
+const showLogEmojiAction = computed(() => showLogEmojiRefresh.value || canRerollLogEmoji.value)
+
 const refreshLogEmoji = async () => {
   const name = editedLogItem.value.name?.trim()
   if (!name) return
+
+  // Same name plus an existing emoji means the user wants a different emoji for
+  // the same food — the premium reroll. The button is hidden when that isn't
+  // allowed, so this only guards against a stale click.
+  const isReroll = !!editedLogItem.value.emoji && name === logEmojiBasisName.value.trim()
+  if (isReroll && !canRerollLogEmoji.value) return
+  const previousEmoji = isReroll ? editedLogItem.value.emoji : null
+
   isRefreshingLogEmoji.value = true
   try {
-    const emoji = await fetchEmojiForFood(name)
-    if (emoji) {
+    const emoji = await fetchEmojiForFood(name, previousEmoji)
+    if (emoji && emoji !== previousEmoji) {
       editedLogItem.value.emoji = emoji
       // Advance the basis so the button hides until the name is edited again;
       // on a failed fetch it stays so the user can retry
       logEmojiBasisName.value = name
+      if (isReroll) hasRerolledLogEmoji.value = true
     } else {
-      // Surface the failure so the user isn't left re-clicking a silent button
+      // Surface the failure so the user isn't left re-clicking a silent button.
+      // A reroll that came back with the same emoji isn't spent, so the retry
+      // this message offers is actually available.
       notifications.error(t('errors.emoji-update-failed'))
     }
   } finally {
@@ -819,6 +846,7 @@ const editLogItem = (item, index) => {
   openedLogMaterialValues.value = logMaterialValues(editedLogItem.value)
   showLogReferenceInputs.value = false
   logEmojiBasisName.value = editedLogItem.value.name || ''
+  hasRerolledLogEmoji.value = false
   dialog2.value.openDialog()
 }
 
@@ -849,6 +877,7 @@ const closeLogEdit = () => {
   showLogReferenceInputs.value = false
   logEmojiBasisName.value = ''
   isRefreshingLogEmoji.value = false
+  hasRerolledLogEmoji.value = false
 }
 
 const openAddLogItem = () => {
@@ -861,6 +890,7 @@ const openAddLogItem = () => {
   // Blank add: the reference inputs are the entry form, so show them directly
   showLogReferenceInputs.value = true
   logEmojiBasisName.value = ''
+  hasRerolledLogEmoji.value = false
   dialog2.value.openDialog()
 }
 
@@ -1409,7 +1439,7 @@ defineOgImage('Default', {
           :title="logFormTitle"
           :meta="editedLogItemTime"
           :emoji="editedLogItem.emoji || ''"
-          :emoji-refreshable="showLogEmojiRefresh"
+          :emoji-refreshable="showLogEmojiAction"
           :emoji-refreshing="isRefreshingLogEmoji"
           :buttons="[
             { label: $t('common.save'), type: 'submit', visible: true },
