@@ -312,10 +312,6 @@ export const useApi = () => {
     hidden: boolean
   }> => request('/api/community-food/vote', 'Vote community food', 'POST', data)
 
-  // ============================================================================
-  // Return
-  // ============================================================================
-
   return {
     // Diary
     createDiaryDay,

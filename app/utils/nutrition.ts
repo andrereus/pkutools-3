@@ -39,9 +39,9 @@ export const numericOrZero = (value: unknown): number => (isReported(value) ? Nu
 
 // Read a per-100 g reference out of an editable field. An empty field means "no
 // reference", but an explicit 0 is a real value — spirits and oils have no Phe
-// at all, and 193 BLS plus 104 USDA foods are stored that way. `|| null` would
-// collapse that 0 to null, which the diary would then read as a hand edit and
-// use to rewrite the entry's provenance.
+// at all, and the food databases store them that way. `|| null` would collapse
+// that 0 to null, which the diary would then read as a hand edit and use to
+// rewrite the entry's provenance.
 export const parseReference = (value: unknown): number | null =>
   isReported(value) ? Number(value) : null
 
@@ -101,15 +101,13 @@ export const scaleToWeight = (reference: number, weight: number): number =>
 //   < 1 g     one decimal, except salt, which gets two
 //   > 0       "< 0.1", or "< 0.01" for salt — never print a value we hold as 0
 //
-// Salt is the only nutrient carved out because it is the only one that
-// routinely sits below 0.1 g (BLS holds values like 0.00495 g), and it is the
-// same exception the EC guidance on tolerances makes — that annex rounds salt
-// to 0.01 g below 1 g and every other nutrient to 0.1 g. Giving everything two
-// decimals down there instead would leave 0.33 sitting next to 2.1 in the same
-// column, where the longer number reads as the larger one.
+// Salt is carved out because it is the only nutrient that routinely sits below
+// 0.1 g, and the EC guidance on tolerances makes the same exception. Two
+// decimals for everything instead would leave 0.33 next to 2.1 in one column,
+// where the longer number reads as the larger one.
 //
-// The floor is a deliberate departure from the guidance, which declares small
-// amounts as "0 g" — fine on a packet, wrong in a tracker.
+// The floor departs from that guidance deliberately: it declares small amounts
+// as "0 g", which is fine on a packet and wrong in a tracker.
 export const formatNutrient = (grams: number, nutrient?: string): number | string => {
   if (grams >= 10) return roundHalfUp(grams)
   if (grams >= 1) return roundHalfUp(grams, 1)

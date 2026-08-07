@@ -214,7 +214,6 @@ const save = async () => {
     dialog.value.closeDialog()
     navigateTo(localePath('diary'))
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Save error:', error)
   } finally {
     isSaving.value = false

@@ -17,9 +17,8 @@ import {
   ResetSchema
 } from '../server/types/schemas'
 
-// These schemas are the only thing standing between an arbitrary HTTP body and
-// the user's health data in Firebase. Every write endpoint runs its body through
-// one of them, so a loosened rule here silently widens what can be persisted.
+// Write endpoints validate request bodies with these schemas before persisting
+// them to Firebase, so a loosened rule widens what those endpoints accept.
 
 const validEntry = {
   name: 'Apple',

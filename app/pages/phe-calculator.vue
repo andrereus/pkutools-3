@@ -163,7 +163,6 @@ const save = async () => {
       saveToOwnFood.value = false
       shareWithCommunity.value = false
     }
-    // Error handling is done in useApi composable
     console.error('Save error:', error)
   } finally {
     isSaving.value = false

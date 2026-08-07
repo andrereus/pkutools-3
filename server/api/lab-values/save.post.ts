@@ -23,7 +23,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  // Free users are capped at 30 entries (fetch 31 to know we've exceeded it).
+  // Reject creation when a free user already has 30 entries
   if (!isPremium) {
     const labValuesSnapshot = await labValuesRef.limitToFirst(31).once('value')
     if (labValuesSnapshot.numChildren() >= 30) {

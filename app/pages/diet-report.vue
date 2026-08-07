@@ -628,7 +628,6 @@ const deleteItem = async () => {
       undoLabel: t('common.undo')
     })
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Delete error:', error)
   }
 }
@@ -686,8 +685,8 @@ const save = async () => {
         incomplete: entryIncomplete
       })
     } else {
-      // Create a new day entry (not a food item)
-      // This always creates a new diary entry, even if a day with the same date already exists
+      // Create a new day entry (not a food item). The server rejects a date that
+      // already has one with a 409.
       await createDiaryDay({
         date: entryDate,
         phe: pheValue,
@@ -962,8 +961,8 @@ const saveLogEdit = async () => {
 
       // Update local state immediately so UI reflects the change
       // Create a new array to ensure Vue reactivity works
-      // Timestamps are stamped here because this item reaches the server inside
-      // the day-save log array, where new items can't be told apart
+      // Stamp the creation time before the full-day save; the server assigns the
+      // stable item id when it processes the log.
       const now = Date.now()
       const currentLog = editedItem.value.log || []
       editedItem.value.log = [...currentLog, { ...updatedItem, createdAt: now, updatedAt: now }]
@@ -1385,7 +1384,6 @@ defineOgImage('Default', {
                 <!-- Name and badge share one inline block, so the badge wraps with the text -->
                 <span class="wrap-anywhere">
                   {{ item.name }}
-                  <!-- Note indicator badge -->
                   <span
                     v-if="item.note"
                     class="inline-flex items-center align-middle rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"

@@ -4,13 +4,13 @@ import { z } from 'zod'
 // Base Entity Schemas
 // ============================================================================
 
-// Every numeric field in this file goes through here rather than through Zod's
-// coercing number, which runs Number() over whatever it is given: `true`
-// becomes 1, and `[]`, `''` and `null` all become 0. On a Phe or kcal field
-// that turns a malformed request into a silent, plausible-looking value — a
-// false 0 being the error this app guards hardest against elsewhere (the BLS
-// import drops foods over it). Rejecting the wrong shape outright makes it a
-// 400 instead.
+// Numeric nutrition, measurement, weight and target fields go through here
+// rather than through Zod's coercing number, which runs Number() over whatever
+// it is given: `true` becomes 1, and `[]`, `''` and `null` all become 0. On a
+// Phe or kcal field that turns a malformed request into a silent,
+// plausible-looking value — a false 0 being the error this app guards hardest
+// against elsewhere (the BLS import drops foods over it). Rejecting the wrong
+// shape outright makes it a 400 instead.
 //
 // Numeric strings are still accepted: legacy records and form fields hold
 // values like "150", and the endpoints have always taken them.
@@ -102,7 +102,6 @@ const DiaryItemIdSchema = z
   .min(1, 'Diary item id is required')
   .max(64, 'Diary item id is too long')
 
-// Diary entry schema
 export const DiaryEntrySchema = z.object({
   // Stable identity within a day's log. New entries receive a Firebase push id
   // server-side; optional so existing timestamp-only entries remain valid and
@@ -131,7 +130,6 @@ export const DiaryEntrySchema = z.object({
   ...timestampFields
 })
 
-// Lab value schema
 export const LabValueSchema = z
   .object({
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
@@ -146,7 +144,6 @@ export const LabValueSchema = z
     path: ['phe'] // Point to phe field for error
   })
 
-// Own food schema
 export const OwnFoodSchema = z.object({
   name: z.string().min(1, 'Food name is required').max(200, 'Food name is too long'),
   icon: z.string().nullable().optional(),
@@ -168,29 +165,9 @@ export const OwnFoodSaveSchema = OwnFoodSchema.extend({
 // Community Food Schemas
 // ============================================================================
 
-// Community food record shape, written to `communityFoods/<key>`.
-// Intentionally NOT a Zod schema: these records are assembled server-side (in
-// own-food save/update) from already-validated own-food input plus trusted
-// server values, so there is no separate trust boundary to re-validate here.
-// Kept as documentation of the stored shape:
-//   name           string (1–200)
-//   icon           string | null
-//   emoji          string | null
-//   phe            number >= 0
-//   kcal           number >= 0
-//   note           string (<= 500) | null
-//   source         FoodSource | null            (how the values were arrived at)
-//   sourceId       string | null                (barcode, where there is one)
-//   factor         number | null                (original protein conversion)
-//   nutrients      Nutrients | null
-//   materiallyEdited boolean?                   (true after a material edit)
-//   language       'en' | 'de' | 'es' | 'fr'   (server-computed)
-//   contributorId  string                       (verified userId)
-//   ownFoodKey     string                       (server push key)
-//   createdAt      number                       (Date.now())
-//   updatedAt      number?                       (missing on legacy records)
-//   likes / dislikes / score / usageCount  number  (start at 0)
-// Hidden status is computed from score (score < -3), not stored.
+// Community records are assembled server-side from validated input and trusted
+// metadata. They are not accepted directly at a request boundary, so no
+// separate Zod record schema is needed here.
 
 // Vote schema for community foods
 export const CommunityVoteSchema = z.object({
@@ -202,7 +179,6 @@ export const CommunityVoteSchema = z.object({
 // Diary Request Schemas
 // ============================================================================
 
-// Create diary day request schema
 export const CreateDaySchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format'),
   phe: numeric(z.number().nonnegative('Phe value must be non-negative')),
@@ -210,7 +186,6 @@ export const CreateDaySchema = z.object({
   ...timestampFields
 })
 
-// Update diary day request schema
 export const UpdateDaySchema = z.object({
   date: z
     .string()
@@ -230,7 +205,6 @@ const diaryItemLocatorFields = {
 const hasDiaryItemLocator = (data: { itemId?: string; logIndex?: number }) =>
   data.itemId !== undefined || data.logIndex !== undefined
 
-// Update food item in diary request schema
 export const UpdateFoodItemSchema = z
   .object({
     ...diaryItemLocatorFields,
@@ -241,7 +215,6 @@ export const UpdateFoodItemSchema = z
     path: ['itemId']
   })
 
-// Delete food item from diary request schema
 export const DeleteFoodItemSchema = z.object(diaryItemLocatorFields).refine(hasDiaryItemLocator, {
   message: 'Diary item id or legacy log index is required',
   path: ['itemId']
@@ -251,7 +224,6 @@ export const DeleteFoodItemSchema = z.object(diaryItemLocatorFields).refine(hasD
 // Lab Values Request Schemas
 // ============================================================================
 
-// Update lab value request schema
 export const LabValueUpdateSchema = z.object({
   entryKey: z.string().min(1, 'Entry key is required'),
   data: LabValueSchema
@@ -261,7 +233,6 @@ export const LabValueUpdateSchema = z.object({
 // Own Food Request Schemas
 // ============================================================================
 
-// Update own food request schema
 // Original provenance is immutable on an update. Nutrients are editable food
 // content; the route compares them with the stored record and derives the
 // monotonic materiallyEdited flag itself.
@@ -284,7 +255,6 @@ export const OwnFoodUpdateSchema = z.object({
 // Settings Request Schemas
 // ============================================================================
 
-// Update settings request schema
 export const SettingsUpdateSchema = z.object({
   maxPhe: numeric(z.number().nonnegative('Max Phe must be non-negative').nullable().optional()),
   maxKcal: numeric(z.number().nonnegative('Max Kcal must be non-negative').nullable().optional()),
@@ -308,16 +278,13 @@ export const SettingsUpdateSchema = z.object({
   license: z.string().nullable().optional()
 })
 
-// Update consent request schema
 export const ConsentSchema = z.object({
   healthDataConsent: z.boolean().optional(),
   emailConsent: z.boolean().optional()
 })
 
-// Update getting started request schema
 export const GettingStartedSchema = z.object({
   completed: z.boolean()
 })
 
-// Reset data request schema
 export const ResetSchema = z.enum(['diary', 'labValues', 'ownFood'])

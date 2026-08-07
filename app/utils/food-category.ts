@@ -4,16 +4,11 @@ import type { FoodType } from './nutrition'
 // The scanner keeps the conservative general factor until the user accepts the
 // suggestion; this classifier never changes a calculation on its own.
 //
-// A product carries its whole category path, from the broadest ancestor down to
-// the specific item — a tin of sardines carries `en:fishes` as well as
-// `en:sardines` — so the long tail of specific tags can be ignored. What the
-// path does not do is run where you would expect: `en:frozen-vegetables` sits
-// under `en:vegetables-based-foods`, not under `en:vegetables`, and
-// `en:canned-fruits` under `en:fruit-based-foods`, not under `en:fruits`
-// (checked against the live taxonomy). So every preserved form is listed
-// below in its own right rather than left to the hierarchy. The tags are
-// canonical slugs, so anything that isn't one (Open Food Facts has entries
-// like `en:Petit-déjeuners` in the wild) simply fails to match.
+// A product carries its whole category path, so broad ancestors are enough to
+// match on. The hierarchy does not run where you would expect, though —
+// preserved forms sit under `*-based-foods` rather than under the plain
+// category — so each one is listed below in its own right instead of being left
+// to the path.
 //
 // Only the three types below are ever guessed. 'other' is both the app's
 // default and the highest factor (50 mg Phe per g protein), so anything
@@ -21,11 +16,10 @@ import type { FoodType } from './nutrition'
 // high rather than low — the direction that has someone eat less of a food, not
 // more.
 
-// The narrow group tags only. The broad ones are unusable: a tube of Pringles
-// carries `en:vegetable-based-foods-and-beverages` and
-// `en:fruits-and-vegetables-based-foods`, and its protein is nothing like a
-// vegetable's. What is left out is left out on purpose — legumes, nuts and
-// potatoes all sit far from the vegetable factor, and land on 'other'.
+// Narrow group tags only. The broad ones mix unrelated foods and would pull
+// products nothing like a vegetable onto the vegetable factor. What is left out
+// is left out on purpose — legumes, nuts and potatoes all sit far from that
+// factor, and land on 'other'.
 const CATEGORY_FOOD_TYPES: Record<Exclude<FoodType, 'other'>, string[]> = {
   fruit: [
     'en:fruits',

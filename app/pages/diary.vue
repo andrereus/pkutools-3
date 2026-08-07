@@ -80,8 +80,6 @@ const userIsAuthenticated = computed(() => store.user !== null)
 const pheDiary = computed(() => store.pheDiary)
 const settings = computed(() => store.settings)
 
-// License check is now done via useLicense composable
-// Keep this for backward compatibility but use isPremium from composable
 const license = computed(() => isPremium.value)
 
 const tableHeaders = computed(() => [
@@ -184,7 +182,8 @@ const messages = [
 // Available icons
 const icons = [LucideSun, LucideSparkles, LucideCoffee, LucideHeart, LucideZap, LucideCalendar]
 
-// Get time-appropriate greeting key for greeting-1
+// greeting-1 alone varies with the current clock time, so it is the one greeting
+// that does not stay fixed for a given date
 const getTimeBasedGreeting = (greetingKey) => {
   if (greetingKey === 'diary.empty-state.greeting-1') {
     const hour = new Date().getHours()
@@ -199,15 +198,12 @@ const getTimeBasedGreeting = (greetingKey) => {
   return greetingKey
 }
 
-// Select icon, headline, and text independently based on date
-// Each day gets a different combination, but same date = same combination
+// Date-derived indices stay stable for a day; equal-length arrays keep the
+// three selections coupled.
 const selectedGreeting = computed(() => {
-  // Use date as seed to generate independent indices
   const dateHash = date.value.split('-').join('')
   const dateNum = parseInt(dateHash)
 
-  // Generate different indices using simple hash with different offsets
-  // This ensures icon, greeting, and message are selected independently
   const iconIndex = dateNum % icons.length
   const greetingIndex = (dateNum + 1000) % greetings.length
   const messageIndex = (dateNum + 2000) % messages.length
@@ -378,11 +374,9 @@ const lastAdded = computed(() => {
   // Convert the Map back to an array and sort by combined score (recency-weighted frequency)
   const sortedItems = Array.from(itemMap.values()).sort((a, b) => b.score - a.score)
 
-  // Limit to the top 10 items
+  // The template pages through these, so the full ranked list is returned
   return sortedItems
 })
-
-// Note: isToday was removed as it's not used
 
 // Methods
 
@@ -477,7 +471,6 @@ const deleteItem = async () => {
       undoLabel: t('common.undo')
     })
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Delete error:', error)
   }
 }
@@ -763,7 +756,6 @@ defineOgImage('Default', {
           </div>
         </div>
 
-        <!-- Circles view -->
         <div v-if="progressStyle === 'circles'" class="grid grid-cols-2 gap-2">
           <div class="flex items-center gap-2 max-[400px]:gap-0 sm:justify-center sm:gap-6">
             <template v-if="settings?.maxPhe">
@@ -876,7 +868,6 @@ defineOgImage('Default', {
         </div>
       </div>
 
-      <!-- Empty State -->
       <div
         v-if="selectedDayLog.length === 0"
         class="mt-6 mb-6 flex flex-col items-center justify-center py-6 px-4 text-center"
@@ -901,7 +892,6 @@ defineOgImage('Default', {
         </p>
       </div>
 
-      <!-- Data Table -->
       <DataTable v-else :headers="tableHeaders" class="mb-6">
         <tr
           v-for="(item, index) in selectedDayLog"
@@ -942,7 +932,6 @@ defineOgImage('Default', {
               <!-- Name and badge share one inline block, so the badge wraps with the text -->
               <span class="wrap-anywhere">
                 {{ item.name }}
-                <!-- Note indicator badge -->
                 <span
                   v-if="item.note"
                   class="inline-flex items-center align-middle rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"

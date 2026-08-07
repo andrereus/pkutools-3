@@ -563,7 +563,6 @@ const deleteItem = async () => {
       undoLabel: t('common.undo')
     })
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Delete error:', error)
   }
 }

@@ -326,7 +326,6 @@ const deleteItem = async () => {
       undoLabel: t('common.undo')
     })
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Delete error:', error)
   }
 }
@@ -471,8 +470,8 @@ const save = async () => {
     notifications.success(t('common.saved'))
     closeModal()
   } catch (error) {
-    // Error handling is done in useApi composable; the dialog stays open so
-    // the inline error is visible and the input can be corrected
+    // The dialog stays open so the inline error is visible and the input can be
+    // corrected
     console.error('Save error:', error)
   } finally {
     isSaving.value = false
@@ -591,7 +590,6 @@ const add = async () => {
     dialog2.value.closeDialog()
     navigateTo(localePath('diary'))
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Save error:', error)
   } finally {
     isSaving.value = false

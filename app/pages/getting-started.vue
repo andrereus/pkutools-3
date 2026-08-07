@@ -95,7 +95,6 @@ const handleConsentGiven = async () => {
     }
     currentStep.value = 2
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Update consent error:', error)
     notifications.error(t('health-consent.error-saving'))
   } finally {
@@ -112,15 +111,14 @@ const handleConsentDeclined = async () => {
     })
     await updateGettingStarted(true)
 
-    // For existing users who decline, redirect to settings
-    // For new users, redirect to home page
+    // Return authenticated users to Settings; if authentication disappeared
+    // during the requests, fall back to the home page.
     if (store.user) {
       navigateTo(localePath('settings'))
     } else {
       navigateTo(localePath('index'))
     }
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Update consent error:', error)
     notifications.error(t('health-consent.error-saving'))
   }
@@ -135,7 +133,6 @@ const saveTargets = async () => {
     })
     currentStep.value = 3
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Save settings error:', error)
   } finally {
     saving.value = false
@@ -154,7 +151,6 @@ const saveBloodValues = async () => {
     })
     currentStep.value = 4
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Save settings error:', error)
   } finally {
     saving.value = false
@@ -167,7 +163,6 @@ const finish = async () => {
     await updateGettingStarted(true)
     navigateTo(localePath('diary'))
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Update getting started error:', error)
     notifications.error(t('health-consent.error-saving'))
   } finally {

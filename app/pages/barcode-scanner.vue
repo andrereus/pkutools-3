@@ -53,7 +53,7 @@ const categorySuggestion = ref(null)
 // we default to the OS choice (facingMode: environment) and remember the selection.
 const CAMERA_STORAGE_KEY = 'barcode_camera'
 const LEGACY_CAMERA_STORAGE_KEY = 'pku-barcode-camera' // renamed for naming consistency
-const cameras = ref([]) // [{ deviceId, label }] — populated once labels are readable
+const cameras = ref([]) // [{ deviceId, label }]
 const selectedCameraId = ref('') // '' = OS default, otherwise a specific deviceId
 
 // `advanced` requests continuous autofocus on top of the chosen camera (best-effort;
@@ -92,8 +92,8 @@ onMounted(() => {
   }
 })
 
-// Populate the dropdown. Device labels are only exposed after camera permission is
-// granted, so this returns real names only once the stream is live (see onReady).
+// Populate the dropdown before opening and again when the stream is ready. Device
+// labels are available after permission has been granted; until then use fallbacks.
 const refreshCameras = async () => {
   if (!navigator.mediaDevices?.enumerateDevices) return
   try {
@@ -423,7 +423,6 @@ const save = async () => {
       saveToOwnFood.value = false
       shareWithCommunity.value = false
     }
-    // Error handling is done in useApi composable
     console.error('Save error:', error)
   } finally {
     isSaving.value = false

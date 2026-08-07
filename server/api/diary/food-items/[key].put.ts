@@ -47,7 +47,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     updatedAt: now
   }
 
-  // Calculate totals
   const totalPhe = updatedLog.reduce((sum: number, item) => sum + storedNumberOrZero(item.phe), 0)
   const totalKcal = updatedLog.reduce((sum: number, item) => sum + storedNumberOrZero(item.kcal), 0)
 

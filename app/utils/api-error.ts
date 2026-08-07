@@ -1,8 +1,7 @@
-// Reading a failed request without reporting it. useApi reports every failure
-// it sees, which is right when the failure is the whole outcome. These are for
-// the cases where it is only part of one — a food that couldn't be saved
-// alongside a diary entry that could — and the caller has to fold the reason
-// into a single message rather than show two.
+// Reading a failed request without reporting it. useApi reports failures by
+// default; these helpers are for callers that opt into `silent` because the
+// failure is only part of one outcome — a food that couldn't be saved alongside
+// a diary entry that could — and must be folded into a single message.
 
 /**
  * The stable business-rule code an endpoint attached to an error, e.g.

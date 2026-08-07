@@ -99,9 +99,9 @@ describe('formatNutrient half boundaries', () => {
 })
 
 describe('parseReference', () => {
-  // 193 BLS and 104 USDA foods hold phe: 0 — spirits, oils, sugar. `|| null`
-  // collapsed those to null, which the diary then read as a hand edit and used
-  // to rewrite the entry's source to 'manual'.
+  // Some reference foods legitimately have phe: 0. `|| null` collapsed those
+  // to null, which the diary then read as a hand edit and used to rewrite the
+  // entry's source to 'manual'.
   it('keeps an explicit zero', () => {
     expect(parseReference(0)).toBe(0)
     expect(parseReference('0')).toBe(0)

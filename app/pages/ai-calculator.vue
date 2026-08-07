@@ -371,7 +371,6 @@ Return JSON:
     // default weight rather than being offered as one
     const servingSize = parseNutrientNumber(foodData.weightInGrams)
 
-    // Build result object
     result.value = {
       source: 'estimate',
       name: foodData.name || null,
@@ -392,7 +391,6 @@ Return JSON:
       nutrients: parseCommonNutrients(foodData)
     }
 
-    // Set editable weight from serving size
     weight.value = result.value.weightInGrams || 100
 
     // Clear correction hint after a successful re-estimate

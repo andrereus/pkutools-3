@@ -17,7 +17,6 @@ const DiaryFoodItemRequestSchema = DiaryEntrySchema.extend({
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   // Validate input - expect a single log entry with optional date
-  // communityFoodKey is now part of DiaryEntrySchema and will be stored in the entry
   const validated = await validateBody(event, DiaryFoodItemRequestSchema)
 
   // Extract date (not stored in log entry, used to find/create diary day)
@@ -49,7 +48,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     return { ...logEntryData, itemId }
   }
 
-  // Determine date
   const date = requestDate || format(new Date(), 'yyyy-MM-dd')
 
   // Find existing entry for this date efficiently
@@ -72,9 +70,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
 
   // Check diary entry limit for free users (only when creating new date entry)
   if (!isPremium && !existingEntryKey) {
-    // Free users: Must fetch minimal data to count entries before creating new one
     const diaryRef = db.ref(`/${userId}/pheDiary`)
-    // limit is 14, so fetch 15 to be sure we exceeded it
+    // Reject creation when a free user already has 14 entries
     const diarySnapshot = await diaryRef.limitToFirst(15).once('value')
     const entryCount = diarySnapshot.numChildren()
 
@@ -95,17 +92,19 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       .then((snapshot) => {
         if (snapshot.exists()) {
           const currentUsage = snapshot.val().usageCount || 0
-          communityFoodRef.update({ usageCount: currentUsage + 1 })
+          // Returned into the chain so a failed write reaches the catch below
+          // rather than escaping as an unhandled rejection
+          return communityFoodRef.update({ usageCount: currentUsage + 1 })
         }
       })
       .catch(() => {
-        // Silently ignore errors - usage tracking is not critical
+        // Usage tracking is not critical, so a failed read or write is dropped
+        // rather than failing the diary write it is attached to
       })
   }
 
   if (existingEntryKey) {
-    // TODO: Use a day transaction (plus a revision guard for full-day saves);
-    // rewriting the complete log can lose a concurrent diary change.
+    // TODO: Make full-day log updates concurrency-safe.
     // Update existing entry - add new log item
     interface DiaryEntry {
       date: string
@@ -118,7 +117,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     const logEntry = withItemId(existingEntry.log || [])
     const updatedLog = [...(existingEntry.log || []), logEntry]
 
-    // Calculate totals
     const totalPhe = updatedLog.reduce((sum: number, item) => sum + storedNumberOrZero(item.phe), 0)
     const totalKcal = updatedLog.reduce(
       (sum: number, item) => sum + storedNumberOrZero(item.kcal),
@@ -139,9 +137,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
   } else {
     // Create new entry
-    // Note: There's a potential race condition here if two requests come in simultaneously
-    // Both might find no existing entry and both create new entries
-    // For production, consider using Firebase transactions for atomicity
+    // TODO: Make date creation atomic.
     const logEntry = withItemId()
     const totalPhe = storedNumberOrZero(logEntry.phe)
     const totalKcal = storedNumberOrZero(logEntry.kcal)

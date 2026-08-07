@@ -146,7 +146,8 @@ const signOut = () => {
 onMounted(() => {
   store.checkAuthState()
 
-  // Script gets loaded in index.html
+  // The widget script is registered in nuxt.config.ts, so it may not have
+  // arrived yet when this runs
   if (typeof Headway !== 'undefined') {
     const config = {
       selector: '.headway',

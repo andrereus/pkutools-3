@@ -551,13 +551,8 @@ describe('editing an already shared food', () => {
   })
 })
 
-// Sharing writes to two places that are not in one transaction: the community
-// entry, then the own food that points at it. These pin what a caller sees when
-// the second write fails, and what is left behind in the database.
-// The own food and its published copy are written as one multi-location update
-// at the root, which the database applies atomically. Every state below used to
-// be reachable in halves — a published food whose own food never learned it was
-// shared, or the reverse — and none of them is anymore.
+// The own food and its published copy use one atomic multi-location update.
+// These tests ensure a failed write cannot leave only one copy persisted.
 describe('when the database write fails', () => {
   const failWrite: WriteFailure = (operation) => operation === 'update'
 

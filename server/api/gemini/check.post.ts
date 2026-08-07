@@ -38,13 +38,13 @@ export default defineAuthedHandler(async ({ userId }) => {
   const allowed = currentCount + 1 <= dailyLimit
   const remaining = Math.max(0, dailyLimit - currentCount)
 
+  // TODO: Make quota enforcement atomic.
   if (allowed) {
     if (estimateDate === today) {
-      // Same day: atomic server-side increment so concurrent requests don't lose
-      // updates (which would let the count fall behind and allow over-use).
+      // The counter update itself is atomic.
       await settingsRef.update({ estimationCount: ServerValue.increment(1) })
     } else {
-      // New day: reset the counter to this estimate.
+      // Start the counter for the new day.
       await settingsRef.update({
         estimationCount: 1,
         estimationDate: today
@@ -56,6 +56,6 @@ export default defineAuthedHandler(async ({ userId }) => {
     allowed,
     remaining,
     dailyLimit,
-    resetAt: today // Date when limit resets
+    resetAt: today // The date this count belongs to; the allowance resets on the next one
   }
 })

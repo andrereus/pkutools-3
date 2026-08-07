@@ -5,7 +5,7 @@ export default defineAuthedHandler(async ({ userId }) => {
   const db = getAdminDatabase()
   const auth = getAdminAuth()
 
-  // Delete all user data from database
+  // Delete the user's private database subtree
   const userDataRef = db.ref(`/${userId}`)
   await userDataRef.remove()
 

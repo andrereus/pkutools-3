@@ -1,6 +1,9 @@
 import { getAuth } from 'firebase/auth'
 import { useStore } from '../../stores/index'
 
+// Module scope, not composable scope: every caller of useLicense() shares one
+// cache. validateLicense() reuses entries younger than CACHE_DURATION; only
+// sign-out and Settings clear it.
 const licenseCache = ref<{
   valid: boolean
   premium: boolean
@@ -23,7 +26,6 @@ export const useLicense = () => {
     licenseKey: string
   ): Promise<{ valid: boolean; premium: boolean; premiumAI?: boolean }> => {
     try {
-      // Check cache first
       if (licenseCache.value) {
         const age = Date.now() - licenseCache.value.timestamp
         if (age < CACHE_DURATION) {
@@ -71,7 +73,7 @@ export const useLicense = () => {
     }
   }
 
-  // Automatically validate license on page load if license key exists
+  // Validate a stored license in the background when authenticated and uncached.
   const initializeLicense = async () => {
     // Don't initialize if already initializing or if cache exists
     if (isInitializing.value || licenseCache.value) {
@@ -101,7 +103,8 @@ export const useLicense = () => {
     try {
       await validateLicense(licenseKey)
     } catch (error) {
-      // Silently fail - user can manually validate if needed
+      // Do not rethrow from background initialization; validation already
+      // notified the user.
       console.error('Auto-license validation failed:', error)
     } finally {
       isInitializing.value = false
@@ -123,7 +126,6 @@ export const useLicense = () => {
     licenseCache.value = null
   }
 
-  // Auto-initialize when composable is used and user is authenticated
   if (import.meta.client) {
     // Watch for user authentication and settings changes
     watch(

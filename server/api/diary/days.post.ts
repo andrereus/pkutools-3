@@ -24,7 +24,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  // Free users are capped at 14 entries (fetch 15 to know we've exceeded it).
+  // Reject creation when a free user already has 14 entries
   if (!isPremium) {
     const diarySnapshot = await diaryRef.limitToFirst(15).once('value')
     if (diarySnapshot.numChildren() >= 14) {

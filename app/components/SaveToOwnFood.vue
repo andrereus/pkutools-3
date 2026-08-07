@@ -1,29 +1,19 @@
 <script setup>
-// The "also save to Own Food" option, shared by every tool that can produce a
-// food worth keeping: the Phe calculator, the barcode scanner and both AI
-// modes. One block rather than four copies, because the three parts below only
-// make sense together — the note and the sharing checkbox belong to the own
+// The "also save to Own Food" option, shared by the Phe calculator, the barcode
+// scanner and both AI modes. The note and the sharing checkbox belong to the own
 // food, not to the diary entry the tool writes anyway.
 
 defineProps({
-  // Sharing is offered only where the values are the user's own calculation.
-  // An AI estimate is a guess, so it stays out of the community database (see
-  // SHAREABLE_FOOD_SOURCES) — the checkbox is simply absent there, with nothing
-  // in its place: an option that was never offered needs no explanation. Own
-  // Food does explain it, because there the food already exists and the missing
-  // option is a question the user can ask.
+  // Sharing is offered only where the values are the user's own calculation;
+  // SHAREABLE_FOOD_SOURCES decides. Absent rather than explained — an option
+  // that was never offered needs no note.
   canShare: { type: Boolean, default: true },
-  // Shown wherever the stored Phe was converted from protein and the user
-  // picked the setting behind that conversion. Getting it wrong is worth
-  // catching here: an own food keeps the value permanently, not just for one
-  // meal. The sentence comes from the page because each names its own control —
-  // "Type of food" in the scanners, "Input mode" in the Phe calculator — and
-  // interpolating that name would put a German article in front of the wrong
-  // gender.
+  // Warning for a Phe converted from protein via a user-picked setting. Passed
+  // in rather than built here: each page names its own control, and
+  // interpolating that name breaks German gender agreement.
   hint: { type: String, default: null },
-  // An AI estimate writes the model's own explanation of the values as the
-  // note, which is worth more on a saved food than anything typed in passing —
-  // so there is nothing to type here. It stays editable in Own Food.
+  // False where the note is filled for the user — an AI estimate writes the
+  // model's explanation. It stays editable in Own Food.
   showNote: { type: Boolean, default: true }
 })
 

@@ -81,7 +81,6 @@ const save = async () => {
     })
     notifications.success(t('settings.saved'))
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Save settings error:', error)
   }
 }
@@ -113,7 +112,6 @@ const saveLicense = async () => {
       clearCache()
     }
   } catch (error) {
-    // Error handling is done in useLicense composable
     console.error('License save error:', error)
     // Clear cache on error to ensure UI doesn't show stale premium status
     const { clearCache } = useLicense()
@@ -133,7 +131,6 @@ const resetDiary = async () => {
       await resetData('diary')
       navigateTo(localePath('diary'))
     } catch (error) {
-      // Error handling is done in useApi composable
       console.error('Reset diary error:', error)
     }
   }
@@ -151,7 +148,6 @@ const resetLabValues = async () => {
       await resetData('labValues')
       navigateTo(localePath('blood-values'))
     } catch (error) {
-      // Error handling is done in useApi composable
       console.error('Reset lab values error:', error)
     }
   }
@@ -169,7 +165,6 @@ const resetOwnFood = async () => {
       await resetData('ownFood')
       navigateTo(localePath('own-food'))
     } catch (error) {
-      // Error handling is done in useApi composable
       console.error('Reset own food error:', error)
     }
   }
@@ -189,7 +184,6 @@ const handleDeleteAccount = async () => {
       // Navigate to index after sign out completes to show the home page
       await navigateTo(localePath('index'))
     } catch (error) {
-      // Error handling is done in useApi composable
       console.error('Delete account error:', error)
       notifications.error(t('settings.delete-account-error'))
     }
@@ -201,7 +195,6 @@ const giveHealthDataConsent = async () => {
     await updateConsent({ healthDataConsent: true })
     notifications.success(t('health-consent.consent-given'))
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Update consent error:', error)
     notifications.error(t('health-consent.error-saving'))
   }
@@ -219,7 +212,6 @@ const revokeHealthDataConsent = async () => {
       await updateConsent({ healthDataConsent: false })
       notifications.success(t('health-consent.consent-revoked'))
     } catch (error) {
-      // Error handling is done in useApi composable
       console.error('Update consent error:', error)
       notifications.error(t('health-consent.error-revoking'))
     }
@@ -239,7 +231,6 @@ const updateEmailConsent = async (emailConsent) => {
     await updateConsent({ emailConsent })
     notifications.success(t('health-consent.email-consent-updated'))
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Update consent error:', error)
     notifications.error(t('health-consent.error-updating-email'))
   }
@@ -250,7 +241,6 @@ const reopenOnboarding = async () => {
     await updateGettingStarted(false)
     navigateTo(localePath('getting-started'))
   } catch (error) {
-    // Error handling is done in useApi composable
     console.error('Update getting started error:', error)
     notifications.error(t('health-consent.error-saving'))
   }

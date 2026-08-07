@@ -5,12 +5,15 @@ import { parseModelJson } from '../utils/model-json'
 const EMOJI_MODEL = 'gemini-3.1-flash-lite'
 
 /**
- * Fetches a single emoji for a food name using Gemini 2.5 Flash Lite (client-side).
- * Returns null if the name is empty or if the API call fails.
- * Uses Flash Lite only for minimal cost (~$0.000004 per call).
+ * Fetches a single emoji for a food name (client-side). Returns null if the
+ * name is empty or if the API call fails.
+ *
+ * `EMOJI_MODEL` stays on the flash-lite tier deliberately: picking an emoji is
+ * a lightweight, cost-sensitive task rather than one that needs a stronger model.
  *
  * Pass `currentEmoji` to ask for a replacement of an emoji the user already has;
- * the model is told which one it is so it returns a different one.
+ * the model is told which one it is and asked to return a different one. It can
+ * still return the same emoji, which callers handle.
  */
 export function useFoodEmoji() {
   const fetchEmojiForFood = async (
@@ -32,8 +35,10 @@ export function useFoodEmoji() {
 
     if (sanitizedName === '') return null
 
-    // An emoji is one or two code points, so anything longer is not an emoji.
-    // Truncating keeps a crafted `emoji` field from smuggling instructions in.
+    // `currentEmoji` is interpolated into the prompt, so bound it and strip
+    // quotes, backslashes, tabs and line breaks. `slice` counts UTF-16 code
+    // units and can truncate long ZWJ sequences; the value is only a hint to
+    // the model.
     const sanitizedCurrentEmoji =
       typeof currentEmoji === 'string'
         ? currentEmoji

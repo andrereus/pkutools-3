@@ -158,7 +158,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       })
     }
 
-    // Create the own food entry first to get the key
+    // push() only allocates the key here; both records are written together in
+    // the atomic update below
     const newOwnFoodRef = ownFoodRef.push()
     const ownFoodKey = newOwnFoodRef.key!
 

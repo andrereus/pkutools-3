@@ -8,7 +8,7 @@ import { parseModelJson } from '../app/utils/model-json'
 
 describe('parseModelJson', () => {
   it('ignores a stray closing brace after a complete object', () => {
-    // The exact shape of a failed estimate, taken from the AI monitoring log
+    // Regression fixture: a complete object followed by an extra closing brace.
     const response = `{
   "name": "Gemischter Salat mit Dressing",
   "phePer100g": 40,
