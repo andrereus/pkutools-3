@@ -1,4 +1,5 @@
 import { initializeApp, getApps } from 'firebase/app'
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check'
 import { getAuth, connectAuthEmulator } from 'firebase/auth'
 import { getDatabase, connectDatabaseEmulator } from 'firebase/database'
 
@@ -17,6 +18,24 @@ export default defineNuxtPlugin(() => {
 
   const apps = getApps()
   const app = apps.length ? apps[0] : initializeApp(firebaseConfig)
+
+  const appCheckSiteKey = config.public.firebaseAppCheckSiteKey
+
+  if (appCheckSiteKey) {
+    if (import.meta.dev) {
+      const debugGlobal = self as typeof self & {
+        FIREBASE_APPCHECK_DEBUG_TOKEN?: boolean | string
+      }
+      debugGlobal.FIREBASE_APPCHECK_DEBUG_TOKEN = true
+    }
+
+    initializeAppCheck(app, {
+      provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey),
+      isTokenAutoRefreshEnabled: true
+    })
+  } else if (!import.meta.dev) {
+    throw new Error('FIREBASE_APP_CHECK_SITE_KEY is not configured')
+  }
 
   // Connect to emulators in development mode
   if (import.meta.dev) {
