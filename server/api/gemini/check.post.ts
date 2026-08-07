@@ -55,6 +55,7 @@ export default defineAuthedHandler(async ({ userId }) => {
   return {
     allowed,
     remaining,
+    dailyLimit,
     resetAt: today // Date when limit resets
   }
 })

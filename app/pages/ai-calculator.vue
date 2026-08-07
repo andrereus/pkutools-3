@@ -12,6 +12,7 @@ import {
   nutrientRows,
   isReported
 } from '../utils/nutrition'
+import { parseModelJson } from '../utils/model-json'
 import { resolveSaveNotes } from '../composables/useSaveToOwnFood'
 
 const store = useStore()
@@ -227,7 +228,7 @@ const requestAiModel = async () => {
 
   if (!checkResponse.allowed) {
     notifications.error(
-      t('phe-calculator.estimate-error-daily-limit', { limit: checkResponse.remaining })
+      t('phe-calculator.estimate-error-daily-limit', { limit: checkResponse.dailyLimit })
     )
     return null
   }
@@ -363,10 +364,8 @@ Return JSON:
     const aiResult = await model.generateContent(contentParts)
     const text = aiResult.response.text()
 
-    const jsonMatch = text.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) throw new Error('No JSON found in response')
-
-    const foodData = JSON.parse(jsonMatch[0])
+    const foodData = parseModelJson(text)
+    if (!foodData) throw new Error('No JSON found in response')
 
     // A serving size of 0 or less is not a serving, so it falls back to the
     // default weight rather than being offered as one
@@ -442,10 +441,8 @@ Return JSON:
     ])
     const text = aiResult.response.text()
 
-    const jsonMatch = text.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) throw new Error('No JSON found in response')
-
-    const labelData = JSON.parse(jsonMatch[0])
+    const labelData = parseModelJson(text)
+    if (!labelData) throw new Error('No JSON found in response')
 
     const phePer100g = parseNutrientNumber(labelData.phePer100g)
     const proteinPer100g = parseNutrientNumber(labelData.proteinPer100g)

@@ -1,5 +1,6 @@
 import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai'
 import { getApp } from 'firebase/app'
+import { parseModelJson } from '../utils/model-json'
 
 const EMOJI_MODEL = 'gemini-3.1-flash-lite'
 
@@ -62,10 +63,7 @@ Return JSON: {"emoji": string (one emoji character) or null}`
 
       const result = await model.generateContent(prompt)
       const text = result.response.text()
-      const jsonMatch = text.match(/\{[\s\S]*\}/)
-      if (!jsonMatch) return null
-
-      const data = JSON.parse(jsonMatch[0])
+      const data = parseModelJson(text)
       const emoji = data?.emoji
       if (typeof emoji === 'string' && emoji.trim() !== '') {
         return emoji.trim()
