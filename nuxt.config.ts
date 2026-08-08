@@ -13,7 +13,9 @@ export default defineNuxtConfig({
           name: 'description',
           content: 'All-in-One Nutrition App for PKU'
         },
-        { name: 'theme-color', content: '#0ea5e9' },
+        // Media-scoped entries must come first: the browser uses the first match.
+        { name: 'theme-color', content: '#030712', media: '(prefers-color-scheme: dark)' },
+        { name: 'theme-color', content: '#f9fafb' },
         { name: 'google', content: 'notranslate' }
       ],
       link: [

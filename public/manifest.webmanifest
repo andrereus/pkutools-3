@@ -1,13 +1,14 @@
 {
+  "id": "/",
   "name": "PKU Tools",
   "short_name": "PKU Tools",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0ea5e9",
-  "lang": "en",
-  "scope": "/",
-  "description": "All-in-One Nutrition App for PKU",
   "theme_color": "#0ea5e9",
+  "description": "All-in-One Nutrition App for PKU",
+  "lang": "en",
   "icons": [
     { "src": "pwa-64x64.png", "sizes": "64x64", "type": "image/png" },
     { "src": "pwa-192x192.png", "sizes": "192x192", "type": "image/png" },
@@ -18,5 +19,11 @@
       "type": "image/png",
       "purpose": "maskable"
     }
+  ],
+  "shortcuts": [
+    { "name": "Food Search", "url": "/food-search" },
+    { "name": "Barcode Scanner", "url": "/barcode-scanner" },
+    { "name": "Phe Calculator", "url": "/phe-calculator" },
+    { "name": "AI Calculator", "url": "/ai-calculator" }
   ]
 }
