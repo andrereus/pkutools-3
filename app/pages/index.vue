@@ -218,7 +218,7 @@ defineOgImage('Default', {
       </div>
       <div class="mt-6 flex justify-center px-6">
         <a
-          href="https://www.youtube.com/watch?v=XUcei4Iuggc"
+          href="https://www.youtube.com/shorts/-bfcvdJ-k1A"
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-2 rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
