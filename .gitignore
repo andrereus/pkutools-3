@@ -31,3 +31,6 @@ data-src
 
 # Firebase emulator data
 emulator-data
+
+# Screen recordings (large, uploaded to YouTube instead)
+design/screenrecording-*/
