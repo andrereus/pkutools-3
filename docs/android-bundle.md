@@ -6,6 +6,8 @@ Settings for **PWABuilder → Package for stores → Android → All settings**.
 - Include the source code.
 - Sign with the existing signing key.
 
+Icon URL is `/pwa-512x512.png`, the rounded tile. It is also the splash icon, shown unmasked and centered on the background color.
+
 ## Colors
 
 Theme and navigation match the app surfaces (`bg-gray-50 dark:bg-gray-950`); the splash keeps the brand sky.

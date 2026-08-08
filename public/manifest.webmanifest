@@ -19,11 +19,5 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ],
-  "shortcuts": [
-    { "name": "Food Search", "url": "/food-search" },
-    { "name": "Barcode Scanner", "url": "/barcode-scanner" },
-    { "name": "Phe Calculator", "url": "/phe-calculator" },
-    { "name": "AI Calculator", "url": "/ai-calculator" }
   ]
 }
