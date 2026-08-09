@@ -493,7 +493,7 @@
   },
   "features": {
     "search-name": "Food Search",
-    "search-description": "Search the food database.",
+    "search-description": "Search the food database with USDA and BLS data.",
     "scanner-name": "Barcode Scanner",
     "scanner-description": "Scan product barcodes.",
     "calculator-name": "Phe Calculator",
@@ -513,7 +513,7 @@
     "community-food-name": "Community Foods",
     "community-food-description": "Share and discover foods from the PKU community.",
     "own-community-name": "Own & Community Foods",
-    "own-community-description": "Save custom foods and share with the community.",
+    "own-community-description": "Save custom foods, find them in search and share with the community.",
     "ai-features-name": "AI Calculator",
     "ai-features-description": "Estimate your food from a description or photo. Or read the printed values off a nutrition label."
   },

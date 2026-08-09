@@ -493,7 +493,7 @@
   },
   "features": {
     "search-name": "Lebensmittelsuche",
-    "search-description": "Durchsuche die Lebensmitteldatenbank.",
+    "search-description": "Durchsuche die Lebensmitteldatenbank mit USDA- und BLS-Daten.",
     "scanner-name": "Barcode Scanner",
     "scanner-description": "Scanne Produkt-Barcodes.",
     "calculator-name": "Phe Rechner",
@@ -513,7 +513,7 @@
     "community-food-name": "Community-Lebensmittel",
     "community-food-description": "Teile und entdecke Lebensmittel aus der PKU-Community.",
     "own-community-name": "Eigene & Community-Lebensmittel",
-    "own-community-description": "Eigene Lebensmittel speichern und mit der Community teilen.",
+    "own-community-description": "Eigene Lebensmittel speichern, in der Suche finden und mit der Community teilen.",
     "ai-features-name": "KI Rechner",
     "ai-features-description": "Schätze dein Essen per Beschreibung oder Foto. Oder lies die aufgedruckten Werte vom Etikett ab."
   },

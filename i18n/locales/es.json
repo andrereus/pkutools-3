@@ -493,7 +493,7 @@
   },
   "features": {
     "search-name": "Búsqueda de alimentos",
-    "search-description": "Busca en la base de datos de alimentos.",
+    "search-description": "Busca en la base de datos de alimentos con datos de USDA y BLS.",
     "scanner-name": "Escáner de Código de Barras",
     "scanner-description": "Escanea códigos de barras de productos.",
     "calculator-name": "Calculadora de Phe",
@@ -513,7 +513,7 @@
     "community-food-name": "Alimentos de la comunidad",
     "community-food-description": "Comparte y descubre alimentos de la comunidad PKU.",
     "own-community-name": "Alimentos propios y de la comunidad",
-    "own-community-description": "Guarda alimentos y comparte con la comunidad.",
+    "own-community-description": "Guarda alimentos, encuéntralos en la búsqueda y comparte con la comunidad.",
     "ai-features-name": "Calculadora IA",
     "ai-features-description": "Estima tu comida a partir de una descripción o foto. O lee los valores impresos de la etiqueta."
   },
