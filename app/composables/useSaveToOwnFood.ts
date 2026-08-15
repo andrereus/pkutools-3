@@ -80,7 +80,6 @@ export const useSaveToOwnFood = () => {
       const result = await saveOwnFood(food, { silent: true })
       return { alreadyExists: result?.alreadyExists === true, failure: null, wantedToShare }
     } catch (error) {
-      console.error('Own food save error:', error)
       return { alreadyExists: false, failure: failureReason(error, t, te), wantedToShare }
     }
   }
