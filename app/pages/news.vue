@@ -304,10 +304,10 @@ defineOgImage('Default', {
                 {{ $t(`news.category-${item.category}`) }}
               </span>
               <span
-                v-if="item.kind === 'food-shared' && item.isOwn"
+                v-if="item.kind === 'food-shared'"
                 class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-500 dark:bg-gray-800 dark:text-gray-400"
               >
-                {{ $t('news.your-contribution') }}
+                {{ item.isOwn ? $t('news.your-contribution') : $t('news.community') }}
               </span>
             </div>
             <time

@@ -55,28 +55,30 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
 
 <template>
   <div class="mt-3">
-    <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-x-3">
+    <div class="grid grid-cols-2 items-center gap-x-4">
       <span class="whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white">
         {{ food.phe }} mg Phe
       </span>
-      <span class="whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white">
-        {{ food.kcal }} {{ $t('common.kcal') }}
+      <span class="flex min-w-0 items-center justify-between gap-1">
+        <span class="whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white">
+          {{ food.kcal }} {{ $t('common.kcal') }}
+        </span>
+        <button
+          v-if="rows.length > 0"
+          type="button"
+          class="inline-flex shrink-0 cursor-pointer items-center gap-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          :aria-expanded="showNutrients"
+          :aria-label="$t(showNutrients ? 'news.hide-nutrients' : 'news.show-nutrients')"
+          @click="showNutrients = !showNutrients"
+        >
+          <span aria-hidden="true">{{ $t('news.more') }}</span>
+          <LucideChevronDown
+            class="h-4 w-4 transition-transform"
+            :class="showNutrients ? 'rotate-180' : ''"
+            aria-hidden="true"
+          />
+        </button>
       </span>
-      <button
-        v-if="rows.length > 0"
-        type="button"
-        class="inline-flex cursor-pointer items-center gap-1 justify-self-end text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        :aria-expanded="showNutrients"
-        :aria-label="$t(showNutrients ? 'news.hide-nutrients' : 'news.show-nutrients')"
-        @click="showNutrients = !showNutrients"
-      >
-        <span aria-hidden="true">{{ $t('news.more') }}</span>
-        <LucideChevronDown
-          class="h-4 w-4 transition-transform"
-          :class="showNutrients ? 'rotate-180' : ''"
-          aria-hidden="true"
-        />
-      </button>
     </div>
 
     <div
