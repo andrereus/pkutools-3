@@ -25,10 +25,9 @@ const props = defineProps({
 const emit = defineEmits(['vote'])
 const { t } = useI18n()
 
-// Casting a vote used to replace the buttons with a confirmation, which read as
-// a small reward. Keeping the buttons live costs that, so the confirmation comes
-// back as something that appears under them and then leaves: the reward without
-// the dead end. Clearing a vote is not congratulated — nothing was contributed.
+// A vote briefly swaps the selected button's thumb for a checkmark. The label
+// and control stay in place, so the acknowledgement adds neither commentary on
+// the choice nor a layout shift. Clearing a vote has nothing to acknowledge.
 const justVoted = ref(false)
 let thanksTimer = null
 
@@ -97,46 +96,41 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
           type="button"
           :disabled="busy"
           :aria-pressed="vote === 1"
+          :aria-label="$t('news.looks-right')"
           :class="[
-            'flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-center text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50',
+            'flex h-10 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg px-2 text-center text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50 sm:gap-2 sm:px-3',
             vote === 1
               ? 'bg-teal-50 text-teal-700 ring-teal-400 dark:bg-teal-900/40 dark:text-teal-300 dark:ring-teal-700'
               : 'text-gray-700 ring-gray-300 hover:text-teal-600 hover:ring-teal-400 dark:text-gray-300 dark:ring-gray-600 dark:hover:text-teal-400'
           ]"
           @click="emit('vote', 1)"
         >
-          <LucideThumbsUp class="h-4 w-4" />
-          {{ $t('news.looks-right') }}
+          <LucideCheck v-if="justVoted && vote === 1" class="h-4 w-4 shrink-0" />
+          <LucideThumbsUp v-else class="h-4 w-4 shrink-0" />
+          <span class="truncate">{{ $t('news.looks-right') }}</span>
         </button>
         <button
           type="button"
           :disabled="busy"
           :aria-pressed="vote === -1"
+          :aria-label="$t('news.looks-off')"
           :class="[
-            'flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-center text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50',
+            'flex h-10 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg px-2 text-center text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50 sm:gap-2 sm:px-3',
             vote === -1
               ? 'bg-red-50 text-red-700 ring-red-400 dark:bg-red-900/40 dark:text-red-300 dark:ring-red-700'
               : 'text-gray-700 ring-gray-300 hover:text-red-600 hover:ring-red-400 dark:text-gray-300 dark:ring-gray-600 dark:hover:text-red-400'
           ]"
           @click="emit('vote', -1)"
         >
-          <LucideThumbsDown class="h-4 w-4" />
-          {{ $t('news.looks-off') }}
+          <LucideCheck v-if="justVoted && vote === -1" class="h-4 w-4 shrink-0" />
+          <LucideThumbsDown v-else class="h-4 w-4 shrink-0" />
+          <span class="truncate">{{ $t('news.looks-off') }}</span>
         </button>
       </div>
 
-      <!-- Under the buttons, so casting a vote never moves the control that was
-           just pressed. -->
-      <Transition
-        enter-active-class="transition duration-200 ease-out"
-        enter-from-class="opacity-0 -translate-y-0.5"
-        leave-active-class="transition duration-150 ease-in"
-        leave-to-class="opacity-0"
-      >
-        <p v-if="justVoted" class="mt-2 text-sm font-medium text-teal-600 dark:text-teal-400">
-          {{ $t('news.vote-thanks') }}
-        </p>
-      </Transition>
+      <span class="sr-only" aria-live="polite">
+        {{ justVoted ? $t('news.vote-saved') : '' }}
+      </span>
     </template>
   </div>
 </template>
