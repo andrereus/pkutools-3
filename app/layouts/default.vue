@@ -351,7 +351,7 @@ const handleCookieConsent = (consent) => {
               />
             </NuxtLink>
 
-            <HeadlessMenu as="div" class="relative ml-3">
+            <HeadlessMenu as="div" class="relative ml-1.5">
               <div>
                 <HeadlessMenuButton
                   class="relative flex rounded-full text-sm focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 cursor-pointer"
