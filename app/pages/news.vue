@@ -290,6 +290,12 @@ defineOgImage('Default', {
             <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-2">
               <h3 class="text-sm leading-5 font-semibold break-words text-gray-900 dark:text-white">
                 {{ titleFor(item) }}
+                <span
+                  v-if="item.kind === 'food-shared'"
+                  class="ml-1 inline-block rounded bg-gray-100 px-1.5 py-0.5 align-baseline text-[10px] leading-4 font-bold tracking-wide whitespace-nowrap text-gray-500 uppercase dark:bg-gray-800 dark:text-gray-400"
+                >
+                  {{ item.isOwn ? $t('news.your-contribution') : $t('news.community') }}
+                </span>
               </h3>
               <span
                 v-if="isItemUnread(item)"
@@ -302,12 +308,6 @@ defineOgImage('Default', {
                 class="rounded bg-sky-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-700 dark:bg-sky-900/40 dark:text-sky-300"
               >
                 {{ $t(`news.category-${item.category}`) }}
-              </span>
-              <span
-                v-if="item.kind === 'food-shared'"
-                class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-500 dark:bg-gray-800 dark:text-gray-400"
-              >
-                {{ item.isOwn ? $t('news.your-contribution') : $t('news.community') }}
               </span>
             </div>
             <time
