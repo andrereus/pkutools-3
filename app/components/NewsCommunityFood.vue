@@ -65,7 +65,7 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
       <button
         v-if="rows.length > 0"
         type="button"
-        class="inline-flex cursor-pointer items-center gap-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        class="ml-auto inline-flex cursor-pointer items-center gap-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         :aria-expanded="showNutrients"
         :aria-label="$t(showNutrients ? 'news.hide-nutrients' : 'news.show-nutrients')"
         @click="showNutrients = !showNutrients"
@@ -118,7 +118,7 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
           :aria-pressed="vote === 1"
           :aria-label="$t('news.looks-right')"
           :class="[
-            'flex h-10 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg px-2 text-center text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50 sm:gap-2 sm:px-3',
+            'flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg px-2 text-center text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50 sm:gap-2 sm:px-3',
             vote === 1
               ? 'bg-teal-50 text-teal-700 ring-teal-400 dark:bg-teal-900/40 dark:text-teal-300 dark:ring-teal-700'
               : 'text-gray-700 ring-gray-300 hover:text-teal-600 hover:ring-teal-400 dark:text-gray-300 dark:ring-gray-600 dark:hover:text-teal-400'
@@ -135,7 +135,7 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
           :aria-pressed="vote === -1"
           :aria-label="$t('news.looks-off')"
           :class="[
-            'flex h-10 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg px-2 text-center text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50 sm:gap-2 sm:px-3',
+            'flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg px-2 text-center text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50 sm:gap-2 sm:px-3',
             vote === -1
               ? 'bg-red-50 text-red-700 ring-red-400 dark:bg-red-900/40 dark:text-red-300 dark:ring-red-700'
               : 'text-gray-700 ring-gray-300 hover:text-red-600 hover:ring-red-400 dark:text-gray-300 dark:ring-gray-600 dark:hover:text-red-400'
