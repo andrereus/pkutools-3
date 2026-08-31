@@ -27,7 +27,7 @@ const { t } = useI18n()
 
 // Casting a vote used to replace the buttons with a confirmation, which read as
 // a small reward. Keeping the buttons live costs that, so the confirmation comes
-// back as something that appears beside them and then leaves: the reward without
+// back as something that appears under them and then leaves: the reward without
 // the dead end. Clearing a vote is not congratulated — nothing was contributed.
 const justVoted = ref(false)
 let thanksTimer = null
@@ -62,7 +62,7 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
 
     <div
       v-if="rows.length > 0"
-      class="mt-2 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
+      class="mt-2 grid grid-cols-1 gap-x-6 gap-y-1 text-sm text-gray-600 sm:grid-cols-2 dark:text-gray-400"
     >
       <div v-for="row in rows" :key="row.key" class="flex justify-between gap-2">
         <span>{{ row.label }}</span>
@@ -82,21 +82,12 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
     </div>
 
     <template v-if="canVote">
-      <p class="mt-3 flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-        <Transition
-          enter-active-class="transition duration-200 ease-out"
-          enter-from-class="opacity-0 -translate-y-0.5"
-          leave-active-class="transition duration-150 ease-in"
-          leave-to-class="opacity-0"
-          mode="out-in"
-        >
-          <span v-if="justVoted" key="thanks" class="font-medium text-teal-600 dark:text-teal-400">
-            {{ $t('news.vote-thanks') }}
-          </span>
-          <span v-else key="ask">{{ $t('news.ask') }}</span>
-        </Transition>
-      </p>
-      <div class="mt-2 flex gap-2">
+      <!-- Nothing is asked above them. The two labels already say what the
+           buttons do, a question about knowing the food asks for more certainty
+           than anyone usually has, and a prompt would frame the vote as the
+           thing that vouches for a shared food. It is one signal, and not
+           necessarily the only one this card will ever carry. -->
+      <div class="mt-3 flex gap-2">
         <!-- Both stay clickable once cast, and the one you chose is marked. A
              vote is an impression, and changing your mind about a number is the
              normal thing to do — pressing the same one again clears it, which is
@@ -107,7 +98,7 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
           :disabled="busy"
           :aria-pressed="vote === 1"
           :class="[
-            'flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50',
+            'flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50 sm:gap-2 sm:px-3',
             vote === 1
               ? 'bg-teal-50 text-teal-700 ring-teal-400 dark:bg-teal-900/40 dark:text-teal-300 dark:ring-teal-700'
               : 'text-gray-700 ring-gray-300 hover:text-teal-600 hover:ring-teal-400 dark:text-gray-300 dark:ring-gray-600 dark:hover:text-teal-400'
@@ -122,7 +113,7 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
           :disabled="busy"
           :aria-pressed="vote === -1"
           :class="[
-            'flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50',
+            'flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50 sm:gap-2 sm:px-3',
             vote === -1
               ? 'bg-red-50 text-red-700 ring-red-400 dark:bg-red-900/40 dark:text-red-300 dark:ring-red-700'
               : 'text-gray-700 ring-gray-300 hover:text-red-600 hover:ring-red-400 dark:text-gray-300 dark:ring-gray-600 dark:hover:text-red-400'
@@ -133,6 +124,19 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
           {{ $t('news.looks-off') }}
         </button>
       </div>
+
+      <!-- Under the buttons, so casting a vote never moves the control that was
+           just pressed. -->
+      <Transition
+        enter-active-class="transition duration-200 ease-out"
+        enter-from-class="opacity-0 -translate-y-0.5"
+        leave-active-class="transition duration-150 ease-in"
+        leave-to-class="opacity-0"
+      >
+        <p v-if="justVoted" class="mt-2 text-sm font-medium text-teal-600 dark:text-teal-400">
+          {{ $t('news.vote-thanks') }}
+        </p>
+      </Transition>
     </template>
   </div>
 </template>

@@ -227,7 +227,7 @@ defineOgImage('Default', {
 </script>
 
 <template>
-  <div class="mx-auto max-w-2xl px-4 pb-24 pt-6 sm:px-6">
+  <div class="mx-auto max-w-2xl px-3 pb-24 pt-6 sm:px-6">
     <PageHeader :title="$t('news.title')" />
     <p class="-mt-2 mb-6 text-sm text-gray-600 dark:text-gray-400">
       {{ userIsAuthenticated ? $t('news.subtitle') : $t('news.subtitle-signed-out') }}
@@ -235,7 +235,7 @@ defineOgImage('Default', {
 
     <div
       v-if="!userIsAuthenticated"
-      class="mb-6 rounded-xl bg-sky-50 p-4 ring-1 ring-sky-200 dark:bg-sky-900/20 dark:ring-sky-800"
+      class="mb-6 rounded-xl bg-sky-50 p-3 ring-1 ring-sky-200 sm:p-4 dark:bg-sky-900/20 dark:ring-sky-800"
     >
       <p class="mb-3 text-sm text-gray-700 dark:text-gray-300">{{ $t('news.sign-in') }}</p>
       <PrimaryButton :text="$t('sign-in.title')" @click="navigateTo(localePath('sign-in'))" />
@@ -248,7 +248,7 @@ defineOgImage('Default', {
       v-for="notice in notices"
       :key="notice.key"
       :to="localePath(notice.route)"
-      class="mb-3 block rounded-xl bg-amber-50 p-4 ring-1 ring-amber-200 hover:ring-amber-300 dark:bg-amber-950/30 dark:ring-amber-900"
+      class="mb-3 block rounded-xl bg-amber-50 p-3 ring-1 ring-amber-200 hover:ring-amber-300 sm:p-4 dark:bg-amber-950/30 dark:ring-amber-900"
     >
       <p class="font-semibold text-gray-900 dark:text-white">
         {{ $t(`news.notice-${notice.kind}-title`, notice.params || {}) }}
@@ -269,13 +269,13 @@ defineOgImage('Default', {
       v-for="item in visibleItems"
       :key="item.key"
       :class="[
-        'mb-3 rounded-xl bg-white p-4 shadow-sm ring-1 dark:bg-gray-900',
+        'mb-3 rounded-xl bg-white p-3 shadow-sm ring-1 sm:p-4 dark:bg-gray-900',
         isItemUnread(item) ? 'ring-sky-300 dark:ring-sky-700' : 'ring-gray-200 dark:ring-gray-700'
       ]"
     >
-      <div class="flex gap-3">
+      <div class="flex gap-2.5 sm:gap-3">
         <span
-          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-lg dark:bg-gray-800"
+          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-base sm:h-9 sm:w-9 sm:text-lg dark:bg-gray-800"
         >
           {{ emojiFor(item) }}
         </span>
@@ -330,17 +330,21 @@ defineOgImage('Default', {
               {{ $t('news.only-you') }}
             </span>
           </p>
-
-          <NewsCommunityFood
-            v-if="item.food"
-            :food="item.food"
-            :vote="voteFor(item)"
-            :can-vote="canVote(item)"
-            :busy="votingKey === item.key"
-            @vote="(value) => vote(item, value)"
-          />
         </div>
       </div>
+
+      <!-- Outside the icon column on a phone. A 40px indent is width the values
+           and the two vote buttons need more than the alignment is worth; from
+           `sm` up there is room for both, so it lines up under the text again. -->
+      <NewsCommunityFood
+        v-if="item.food"
+        class="sm:pl-12"
+        :food="item.food"
+        :vote="voteFor(item)"
+        :can-vote="canVote(item)"
+        :busy="votingKey === item.key"
+        @vote="(value) => vote(item, value)"
+      />
     </article>
 
     <button
