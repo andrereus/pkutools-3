@@ -288,7 +288,12 @@ defineOgImage('Default', {
                now. -->
           <div class="flex items-baseline gap-2">
             <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-2">
-              <h3 class="font-semibold break-words text-gray-900 dark:text-white">
+              <h3
+                :class="[
+                  'break-words text-gray-900 dark:text-white',
+                  item.kind === 'food-shared' ? 'text-sm font-normal leading-5' : 'font-semibold'
+                ]"
+              >
                 {{ titleFor(item) }}
               </h3>
               <span

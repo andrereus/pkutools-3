@@ -67,9 +67,10 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
         type="button"
         class="inline-flex cursor-pointer items-center gap-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         :aria-expanded="showNutrients"
+        :aria-label="$t(showNutrients ? 'news.hide-nutrients' : 'news.show-nutrients')"
         @click="showNutrients = !showNutrients"
       >
-        {{ $t(showNutrients ? 'news.hide-nutrients' : 'news.show-nutrients') }}
+        <span aria-hidden="true">{{ $t('news.more') }}</span>
         <LucideChevronDown
           class="h-4 w-4 transition-transform"
           :class="showNutrients ? 'rotate-180' : ''"
