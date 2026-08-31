@@ -292,24 +292,26 @@ defineOgImage('Default', {
         </span>
 
         <div class="flex min-h-9 min-w-0 flex-1 items-center gap-2">
-          <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-2">
+          <div class="min-w-0 flex-1">
             <h3 class="text-sm leading-5 font-semibold break-words text-gray-900 dark:text-white">
               {{ titleFor(item) }}
             </h3>
-            <span
-              v-if="isItemUnread(item)"
-              class="text-[10px] leading-4 font-semibold text-amber-700 dark:text-amber-300"
-            >
-              {{ $t('news.unread-item') }}
-            </span>
           </div>
           <div class="flex h-9 shrink-0 flex-col items-end justify-between">
-            <time
-              class="text-xs leading-4 text-gray-400 dark:text-gray-500"
-              :datetime="item.date || new Date(item.createdAt).toISOString()"
-            >
-              {{ formatDate(item) }}
-            </time>
+            <div class="flex items-center gap-1">
+              <span
+                v-if="isItemUnread(item)"
+                class="h-2 w-2 shrink-0 rounded-full bg-sky-500 dark:bg-sky-400"
+              >
+                <span class="sr-only">{{ $t('news.unread-item') }}</span>
+              </span>
+              <time
+                class="text-xs leading-4 text-gray-400 dark:text-gray-500"
+                :datetime="item.date || new Date(item.createdAt).toISOString()"
+              >
+                {{ formatDate(item) }}
+              </time>
+            </div>
             <span class="text-xs leading-4 whitespace-nowrap text-gray-400 dark:text-gray-500">
               {{ metaLabelFor(item) }}
             </span>
