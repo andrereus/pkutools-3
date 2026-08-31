@@ -62,11 +62,11 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
 
     <div
       v-if="rows.length > 0"
-      class="mt-2 grid grid-cols-1 gap-x-6 gap-y-1 text-sm text-gray-600 sm:grid-cols-2 dark:text-gray-400"
+      class="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600 sm:gap-x-6 sm:text-sm dark:text-gray-400"
     >
       <div v-for="row in rows" :key="row.key" class="flex justify-between gap-2">
-        <span>{{ row.label }}</span>
-        <span>{{ row.value }} g</span>
+        <span class="min-w-0">{{ row.label }}</span>
+        <span class="shrink-0 whitespace-nowrap">{{ row.value }} g</span>
       </div>
     </div>
 

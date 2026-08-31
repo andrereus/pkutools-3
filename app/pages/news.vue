@@ -227,7 +227,7 @@ defineOgImage('Default', {
 </script>
 
 <template>
-  <div class="mx-auto max-w-2xl px-3 pb-24 pt-6 sm:px-6">
+  <div class="mx-auto max-w-2xl">
     <PageHeader :title="$t('news.title')" />
     <p class="-mt-2 mb-6 text-sm text-gray-600 dark:text-gray-400">
       {{ userIsAuthenticated ? $t('news.subtitle') : $t('news.subtitle-signed-out') }}
@@ -235,7 +235,7 @@ defineOgImage('Default', {
 
     <div
       v-if="!userIsAuthenticated"
-      class="mb-6 rounded-xl bg-sky-50 p-3 ring-1 ring-sky-200 sm:p-4 dark:bg-sky-900/20 dark:ring-sky-800"
+      class="mb-6 rounded-xl bg-sky-50 p-4 ring-1 ring-sky-200 dark:bg-sky-900/20 dark:ring-sky-800"
     >
       <p class="mb-3 text-sm text-gray-700 dark:text-gray-300">{{ $t('news.sign-in') }}</p>
       <PrimaryButton :text="$t('sign-in.title')" @click="navigateTo(localePath('sign-in'))" />
@@ -248,7 +248,7 @@ defineOgImage('Default', {
       v-for="notice in notices"
       :key="notice.key"
       :to="localePath(notice.route)"
-      class="mb-3 block rounded-xl bg-amber-50 p-3 ring-1 ring-amber-200 hover:ring-amber-300 sm:p-4 dark:bg-amber-950/30 dark:ring-amber-900"
+      class="mb-3 block rounded-xl bg-amber-50 p-4 ring-1 ring-amber-200 hover:ring-amber-300 dark:bg-amber-950/30 dark:ring-amber-900"
     >
       <p class="font-semibold text-gray-900 dark:text-white">
         {{ $t(`news.notice-${notice.kind}-title`, notice.params || {}) }}
@@ -269,34 +269,43 @@ defineOgImage('Default', {
       v-for="item in visibleItems"
       :key="item.key"
       :class="[
-        'mb-3 rounded-xl bg-white p-3 shadow-sm ring-1 sm:p-4 dark:bg-gray-900',
+        'mb-3 rounded-xl bg-white p-4 shadow-sm ring-1 dark:bg-gray-900',
         isItemUnread(item) ? 'ring-sky-300 dark:ring-sky-700' : 'ring-gray-200 dark:ring-gray-700'
       ]"
     >
-      <div class="flex gap-2.5 sm:gap-3">
+      <div class="flex gap-3">
         <span
-          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-base sm:h-9 sm:w-9 sm:text-lg dark:bg-gray-800"
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-lg dark:bg-gray-800"
         >
           {{ emojiFor(item) }}
         </span>
 
         <div class="min-w-0 flex-1">
-          <div class="flex flex-wrap items-baseline gap-2">
-            <h3 class="font-semibold text-gray-900 dark:text-white">{{ titleFor(item) }}</h3>
-            <span
-              v-if="isItemUnread(item)"
-              class="rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"
-            >
-              {{ $t('news.unread-item') }}
-            </span>
-            <span
-              v-if="item.kind === 'note'"
-              class="rounded bg-sky-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-700 dark:bg-sky-900/40 dark:text-sky-300"
-            >
-              {{ $t(`news.category-${item.category}`) }}
-            </span>
+          <!-- The date holds the top right corner. It used to sit in the same
+               wrapping row as the title, so a long food name pushed it onto a
+               line of its own before the text underneath — three staggered
+               lines for what is one heading. Only the title and its badges wrap
+               now. -->
+          <div class="flex items-baseline gap-2">
+            <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-2">
+              <h3 class="font-semibold break-words text-gray-900 dark:text-white">
+                {{ titleFor(item) }}
+              </h3>
+              <span
+                v-if="isItemUnread(item)"
+                class="rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"
+              >
+                {{ $t('news.unread-item') }}
+              </span>
+              <span
+                v-if="item.kind === 'note'"
+                class="rounded bg-sky-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-700 dark:bg-sky-900/40 dark:text-sky-300"
+              >
+                {{ $t(`news.category-${item.category}`) }}
+              </span>
+            </div>
             <time
-              class="ml-auto shrink-0 text-xs text-gray-400 dark:text-gray-500"
+              class="shrink-0 text-xs text-gray-400 dark:text-gray-500"
               :datetime="item.date || new Date(item.createdAt).toISOString()"
             >
               {{ formatDate(item) }}
