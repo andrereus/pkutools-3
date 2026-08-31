@@ -2,7 +2,11 @@
 import { useStore } from '../../stores/index'
 import Fuse from 'fuse.js'
 import { format } from 'date-fns'
-import { isCommunityFoodHidden, isShareableSource } from '../utils/community-food'
+import {
+  communityFoodScore,
+  isCommunityFoodHidden,
+  isShareableSource
+} from '../utils/community-food'
 import { foodSourceLabel } from '../utils/food-source-label'
 import { roundReference, scaleToWeight, nutrientRows, isReported } from '../utils/nutrition'
 
@@ -65,8 +69,7 @@ const visibleCommunityFoods = computed(() =>
   communityFoods.value.filter((item) => {
     if (item.language !== locale.value) return false
     // Filter out hidden foods based on score threshold
-    const score = (item.likes || 0) - (item.dislikes || 0)
-    if (isCommunityFoodHidden(score)) return false
+    if (isCommunityFoodHidden(communityFoodScore(item))) return false
     if (item.contributorId === userId.value) return false
     return true
   })

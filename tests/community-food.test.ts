@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import {
+  COMMUNITY_FOOD_FLAG_SCORE,
   COMMUNITY_FOOD_HIDE_THRESHOLD as CLIENT_THRESHOLD,
+  communityFoodScore,
   isCommunityFoodHidden as isHiddenClient,
   SHAREABLE_FOOD_SOURCES as CLIENT_SHAREABLE,
   isShareableSource as isShareableClient
@@ -19,6 +21,15 @@ import {
 // blocks new submissions (or vice versa).
 
 describe('community food hide threshold', () => {
+  it('warns the contributor before their food is hidden', () => {
+    expect(COMMUNITY_FOOD_FLAG_SCORE).toBeGreaterThan(CLIENT_THRESHOLD)
+  })
+
+  it('calculates a safe score from the stored vote counts', () => {
+    expect(communityFoodScore({ likes: 4, dislikes: 2 })).toBe(2)
+    expect(communityFoodScore({ likes: Number.NaN, dislikes: 'invalid' })).toBe(0)
+  })
+
   it('keeps the client and server copies of the rule identical', () => {
     expect(CLIENT_THRESHOLD).toBe(SERVER_THRESHOLD)
     for (const score of [-10, -4, -3, -2, 0, 10]) {

@@ -155,17 +155,6 @@
         </tr>
         <tr>
           <td>
-            <strong>Headway</strong>
-            <br />
-            <a href="https://headwayapp.co/privacy" rel="external nofollow noopener" target="_blank"
-              >Privacy policy</a
-            >
-          </td>
-          <td>Your IP address, to show the changelog widget.</td>
-          <td>Every visit</td>
-        </tr>
-        <tr>
-          <td>
             <strong>Google Play</strong>
             <br />
             <a

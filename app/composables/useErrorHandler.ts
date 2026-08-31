@@ -22,9 +22,7 @@ export const useErrorHandler = () => {
   const fieldLabel = (path: ZodIssue['path']): string | null => {
     // Use the deepest string segment of the issue path as the field key
     // (skip numeric array indices like in `log[0].name`).
-    const key = [...(path || [])].reverse().find((p) => typeof p === 'string') as
-      | string
-      | undefined
+    const key = [...(path || [])].reverse().find((p) => typeof p === 'string') as string | undefined
     if (!key) return null
     const i18nKey = `errors.fields.${key}`
     return te(i18nKey) ? t(i18nKey) : key
@@ -110,9 +108,7 @@ export const useErrorHandler = () => {
       // Nuxt $fetch errors wrap the response body in `httpError.data`, so
       // server-thrown `createError({ message, data })` becomes
       // `httpError.data = { statusCode, message, data }`.
-      const body = httpError.data as
-        | { message?: string; data?: unknown }
-        | undefined
+      const body = httpError.data as { message?: string; data?: unknown } | undefined
       const bodyMessage = body?.message
 
       switch (httpError.statusCode) {

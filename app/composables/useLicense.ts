@@ -47,15 +47,18 @@ export const useLicense = () => {
       const token = await user.getIdToken()
 
       // Call license validation API
-      const response = await $fetch<{ valid: boolean; premium: boolean; premiumAI?: boolean }>('/api/license/validate', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: {
-          license: licenseKey
+      const response = await $fetch<{ valid: boolean; premium: boolean; premiumAI?: boolean }>(
+        '/api/license/validate',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: {
+            license: licenseKey
+          }
         }
-      })
+      )
 
       // Cache the result
       licenseCache.value = {

@@ -197,6 +197,7 @@ export const useStore = defineStore('main', {
       this.pheDiary = []
       this.labValues = []
       this.ownFood = []
+      this.communityFoods = []
       this.settings = { ...defaultSettings }
       this.settingsLoaded = false
     },

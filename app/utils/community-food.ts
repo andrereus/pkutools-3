@@ -6,6 +6,18 @@
 // Score threshold below which community foods are automatically hidden
 export const COMMUNITY_FOOD_HIDE_THRESHOLD = -3
 
+// Ask the contributor to review a food while it is still visible and can be
+// corrected, before the lower hide threshold removes it from search.
+export const COMMUNITY_FOOD_FLAG_SCORE = -2
+
+/** The one client-side definition of a food's vote score. */
+export function communityFoodScore(food: { likes?: unknown; dislikes?: unknown }): number {
+  const likes = typeof food.likes === 'number' && Number.isFinite(food.likes) ? food.likes : 0
+  const dislikes =
+    typeof food.dislikes === 'number' && Number.isFinite(food.dislikes) ? food.dislikes : 0
+  return likes - dislikes
+}
+
 /**
  * Check if a community food should be hidden based on its score
  * @param score - The food's score (likes - dislikes)

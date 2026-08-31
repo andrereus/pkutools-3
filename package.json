@@ -15,7 +15,8 @@
     "format:check": "prettier . --check",
     "format": "prettier . --write",
     "emulators": "firebase emulators:start",
-    "emulators:data": "firebase emulators:start --import=./emulator-data --export-on-exit=./emulator-data"
+    "emulators:data": "firebase emulators:start --import=./emulator-data --export-on-exit=./emulator-data",
+    "changelog:new": "node scripts/changelog-new.mjs"
   },
   "dependencies": {
     "@lucide/vue": "^1.31.0",

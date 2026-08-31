@@ -159,6 +159,7 @@ describe('store account switching', () => {
 
     emit('user-1/pheDiary', { '-Nabc': { date: '2026-07-26', phe: 300 } })
     emit('user-1/labValues', { '-Nlab': { date: '2026-07-20', phe: 240 } })
+    emit('communityFoods', { '-Nfood': { name: 'Rice cake', phe: 60 } })
     emit('user-1/settings', { maxPhe: 300, healthDataConsent: true })
     expect(store.pheDiary).toHaveLength(1)
 
@@ -170,6 +171,7 @@ describe('store account switching', () => {
     expect(store.pheDiary).toEqual([])
     expect(store.labValues).toEqual([])
     expect(store.ownFood).toEqual([])
+    expect(store.communityFoods).toEqual([])
     expect(store.settings.maxPhe).toBeNull()
     expect(store.settings.healthDataConsent).toBe(false)
     expect(store.settingsLoaded).toBe(false)
@@ -194,6 +196,7 @@ describe('store account switching', () => {
     store.user = { id: 'user-1' }
     store.initRef()
     emit('user-1/pheDiary', { '-Nabc': { date: '2026-07-26', phe: 300 } })
+    emit('communityFoods', { '-Nfood': { name: 'Rice cake', phe: 60 } })
     emit('user-1/settings', { maxPhe: 300 })
 
     const bound = new Map(unsubscribes)
@@ -201,6 +204,7 @@ describe('store account switching', () => {
 
     expect(store.user).toBeNull()
     expect(store.pheDiary).toEqual([])
+    expect(store.communityFoods).toEqual([])
     expect(store.settings.maxPhe).toBeNull()
     expect(store.settingsLoaded).toBe(false)
     for (const unsubscribe of bound.values()) {

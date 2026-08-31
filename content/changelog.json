@@ -1,0 +1,2438 @@
+[
+  {
+    "category": "new",
+    "en": {
+      "title": "Google Play Store",
+      "body": "If you like PKU Tools and use the Android app, I'd appreciate it if you could leave a review on the Google Play Store 😊"
+    },
+    "de": {
+      "title": "Google Play Store",
+      "body": "Wenn dir PKU Tools gefällt und du die Android-App nutzt freue ich mich über eine Bewertung im Google Play Store 😊"
+    },
+    "es": {
+      "title": "Google Play Store",
+      "body": "Si te gusta PKU Tools y usas la app de Android, agradecería que dejaras una reseña en Google Play Store 😊"
+    },
+    "fr": {
+      "title": "Google Play Store",
+      "body": "Si tu aimes PKU Tools et que tu utilises l'app Android, j'apprécierais une évaluation sur le Google Play Store 😊"
+    },
+    "publishedAt": "2026-08-28T15:10:55Z",
+    "revision": 116
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "New video",
+      "body": "https://www.youtube.com/shorts/-bfcvdJ-k1A"
+    },
+    "de": {
+      "title": "Neues Video",
+      "body": "https://www.youtube.com/shorts/-bfcvdJ-k1A"
+    },
+    "es": {
+      "title": "Nuevo vídeo",
+      "body": "https://www.youtube.com/shorts/-bfcvdJ-k1A"
+    },
+    "fr": {
+      "title": "Nouvelle vidéo",
+      "body": "https://www.youtube.com/shorts/-bfcvdJ-k1A"
+    },
+    "publishedAt": "2026-08-08T18:18:17Z",
+    "revision": 115
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Update food icons",
+      "body": "Premium users can now update a food icon they don't like."
+    },
+    "de": {
+      "title": "Lebensmittel-Icons ändern",
+      "body": "Premium-Nutzer können ein Lebensmittel-Icon jetzt ändern wenn es ihnen nicht gefällt."
+    },
+    "es": {
+      "title": "Cambiar iconos de alimentos",
+      "body": "Los usuarios Premium ahora pueden cambiar un icono de alimento que no les guste."
+    },
+    "fr": {
+      "title": "Modifier les icônes d'aliments",
+      "body": "Les utilisateurs Premium peuvent maintenant changer une icône d'aliment qui ne leur plaît pas."
+    },
+    "publishedAt": "2026-08-06T13:15:56Z",
+    "revision": 114
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Save to Own Food",
+      "body": "Requested feature: Foods can now also be saved to Own Food when adding to the Diary. Additionally, the Barcode Scanner now suggests the type of food where possible."
+    },
+    "de": {
+      "title": "In Eigene Lebensmittel speichern",
+      "body": "Gewünschte Funktion: Lebensmittel lassen sich jetzt auch beim Eintragen ins Tagebuch in Eigene Lebensmittel speichern. Der Barcode Scanner schlägt außerdem die Lebensmittelart vor wenn möglich."
+    },
+    "es": {
+      "title": "Guardar en Alimentos propios",
+      "body": "Función solicitada: los alimentos ahora también se pueden guardar en Alimentos propios al añadirlos al Diario. Además el Escáner de código de barras sugiere el tipo de alimento cuando es posible."
+    },
+    "fr": {
+      "title": "Enregistrer dans Aliments personnels",
+      "body": "Fonction demandée : les aliments peuvent maintenant aussi être enregistrés dans Aliments personnels lors de l'ajout au Journal. Le Scanner de code-barres suggère en plus le type d'aliment quand c'est possible."
+    },
+    "publishedAt": "2026-08-05T18:02:35Z",
+    "revision": 113
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Multiple updates & terms",
+      "body": "More nutrients, BLS database in Spanish and French, more precise calculations, several fixes and updated terms now also in German, Spanish and French."
+    },
+    "de": {
+      "title": "Mehrere Updates & Nutzungsbedingungen",
+      "body": "Mehr Nährwerte, BLS-Datenbank auf Spanisch und Französisch, genauere Berechnungen, mehrere Fehlerbehebungen und aktualisierte Nutzungsbedingungen jetzt auch auf Deutsch, Spanisch und Französisch."
+    },
+    "es": {
+      "title": "Varias novedades y términos",
+      "body": "Más nutrientes, base de datos BLS en español y francés, cálculos más precisos, varias correcciones y términos actualizados ahora también en alemán, español y francés."
+    },
+    "fr": {
+      "title": "Plusieurs mises à jour et conditions",
+      "body": "Plus de nutriments, base de données BLS en espagnol et en français, calculs plus précis, plusieurs corrections et conditions mises à jour maintenant aussi en allemand, espagnol et français."
+    },
+    "publishedAt": "2026-07-30T15:50:53Z",
+    "revision": 112
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Food item details",
+      "body": "The food icon can now be updated when a name is changed, and you can see when a food item was added."
+    },
+    "de": {
+      "title": "Details zum Lebensmittel",
+      "body": "Das Lebensmittel-Icon lässt sich jetzt bei einer Namensänderung aktualisieren und du siehst wann ein Eintrag hinzugefügt wurde."
+    },
+    "es": {
+      "title": "Detalles del alimento",
+      "body": "El icono del alimento ahora se puede actualizar al cambiar el nombre y puedes ver cuándo se añadió una entrada."
+    },
+    "fr": {
+      "title": "Détails de l'aliment",
+      "body": "L'icône de l'aliment peut maintenant être mise à jour lors d'un changement de nom et tu vois quand une entrée a été ajoutée."
+    },
+    "publishedAt": "2026-07-25T11:10:37Z",
+    "revision": 111
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Design improvements",
+      "body": "Suggestions now have food icons, are better aligned on small mobile screens and various other improvements around the app."
+    },
+    "de": {
+      "title": "Design-Verbesserungen",
+      "body": "Vorschläge haben jetzt Lebensmittel-Icons und sitzen auf kleinen Bildschirmen besser. Dazu viele weitere Verbesserungen in der App."
+    },
+    "es": {
+      "title": "Mejoras de diseño",
+      "body": "Las sugerencias ahora tienen iconos de alimentos y se alinean mejor en pantallas pequeñas, además de otras mejoras en la app."
+    },
+    "fr": {
+      "title": "Améliorations du design",
+      "body": "Les suggestions ont maintenant des icônes d'aliments et s'alignent mieux sur les petits écrans, avec d'autres améliorations dans l'app."
+    },
+    "publishedAt": "2026-07-24T10:34:27Z",
+    "revision": 110
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Improved Getting Started",
+      "body": "The \"Getting Started\" page has been improved."
+    },
+    "de": {
+      "title": "Bessere Erste Schritte",
+      "body": "Die Seite „Erste Schritte“ wurde verbessert."
+    },
+    "es": {
+      "title": "Primeros pasos mejorados",
+      "body": "La página «Primeros pasos» ha sido mejorada."
+    },
+    "fr": {
+      "title": "Premiers pas améliorés",
+      "body": "La page « Premiers pas » a été améliorée."
+    },
+    "publishedAt": "2026-07-22T20:05:21Z",
+    "revision": 109
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "BLS database",
+      "body": "PKU Tools now also has the BLS database from Max Rubner-Institut. (Spanish and French translations are coming soon.)"
+    },
+    "de": {
+      "title": "BLS-Datenbank",
+      "body": "PKU Tools hat jetzt auch die BLS-Datenbank vom Max Rubner-Institut. (Spanische und französische Übersetzungen folgen bald.)"
+    },
+    "es": {
+      "title": "Base de datos BLS",
+      "body": "PKU Tools ahora también tiene la base de datos BLS del Max Rubner-Institut. (Las traducciones al español y al francés llegarán pronto.)"
+    },
+    "fr": {
+      "title": "Base de données BLS",
+      "body": "PKU Tools a maintenant aussi la base de données BLS du Max Rubner-Institut. (Les traductions espagnole et française arrivent bientôt.)"
+    },
+    "publishedAt": "2026-07-18T19:21:42Z",
+    "revision": 108
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "New logo",
+      "body": "PKU Tools has a new logo. Desktop, iPhone and iPad need to reinstall the app to get the new app icon."
+    },
+    "de": {
+      "title": "Neues Logo",
+      "body": "PKU Tools hat ein neues Logo. Auf Desktop, iPhone und iPad muss die App neu installiert werden damit das neue App-Icon erscheint."
+    },
+    "es": {
+      "title": "Nuevo logotipo",
+      "body": "PKU Tools tiene un nuevo logotipo. En escritorio, iPhone y iPad hay que reinstalar la app para ver el nuevo icono."
+    },
+    "fr": {
+      "title": "Nouveau logo",
+      "body": "PKU Tools a un nouveau logo. Sur ordinateur, iPhone et iPad, il faut réinstaller l'app pour voir la nouvelle icône."
+    },
+    "publishedAt": "2026-07-17T17:10:17Z",
+    "revision": 107
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Search performance",
+      "body": "Food search performance has been improved and freezing issues have been fixed."
+    },
+    "de": {
+      "title": "Such-Performance",
+      "body": "Die Lebensmittelsuche ist schneller und Hänger wurden behoben."
+    },
+    "es": {
+      "title": "Rendimiento de la búsqueda",
+      "body": "La Búsqueda de alimentos es más rápida y se han corregido los bloqueos."
+    },
+    "fr": {
+      "title": "Performance de la recherche",
+      "body": "La Recherche alimentaire est plus rapide et les blocages ont été corrigés."
+    },
+    "publishedAt": "2026-07-05T19:17:01Z",
+    "revision": 106
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Label scan",
+      "body": "You can now scan a label of a product in the AI Calculator and calculate Phe with it (not just estimating it like before)."
+    },
+    "de": {
+      "title": "Etikett scannen",
+      "body": "Du kannst im KI Rechner jetzt ein Etikett scannen und damit Phe berechnen statt es nur zu schätzen."
+    },
+    "es": {
+      "title": "Escanear etiqueta",
+      "body": "Ahora puedes escanear la etiqueta de un producto en la Calculadora IA y calcular Phe con ella, no solo estimarla."
+    },
+    "fr": {
+      "title": "Scanner une étiquette",
+      "body": "Tu peux maintenant scanner l'étiquette d'un produit dans le Calculateur IA et calculer la Phe avec, au lieu de seulement l'estimer."
+    },
+    "publishedAt": "2026-07-05T14:47:03Z",
+    "revision": 105
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Better default table sorting",
+      "body": "The default table sorting in Diet Report, Blood Values and Own Food has been improved."
+    },
+    "de": {
+      "title": "Bessere Standardsortierung",
+      "body": "Die Standardsortierung der Tabellen in Diätbericht, Blutwerte und Eigene Lebensmittel wurde verbessert."
+    },
+    "es": {
+      "title": "Mejor orden por defecto",
+      "body": "El orden por defecto de las tablas en Informe de dieta, Valores de sangre y Alimentos propios ha mejorado."
+    },
+    "fr": {
+      "title": "Meilleur tri par défaut",
+      "body": "Le tri par défaut des tableaux dans Rapport de régime, Valeurs sanguines et Aliments personnels a été amélioré."
+    },
+    "publishedAt": "2026-07-03T14:54:10Z",
+    "revision": 104
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Barcode Scanner update",
+      "body": "Barcode lookup has been updated to the latest version. (Many of these updates are carried out without being mentioned.)"
+    },
+    "de": {
+      "title": "Barcode Scanner Update",
+      "body": "Die Barcode-Erkennung wurde auf die neueste Version aktualisiert. (Viele solcher Updates laufen ohne Erwähnung.)"
+    },
+    "es": {
+      "title": "Actualización del Escáner",
+      "body": "La lectura de códigos de barras se ha actualizado a la última versión. (Muchas de estas actualizaciones se hacen sin mencionarlas.)"
+    },
+    "fr": {
+      "title": "Mise à jour du Scanner",
+      "body": "La lecture des codes-barres a été mise à jour vers la dernière version. (Beaucoup de ces mises à jour se font sans être mentionnées.)"
+    },
+    "publishedAt": "2026-07-03T12:41:52Z",
+    "revision": 103
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Also save as own food",
+      "body": "You can now save Phe calculations also as own food and share it with the community. Duplicates are now also also detected."
+    },
+    "de": {
+      "title": "Auch als eigenes Lebensmittel speichern",
+      "body": "Phe-Berechnungen lassen sich jetzt auch als eigenes Lebensmittel speichern und mit der Community teilen. Doppelte Einträge werden jetzt ebenfalls erkannt."
+    },
+    "es": {
+      "title": "Guardar también como alimento propio",
+      "body": "Los cálculos de Phe ahora también se pueden guardar como alimento propio y compartir con la comunidad. Los duplicados también se detectan."
+    },
+    "fr": {
+      "title": "Enregistrer aussi comme aliment personnel",
+      "body": "Les calculs de Phe peuvent maintenant aussi être enregistrés comme aliment personnel et partagés avec la communauté. Les doublons sont également détectés."
+    },
+    "publishedAt": "2026-07-03T08:57:19Z",
+    "revision": 102
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "FAQ section",
+      "body": "The landing page and the help page got new FAQ sections."
+    },
+    "de": {
+      "title": "FAQ-Bereich",
+      "body": "Startseite und Hilfe haben neue FAQ-Bereiche."
+    },
+    "es": {
+      "title": "Sección de preguntas frecuentes",
+      "body": "La página de inicio y la Ayuda tienen nuevas secciones de preguntas frecuentes."
+    },
+    "fr": {
+      "title": "Section FAQ",
+      "body": "La page d'accueil et l'Aide ont de nouvelles sections FAQ."
+    },
+    "publishedAt": "2026-07-01T16:50:04Z",
+    "revision": 101
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Trend chart",
+      "body": "Diet Report now has the option to show a trend curve (7-day average)."
+    },
+    "de": {
+      "title": "Trend-Diagramm",
+      "body": "Im Diätbericht lässt sich jetzt eine Trendkurve anzeigen (7-Tage-Durchschnitt)."
+    },
+    "es": {
+      "title": "Gráfico de tendencia",
+      "body": "El Informe de dieta ahora puede mostrar una curva de tendencia (media de 7 días)."
+    },
+    "fr": {
+      "title": "Courbe de tendance",
+      "body": "Le Rapport de régime peut maintenant afficher une courbe de tendance (moyenne sur 7 jours)."
+    },
+    "publishedAt": "2026-06-29T21:52:05Z",
+    "revision": 100
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "AI update",
+      "body": "Automatic food icons and AI Calculator have been updated to the latest AI model."
+    },
+    "de": {
+      "title": "KI-Update",
+      "body": "Automatische Lebensmittel-Icons und der KI Rechner nutzen jetzt das neueste KI-Modell."
+    },
+    "es": {
+      "title": "Actualización de IA",
+      "body": "Los iconos automáticos de alimentos y la Calculadora IA usan ahora el modelo de IA más reciente."
+    },
+    "fr": {
+      "title": "Mise à jour de l'IA",
+      "body": "Les icônes d'aliments automatiques et le Calculateur IA utilisent maintenant le modèle d'IA le plus récent."
+    },
+    "publishedAt": "2026-06-27T13:14:43Z",
+    "revision": 99
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "New report cards",
+      "body": "There are now new report cards in Diet Report and in Blood Values."
+    },
+    "de": {
+      "title": "Neue Berichtskarten",
+      "body": "Diätbericht und Blutwerte haben jetzt neue Berichtskarten."
+    },
+    "es": {
+      "title": "Nuevas tarjetas de informe",
+      "body": "Informe de dieta y Valores de sangre tienen ahora nuevas tarjetas de informe."
+    },
+    "fr": {
+      "title": "Nouvelles fiches de rapport",
+      "body": "Rapport de régime et Valeurs sanguines ont maintenant de nouvelles fiches."
+    },
+    "publishedAt": "2026-06-26T21:23:13Z",
+    "revision": 98
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "More settings",
+      "body": "You can now choose a preferred tool and set target ranges for blood values."
+    },
+    "de": {
+      "title": "Mehr Einstellungen",
+      "body": "Du kannst jetzt ein bevorzugtes Tool wählen und Zielbereiche für Blutwerte festlegen."
+    },
+    "es": {
+      "title": "Más ajustes",
+      "body": "Ahora puedes elegir una herramienta preferida y definir rangos objetivo para los valores de sangre."
+    },
+    "fr": {
+      "title": "Plus de paramètres",
+      "body": "Tu peux maintenant choisir un outil préféré et définir des plages cibles pour les valeurs sanguines."
+    },
+    "publishedAt": "2026-06-26T17:07:11Z",
+    "revision": 97
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Camera picker",
+      "body": "Barcode Scanner now has a camera picker to choose a preferred camera or even a camera from a connected device. It's also helpful if the camera is too blurry."
+    },
+    "de": {
+      "title": "Kameraauswahl",
+      "body": "Der Barcode Scanner hat jetzt eine Kameraauswahl. Damit lässt sich eine bevorzugte Kamera wählen oder sogar eine von einem verbundenen Gerät. Hilft auch wenn die Kamera zu unscharf ist."
+    },
+    "es": {
+      "title": "Selector de cámara",
+      "body": "El Escáner de código de barras ahora tiene un selector de cámara para elegir la preferida o incluso una de un dispositivo conectado. También ayuda si la cámara está borrosa."
+    },
+    "fr": {
+      "title": "Sélecteur de caméra",
+      "body": "Le Scanner de code-barres a maintenant un sélecteur de caméra pour choisir la caméra préférée ou même celle d'un appareil connecté. Utile aussi si la caméra est floue."
+    },
+    "publishedAt": "2026-06-23T14:41:37Z",
+    "revision": 96
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "UI improvements and more",
+      "body": "Dialogs, desktop navigation and Barcode Scanner have been improved. Also a lot of technical improvements have been made."
+    },
+    "de": {
+      "title": "UI-Verbesserungen und mehr",
+      "body": "Dialoge, Desktop-Navigation und Barcode Scanner wurden verbessert. Dazu viele technische Verbesserungen."
+    },
+    "es": {
+      "title": "Mejoras de interfaz y más",
+      "body": "Se han mejorado los diálogos, la navegación de escritorio y el Escáner de código de barras, además de muchas mejoras técnicas."
+    },
+    "fr": {
+      "title": "Améliorations de l'interface et plus",
+      "body": "Les dialogues, la navigation sur ordinateur et le Scanner de code-barres ont été améliorés, avec de nombreuses améliorations techniques."
+    },
+    "publishedAt": "2026-06-21T16:31:39Z",
+    "revision": 95
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Progress circles",
+      "body": "Progress circles are now available and you can choose your preferred progress style."
+    },
+    "de": {
+      "title": "Fortschrittskreise",
+      "body": "Fortschrittskreise sind jetzt verfügbar und du kannst deine bevorzugte Darstellung wählen."
+    },
+    "es": {
+      "title": "Círculos de progreso",
+      "body": "Los círculos de progreso ya están disponibles y puedes elegir tu estilo preferido."
+    },
+    "fr": {
+      "title": "Cercles de progression",
+      "body": "Les cercles de progression sont disponibles et tu peux choisir ton style préféré."
+    },
+    "publishedAt": "2026-06-15T20:33:15Z",
+    "revision": 94
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Design improvements",
+      "body": "Landing page and design improvements across the entire app."
+    },
+    "de": {
+      "title": "Design-Verbesserungen",
+      "body": "Startseite und Design wurden in der ganzen App verbessert."
+    },
+    "es": {
+      "title": "Mejoras de diseño",
+      "body": "Mejoras en la página de inicio y en el diseño de toda la app."
+    },
+    "fr": {
+      "title": "Améliorations du design",
+      "body": "Améliorations de la page d'accueil et du design dans toute l'app."
+    },
+    "publishedAt": "2026-06-15T08:59:21Z",
+    "revision": 93
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Correct an estimation",
+      "body": "Tell the AI what is wrong and the estimate will be redone. Also a small fix in the estimation: Now all inputs are considered if there are multiple."
+    },
+    "de": {
+      "title": "Schätzung korrigieren",
+      "body": "Sag der KI was falsch ist und die Schätzung wird neu gemacht. Dazu eine kleine Korrektur: Bei mehreren Eingaben werden jetzt alle berücksichtigt."
+    },
+    "es": {
+      "title": "Corregir una estimación",
+      "body": "Dile a la IA qué está mal y la estimación se rehace. Además una pequeña corrección: ahora se tienen en cuenta todas las entradas cuando hay varias."
+    },
+    "fr": {
+      "title": "Corriger une estimation",
+      "body": "Dis à l'IA ce qui ne va pas et l'estimation est refaite. Avec une petite correction : toutes les entrées sont prises en compte quand il y en a plusieurs."
+    },
+    "publishedAt": "2026-04-23T18:06:03Z",
+    "revision": 92
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Exclude days from stats",
+      "body": "You can now mark incomplete days in the diary so they don't skew the statistics."
+    },
+    "de": {
+      "title": "Tage aus der Statistik ausnehmen",
+      "body": "Du kannst unvollständige Tage im Tagebuch jetzt markieren damit sie die Statistik nicht verfälschen."
+    },
+    "es": {
+      "title": "Excluir días de las estadísticas",
+      "body": "Ahora puedes marcar días incompletos en el Diario para que no distorsionen las estadísticas."
+    },
+    "fr": {
+      "title": "Exclure des jours des statistiques",
+      "body": "Tu peux maintenant marquer les jours incomplets dans le Journal pour qu'ils ne faussent pas les statistiques."
+    },
+    "publishedAt": "2026-04-22T16:32:52Z",
+    "revision": 91
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Multiple foods in an image",
+      "body": "Small bugfix: Image analysis now works again for multiple food items in a single image."
+    },
+    "de": {
+      "title": "Mehrere Lebensmittel auf einem Bild",
+      "body": "Kleine Fehlerbehebung: Die Bildanalyse funktioniert wieder für mehrere Lebensmittel auf einem Bild."
+    },
+    "es": {
+      "title": "Varios alimentos en una imagen",
+      "body": "Pequeña corrección: el análisis de imagen vuelve a funcionar con varios alimentos en una sola imagen."
+    },
+    "fr": {
+      "title": "Plusieurs aliments sur une image",
+      "body": "Petite correction : l'analyse d'image fonctionne de nouveau pour plusieurs aliments sur une même image."
+    },
+    "publishedAt": "2026-04-15T20:37:00Z",
+    "revision": 90
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "The All-in-One PKU App",
+      "body": "PKU Tools now combines a scale, nutritional table, calculator, pencil and paper."
+    },
+    "de": {
+      "title": "Die All-in-One PKU App",
+      "body": "PKU Tools vereint jetzt Waage, Nährwerttabelle, Rechner, Stift und Papier."
+    },
+    "es": {
+      "title": "La app PKU todo en uno",
+      "body": "PKU Tools combina ahora báscula, tabla nutricional, calculadora, lápiz y papel."
+    },
+    "fr": {
+      "title": "L'app PKU tout-en-un",
+      "body": "PKU Tools combine maintenant balance, table nutritionnelle, calculatrice, crayon et papier."
+    },
+    "publishedAt": "2026-04-11T07:41:54Z",
+    "revision": 89
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "New AI Calculator",
+      "body": "Estimation, quick add and image analysis are now combined in a new tool called AI Calculator. The estimation accuracy has also been greatly improved."
+    },
+    "de": {
+      "title": "Neuer KI Rechner",
+      "body": "Schätzung, Schnelleingabe und Bildanalyse sind jetzt im neuen Tool KI Rechner vereint. Die Genauigkeit der Schätzung wurde deutlich verbessert."
+    },
+    "es": {
+      "title": "Nueva Calculadora IA",
+      "body": "Estimación, añadido rápido y análisis de imagen se combinan ahora en la nueva Calculadora IA. La precisión de la estimación ha mejorado mucho."
+    },
+    "fr": {
+      "title": "Nouveau Calculateur IA",
+      "body": "Estimation, ajout rapide et analyse d'image sont maintenant réunis dans le nouveau Calculateur IA. La précision de l'estimation a nettement progressé."
+    },
+    "publishedAt": "2026-04-05T13:09:40Z",
+    "revision": 88
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "The first PKU image analysis",
+      "body": "PKU Tools now has an image analysis feature 😃 (it's not a late April Fools' joke)"
+    },
+    "de": {
+      "title": "Die erste PKU-Bildanalyse",
+      "body": "PKU Tools hat jetzt eine Bildanalyse 😃 (das ist kein verspäteter Aprilscherz)"
+    },
+    "es": {
+      "title": "El primer análisis de imagen para PKU",
+      "body": "PKU Tools ahora tiene análisis de imagen 😃 (no es una broma tardía del día de los inocentes)"
+    },
+    "fr": {
+      "title": "La première analyse d'image PKU",
+      "body": "PKU Tools a maintenant une analyse d'image 😃 (ce n'est pas un poisson d'avril en retard)"
+    },
+    "publishedAt": "2026-04-01T19:38:59Z",
+    "revision": 87
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Technical updates",
+      "body": "Technical updates under the hood."
+    },
+    "de": {
+      "title": "Technische Updates",
+      "body": "Technische Updates unter der Haube."
+    },
+    "es": {
+      "title": "Actualizaciones técnicas",
+      "body": "Actualizaciones técnicas internas."
+    },
+    "fr": {
+      "title": "Mises à jour techniques",
+      "body": "Mises à jour techniques internes."
+    },
+    "publishedAt": "2026-04-01T00:38:42Z",
+    "revision": 86
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Bottom navigation",
+      "body": "PKU Tools now (again) has a bottom navigation on mobile 🙂"
+    },
+    "de": {
+      "title": "Untere Navigation",
+      "body": "PKU Tools hat auf dem Handy jetzt wieder eine untere Navigation 🙂"
+    },
+    "es": {
+      "title": "Navegación inferior",
+      "body": "PKU Tools vuelve a tener navegación inferior en el móvil 🙂"
+    },
+    "fr": {
+      "title": "Navigation en bas",
+      "body": "PKU Tools a de nouveau une navigation en bas sur mobile 🙂"
+    },
+    "publishedAt": "2026-03-15T23:45:51Z",
+    "revision": 85
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "New video in German",
+      "body": "https://www.youtube.com/watch?v=6Re98hV8R34"
+    },
+    "publishedAt": "2026-03-08T13:47:32Z",
+    "de": {
+      "title": "Neues Video auf Deutsch",
+      "body": "https://www.youtube.com/watch?v=6Re98hV8R34"
+    },
+    "es": {
+      "title": "Nuevo vídeo en alemán",
+      "body": "https://www.youtube.com/watch?v=6Re98hV8R34"
+    },
+    "fr": {
+      "title": "Nouvelle vidéo en allemand",
+      "body": "https://www.youtube.com/watch?v=6Re98hV8R34"
+    },
+    "revision": 84
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Automatic food icons",
+      "body": "Food icons are now automatically generated for food entries."
+    },
+    "de": {
+      "title": "Automatische Lebensmittel-Icons",
+      "body": "Lebensmittel-Icons werden jetzt automatisch für Einträge erzeugt."
+    },
+    "es": {
+      "title": "Iconos de alimentos automáticos",
+      "body": "Los iconos de alimentos ahora se generan automáticamente para las entradas."
+    },
+    "fr": {
+      "title": "Icônes d'aliments automatiques",
+      "body": "Les icônes d'aliments sont maintenant générées automatiquement pour les entrées."
+    },
+    "publishedAt": "2026-02-28T12:54:25Z",
+    "revision": 83
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Optimized page load",
+      "body": "The video is now a YouTube embed, which improves page load time."
+    },
+    "de": {
+      "title": "Schnellerer Seitenaufbau",
+      "body": "Das Video ist jetzt ein YouTube-Embed. Das verkürzt die Ladezeit der Seite."
+    },
+    "es": {
+      "title": "Carga de página optimizada",
+      "body": "El vídeo ahora está incrustado desde YouTube, lo que mejora el tiempo de carga."
+    },
+    "fr": {
+      "title": "Chargement de page optimisé",
+      "body": "La vidéo est maintenant intégrée depuis YouTube, ce qui améliore le temps de chargement."
+    },
+    "publishedAt": "2026-02-07T15:49:44Z",
+    "revision": 82
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Updated plans",
+      "body": "The price of Premium + AI has been reduced."
+    },
+    "de": {
+      "title": "Aktualisierte Tarife",
+      "body": "Der Preis für Premium + KI wurde gesenkt."
+    },
+    "es": {
+      "title": "Planes actualizados",
+      "body": "El precio de Premium + IA se ha reducido."
+    },
+    "fr": {
+      "title": "Offres mises à jour",
+      "body": "Le prix de Premium + IA a été réduit."
+    },
+    "publishedAt": "2026-02-01T17:51:13Z",
+    "revision": 81
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Optimized navigation",
+      "body": "Navigation has been optimized and some features that were not as useful as expected have been removed."
+    },
+    "de": {
+      "title": "Optimierte Navigation",
+      "body": "Die Navigation wurde optimiert. Einige Funktionen die weniger nützlich waren als gedacht wurden entfernt."
+    },
+    "es": {
+      "title": "Navegación optimizada",
+      "body": "Se ha optimizado la navegación y se han quitado algunas funciones que resultaron menos útiles de lo esperado."
+    },
+    "fr": {
+      "title": "Navigation optimisée",
+      "body": "La navigation a été optimisée et quelques fonctions moins utiles que prévu ont été retirées."
+    },
+    "publishedAt": "2026-02-01T14:59:49Z",
+    "revision": 80
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "New charts & date range",
+      "body": "There are now also charts for Kcal and Tyrosine and the date range is automatically set in Diet Report."
+    },
+    "de": {
+      "title": "Neue Diagramme & Zeitraum",
+      "body": "Es gibt jetzt auch Diagramme für Kcal und Tyrosin. Der Zeitraum im Diätbericht wird automatisch gesetzt."
+    },
+    "es": {
+      "title": "Nuevos gráficos y periodo",
+      "body": "Ahora también hay gráficos de Kcal y tirosina, y el periodo se ajusta automáticamente en el Informe de dieta."
+    },
+    "fr": {
+      "title": "Nouveaux graphiques et période",
+      "body": "Il y a maintenant aussi des graphiques pour les Kcal et la tyrosine, et la période est définie automatiquement dans le Rapport de régime."
+    },
+    "publishedAt": "2026-02-01T10:23:39Z",
+    "revision": 79
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Search performance",
+      "body": "The search performance has been improved."
+    },
+    "de": {
+      "title": "Such-Performance",
+      "body": "Die Suche ist schneller geworden."
+    },
+    "es": {
+      "title": "Rendimiento de la búsqueda",
+      "body": "La búsqueda es más rápida."
+    },
+    "fr": {
+      "title": "Performance de la recherche",
+      "body": "La recherche est plus rapide."
+    },
+    "publishedAt": "2026-01-26T21:46:02Z",
+    "revision": 78
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Community food database",
+      "body": "You can now share your own foods with the community and like good contributions in food search to help improve the community database 😃"
+    },
+    "de": {
+      "title": "Community-Datenbank",
+      "body": "Du kannst eigene Lebensmittel jetzt mit der Community teilen und gute Beiträge in der Lebensmittelsuche bewerten. So wird die Community-Datenbank besser 😃"
+    },
+    "es": {
+      "title": "Base de datos de la comunidad",
+      "body": "Ahora puedes compartir tus alimentos propios con la comunidad y valorar las buenas aportaciones en la Búsqueda de alimentos para mejorar la base de datos 😃"
+    },
+    "fr": {
+      "title": "Base de données communautaire",
+      "body": "Tu peux maintenant partager tes aliments personnels avec la communauté et noter les bonnes contributions dans la Recherche alimentaire pour améliorer la base 😃"
+    },
+    "publishedAt": "2026-01-25T17:27:20Z",
+    "revision": 77
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Quick add & notes",
+      "body": "There is now a quick add feature in the diary and the possibility to add notes to food entries."
+    },
+    "de": {
+      "title": "Schnelleingabe & Notizen",
+      "body": "Im Tagebuch gibt es jetzt eine Schnelleingabe und du kannst Notizen zu Einträgen hinzufügen."
+    },
+    "es": {
+      "title": "Añadido rápido y notas",
+      "body": "El Diario tiene ahora una función de añadido rápido y puedes añadir notas a las entradas."
+    },
+    "fr": {
+      "title": "Ajout rapide et notes",
+      "body": "Le Journal a maintenant un ajout rapide et tu peux ajouter des notes aux entrées."
+    },
+    "publishedAt": "2026-01-22T21:15:17Z",
+    "revision": 76
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Multiple Updates",
+      "body": "The button style has been improved, the diary now has a greeting message, the sign in now also works with the enter key, the username can be changed, a bug with the account deletion has been fixed and the estimation feature now also provides a short explanation."
+    },
+    "de": {
+      "title": "Mehrere Updates",
+      "body": "Der Button-Stil wurde verbessert. Das Tagebuch hat jetzt eine Begrüßung. Die Anmeldung funktioniert auch mit der Enter-Taste. Der Benutzername lässt sich ändern. Ein Fehler beim Löschen des Kontos wurde behoben. Die Schätzung liefert jetzt auch eine kurze Erklärung."
+    },
+    "es": {
+      "title": "Varias novedades",
+      "body": "Se ha mejorado el estilo de los botones. El Diario ahora tiene un saludo. El inicio de sesión también funciona con la tecla Intro. El nombre de usuario se puede cambiar. Se ha corregido un error al eliminar la cuenta. La estimación ahora incluye una breve explicación."
+    },
+    "fr": {
+      "title": "Plusieurs mises à jour",
+      "body": "Le style des boutons a été amélioré. Le Journal affiche maintenant un message d'accueil. La connexion fonctionne aussi avec la touche Entrée. Le nom d'utilisateur peut être modifié. Un bug lors de la suppression du compte a été corrigé. L'estimation fournit aussi une courte explication."
+    },
+    "publishedAt": "2026-01-20T22:07:27Z",
+    "revision": 75
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Sorting and pagination",
+      "body": "Tables now have sorting and pagination where necessary."
+    },
+    "de": {
+      "title": "Sortierung und Seiten",
+      "body": "Tabellen haben jetzt Sortierung und Seitenaufteilung wo es nötig ist."
+    },
+    "es": {
+      "title": "Orden y paginación",
+      "body": "Las tablas ahora tienen orden y paginación donde hace falta."
+    },
+    "fr": {
+      "title": "Tri et pagination",
+      "body": "Les tableaux ont maintenant un tri et une pagination là où c'est nécessaire."
+    },
+    "publishedAt": "2026-01-10T13:33:52Z",
+    "revision": 74
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Estimation feature food icons",
+      "body": "The estimation feature now also automatically adds a food icon if possible."
+    },
+    "de": {
+      "title": "Lebensmittel-Icons bei der Schätzung",
+      "body": "Die Schätzung fügt jetzt wenn möglich automatisch ein Lebensmittel-Icon hinzu."
+    },
+    "es": {
+      "title": "Iconos en la estimación",
+      "body": "La estimación ahora añade automáticamente un icono de alimento cuando es posible."
+    },
+    "fr": {
+      "title": "Icônes dans l'estimation",
+      "body": "L'estimation ajoute maintenant automatiquement une icône d'aliment quand c'est possible."
+    },
+    "publishedAt": "2026-01-04T09:45:05Z",
+    "revision": 73
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "New Premium + AI plan",
+      "body": "There is now a new Premium + AI plan that provides a bigger AI budget for estimations and future developments. (Premium only is more limited due to the high costs of AI.)"
+    },
+    "de": {
+      "title": "Neuer Tarif Premium + KI",
+      "body": "Es gibt jetzt Premium + KI mit einem größeren KI-Budget für Schätzungen und künftige Entwicklungen. (Premium allein ist wegen der hohen KI-Kosten stärker begrenzt.)"
+    },
+    "es": {
+      "title": "Nuevo plan Premium + IA",
+      "body": "Ahora hay un plan Premium + IA con un presupuesto de IA mayor para estimaciones y desarrollos futuros. (Premium solo está más limitado por el alto coste de la IA.)"
+    },
+    "fr": {
+      "title": "Nouvelle offre Premium + IA",
+      "body": "Il existe maintenant une offre Premium + IA avec un budget IA plus important pour les estimations et les développements futurs. (Premium seul est plus limité en raison du coût élevé de l'IA.)"
+    },
+    "publishedAt": "2026-01-03T15:11:25Z",
+    "revision": 72
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Big server update",
+      "body": "The server got a big update. If you experience any bugs, please report them via email."
+    },
+    "de": {
+      "title": "Großes Server-Update",
+      "body": "Der Server hat ein großes Update bekommen. Melde Fehler bitte per E-Mail."
+    },
+    "es": {
+      "title": "Gran actualización del servidor",
+      "body": "El servidor ha recibido una gran actualización. Si encuentras errores, comunícalos por correo."
+    },
+    "fr": {
+      "title": "Grande mise à jour du serveur",
+      "body": "Le serveur a reçu une grande mise à jour. Merci de signaler les bugs par e-mail."
+    },
+    "publishedAt": "2025-12-28T18:58:20Z",
+    "revision": 71
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Intelligent estimations",
+      "body": "PKU Tools is now (as far as I know) the first PKU app with a feature to estimate phenylalanine for any food input 😃 🎉 AI feature: Estimated values can be incorrect."
+    },
+    "de": {
+      "title": "Intelligente Schätzungen",
+      "body": "PKU Tools ist soweit ich weiß die erste PKU-App die Phenylalanin für beliebige Eingaben schätzen kann 😃 🎉 KI-Funktion: Geschätzte Werte können falsch sein."
+    },
+    "es": {
+      "title": "Estimaciones inteligentes",
+      "body": "Que yo sepa, PKU Tools es la primera app de PKU que estima la fenilalanina para cualquier alimento 😃 🎉 Función de IA: los valores estimados pueden ser incorrectos."
+    },
+    "fr": {
+      "title": "Estimations intelligentes",
+      "body": "À ma connaissance, PKU Tools est la première app PKU capable d'estimer la phénylalanine pour n'importe quel aliment 😃 🎉 Fonction IA : les valeurs estimées peuvent être fausses."
+    },
+    "publishedAt": "2025-12-12T19:08:46Z",
+    "revision": 70
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Fixes and improvements",
+      "body": "There are some additional improvements like confirmation modals and a fix with the getting started page on sign in."
+    },
+    "de": {
+      "title": "Korrekturen und Verbesserungen",
+      "body": "Dazu kommen Bestätigungsdialoge und eine Korrektur bei der Seite Erste Schritte nach der Anmeldung."
+    },
+    "es": {
+      "title": "Correcciones y mejoras",
+      "body": "Se añaden diálogos de confirmación y una corrección en la página Primeros pasos al iniciar sesión."
+    },
+    "fr": {
+      "title": "Corrections et améliorations",
+      "body": "S'y ajoutent des dialogues de confirmation et une correction sur la page Premiers pas à la connexion."
+    },
+    "publishedAt": "2025-12-07T23:16:54Z",
+    "revision": 69
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Notification system & undo",
+      "body": "There is now a new in-app notification system and the option to undo certain actions (instead of needing to confirm them)."
+    },
+    "de": {
+      "title": "Benachrichtigungen & Rückgängig",
+      "body": "Es gibt jetzt ein neues Benachrichtigungssystem in der App und die Möglichkeit bestimmte Aktionen rückgängig zu machen statt sie vorher zu bestätigen."
+    },
+    "es": {
+      "title": "Notificaciones y deshacer",
+      "body": "Hay un nuevo sistema de notificaciones en la app y la opción de deshacer ciertas acciones en lugar de confirmarlas antes."
+    },
+    "fr": {
+      "title": "Notifications et annulation",
+      "body": "Il y a un nouveau système de notifications dans l'app et la possibilité d'annuler certaines actions au lieu de les confirmer avant."
+    },
+    "publishedAt": "2025-12-07T13:37:14Z",
+    "revision": 68
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Own Food search",
+      "body": "Own Food now has a search feature and the Food Search has also been optimized (icons and identifier for own food)."
+    },
+    "de": {
+      "title": "Suche in Eigene Lebensmittel",
+      "body": "Eigene Lebensmittel hat jetzt eine Suche. Die Lebensmittelsuche wurde ebenfalls optimiert (Icons und Kennzeichnung eigener Lebensmittel)."
+    },
+    "es": {
+      "title": "Búsqueda en Alimentos propios",
+      "body": "Alimentos propios tiene ahora una búsqueda. La Búsqueda de alimentos también se ha optimizado (iconos e identificación de alimentos propios)."
+    },
+    "fr": {
+      "title": "Recherche dans Aliments personnels",
+      "body": "Aliments personnels a maintenant une recherche. La Recherche alimentaire a aussi été optimisée (icônes et identification des aliments personnels)."
+    },
+    "publishedAt": "2025-12-06T18:50:09Z",
+    "revision": 67
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Food date input",
+      "body": "You can now add food to a different date than today again."
+    },
+    "de": {
+      "title": "Datum beim Eintragen",
+      "body": "Du kannst Lebensmittel wieder für ein anderes Datum als heute eintragen."
+    },
+    "es": {
+      "title": "Fecha al añadir alimentos",
+      "body": "Vuelves a poder añadir alimentos a una fecha distinta de hoy."
+    },
+    "fr": {
+      "title": "Date lors de l'ajout",
+      "body": "Tu peux de nouveau ajouter des aliments à une autre date qu'aujourd'hui."
+    },
+    "publishedAt": "2025-12-06T17:06:00Z",
+    "revision": 66
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "New \"Getting Started\" page",
+      "body": "PKU Tools now has a “Getting Started” page, including consent for health data or email notifications, and the Assistant is now temporarily disabled."
+    },
+    "de": {
+      "title": "Neue Seite „Erste Schritte“",
+      "body": "PKU Tools hat jetzt eine Seite „Erste Schritte“ mit Einwilligung für Gesundheitsdaten und E-Mail-Benachrichtigungen. Der Assistant ist vorübergehend deaktiviert."
+    },
+    "es": {
+      "title": "Nueva página «Primeros pasos»",
+      "body": "PKU Tools tiene ahora una página «Primeros pasos» con el consentimiento para datos de salud y avisos por correo. El Assistant está desactivado temporalmente."
+    },
+    "fr": {
+      "title": "Nouvelle page « Premiers pas »",
+      "body": "PKU Tools a maintenant une page « Premiers pas » avec le consentement pour les données de santé et les e-mails. L'Assistant est temporairement désactivé."
+    },
+    "publishedAt": "2025-10-12T19:04:13Z",
+    "revision": 65
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Improved navigation",
+      "body": "Navigation has been improved, Phe Calculator and Protein Calculator have been merged, URLs have been translated, and further technical improvements (SEO)."
+    },
+    "de": {
+      "title": "Bessere Navigation",
+      "body": "Die Navigation wurde verbessert. Phe Rechner und Protein-Rechner wurden zusammengelegt. URLs sind jetzt übersetzt. Dazu weitere technische Verbesserungen (SEO)."
+    },
+    "es": {
+      "title": "Navegación mejorada",
+      "body": "Se ha mejorado la navegación, se han unido la Calculadora de Phe y la de proteínas, las URL se han traducido y hay más mejoras técnicas (SEO)."
+    },
+    "fr": {
+      "title": "Navigation améliorée",
+      "body": "La navigation a été améliorée, le Calculateur Phe et celui des protéines ont été fusionnés, les URL sont traduites et d'autres améliorations techniques (SEO) ont été faites."
+    },
+    "publishedAt": "2025-09-13T14:21:04Z",
+    "revision": 64
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Technical optimizations",
+      "body": "Usual updates under the hood as well as search engine optimizations."
+    },
+    "de": {
+      "title": "Technische Optimierungen",
+      "body": "Übliche Updates unter der Haube sowie Optimierungen für Suchmaschinen."
+    },
+    "es": {
+      "title": "Optimizaciones técnicas",
+      "body": "Actualizaciones internas habituales y optimizaciones para buscadores."
+    },
+    "fr": {
+      "title": "Optimisations techniques",
+      "body": "Mises à jour internes habituelles et optimisations pour les moteurs de recherche."
+    },
+    "publishedAt": "2025-09-07T14:03:55Z",
+    "revision": 63
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Own Food bugfix",
+      "body": "A small bug in \"Own Food\" has been fixed, where trying to add own food to the diary didn't work."
+    },
+    "de": {
+      "title": "Fehler in Eigene Lebensmittel behoben",
+      "body": "Ein kleiner Fehler in Eigene Lebensmittel wurde behoben. Das Eintragen ins Tagebuch funktionierte nicht."
+    },
+    "es": {
+      "title": "Corrección en Alimentos propios",
+      "body": "Se ha corregido un pequeño error en Alimentos propios: no funcionaba añadirlos al Diario."
+    },
+    "fr": {
+      "title": "Correction dans Aliments personnels",
+      "body": "Un petit bug dans Aliments personnels a été corrigé : l'ajout au Journal ne fonctionnait pas."
+    },
+    "publishedAt": "2025-08-13T13:28:49Z",
+    "revision": 62
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Updated plans",
+      "body": "PKU Tools can no longer be provided for free indefinitely, as the development effort and costs exceed what is possible. There are already ways to support PKU Tools and get benefits such as unlimited entries, this may be expanded in the future. Find out more here: https://ko-fi.com/andrereus/tiers"
+    },
+    "de": {
+      "title": "Aktualisierte Tarife",
+      "body": "PKU Tools lässt sich nicht dauerhaft kostenlos anbieten. Aufwand und Kosten übersteigen das Mögliche. Es gibt bereits Wege PKU Tools zu unterstützen und Vorteile wie unbegrenzte Einträge zu bekommen. Das wird eventuell erweitert. Mehr dazu hier: https://ko-fi.com/andrereus/tiers"
+    },
+    "es": {
+      "title": "Planes actualizados",
+      "body": "PKU Tools no se puede ofrecer gratis de forma indefinida, ya que el esfuerzo y los costes superan lo posible. Ya hay formas de apoyar PKU Tools y obtener ventajas como entradas ilimitadas, y puede que se amplíen. Más información aquí: https://ko-fi.com/andrereus/tiers"
+    },
+    "fr": {
+      "title": "Offres mises à jour",
+      "body": "PKU Tools ne peut pas rester gratuit indéfiniment : l'effort et les coûts dépassent ce qui est possible. Il existe déjà des moyens de soutenir PKU Tools et d'obtenir des avantages comme des entrées illimitées, et cela pourra être étendu. Plus d'informations ici : https://ko-fi.com/andrereus/tiers"
+    },
+    "publishedAt": "2025-07-31T13:55:09Z",
+    "revision": 61
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "PKU Tools Version 3",
+      "body": "PKU Tools Version 3 is live early 🎉 Technically, the underlying framework has been replaced, which will offer more development options in the future. It is also better for performance and search engines. URL paths and page names have also been revised."
+    },
+    "de": {
+      "title": "PKU Tools Version 3",
+      "body": "PKU Tools Version 3 ist früher live 🎉 Technisch wurde das zugrunde liegende Framework ersetzt. Das eröffnet künftig mehr Möglichkeiten und ist besser für Performance und Suchmaschinen. URL-Pfade und Seitennamen wurden ebenfalls überarbeitet."
+    },
+    "es": {
+      "title": "PKU Tools versión 3",
+      "body": "PKU Tools versión 3 está disponible antes de lo previsto 🎉 Técnicamente se ha sustituido el framework base, lo que dará más opciones en el futuro y mejora el rendimiento y el posicionamiento. También se han revisado las rutas URL y los nombres de las páginas."
+    },
+    "fr": {
+      "title": "PKU Tools version 3",
+      "body": "PKU Tools version 3 est en ligne en avance 🎉 Techniquement, le framework sous-jacent a été remplacé, ce qui ouvrira plus de possibilités et améliore les performances et le référencement. Les chemins d'URL et les noms de pages ont aussi été revus."
+    },
+    "publishedAt": "2025-07-27T12:38:34Z",
+    "revision": 60
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Multiple updates",
+      "body": "Multiple updates in various places of the app."
+    },
+    "de": {
+      "title": "Mehrere Updates",
+      "body": "Mehrere Updates an verschiedenen Stellen der App."
+    },
+    "es": {
+      "title": "Varias novedades",
+      "body": "Varias actualizaciones en distintas partes de la app."
+    },
+    "fr": {
+      "title": "Plusieurs mises à jour",
+      "body": "Plusieurs mises à jour à différents endroits de l'app."
+    },
+    "publishedAt": "2025-07-17T12:16:06Z",
+    "revision": 59
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Reduced price",
+      "body": "The price for PKU Tools Unlimited has been greatly reduced."
+    },
+    "de": {
+      "title": "Reduzierter Preis",
+      "body": "Der Preis für PKU Tools Unlimited wurde deutlich gesenkt."
+    },
+    "es": {
+      "title": "Precio reducido",
+      "body": "El precio de PKU Tools Unlimited se ha reducido bastante."
+    },
+    "fr": {
+      "title": "Prix réduit",
+      "body": "Le prix de PKU Tools Unlimited a été fortement réduit."
+    },
+    "publishedAt": "2025-07-03T11:42:13Z",
+    "revision": 58
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "PKU Tools Facebook page (German)",
+      "body": "PKU Tools now has a Facebook page where you can find news in German: https://www.facebook.com/pkutools"
+    },
+    "de": {
+      "title": "PKU Tools Facebook-Seite (Deutsch)",
+      "body": "PKU Tools hat jetzt eine Facebook-Seite mit Neuigkeiten auf Deutsch: https://www.facebook.com/pkutools"
+    },
+    "es": {
+      "title": "Página de Facebook de PKU Tools (alemán)",
+      "body": "PKU Tools tiene ahora una página de Facebook con novedades en alemán: https://www.facebook.com/pkutools"
+    },
+    "fr": {
+      "title": "Page Facebook PKU Tools (allemand)",
+      "body": "PKU Tools a maintenant une page Facebook avec des nouvelles en allemand : https://www.facebook.com/pkutools"
+    },
+    "publishedAt": "2025-06-26T13:57:20Z",
+    "revision": 57
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Unlimited with one-time payment",
+      "body": "There is now a one-time payment option for PKU Tools Unlimited."
+    },
+    "de": {
+      "title": "Unlimited mit Einmalzahlung",
+      "body": "Für PKU Tools Unlimited gibt es jetzt auch eine Einmalzahlung."
+    },
+    "es": {
+      "title": "Unlimited con pago único",
+      "body": "Ahora hay una opción de pago único para PKU Tools Unlimited."
+    },
+    "fr": {
+      "title": "Unlimited en paiement unique",
+      "body": "Il existe maintenant une option de paiement unique pour PKU Tools Unlimited."
+    },
+    "publishedAt": "2025-06-24T11:57:12Z",
+    "revision": 56
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "PKU Tools Unlimited",
+      "body": "PKU Tools Unlimited has been revised, it now includes: Unlimited diary entries. Unlimited lab value entries. Unlimited custom foods. Own food icons. CSV export (Excel)."
+    },
+    "de": {
+      "title": "PKU Tools Unlimited",
+      "body": "PKU Tools Unlimited wurde überarbeitet und enthält jetzt: unbegrenzte Tagebucheinträge, unbegrenzte Blutwerte, unbegrenzte eigene Lebensmittel, eigene Lebensmittel-Icons und CSV-Export (Excel)."
+    },
+    "es": {
+      "title": "PKU Tools Unlimited",
+      "body": "PKU Tools Unlimited se ha revisado e incluye ahora: entradas de diario ilimitadas, valores de laboratorio ilimitados, alimentos propios ilimitados, iconos propios y exportación CSV (Excel)."
+    },
+    "fr": {
+      "title": "PKU Tools Unlimited",
+      "body": "PKU Tools Unlimited a été revu et comprend maintenant : entrées de journal illimitées, valeurs de laboratoire illimitées, aliments personnels illimités, icônes personnalisées et export CSV (Excel)."
+    },
+    "publishedAt": "2025-06-07T07:54:49Z",
+    "revision": 55
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Assistant",
+      "body": "PKU Tools is getting smarter. Get an overview, recommendations and motivation from Assistant 🤖"
+    },
+    "de": {
+      "title": "Assistant",
+      "body": "PKU Tools wird schlauer. Der Assistant gibt dir Überblick, Empfehlungen und Motivation 🤖"
+    },
+    "es": {
+      "title": "Assistant",
+      "body": "PKU Tools se vuelve más inteligente. El Assistant te da una visión general, recomendaciones y motivación 🤖"
+    },
+    "fr": {
+      "title": "Assistant",
+      "body": "PKU Tools devient plus intelligent. L'Assistant te donne une vue d'ensemble, des recommandations et de la motivation 🤖"
+    },
+    "publishedAt": "2025-05-23T15:37:20Z",
+    "revision": 54
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Search: kcal, updated translation and emojis",
+      "body": "Search now also has kcal values and the translation and emojis have been updated."
+    },
+    "de": {
+      "title": "Suche: Kcal, Übersetzung und Emojis",
+      "body": "Die Suche zeigt jetzt auch Kcal-Werte. Übersetzung und Emojis wurden aktualisiert."
+    },
+    "es": {
+      "title": "Búsqueda: kcal, traducción y emojis",
+      "body": "La búsqueda muestra ahora también valores de kcal, y se han actualizado la traducción y los emojis."
+    },
+    "fr": {
+      "title": "Recherche : kcal, traduction et emojis",
+      "body": "La recherche affiche aussi les valeurs en kcal, et la traduction et les emojis ont été mis à jour."
+    },
+    "publishedAt": "2025-04-16T11:35:11Z",
+    "revision": 53
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Tracking energy (kcal)",
+      "body": "PKU Tools now lets you track your energy intake in kilocalories (kcal)! 🙌 (Kcal values in Phe Search will be added soon.)"
+    },
+    "de": {
+      "title": "Energie (Kcal) erfassen",
+      "body": "Mit PKU Tools kannst du jetzt auch deine Energiezufuhr in Kilokalorien erfassen 🙌 (Kcal-Werte in der Phe Search folgen bald.)"
+    },
+    "es": {
+      "title": "Registrar energía (kcal)",
+      "body": "PKU Tools ahora te deja registrar tu consumo de energía en kilocalorías 🙌 (Los valores de kcal en Phe Search llegarán pronto.)"
+    },
+    "fr": {
+      "title": "Suivre l'énergie (kcal)",
+      "body": "PKU Tools te permet maintenant de suivre ton apport énergétique en kilocalories 🙌 (Les valeurs kcal dans Phe Search arrivent bientôt.)"
+    },
+    "publishedAt": "2025-04-14T08:40:24Z",
+    "revision": 52
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Phe Log = Phe Diary",
+      "body": "Phe Log now has a date picker and food is automatically saved to a specific day. Also you can now add or edit food entries in the Phe Diary. Maximum flexibility! 🎉 😃"
+    },
+    "de": {
+      "title": "Phe Log = Phe Diary",
+      "body": "Phe Log hat jetzt eine Datumsauswahl und Lebensmittel werden automatisch einem Tag zugeordnet. Im Phe Diary kannst du Einträge hinzufügen und bearbeiten. Maximale Flexibilität 🎉 😃"
+    },
+    "es": {
+      "title": "Phe Log = Phe Diary",
+      "body": "Phe Log tiene ahora un selector de fecha y los alimentos se guardan automáticamente en un día concreto. En Phe Diary puedes añadir y editar entradas. Máxima flexibilidad 🎉 😃"
+    },
+    "fr": {
+      "title": "Phe Log = Phe Diary",
+      "body": "Phe Log a maintenant un sélecteur de date et les aliments sont enregistrés automatiquement sur un jour précis. Dans Phe Diary tu peux ajouter et modifier des entrées. Flexibilité maximale 🎉 😃"
+    },
+    "publishedAt": "2025-04-13T06:48:31Z",
+    "revision": 51
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Maintenance updates",
+      "body": "Maintenance updates and app presentation updates in several places (Web App, Android App)."
+    },
+    "de": {
+      "title": "Wartungsupdates",
+      "body": "Wartungsupdates und Anpassungen bei der Darstellung an mehreren Stellen (Web-App, Android-App)."
+    },
+    "es": {
+      "title": "Actualizaciones de mantenimiento",
+      "body": "Actualizaciones de mantenimiento y cambios de presentación en varios sitios (app web, app Android)."
+    },
+    "fr": {
+      "title": "Mises à jour de maintenance",
+      "body": "Mises à jour de maintenance et ajustements de présentation à plusieurs endroits (app web, app Android)."
+    },
+    "publishedAt": "2025-04-09T09:00:44Z",
+    "revision": 50
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Unlimited entries and priority support",
+      "body": "You can now get unlimited entries and priority support with PKU Tools Unlimited."
+    },
+    "de": {
+      "title": "Unbegrenzte Einträge und Priority Support",
+      "body": "Mit PKU Tools Unlimited bekommst du jetzt unbegrenzte Einträge und bevorzugten Support."
+    },
+    "es": {
+      "title": "Entradas ilimitadas y soporte prioritario",
+      "body": "Con PKU Tools Unlimited ahora obtienes entradas ilimitadas y soporte prioritario."
+    },
+    "fr": {
+      "title": "Entrées illimitées et support prioritaire",
+      "body": "Avec PKU Tools Unlimited tu obtiens maintenant des entrées illimitées et un support prioritaire."
+    },
+    "publishedAt": "2025-01-13T15:02:10Z",
+    "revision": 49
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Zoom in Phe Diary chart",
+      "body": "You can now zoom the chart / diagram in Phe Diary. 😊"
+    },
+    "de": {
+      "title": "Zoom im Phe Diary Diagramm",
+      "body": "Du kannst das Diagramm im Phe Diary jetzt zoomen 😊"
+    },
+    "es": {
+      "title": "Zoom en el gráfico de Phe Diary",
+      "body": "Ahora puedes hacer zoom en el gráfico de Phe Diary 😊"
+    },
+    "fr": {
+      "title": "Zoom dans le graphique Phe Diary",
+      "body": "Tu peux maintenant zoomer sur le graphique dans Phe Diary 😊"
+    },
+    "publishedAt": "2024-12-29T19:23:41Z",
+    "revision": 48
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Lab values (blood levels)",
+      "body": "You can now enter lab values (blood levels) and track them in a diagram."
+    },
+    "de": {
+      "title": "Blutwerte",
+      "body": "Du kannst jetzt Blutwerte eintragen und in einem Diagramm verfolgen."
+    },
+    "es": {
+      "title": "Valores de laboratorio (niveles en sangre)",
+      "body": "Ahora puedes introducir valores de laboratorio y seguirlos en un gráfico."
+    },
+    "fr": {
+      "title": "Valeurs de laboratoire (taux sanguins)",
+      "body": "Tu peux maintenant saisir des valeurs de laboratoire et les suivre dans un graphique."
+    },
+    "publishedAt": "2024-12-18T08:49:46Z",
+    "revision": 47
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Export food with commas in the name",
+      "body": "Fix a bug when exporting food with commas in the name."
+    },
+    "de": {
+      "title": "Export von Namen mit Komma",
+      "body": "Ein Fehler beim Export von Lebensmitteln mit Komma im Namen wurde behoben."
+    },
+    "es": {
+      "title": "Exportar alimentos con comas",
+      "body": "Se ha corregido un error al exportar alimentos que tienen comas en el nombre."
+    },
+    "fr": {
+      "title": "Export des noms avec virgule",
+      "body": "Un bug lors de l'export d'aliments dont le nom contient une virgule a été corrigé."
+    },
+    "publishedAt": "2024-12-12T08:53:00Z",
+    "revision": 46
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Unlimited entries",
+      "body": "It is now possible to get a license for unlimited entries with PKU Tools Unlimited."
+    },
+    "de": {
+      "title": "Unbegrenzte Einträge",
+      "body": "Mit PKU Tools Unlimited lässt sich jetzt eine Lizenz für unbegrenzte Einträge erwerben."
+    },
+    "es": {
+      "title": "Entradas ilimitadas",
+      "body": "Ahora se puede obtener una licencia de entradas ilimitadas con PKU Tools Unlimited."
+    },
+    "fr": {
+      "title": "Entrées illimitées",
+      "body": "Il est maintenant possible d'obtenir une licence pour des entrées illimitées avec PKU Tools Unlimited."
+    },
+    "publishedAt": "2024-12-07T20:39:05Z",
+    "revision": 45
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Suggestions optimization",
+      "body": "The suggestions algorithm has been improved and suggestions can now be added to the log without the need for horizontal scrolling."
+    },
+    "de": {
+      "title": "Bessere Vorschläge",
+      "body": "Der Algorithmus für Vorschläge wurde verbessert. Vorschläge lassen sich jetzt ohne seitliches Scrollen eintragen."
+    },
+    "es": {
+      "title": "Optimización de sugerencias",
+      "body": "El algoritmo de sugerencias ha mejorado y las sugerencias se pueden añadir sin desplazarse en horizontal."
+    },
+    "fr": {
+      "title": "Optimisation des suggestions",
+      "body": "L'algorithme de suggestions a été amélioré et les suggestions s'ajoutent sans défilement horizontal."
+    },
+    "publishedAt": "2024-09-01T22:57:32Z",
+    "revision": 44
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Redesign",
+      "body": "After redesigning the layout and now the pages, the redesign is almost complete. 😊 The technical side now has much more flexibility and independence for future developments."
+    },
+    "de": {
+      "title": "Redesign",
+      "body": "Nach dem Layout sind nun auch die Seiten neu gestaltet. Das Redesign ist damit fast abgeschlossen 😊 Technisch gibt es jetzt viel mehr Flexibilität und Unabhängigkeit für künftige Entwicklungen."
+    },
+    "es": {
+      "title": "Rediseño",
+      "body": "Tras el diseño y ahora las páginas, el rediseño está casi terminado 😊 La parte técnica tiene ahora mucha más flexibilidad e independencia para el futuro."
+    },
+    "fr": {
+      "title": "Refonte",
+      "body": "Après la mise en page et maintenant les pages, la refonte est presque terminée 😊 La partie technique a désormais beaucoup plus de flexibilité et d'indépendance pour l'avenir."
+    },
+    "publishedAt": "2024-09-01T07:57:47Z",
+    "revision": 43
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Protein Calculator optimization",
+      "body": "The Protein Calculator has been improved and an additional food category has been added (meat)."
+    },
+    "de": {
+      "title": "Protein-Rechner optimiert",
+      "body": "Der Protein-Rechner wurde verbessert und eine weitere Lebensmittelkategorie kam dazu (Fleisch)."
+    },
+    "es": {
+      "title": "Optimización de la calculadora de proteínas",
+      "body": "La calculadora de proteínas ha mejorado y se ha añadido otra categoría de alimentos (carne)."
+    },
+    "fr": {
+      "title": "Optimisation du calculateur de protéines",
+      "body": "Le calculateur de protéines a été amélioré et une catégorie d'aliments supplémentaire a été ajoutée (viande)."
+    },
+    "publishedAt": "2024-08-21T11:04:31Z",
+    "revision": 42
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Total Phe in the navigation bar",
+      "body": "To provide this information on every page, total Phe and remaining Phe are now displayed in the navigation bar."
+    },
+    "de": {
+      "title": "Gesamt-Phe in der Navigationsleiste",
+      "body": "Gesamt-Phe und verbleibendes Phe stehen jetzt in der Navigationsleiste damit sie auf jeder Seite sichtbar sind."
+    },
+    "es": {
+      "title": "Phe total en la barra de navegación",
+      "body": "El Phe total y el Phe restante se muestran ahora en la barra de navegación para verlos en cada página."
+    },
+    "fr": {
+      "title": "Phe total dans la barre de navigation",
+      "body": "Le Phe total et le Phe restant sont maintenant affichés dans la barre de navigation pour les voir sur chaque page."
+    },
+    "publishedAt": "2024-08-12T17:56:10Z",
+    "revision": 41
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Improved search",
+      "body": "Searching in PKU Tools has been improved. Search results can be refined by using multiple words, e.g. \"apples raw\" or \"potatoes cooked\". In addition, the pipe operator (|) can combine searches, and using quotes around words searches for exact matches."
+    },
+    "de": {
+      "title": "Bessere Suche",
+      "body": "Die Suche in PKU Tools wurde verbessert. Mit mehreren Wörtern lassen sich Treffer eingrenzen, zum Beispiel „Äpfel roh“ oder „Kartoffeln gekocht“. Der Pipe-Operator (|) verknüpft Suchen und Anführungszeichen suchen exakt."
+    },
+    "es": {
+      "title": "Búsqueda mejorada",
+      "body": "La búsqueda en PKU Tools ha mejorado. Se puede afinar con varias palabras, por ejemplo «manzanas crudas» o «patatas cocidas». El operador de barra vertical (|) combina búsquedas y las comillas buscan coincidencias exactas."
+    },
+    "fr": {
+      "title": "Recherche améliorée",
+      "body": "La recherche dans PKU Tools a été améliorée. Plusieurs mots permettent d'affiner, par exemple « pommes crues » ou « pommes de terre cuites ». L'opérateur pipe (|) combine les recherches et les guillemets cherchent une correspondance exacte."
+    },
+    "publishedAt": "2024-08-01T17:16:33Z",
+    "revision": 40
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "New scanner for barcodes",
+      "body": "The Barcode Scanner has been greatly improved and now recognizes barcodes much more reliably. 😊"
+    },
+    "de": {
+      "title": "Neuer Scanner für Barcodes",
+      "body": "Der Barcode Scanner wurde stark verbessert und erkennt Barcodes jetzt deutlich zuverlässiger 😊"
+    },
+    "es": {
+      "title": "Nuevo escáner de códigos de barras",
+      "body": "El Escáner de código de barras ha mejorado mucho y ahora reconoce los códigos de forma bastante más fiable 😊"
+    },
+    "fr": {
+      "title": "Nouveau scanner de codes-barres",
+      "body": "Le Scanner de code-barres a été nettement amélioré et reconnaît les codes bien plus fiablement 😊"
+    },
+    "publishedAt": "2024-07-29T15:53:40Z",
+    "revision": 39
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "% from target value",
+      "body": "Now there is a % value that shows the deviation from the optimum Phe value in the Phe Log. This helps in estimating and approaching the Phe tolerance."
+    },
+    "de": {
+      "title": "% vom Zielwert",
+      "body": "Im Phe Log gibt es jetzt einen Prozentwert der die Abweichung vom optimalen Phe-Wert zeigt. Das hilft beim Einschätzen und beim Annähern an die Phe-Toleranz."
+    },
+    "es": {
+      "title": "% del valor objetivo",
+      "body": "En Phe Log hay ahora un porcentaje que muestra la desviación respecto al valor óptimo de Phe. Ayuda a estimar y a acercarse a la tolerancia de Phe."
+    },
+    "fr": {
+      "title": "% de la valeur cible",
+      "body": "Dans Phe Log il y a maintenant un pourcentage qui montre l'écart par rapport à la valeur optimale de Phe. Cela aide à estimer et à approcher la tolérance en Phe."
+    },
+    "publishedAt": "2024-07-26T09:27:53Z",
+    "revision": 38
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Set the date when finishing Phe Log",
+      "body": "Now you can set the date when you finish the Phe Log. This makes it much easier when you finish it a day later."
+    },
+    "de": {
+      "title": "Datum beim Abschließen des Phe Log",
+      "body": "Du kannst jetzt beim Abschließen des Phe Log das Datum setzen. Das hilft wenn du erst am nächsten Tag abschließt."
+    },
+    "es": {
+      "title": "Fecha al cerrar el Phe Log",
+      "body": "Ahora puedes fijar la fecha al cerrar el Phe Log. Es mucho más cómodo si lo cierras al día siguiente."
+    },
+    "fr": {
+      "title": "Date à la clôture du Phe Log",
+      "body": "Tu peux maintenant définir la date en clôturant le Phe Log. C'est bien plus pratique si tu le clôtures le lendemain."
+    },
+    "publishedAt": "2024-07-24T15:47:20Z",
+    "revision": 37
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Layout redesign",
+      "body": "The layout of PKU Tools has been completely redesigned. 😊 Besides the new design, the technical side now has much more flexibility and independence for future developments."
+    },
+    "de": {
+      "title": "Neues Layout",
+      "body": "Das Layout von PKU Tools wurde komplett neu gestaltet 😊 Neben dem neuen Design gibt es technisch viel mehr Flexibilität und Unabhängigkeit für künftige Entwicklungen."
+    },
+    "es": {
+      "title": "Rediseño del layout",
+      "body": "El layout de PKU Tools se ha rediseñado por completo 😊 Además del nuevo diseño, la parte técnica gana mucha flexibilidad e independencia para el futuro."
+    },
+    "fr": {
+      "title": "Refonte de la mise en page",
+      "body": "La mise en page de PKU Tools a été entièrement repensée 😊 Au-delà du design, la partie technique gagne en flexibilité et en indépendance pour l'avenir."
+    },
+    "publishedAt": "2024-07-23T08:10:00Z",
+    "revision": 36
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Easier setting of the theme",
+      "body": "The setting for the appearance of PKU Tools has been revised and is now easier to use."
+    },
+    "de": {
+      "title": "Design leichter einstellen",
+      "body": "Die Einstellung für das Erscheinungsbild von PKU Tools wurde überarbeitet und ist jetzt einfacher."
+    },
+    "es": {
+      "title": "Ajuste del tema más fácil",
+      "body": "El ajuste de la apariencia de PKU Tools se ha revisado y ahora es más fácil de usar."
+    },
+    "fr": {
+      "title": "Réglage du thème simplifié",
+      "body": "Le réglage de l'apparence de PKU Tools a été revu et est maintenant plus simple."
+    },
+    "publishedAt": "2024-05-16T12:16:47Z",
+    "revision": 35
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "\"Sign in with Facebook\" removed",
+      "body": "Facebook has altered the requirements for using their login system and unfortunately we can no longer support it. Users with a Facebook account have been informed in advance. If you have further questions contact me via email."
+    },
+    "de": {
+      "title": "„Mit Facebook anmelden“ entfernt",
+      "body": "Facebook hat die Anforderungen für sein Login-System geändert. Wir können es leider nicht mehr unterstützen. Betroffene wurden vorab informiert. Bei Fragen schreib mir eine E-Mail."
+    },
+    "es": {
+      "title": "Se ha quitado «Iniciar sesión con Facebook»",
+      "body": "Facebook ha cambiado los requisitos de su sistema de acceso y por desgracia ya no podemos mantenerlo. Se avisó de antemano a las personas afectadas. Si tienes dudas, escríbeme por correo."
+    },
+    "fr": {
+      "title": "« Connexion avec Facebook » retirée",
+      "body": "Facebook a modifié les exigences de son système de connexion et nous ne pouvons malheureusement plus le prendre en charge. Les personnes concernées ont été prévenues à l'avance. Pour toute question, écris-moi par e-mail."
+    },
+    "publishedAt": "2024-05-11T15:06:38Z",
+    "revision": 34
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Changelog",
+      "body": "Now there is this new changelog 🎉 All past updates from social media posts have also been added."
+    },
+    "de": {
+      "title": "Changelog",
+      "body": "Es gibt jetzt dieses Changelog 🎉 Alle früheren Updates aus Social-Media-Beiträgen wurden ergänzt."
+    },
+    "es": {
+      "title": "Historial de cambios",
+      "body": "Ahora existe este historial de cambios 🎉 También se han añadido todas las actualizaciones anteriores publicadas en redes sociales."
+    },
+    "fr": {
+      "title": "Journal des modifications",
+      "body": "Ce journal des modifications existe désormais 🎉 Toutes les mises à jour passées publiées sur les réseaux sociaux ont aussi été ajoutées."
+    },
+    "publishedAt": "2024-04-17T15:29:47Z",
+    "revision": 33
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "4 years",
+      "body": "4 years PKU Tools already, wow 🎉"
+    },
+    "de": {
+      "title": "4 Jahre",
+      "body": "Schon 4 Jahre PKU Tools, wow 🎉"
+    },
+    "es": {
+      "title": "4 años",
+      "body": "Ya son 4 años de PKU Tools, vaya 🎉"
+    },
+    "fr": {
+      "title": "4 ans",
+      "body": "Déjà 4 ans de PKU Tools, waouh 🎉"
+    },
+    "publishedAt": "2024-04-10T16:29:00Z",
+    "revision": 32
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Add food with one click",
+      "body": "You can now add food from the last few days even easier (with one click) 🙂"
+    },
+    "de": {
+      "title": "Lebensmittel mit einem Klick eintragen",
+      "body": "Lebensmittel der letzten Tage lassen sich jetzt noch einfacher eintragen, mit einem Klick 🙂"
+    },
+    "es": {
+      "title": "Añadir alimentos con un clic",
+      "body": "Los alimentos de los últimos días se añaden ahora aún más fácil, con un solo clic 🙂"
+    },
+    "fr": {
+      "title": "Ajouter un aliment en un clic",
+      "body": "Les aliments des derniers jours s'ajoutent encore plus facilement, en un seul clic 🙂"
+    },
+    "publishedAt": "2024-04-10T12:57:00Z",
+    "revision": 31
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Direct access to subpages",
+      "body": "A bug has been fixed where direct access to subpages did not work."
+    },
+    "de": {
+      "title": "Direkter Zugriff auf Unterseiten",
+      "body": "Ein Fehler wurde behoben bei dem der direkte Zugriff auf Unterseiten nicht funktionierte."
+    },
+    "es": {
+      "title": "Acceso directo a subpáginas",
+      "body": "Se ha corregido un error por el que el acceso directo a las subpáginas no funcionaba."
+    },
+    "fr": {
+      "title": "Accès direct aux sous-pages",
+      "body": "Un bug empêchant l'accès direct aux sous-pages a été corrigé."
+    },
+    "publishedAt": "2024-03-28T13:57:00Z",
+    "revision": 30
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Website experience",
+      "body": "PKU Tools now works like a normal website and no longer offline. This is an improvement. It can still be installed like an app on the home screen. You now always have the latest version without having to click on \"Refresh\" in a popup (as you would expect from a normal website)."
+    },
+    "de": {
+      "title": "Wie eine normale Website",
+      "body": "PKU Tools funktioniert jetzt wie eine normale Website und nicht mehr offline. Das ist eine Verbesserung. Die Installation auf dem Startbildschirm bleibt möglich. Du hast immer die neueste Version ohne in einem Popup auf „Aktualisieren“ zu klicken."
+    },
+    "es": {
+      "title": "Experiencia de sitio web",
+      "body": "PKU Tools ahora funciona como un sitio web normal y ya no sin conexión. Es una mejora. Se sigue pudiendo instalar en la pantalla de inicio. Siempre tienes la última versión sin pulsar «Actualizar» en un aviso."
+    },
+    "fr": {
+      "title": "Expérience de site web",
+      "body": "PKU Tools fonctionne maintenant comme un site web normal et non plus hors ligne. C'est une amélioration. L'installation sur l'écran d'accueil reste possible. Tu as toujours la dernière version sans cliquer sur « Actualiser » dans une popup."
+    },
+    "publishedAt": "2024-03-27T13:57:00Z",
+    "revision": 29
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Fix for own food in search",
+      "body": "There was a bug that adding your own food via the search did not work. This has been fixed."
+    },
+    "de": {
+      "title": "Eigene Lebensmittel in der Suche",
+      "body": "Ein Fehler wurde behoben bei dem sich eigene Lebensmittel nicht über die Suche eintragen ließen."
+    },
+    "es": {
+      "title": "Corrección de alimentos propios en la búsqueda",
+      "body": "Se ha corregido un error que impedía añadir alimentos propios desde la búsqueda."
+    },
+    "fr": {
+      "title": "Correction des aliments personnels dans la recherche",
+      "body": "Un bug empêchant d'ajouter ses aliments personnels depuis la recherche a été corrigé."
+    },
+    "publishedAt": "2024-02-22T13:57:00Z",
+    "revision": 28
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Cleanup and fixes",
+      "body": "The navigation and other places have been cleaned up. You can now also export your own food. A few bugs regarding registration, logging in and out and deleting accounts have been fixed."
+    },
+    "de": {
+      "title": "Aufräumen und Korrekturen",
+      "body": "Navigation und andere Stellen wurden aufgeräumt. Eigene Lebensmittel lassen sich jetzt exportieren. Fehler bei Registrierung, An- und Abmeldung sowie beim Löschen von Konten wurden behoben."
+    },
+    "es": {
+      "title": "Limpieza y correcciones",
+      "body": "Se ha ordenado la navegación y otras partes. Ahora puedes exportar tus alimentos propios. Se han corregido errores de registro, inicio y cierre de sesión y borrado de cuentas."
+    },
+    "fr": {
+      "title": "Nettoyage et corrections",
+      "body": "La navigation et d'autres endroits ont été nettoyés. Tu peux maintenant exporter tes aliments personnels. Des bugs d'inscription, de connexion, de déconnexion et de suppression de compte ont été corrigés."
+    },
+    "publishedAt": "2024-02-15T13:57:00Z",
+    "revision": 27
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "App rewrite",
+      "body": "This update probably has the most extensive changes to date. The entire framework had to be rewritten so that the libraries used could be brought up to date. Almost every part of the code had to be changed. The update also included some improvements and bug fixes: The barcode scanner now works more reliably. 2 different data views can be exported. The design can be automatically adapted to the device. The search function now also searches for your own foods. Bugfix: \"Add again\" now also works for foods with self-defined icons. And much more."
+    },
+    "de": {
+      "title": "App neu geschrieben",
+      "body": "Dieses Update hat bisher die umfangreichsten Änderungen. Das gesamte Framework musste neu geschrieben werden damit die verwendeten Bibliotheken auf den aktuellen Stand kommen. Fast jeder Teil des Codes hat sich geändert. Dazu kamen Verbesserungen und Korrekturen: Der Barcode Scanner arbeitet zuverlässiger. Zwei verschiedene Datenansichten lassen sich exportieren. Das Design passt sich automatisch dem Gerät an. Die Suche findet jetzt auch eigene Lebensmittel. Behoben: „Erneut hinzufügen“ funktioniert auch bei Lebensmitteln mit eigenem Icon. Und vieles mehr."
+    },
+    "es": {
+      "title": "Reescritura de la app",
+      "body": "Esta actualización tiene seguramente los cambios más amplios hasta la fecha. Hubo que reescribir todo el framework para poner al día las librerías usadas y casi cada parte del código cambió. También incluye mejoras y correcciones: el Escáner de código de barras funciona de forma más fiable. Se pueden exportar dos vistas de datos distintas. El diseño se adapta automáticamente al dispositivo. La búsqueda también encuentra tus alimentos propios. Corregido: «Añadir de nuevo» funciona también con alimentos que tienen icono propio. Y mucho más."
+    },
+    "fr": {
+      "title": "Réécriture de l'app",
+      "body": "Cette mise à jour comporte sans doute les changements les plus vastes à ce jour. Tout le framework a dû être réécrit pour mettre à jour les bibliothèques utilisées, et presque chaque partie du code a changé. Elle apporte aussi des améliorations et des corrections : le Scanner de code-barres est plus fiable. Deux vues de données différentes peuvent être exportées. Le design s'adapte automatiquement à l'appareil. La recherche trouve aussi tes aliments personnels. Corrigé : « Ajouter à nouveau » fonctionne aussi pour les aliments avec une icône personnalisée. Et bien plus encore."
+    },
+    "publishedAt": "2024-02-07T13:57:00Z",
+    "revision": 26
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Multiple updates",
+      "body": "New email, cookie banner, account deletion, updates for Google Play guidelines etc."
+    },
+    "de": {
+      "title": "Mehrere Updates",
+      "body": "Neue E-Mail, Cookie-Banner, Löschen des Kontos, Anpassungen an die Google-Play-Richtlinien und mehr."
+    },
+    "es": {
+      "title": "Varias novedades",
+      "body": "Nuevo correo, aviso de cookies, borrado de cuenta, ajustes a las directrices de Google Play y más."
+    },
+    "fr": {
+      "title": "Plusieurs mises à jour",
+      "body": "Nouvelle adresse e-mail, bandeau cookies, suppression de compte, adaptations aux règles de Google Play et plus encore."
+    },
+    "publishedAt": "2023-11-13T13:57:00Z",
+    "revision": 25
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Better installation instructions",
+      "body": "On the help page there are now also pictures of the installation instructions for better understanding."
+    },
+    "de": {
+      "title": "Bessere Installationsanleitung",
+      "body": "Auf der Hilfeseite gibt es jetzt auch Bilder zur Installationsanleitung damit sie verständlicher ist."
+    },
+    "es": {
+      "title": "Mejores instrucciones de instalación",
+      "body": "La página de Ayuda incluye ahora imágenes de las instrucciones de instalación para entenderlas mejor."
+    },
+    "fr": {
+      "title": "Meilleures instructions d'installation",
+      "body": "La page d'Aide contient maintenant aussi des images des instructions d'installation pour mieux les comprendre."
+    },
+    "publishedAt": "2023-08-21T12:57:00Z",
+    "revision": 24
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Recently added foods",
+      "body": "You can now also add the most recently added foods (from the last 3 days) again with one click 🙂"
+    },
+    "de": {
+      "title": "Zuletzt eingetragene Lebensmittel",
+      "body": "Du kannst die zuletzt eingetragenen Lebensmittel der letzten 3 Tage jetzt mit einem Klick erneut eintragen 🙂"
+    },
+    "es": {
+      "title": "Alimentos añadidos recientemente",
+      "body": "Ahora puedes volver a añadir con un clic los alimentos de los últimos 3 días 🙂"
+    },
+    "fr": {
+      "title": "Aliments ajoutés récemment",
+      "body": "Tu peux maintenant réajouter en un clic les aliments des 3 derniers jours 🙂"
+    },
+    "publishedAt": "2023-04-16T12:57:00Z",
+    "revision": 23
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Standard foods with icons in 4 languages",
+      "body": "The foods have been standardized and are now based on the data source that Google also uses for nutritional information in the sidebar. Icons are now also assigned as far as possible, and everything is available in 4 languages."
+    },
+    "de": {
+      "title": "Standard-Lebensmittel mit Icons in 4 Sprachen",
+      "body": "Die Lebensmittel wurden vereinheitlicht und basieren jetzt auf der Datenquelle die auch Google für Nährwerte in der Seitenleiste nutzt. Icons werden soweit möglich zugeordnet und alles gibt es in 4 Sprachen."
+    },
+    "es": {
+      "title": "Alimentos estándar con iconos en 4 idiomas",
+      "body": "Los alimentos se han estandarizado y se basan ahora en la misma fuente de datos que usa Google para la información nutricional. También se asignan iconos donde es posible y todo está en 4 idiomas."
+    },
+    "fr": {
+      "title": "Aliments standards avec icônes en 4 langues",
+      "body": "Les aliments ont été normalisés et reposent maintenant sur la source de données que Google utilise aussi pour les valeurs nutritionnelles. Des icônes sont attribuées quand c'est possible et tout est disponible en 4 langues."
+    },
+    "publishedAt": "2023-04-05T12:57:00Z",
+    "revision": 22
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Sign in with email",
+      "body": "You can now also sign in with email, as some of you have asked for."
+    },
+    "de": {
+      "title": "Anmeldung mit E-Mail",
+      "body": "Du kannst dich jetzt auch mit E-Mail anmelden. Einige von euch hatten danach gefragt."
+    },
+    "es": {
+      "title": "Iniciar sesión con correo",
+      "body": "Ahora también puedes iniciar sesión con correo electrónico, como algunos habíais pedido."
+    },
+    "fr": {
+      "title": "Connexion par e-mail",
+      "body": "Tu peux maintenant aussi te connecter par e-mail, comme certains d'entre vous l'avaient demandé."
+    },
+    "publishedAt": "2023-04-01T12:57:00Z",
+    "revision": 21
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "More languages",
+      "body": "PKU Tools is now available in Spanish and French ✌️"
+    },
+    "de": {
+      "title": "Mehr Sprachen",
+      "body": "PKU Tools gibt es jetzt auch auf Spanisch und Französisch ✌️"
+    },
+    "es": {
+      "title": "Más idiomas",
+      "body": "PKU Tools está ahora también en español y francés ✌️"
+    },
+    "fr": {
+      "title": "Plus de langues",
+      "body": "PKU Tools est maintenant aussi disponible en espagnol et en français ✌️"
+    },
+    "publishedAt": "2023-03-26T12:57:00Z",
+    "revision": 19
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Calculation preview",
+      "body": "PKU Tools now has a preview for the Phe Log everywhere where something can be calculated 😊"
+    },
+    "de": {
+      "title": "Vorschau der Berechnung",
+      "body": "PKU Tools zeigt jetzt überall wo etwas berechnet werden kann eine Vorschau für den Phe Log 😊"
+    },
+    "es": {
+      "title": "Vista previa del cálculo",
+      "body": "PKU Tools muestra ahora una vista previa para el Phe Log allí donde se puede calcular algo 😊"
+    },
+    "fr": {
+      "title": "Aperçu du calcul",
+      "body": "PKU Tools affiche maintenant un aperçu pour le Phe Log partout où quelque chose peut être calculé 😊"
+    },
+    "publishedAt": "2023-03-26T12:57:00Z",
+    "revision": 20
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Barcode Scanner",
+      "body": "PKU Tools is now (as far as I know) the first PKU app with a Barcode Scanner 😃 🎉"
+    },
+    "de": {
+      "title": "Barcode Scanner",
+      "body": "PKU Tools ist soweit ich weiß die erste PKU-App mit einem Barcode Scanner 😃 🎉"
+    },
+    "es": {
+      "title": "Escáner de código de barras",
+      "body": "Que yo sepa, PKU Tools es la primera app de PKU con un escáner de códigos de barras 😃 🎉"
+    },
+    "fr": {
+      "title": "Scanner de code-barres",
+      "body": "À ma connaissance, PKU Tools est la première app PKU avec un scanner de codes-barres 😃 🎉"
+    },
+    "publishedAt": "2022-11-18T13:57:00Z",
+    "revision": 17
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "New start page",
+      "body": "The Phe Log is now on the start page along with the search for a quicker overview and access to functions."
+    },
+    "de": {
+      "title": "Neue Startseite",
+      "body": "Der Phe Log steht jetzt zusammen mit der Suche auf der Startseite. Das gibt schneller Überblick und Zugriff auf die Funktionen."
+    },
+    "es": {
+      "title": "Nueva página de inicio",
+      "body": "El Phe Log está ahora en la página de inicio junto a la búsqueda, para tener antes una visión general y acceso a las funciones."
+    },
+    "fr": {
+      "title": "Nouvelle page d'accueil",
+      "body": "Le Phe Log est maintenant sur la page d'accueil avec la recherche, pour une vue d'ensemble et un accès aux fonctions plus rapides."
+    },
+    "publishedAt": "2022-11-18T13:57:00Z",
+    "revision": 18
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Find own food",
+      "body": "You can now also find your own food using the Phe Search 🙂"
+    },
+    "de": {
+      "title": "Eigene Lebensmittel finden",
+      "body": "Du findest deine eigenen Lebensmittel jetzt auch über die Phe Search 🙂"
+    },
+    "es": {
+      "title": "Encontrar alimentos propios",
+      "body": "Ahora también encuentras tus alimentos propios con Phe Search 🙂"
+    },
+    "fr": {
+      "title": "Trouver ses aliments personnels",
+      "body": "Tu trouves maintenant aussi tes aliments personnels via Phe Search 🙂"
+    },
+    "publishedAt": "2021-07-26T12:57:00Z",
+    "revision": 15
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Edit logs",
+      "body": "You can now also edit logs in the Phe Diary."
+    },
+    "de": {
+      "title": "Einträge bearbeiten",
+      "body": "Du kannst Einträge im Phe Diary jetzt auch bearbeiten."
+    },
+    "es": {
+      "title": "Editar registros",
+      "body": "Ahora también puedes editar los registros en Phe Diary."
+    },
+    "fr": {
+      "title": "Modifier les entrées",
+      "body": "Tu peux maintenant aussi modifier les entrées dans Phe Diary."
+    },
+    "publishedAt": "2021-07-26T12:57:00Z",
+    "revision": 16
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "iOS optimized",
+      "body": "iOS has been optimized (regarding notch and navigation bar)."
+    },
+    "de": {
+      "title": "Für iOS optimiert",
+      "body": "iOS wurde optimiert, was Notch und Navigationsleiste betrifft."
+    },
+    "es": {
+      "title": "Optimizado para iOS",
+      "body": "Se ha optimizado iOS en lo relativo al notch y la barra de navegación."
+    },
+    "fr": {
+      "title": "Optimisé pour iOS",
+      "body": "iOS a été optimisé pour l'encoche et la barre de navigation."
+    },
+    "publishedAt": "2021-07-25T12:57:00Z",
+    "revision": 14
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "UI, search and navigation",
+      "body": "The user interface of PKU Tools has been improved. The search is now on the start page and searches as you type and navigation has been simplified."
+    },
+    "de": {
+      "title": "Oberfläche, Suche und Navigation",
+      "body": "Die Oberfläche von PKU Tools wurde verbessert. Die Suche steht jetzt auf der Startseite und sucht während des Tippens. Die Navigation wurde vereinfacht."
+    },
+    "es": {
+      "title": "Interfaz, búsqueda y navegación",
+      "body": "La interfaz de PKU Tools ha mejorado. La búsqueda está ahora en la página de inicio y busca mientras escribes, y la navegación se ha simplificado."
+    },
+    "fr": {
+      "title": "Interface, recherche et navigation",
+      "body": "L'interface de PKU Tools a été améliorée. La recherche est maintenant sur la page d'accueil et cherche pendant la saisie, et la navigation a été simplifiée."
+    },
+    "publishedAt": "2021-07-24T12:57:00Z",
+    "revision": 13
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "1 year",
+      "body": "PKU Tools is now just over a year old 😊🎉 Also performance has been improved and search engine optimization etc."
+    },
+    "de": {
+      "title": "1 Jahr",
+      "body": "PKU Tools ist jetzt etwas über ein Jahr alt 😊🎉 Außerdem wurde die Performance verbessert und für Suchmaschinen optimiert."
+    },
+    "es": {
+      "title": "1 año",
+      "body": "PKU Tools tiene ya algo más de un año 😊🎉 Además se ha mejorado el rendimiento y la optimización para buscadores."
+    },
+    "fr": {
+      "title": "1 an",
+      "body": "PKU Tools a maintenant un peu plus d'un an 😊🎉 Les performances et le référencement ont aussi été améliorés."
+    },
+    "publishedAt": "2021-04-21T12:57:00Z",
+    "revision": 12
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Search and Amino Counter",
+      "body": "Phe Search now has significantly more food and the Amino Counter has also been updated 🙂"
+    },
+    "de": {
+      "title": "Suche und Amino Counter",
+      "body": "Die Phe Search hat deutlich mehr Lebensmittel und der Amino Counter wurde ebenfalls aktualisiert 🙂"
+    },
+    "es": {
+      "title": "Búsqueda y Amino Counter",
+      "body": "Phe Search tiene bastantes más alimentos y el Amino Counter también se ha actualizado 🙂"
+    },
+    "fr": {
+      "title": "Recherche et Amino Counter",
+      "body": "Phe Search contient nettement plus d'aliments et l'Amino Counter a aussi été mis à jour 🙂"
+    },
+    "publishedAt": "2021-03-04T13:57:00Z",
+    "revision": 11
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "New diagram",
+      "body": "There is now a new diagram 🙂"
+    },
+    "de": {
+      "title": "Neues Diagramm",
+      "body": "Es gibt jetzt ein neues Diagramm 🙂"
+    },
+    "es": {
+      "title": "Nuevo gráfico",
+      "body": "Ahora hay un nuevo gráfico 🙂"
+    },
+    "fr": {
+      "title": "Nouveau graphique",
+      "body": "Il y a maintenant un nouveau graphique 🙂"
+    },
+    "publishedAt": "2021-02-26T13:57:00Z",
+    "revision": 10
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Phe Search improved",
+      "body": "Phe Search has been improved again and now also copes with small spelling mistakes 🙂"
+    },
+    "de": {
+      "title": "Phe Search verbessert",
+      "body": "Die Phe Search wurde erneut verbessert und kommt jetzt auch mit kleinen Tippfehlern zurecht 🙂"
+    },
+    "es": {
+      "title": "Phe Search mejorado",
+      "body": "Phe Search ha mejorado de nuevo y ahora también tolera pequeñas erratas 🙂"
+    },
+    "fr": {
+      "title": "Phe Search amélioré",
+      "body": "Phe Search a encore été amélioré et tolère maintenant les petites fautes de frappe 🙂"
+    },
+    "publishedAt": "2021-02-03T13:57:00Z",
+    "revision": 9
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Confetti",
+      "body": "PKU Tools now has an improved design and confetti 🎉 (don't worry, you'll find the confetti 😉)"
+    },
+    "de": {
+      "title": "Konfetti",
+      "body": "PKU Tools hat jetzt ein verbessertes Design und Konfetti 🎉 (keine Sorge, du findest das Konfetti 😉)"
+    },
+    "es": {
+      "title": "Confeti",
+      "body": "PKU Tools tiene ahora un diseño mejorado y confeti 🎉 (tranquilo, ya encontrarás el confeti 😉)"
+    },
+    "fr": {
+      "title": "Confettis",
+      "body": "PKU Tools a maintenant un design amélioré et des confettis 🎉 (pas d'inquiétude, tu trouveras les confettis 😉)"
+    },
+    "publishedAt": "2021-02-01T13:57:00Z",
+    "revision": 8
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Food icons",
+      "body": "Food icons are back 🎉 This time you can choose them yourself."
+    },
+    "de": {
+      "title": "Lebensmittel-Icons",
+      "body": "Die Lebensmittel-Icons sind zurück 🎉 Diesmal kannst du sie selbst auswählen."
+    },
+    "es": {
+      "title": "Iconos de alimentos",
+      "body": "Los iconos de alimentos han vuelto 🎉 Esta vez puedes elegirlos tú."
+    },
+    "fr": {
+      "title": "Icônes d'aliments",
+      "body": "Les icônes d'aliments sont de retour 🎉 Cette fois, tu peux les choisir toi-même."
+    },
+    "publishedAt": "2021-01-31T13:57:00Z",
+    "revision": 6
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Help page improved",
+      "body": "The help page and the instructions on how to install the app have been improved."
+    },
+    "de": {
+      "title": "Hilfeseite verbessert",
+      "body": "Die Hilfeseite und die Anleitung zur Installation der App wurden verbessert."
+    },
+    "es": {
+      "title": "Página de ayuda mejorada",
+      "body": "Se han mejorado la página de Ayuda y las instrucciones para instalar la app."
+    },
+    "fr": {
+      "title": "Page d'aide améliorée",
+      "body": "La page d'Aide et les instructions d'installation de l'app ont été améliorées."
+    },
+    "publishedAt": "2021-01-31T13:57:00Z",
+    "revision": 7
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Export function optimized",
+      "body": "The export function has been optimized. The logs from the Phe Diary are now also exported (as individual pages in the excel file). The feature comparison has also been made clearer."
+    },
+    "de": {
+      "title": "Export optimiert",
+      "body": "Die Exportfunktion wurde optimiert. Die Einträge aus dem Phe Diary werden jetzt ebenfalls exportiert, als einzelne Blätter in der Excel-Datei. Der Funktionsvergleich wurde übersichtlicher."
+    },
+    "es": {
+      "title": "Exportación optimizada",
+      "body": "Se ha optimizado la función de exportación. Los registros de Phe Diary también se exportan ahora, como hojas individuales del archivo de Excel. La comparativa de funciones es más clara."
+    },
+    "fr": {
+      "title": "Export optimisé",
+      "body": "La fonction d'export a été optimisée. Les entrées de Phe Diary sont maintenant aussi exportées, sous forme de feuilles distinctes dans le fichier Excel. Le comparatif des fonctions est plus clair."
+    },
+    "publishedAt": "2021-01-24T13:57:00Z",
+    "revision": 5
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Open Source",
+      "body": "PKU Tools is now Open Source 🙂"
+    },
+    "de": {
+      "title": "Open Source",
+      "body": "PKU Tools ist jetzt Open Source 🙂"
+    },
+    "es": {
+      "title": "Código abierto",
+      "body": "PKU Tools es ahora de código abierto 🙂"
+    },
+    "fr": {
+      "title": "Open source",
+      "body": "PKU Tools est maintenant open source 🙂"
+    },
+    "publishedAt": "2021-01-15T13:57:00Z",
+    "revision": 4
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Android App",
+      "body": "PKU Tools is now also available in the Google Play Store for Android 😃 🙌"
+    },
+    "de": {
+      "title": "Android-App",
+      "body": "PKU Tools gibt es jetzt auch im Google Play Store für Android 😃 🙌"
+    },
+    "es": {
+      "title": "App de Android",
+      "body": "PKU Tools está ahora también en Google Play Store para Android 😃 🙌"
+    },
+    "fr": {
+      "title": "App Android",
+      "body": "PKU Tools est maintenant aussi disponible sur le Google Play Store pour Android 😃 🙌"
+    },
+    "publishedAt": "2021-01-11T13:57:00Z",
+    "revision": 3
+  },
+  {
+    "category": "new",
+    "en": {
+      "title": "Export function",
+      "body": "There is now an export function for the overview of the Phe Diary 🙂"
+    },
+    "de": {
+      "title": "Exportfunktion",
+      "body": "Es gibt jetzt eine Exportfunktion für die Übersicht des Phe Diary 🙂"
+    },
+    "es": {
+      "title": "Función de exportación",
+      "body": "Ahora hay una función de exportación para el resumen de Phe Diary 🙂"
+    },
+    "fr": {
+      "title": "Fonction d'export",
+      "body": "Il y a maintenant une fonction d'export pour l'aperçu du Phe Diary 🙂"
+    },
+    "publishedAt": "2021-01-07T14:00:00Z",
+    "revision": 2
+  },
+  {
+    "category": "improved",
+    "en": {
+      "title": "Phe Search update",
+      "body": "Phe Search has received a major update: It now opens much faster and the german database has been replaced 🙂"
+    },
+    "de": {
+      "title": "Phe Search Update",
+      "body": "Die Phe Search hat ein großes Update bekommen. Sie öffnet jetzt viel schneller und die deutsche Datenbank wurde ersetzt 🙂"
+    },
+    "es": {
+      "title": "Actualización de Phe Search",
+      "body": "Phe Search ha recibido una gran actualización: ahora abre mucho más rápido y se ha sustituido la base de datos alemana 🙂"
+    },
+    "fr": {
+      "title": "Mise à jour de Phe Search",
+      "body": "Phe Search a reçu une grande mise à jour : elle s'ouvre bien plus vite et la base de données allemande a été remplacée 🙂"
+    },
+    "publishedAt": "2021-01-06T14:00:00Z",
+    "revision": 1
+  }
+]

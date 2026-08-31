@@ -42,7 +42,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   if (settings.license !== undefined) {
     updateData.license = settings.license ?? null
   }
-
   await settingsRef.update(updateData)
 
   return { success: true }

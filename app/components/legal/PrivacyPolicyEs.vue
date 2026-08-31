@@ -160,17 +160,6 @@
         </tr>
         <tr>
           <td>
-            <strong>Headway</strong>
-            <br />
-            <a href="https://headwayapp.co/privacy" rel="external nofollow noopener" target="_blank"
-              >Política de privacidad</a
-            >
-          </td>
-          <td>Tu dirección IP, para mostrar el registro de cambios.</td>
-          <td>En cada visita</td>
-        </tr>
-        <tr>
-          <td>
             <strong>Google Play</strong>
             <br />
             <a

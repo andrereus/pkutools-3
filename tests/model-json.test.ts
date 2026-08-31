@@ -30,10 +30,12 @@ describe('parseModelJson', () => {
   })
 
   it('ignores braces and escaped quotes inside strings', () => {
-    expect(parseModelJson('{"explanation":"a } and a { and a \\" quote","phePer100g":40}')).toEqual({
-      explanation: 'a } and a { and a " quote',
-      phePer100g: 40
-    })
+    expect(parseModelJson('{"explanation":"a } and a { and a \\" quote","phePer100g":40}')).toEqual(
+      {
+        explanation: 'a } and a { and a " quote',
+        phePer100g: 40
+      }
+    )
   })
 
   it('skips prose the model wrote before the object', () => {

@@ -250,9 +250,7 @@ onBeforeUnmount(() => {
                 <div
                   class="relative mt-3 rounded-xl bg-gray-50 px-3 py-3 ring-1 ring-gray-900/5 dark:bg-gray-800/60 dark:ring-white/10"
                 >
-                  <span
-                    class="demo-chip absolute -top-2 right-3 text-xs font-bold text-teal-500"
-                  >
+                  <span class="demo-chip absolute -top-2 right-3 text-xs font-bold text-teal-500">
                     +13 mg
                   </span>
                   <div class="flex items-baseline justify-between">

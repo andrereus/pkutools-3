@@ -1,5 +1,4 @@
 <script setup>
-/* global Headway */
 import { useStore } from '../../stores/index'
 import {
   LucideCircleUser,
@@ -10,7 +9,6 @@ import {
   LucideScanBarcode,
   LucideApple,
   LucideBook,
-  LucideMail,
   LucideLogIn,
   LucideLogOut,
   LucideSettings,
@@ -18,9 +16,10 @@ import {
   LucideInfo,
   LucideCalendar,
   LucideChartLine,
-  LucideBot,
   LucidePlus,
-  LucideSparkles
+  LucideSparkles,
+  LucideNewspaper,
+  LucideBell
 } from '@lucide/vue'
 
 const store = useStore()
@@ -54,6 +53,12 @@ const navigation = computed(() => {
   ]
 })
 
+// Built from the same rule the news page applies — same language filter, same
+// hidden-food filter — so a dot always corresponds to something the page will
+// actually show. Notes reduce to one revision here rather than the whole
+// changelog, which every page would otherwise carry.
+const { hasUnread } = useNewsBadge()
+
 const tabNavigation = computed(() => {
   if (userIsAuthenticated.value) {
     return [
@@ -81,6 +86,7 @@ const tabNavigation = computed(() => {
 const userNavigation = computed(() => {
   return [
     { name: 'settings.title', icon: 'LucideSettings', route: 'settings' },
+    { name: 'news.title', icon: 'LucideNewspaper', route: 'news' },
     { name: 'help.title', icon: 'LucideLifeBuoy', route: 'help' },
     { name: 'imprint.title', icon: 'LucideInfo', route: 'imprint' },
     { name: 'terms.title', icon: 'LucideInfo', route: 'terms-of-service' },
@@ -108,6 +114,7 @@ const footerNavigation = computed(() => {
     ],
     about: [
       { name: 'app.start', route: 'index' },
+      { name: 'news.title', route: 'news' },
       { name: 'help.title', route: 'help' },
       { name: 'imprint.title', route: 'imprint' },
       { name: 'terms.title', route: 'terms-of-service' },
@@ -145,16 +152,6 @@ const signOut = () => {
 
 onMounted(() => {
   store.checkAuthState()
-
-  // The widget script is registered in nuxt.config.ts, so it may not have
-  // arrived yet when this runs
-  if (typeof Headway !== 'undefined') {
-    const config = {
-      selector: '.headway',
-      account: 'JVmwL7'
-    }
-    Headway.init(config)
-  }
 
   // Remove old local storage items
   const oldItems = ['vuetifyThemeDark', 'vuetifyThemeFromDevice', 'vuetifyCurrentTheme']
@@ -200,17 +197,14 @@ const iconMap = {
   LucideScanBarcode,
   LucideApple,
   LucideBook,
-  LucideMail,
-  LucideLogIn,
-  LucideLogOut,
   LucideSettings,
   LucideLifeBuoy,
   LucideInfo,
   LucideCalendar,
   LucideChartLine,
-  LucideBot,
   LucidePlus,
-  LucideSparkles
+  LucideSparkles,
+  LucideNewspaper
 }
 
 const handleCookieConsent = (consent) => {
@@ -298,11 +292,6 @@ const handleCookieConsent = (consent) => {
           <div
             class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
           >
-            <button
-              type="button"
-              class="headway relative rounded-full p-1 text-gray-600 hover:text-black focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 dark:text-gray-200 dark:hover:text-white"
-            />
-
             <HeadlessMenu as="div" class="relative ml-2">
               <div>
                 <HeadlessMenuButton
@@ -346,6 +335,21 @@ const handleCookieConsent = (consent) => {
                 </HeadlessMenuItems>
               </transition>
             </HeadlessMenu>
+
+            <NuxtLink
+              :to="$localePath('news')"
+              class="relative mr-2 rounded-full p-1 text-gray-600 hover:text-black focus:outline-hidden focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 dark:text-gray-200 dark:hover:text-white"
+            >
+              <span class="sr-only">
+                {{ hasUnread ? $t('news.title-unread') : $t('news.title') }}
+              </span>
+              <LucideBell class="h-6 w-6" aria-hidden="true" />
+              <span
+                v-if="hasUnread"
+                class="absolute right-0 top-0 h-2 w-2 rounded-full bg-sky-500"
+                aria-hidden="true"
+              />
+            </NuxtLink>
 
             <HeadlessMenu as="div" class="relative ml-3">
               <div>
@@ -468,6 +472,10 @@ const handleCookieConsent = (consent) => {
                           class="mr-3 h-5 w-5 text-gray-700 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-300"
                           aria-hidden="true"
                         />{{ $t(item.name) }}
+                        <template v-if="item.route === 'news' && hasUnread">
+                          <span class="ml-2 h-2 w-2 rounded-full bg-sky-500" aria-hidden="true" />
+                          <span class="sr-only">{{ $t('news.unread-suffix') }}</span>
+                        </template>
                       </a>
                     </HeadlessMenuItem>
                   </div>
