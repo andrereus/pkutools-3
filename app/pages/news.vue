@@ -77,13 +77,13 @@ const titleFor = (item) => {
   if (item.kind === 'streak') return t('news.streak-title', { days: item.count })
   return item.food.name
 }
-// A food of the reader's own carries no vote buttons, since the vote route
-// refuses your own food. Without a line saying it is yours, the entry just looks
-// broken.
+// Foods need no generic body saying that they are foods: their values and vote
+// controls already make that clear, and repeating it on every entry costs a
+// line. An own contribution is identified by a badge beside its title instead.
 const bodyFor = (item) => {
   if (item.kind === 'note') return item.body
   if (item.kind === 'streak') return t('news.streak-text')
-  return item.isOwn ? t('news.your-contribution') : t('news.food-shared')
+  return null
 }
 // Changelog bodies are plain text, and rendering authored markup would mean
 // trusting a file through v-html for no gain. Bare URLs are still links though,
@@ -288,12 +288,7 @@ defineOgImage('Default', {
                now. -->
           <div class="flex items-baseline gap-2">
             <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-2">
-              <h3
-                :class="[
-                  'break-words text-gray-900 dark:text-white',
-                  item.kind === 'food-shared' ? 'text-sm font-normal leading-5' : 'font-semibold'
-                ]"
-              >
+              <h3 class="text-sm leading-5 font-semibold break-words text-gray-900 dark:text-white">
                 {{ titleFor(item) }}
               </h3>
               <span
@@ -308,6 +303,12 @@ defineOgImage('Default', {
               >
                 {{ $t(`news.category-${item.category}`) }}
               </span>
+              <span
+                v-if="item.kind === 'food-shared' && item.isOwn"
+                class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+              >
+                {{ $t('news.your-contribution') }}
+              </span>
             </div>
             <time
               class="shrink-0 text-xs text-gray-400 dark:text-gray-500"
@@ -318,6 +319,7 @@ defineOgImage('Default', {
           </div>
 
           <p
+            v-if="bodyFor(item)"
             :class="[
               'mt-0.5',
               item.kind === 'note'

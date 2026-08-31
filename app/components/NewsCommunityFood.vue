@@ -55,17 +55,17 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
 
 <template>
   <div class="mt-3">
-    <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-      <span class="text-sm font-semibold text-gray-900 dark:text-white">
+    <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-x-3">
+      <span class="whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white">
         {{ food.phe }} mg Phe
       </span>
-      <span class="text-sm font-semibold text-gray-900 dark:text-white">
+      <span class="whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white">
         {{ food.kcal }} {{ $t('common.kcal') }}
       </span>
       <button
         v-if="rows.length > 0"
         type="button"
-        class="ml-auto inline-flex cursor-pointer items-center gap-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        class="inline-flex cursor-pointer items-center gap-1 justify-self-end text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         :aria-expanded="showNutrients"
         :aria-label="$t(showNutrients ? 'news.hide-nutrients' : 'news.show-nutrients')"
         @click="showNutrients = !showNutrients"
