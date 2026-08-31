@@ -79,11 +79,21 @@ const titleFor = (item) => {
 }
 // Foods need no generic body saying that they are foods: their values and vote
 // controls already make that clear, and repeating it on every entry costs a
-// line. An own contribution is identified by a badge beside its title instead.
+// line. The shared metadata column identifies them instead.
 const bodyFor = (item) => {
   if (item.kind === 'note') return item.body
   if (item.kind === 'streak') return t('news.streak-text')
   return null
+}
+
+// Every kind gets one compact label below its date. Keeping that metadata in a
+// fixed two-row column makes short and long titles use the same header shape.
+const metaLabelFor = (item) => {
+  if (item.kind === 'note') return t(`news.category-${item.category}`)
+  if (item.kind === 'food-shared') {
+    return item.isOwn ? t('news.your-contribution') : t('news.community')
+  }
+  return t('news.only-you')
 }
 // Changelog bodies are plain text, and rendering authored markup would mean
 // trusting a file through v-html for no gain. Bare URLs are still links though,
@@ -273,88 +283,63 @@ defineOgImage('Default', {
         isItemUnread(item) ? 'ring-sky-300 dark:ring-sky-700' : 'ring-gray-200 dark:ring-gray-700'
       ]"
     >
-      <div class="flex gap-3">
-        <span
-          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-lg dark:bg-gray-800"
-        >
+      <!-- A fixed-height header keeps a short title centered against the icon
+           and the two-row metadata column. Longer titles grow naturally;
+           descriptions and food details use the full card width below. -->
+      <div class="flex items-center">
+        <span class="flex h-9 w-7 shrink-0 items-center justify-start text-lg">
           {{ emojiFor(item) }}
         </span>
 
-        <div class="min-w-0 flex-1">
-          <!-- The date holds the top right corner. It used to sit in the same
-               wrapping row as the title, so a long food name pushed it onto a
-               line of its own before the text underneath — three staggered
-               lines for what is one heading. Only the title and its badges wrap
-               now. -->
-          <div class="flex items-baseline gap-2">
-            <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-2">
-              <h3 class="text-sm leading-5 font-semibold break-words text-gray-900 dark:text-white">
-                {{ titleFor(item) }}
-                <span
-                  v-if="item.kind === 'food-shared'"
-                  class="ml-1 inline-block rounded bg-gray-100 px-1.5 py-0.5 align-baseline text-[10px] leading-4 font-bold tracking-wide whitespace-nowrap text-gray-500 uppercase dark:bg-gray-800 dark:text-gray-400"
-                >
-                  {{ item.isOwn ? $t('news.your-contribution') : $t('news.community') }}
-                </span>
-              </h3>
-              <span
-                v-if="isItemUnread(item)"
-                class="rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"
-              >
-                {{ $t('news.unread-item') }}
-              </span>
-              <span
-                v-if="item.kind === 'note'"
-                class="rounded bg-sky-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-700 dark:bg-sky-900/40 dark:text-sky-300"
-              >
-                {{ $t(`news.category-${item.category}`) }}
-              </span>
-            </div>
+        <div class="flex min-h-9 min-w-0 flex-1 items-center gap-2">
+          <div class="flex min-w-0 flex-1 flex-wrap items-baseline gap-2">
+            <h3 class="text-sm leading-5 font-semibold break-words text-gray-900 dark:text-white">
+              {{ titleFor(item) }}
+            </h3>
+            <span
+              v-if="isItemUnread(item)"
+              class="text-[10px] leading-4 font-semibold text-amber-700 dark:text-amber-300"
+            >
+              {{ $t('news.unread-item') }}
+            </span>
+          </div>
+          <div class="flex h-9 shrink-0 flex-col items-end justify-between">
             <time
-              class="shrink-0 text-xs text-gray-400 dark:text-gray-500"
+              class="text-xs leading-4 text-gray-400 dark:text-gray-500"
               :datetime="item.date || new Date(item.createdAt).toISOString()"
             >
               {{ formatDate(item) }}
             </time>
-          </div>
-
-          <p
-            v-if="bodyFor(item)"
-            :class="[
-              'mt-0.5',
-              item.kind === 'note'
-                ? 'text-sm text-gray-700 dark:text-gray-300'
-                : 'text-xs text-gray-500 dark:text-gray-400'
-            ]"
-          >
-            <template v-for="part in bodyParts(bodyFor(item))" :key="part.key">
-              <a
-                v-if="part.href"
-                :href="part.href"
-                rel="external nofollow noopener"
-                target="_blank"
-                class="break-all text-sky-600 hover:underline dark:text-sky-400"
-                >{{ part.text }}</a
-              ><template v-else>{{ part.text }}</template>
-            </template>
-          </p>
-
-          <p v-if="item.private" class="mt-2">
-            <span
-              class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-500 dark:bg-gray-800 dark:text-gray-400"
-            >
-              {{ $t('news.only-you') }}
+            <span class="text-xs leading-4 whitespace-nowrap text-gray-400 dark:text-gray-500">
+              {{ metaLabelFor(item) }}
             </span>
-          </p>
+          </div>
         </div>
       </div>
 
-      <!-- Outside the icon column on a phone. A 40px indent is width the values
-           and the two vote buttons need more than the alignment is worth; from
-           `sm` up there is room for both, so it lines up under the text again. -->
+      <p
+        v-if="bodyFor(item)"
+        :class="[
+          'mt-2',
+          item.kind === 'note'
+            ? 'text-sm text-gray-700 dark:text-gray-300'
+            : 'text-xs text-gray-500 dark:text-gray-400'
+        ]"
+      >
+        <template v-for="part in bodyParts(bodyFor(item))" :key="part.key">
+          <a
+            v-if="part.href"
+            :href="part.href"
+            rel="external nofollow noopener"
+            target="_blank"
+            class="break-all text-sky-600 hover:underline dark:text-sky-400"
+            >{{ part.text }}</a
+          ><template v-else>{{ part.text }}</template>
+        </template>
+      </p>
+
       <NewsCommunityFood
         v-if="item.food"
-        class="sm:pl-12"
         :food="item.food"
         :vote="voteFor(item)"
         :can-vote="canVote(item)"
