@@ -55,15 +55,17 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
 
 <template>
   <div class="mt-3">
-    <div class="flex gap-4 text-base font-semibold text-gray-900 dark:text-white">
-      <span class="flex-1">{{ food.phe }} mg Phe</span>
-      <span class="flex-1">{{ food.kcal }} {{ $t('common.kcal') }}</span>
-    </div>
-
-    <template v-if="rows.length > 0">
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+      <span class="text-sm font-semibold text-gray-900 dark:text-white">
+        {{ food.phe }} mg Phe
+      </span>
+      <span class="text-sm font-semibold text-gray-900 dark:text-white">
+        {{ food.kcal }} {{ $t('common.kcal') }}
+      </span>
       <button
+        v-if="rows.length > 0"
         type="button"
-        class="mt-2 flex w-full cursor-pointer items-center justify-between text-xs text-gray-500 hover:text-gray-700 sm:text-sm dark:text-gray-400 dark:hover:text-gray-200"
+        class="inline-flex cursor-pointer items-center gap-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
         :aria-expanded="showNutrients"
         @click="showNutrients = !showNutrients"
       >
@@ -74,19 +76,19 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
           aria-hidden="true"
         />
       </button>
+    </div>
 
-      <div
-        v-if="showNutrients"
-        class="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600 sm:gap-x-6 sm:text-sm dark:text-gray-400"
-      >
-        <div v-for="row in rows" :key="row.key" class="flex justify-between gap-2">
-          <span class="min-w-0">{{ row.label }}</span>
-          <span class="shrink-0 whitespace-nowrap">{{ row.value }} g</span>
-        </div>
+    <div
+      v-if="showNutrients && rows.length > 0"
+      class="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600 sm:gap-x-6 sm:text-sm dark:text-gray-400"
+    >
+      <div v-for="row in rows" :key="row.key" class="flex justify-between gap-2">
+        <span class="min-w-0">{{ row.label }}</span>
+        <span class="shrink-0 whitespace-nowrap">{{ row.value }} g</span>
       </div>
-    </template>
+    </div>
 
-    <p v-if="sourceLabel" class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+    <p v-if="sourceLabel" class="mt-2 text-xs text-gray-500 sm:text-sm dark:text-gray-400">
       {{ $t('food-search.value-source', { source: sourceLabel }) }}
     </p>
 
