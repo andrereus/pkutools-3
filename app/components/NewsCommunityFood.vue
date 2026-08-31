@@ -24,6 +24,7 @@ const props = defineProps({
 
 const emit = defineEmits(['vote'])
 const { t } = useI18n()
+const showNutrients = ref(false)
 
 // A vote briefly swaps the selected button's thumb for a checkmark. The label
 // and control stay in place, so the acknowledgement adds neither commentary on
@@ -59,15 +60,31 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
       <span class="flex-1">{{ food.kcal }} {{ $t('common.kcal') }}</span>
     </div>
 
-    <div
-      v-if="rows.length > 0"
-      class="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600 sm:gap-x-6 sm:text-sm dark:text-gray-400"
-    >
-      <div v-for="row in rows" :key="row.key" class="flex justify-between gap-2">
-        <span class="min-w-0">{{ row.label }}</span>
-        <span class="shrink-0 whitespace-nowrap">{{ row.value }} g</span>
+    <template v-if="rows.length > 0">
+      <button
+        type="button"
+        class="mt-2 flex w-full cursor-pointer items-center justify-between text-xs text-gray-500 hover:text-gray-700 sm:text-sm dark:text-gray-400 dark:hover:text-gray-200"
+        :aria-expanded="showNutrients"
+        @click="showNutrients = !showNutrients"
+      >
+        {{ $t(showNutrients ? 'news.hide-nutrients' : 'news.show-nutrients') }}
+        <LucideChevronDown
+          class="h-4 w-4 transition-transform"
+          :class="showNutrients ? 'rotate-180' : ''"
+          aria-hidden="true"
+        />
+      </button>
+
+      <div
+        v-if="showNutrients"
+        class="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600 sm:gap-x-6 sm:text-sm dark:text-gray-400"
+      >
+        <div v-for="row in rows" :key="row.key" class="flex justify-between gap-2">
+          <span class="min-w-0">{{ row.label }}</span>
+          <span class="shrink-0 whitespace-nowrap">{{ row.value }} g</span>
+        </div>
       </div>
-    </div>
+    </template>
 
     <p v-if="sourceLabel" class="mt-3 text-sm text-gray-500 dark:text-gray-400">
       {{ $t('food-search.value-source', { source: sourceLabel }) }}
