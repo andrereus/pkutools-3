@@ -6,9 +6,10 @@ import { nutrientRows } from '../utils/nutrition'
 // the vote that belongs to them.
 //
 // It shows what the food-search detail card shows and no more: Phe, kcal, and
-// whichever nutrients the record carries. No score and no vote counts — most
-// shared foods have no votes because nobody was ever asked, and a count on the
-// card would make those look deficient rather than simply new.
+// whichever nutrients the record carries. Vote counts stay hidden from other
+// readers — most shared foods have none because nobody was ever asked, and a
+// public zero would make those look deficient rather than simply new. The
+// contributor sees the existing counts as useful feedback on their own card.
 //
 // `food` is the record itself, straight from `communityFoods` — the entry
 // is derived from it rather than pointing at it, so there is no stale copy and
@@ -19,6 +20,8 @@ const props = defineProps({
   vote: { type: Number, default: null },
   /** Own contributions and signed-out visitors see the values without the ask. */
   canVote: { type: Boolean, default: false },
+  /** Only the contributor sees the aggregate activity on their shared food. */
+  showStatistics: { type: Boolean, default: false },
   busy: { type: Boolean, default: false }
 })
 
@@ -154,5 +157,25 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
         {{ justVoted ? $t('news.vote-saved') : '' }}
       </span>
     </template>
+
+    <!-- The same counters already shown in Own Food, kept compact here. They
+         update through the existing communityFoods listener and create no
+         separate notification or read state. -->
+    <div
+      v-else-if="showStatistics"
+      class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
+    >
+      <span class="font-medium">{{ $t('community.statistics') }}</span>
+      <span class="flex items-center gap-1">
+        <LucideThumbsUp class="h-4 w-4 text-teal-600" aria-hidden="true" />
+        {{ food.likes || 0 }}
+        <span class="sr-only">{{ $t('community.like') }}</span>
+      </span>
+      <span class="flex items-center gap-1">
+        <LucideThumbsDown class="h-4 w-4 text-red-500" aria-hidden="true" />
+        {{ food.dislikes || 0 }}
+        <span class="sr-only">{{ $t('community.dislike') }}</span>
+      </span>
+    </div>
   </div>
 </template>

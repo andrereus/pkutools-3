@@ -345,6 +345,7 @@ defineOgImage('Default', {
         :food="item.food"
         :vote="voteFor(item)"
         :can-vote="canVote(item)"
+        :show-statistics="item.isOwn"
         :busy="votingKey === item.key"
         @vote="(value) => vote(item, value)"
       />
