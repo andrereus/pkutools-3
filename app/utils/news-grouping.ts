@@ -14,6 +14,23 @@ export interface SeenState {
   lastSeenRevision: number | null
 }
 
+export type NewsPostFilter = 'all' | 'note' | 'food-shared' | 'streak'
+
+interface FilterableNewsItem {
+  kind: Exclude<NewsPostFilter, 'all'>
+}
+
+export const NEWS_PAGE_SIZE = 20
+export const MIN_COMMUNITY_ITEMS_FOR_NEWS_FILTER = 5
+
+export const hasEnoughCommunityItemsForFilter = (items: readonly FilterableNewsItem[]): boolean =>
+  items.filter((item) => item.kind === 'food-shared').length >= MIN_COMMUNITY_ITEMS_FOR_NEWS_FILTER
+
+export const filterNewsItems = <T extends FilterableNewsItem>(
+  items: readonly T[],
+  filter: NewsPostFilter
+): T[] => (filter === 'all' ? [...items] : items.filter((item) => item.kind === filter))
+
 export const emptySeen = (): SeenState => ({ lastReadAt: null, lastSeenRevision: null })
 
 /** Values safe to compare, persist, and pass to Date. */

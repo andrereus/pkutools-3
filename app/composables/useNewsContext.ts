@@ -8,14 +8,8 @@ import {
 import { streakMilestones } from '../utils/milestones'
 import { isNewsTimestamp } from '../utils/news-grouping'
 
-// The half of News that comes from the realtime store: community foods, diary
-// streaks, and anything needing attention.
-//
-// It lives in its own module and imports no changelog, which is the point. The
-// header draws an unread dot on every page and needs this half; splitting the
-// functions apart inside one file would not have helped, because a static import
-// pulls the whole module into whatever bundle reaches it. Keeping the changelog
-// out of this file is what keeps it out of every page.
+// Realtime News sources shared by the page and global unread badge. This module
+// intentionally has no changelog import, keeping that content page-scoped.
 
 type Food = Record<string, unknown>
 
@@ -43,9 +37,9 @@ export interface NewsEntry {
   /** Monotonic publication order, present only on release notes. */
   revision?: number
   food?: Record<string, unknown>
-  /** Shared by the reader themselves, which changes how the entry reads. */
+  /** Shared by the current reader. */
   isOwn?: boolean
-  /** Only this reader sees it, which the entry has to say out loud. */
+  /** Visible only to the current reader. */
   private?: boolean
   count?: number
   /**
@@ -57,12 +51,7 @@ export interface NewsEntry {
 }
 
 /**
- * The half of the page that comes from the realtime store: community foods,
- * diary streaks, and anything needing attention.
- *
- * Shared by the page and by the header so the two can never disagree about what
- * counts as unread — and separate from the changelog so the header can be built
- * without it.
+ * Builds News entries from realtime store data.
  */
 export const useNewsContext = () => {
   const store = useStore()
@@ -79,9 +68,7 @@ export const useNewsContext = () => {
     if (!userIsAuthenticated.value) return []
     return (
       foods.value
-        // The rule food search already applies: a food voted out of search is
-        // not handed back through news, and one published in another
-        // language is not shown to someone who could not find it anyway.
+        // Match Food Search visibility and language rules.
         .filter((food) => communityFoodAppearsInNews(food, locale.value))
         .map((food) => ({
           key: `food-${food['.key']}`,
@@ -133,25 +120,8 @@ export const useNewsContext = () => {
     }))
   })
 
-  /**
-   * The one thing that happens to a reader which they could not otherwise find
-   * out: the community has questioned a food they shared. Somebody else acted,
-   * and nothing else in the app goes looking for them to say so.
-   *
-   * Deliberately the only notice here. Two others were tried and removed. A
-   * missing Phe target and an old blood value are both already visible where
-   * they matter — in settings, in the diary, on the blood values page — and
-   * repeating them turns a page about what is new into a list of chores.
-   *
-   * The blood value one failed a second test worth writing down: it needed the
-   * app to decide how many weeks were too many. A statement of fact stops being
-   * one as soon as the threshold behind it is the app's choice rather than the
-   * reader's, and at that point it is advice about managing a condition, which
-   * this app does not give.
-   *
-   * Derived, so it disappears the moment the votes recover or the values are
-   * corrected, rather than lingering as a stored message.
-   */
+  // Derived from the current score, so the notice clears when the score or food
+  // changes rather than requiring separate persisted state.
   const notices = computed<Notice[]>(() => {
     const userId = user.value?.id
     if (!userIsAuthenticated.value || !userId) return []

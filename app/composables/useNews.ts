@@ -1,26 +1,9 @@
 import changelog from '../../content/changelog.json'
 import { useNewsContext, type NewsEntry } from './useNewsContext'
 
-// The whole of News: the changelog from a file in the repository, merged with
-// everything the store already holds.
-//
-// Three sources, none of them new:
-//
-//   - the changelog. Release notes ship in the commit that made the change, are
-//     server-rendered into the page, and need no database, no cache and no
-//     publishing screen.
-//   - community foods, the node the app already loads in full for food search.
-//     A food shared at a moment *is* the event; a separate item saying so would
-//     be a third copy of the same record, and one that goes stale when the food
-//     is edited or withdrawn.
-//   - the reader's own diary, read for the days on which a logging streak
-//     reached something worth marking.
-//
-// Deriving rather than storing buys something a written item could not: an entry
-// disappears exactly when the thing it describes does.
-//
-// Only the news page imports this. The header uses useNewsBadge, which reaches
-// the same store data without pulling the changelog into every page.
+// Merges the authored changelog with community-food and diary-derived entries.
+// Only the News page imports this module, keeping changelog content out of the
+// global layout bundle.
 
 interface ChangelogText {
   title: string

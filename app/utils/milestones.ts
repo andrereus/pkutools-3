@@ -1,24 +1,8 @@
 import { differenceInCalendarDays, isValid, parseISO } from 'date-fns'
 
-// Milestones worked out from dates already in the diary, so they need nothing
-// stored and nothing written.
-//
-// Each one has a real date — the day the run reached seven — and that date is
-// also its position in the chronological list and against the read cursor.
-// Derived means they also stay honest:
-// delete a diary day in the middle of a run and the milestones after it move or
-// disappear, because they were never anything but a reading of the data.
+// Derives streak milestones from diary calendar dates without persisted state.
 
-/**
- * Days logged in a row worth marking.
- *
- * Deliberately easy to start. These exist to encourage someone into a habit,
- * not to certify one, and a first marker three days in reaches the person who
- * most needs it — the one still deciding whether logging is worth keeping up.
- * Somebody already logging daily for a year is not who the ladder is for.
- *
- * It stops at a year because there is nothing useful left to say past it.
- */
+/** Days logged in a row that produce milestones. */
 export const STREAK_MILESTONES = [3, 7, 14, 30, 60, 100, 200, 365]
 
 export interface Milestone {
@@ -58,10 +42,8 @@ const sortedDays = (entries: (string | MilestoneDay | undefined)[]): string[] =>
 /**
  * The day each streak milestone was reached.
  *
- * A run that reaches thirty passes seven and fourteen on the way, and each of
- * those happened on its own day, so each is its own milestone. A run only
- * reaches a given length once, so a milestone repeats only if the streak breaks
- * and is built again — which is a thing that happened too, and worth saying.
+ * Each threshold is dated to the day it was reached. A repeated streak can
+ * therefore produce the same threshold again on a later date.
  */
 export const streakMilestones = (entries: (string | MilestoneDay | undefined)[]): Milestone[] => {
   const days = sortedDays(entries)
@@ -75,9 +57,7 @@ export const streakMilestones = (entries: (string | MilestoneDay | undefined)[])
     // app parses dates with, and it counts the day boundary rather than a fixed
     // number of hours, so a run is not broken by a daylight saving change.
     //
-    // The `index > 0` guard is load-bearing. There is no day before the first
-    // one, and hand-rolled arithmetic used to paper over that by comparing
-    // against NaN — which is never equal to anything, so it happened to behave.
+    // There is no previous day at index zero.
     const isBreak =
       index === days.length ||
       (index > 0 &&

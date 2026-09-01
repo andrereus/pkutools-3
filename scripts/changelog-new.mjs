@@ -3,9 +3,7 @@
 // displays the note and places it chronologically. The monotonic revision is
 // its stable identity and keeps it unread if deployment happens after this time.
 //
-// Because publication time now has one literal meaning everywhere, create the
-// entry when publishing rather than days earlier. Nobody has to type or
-// synchronize a second date by hand.
+// Create the entry during publishing so `publishedAt` matches publication.
 //
 // Usage:
 //   pnpm changelog:new

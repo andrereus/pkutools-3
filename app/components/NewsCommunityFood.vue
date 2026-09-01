@@ -2,23 +2,12 @@
 import { foodSourceLabel } from '../utils/food-source-label'
 import { nutrientRows } from '../utils/nutrition'
 
-// The values of a shared community food, as they appear in a news entry, with
-// the vote that belongs to them.
-//
-// It shows what the food-search detail card shows and no more: Phe, kcal, and
-// whichever nutrients the record carries. Vote counts stay hidden from other
-// readers — most shared foods have none because nobody was ever asked, and a
-// public zero would make those look deficient rather than simply new. The
-// contributor sees the existing counts as useful feedback on their own card.
-//
-// `food` is the record itself, straight from `communityFoods` — the entry
-// is derived from it rather than pointing at it, so there is no stale copy and
-// no missing-food case to render.
+// Renders a community-food record inside a News card.
 const props = defineProps({
   food: { type: Object, required: true },
   /** This user's existing vote on the food: 1, -1, or null. */
   vote: { type: Number, default: null },
-  /** Own contributions and signed-out visitors see the values without the ask. */
+  /** Whether vote controls are available to this reader. */
   canVote: { type: Boolean, default: false },
   /** Only the contributor sees the aggregate activity on their shared food. */
   showStatistics: { type: Boolean, default: false },
@@ -29,9 +18,7 @@ const emit = defineEmits(['vote'])
 const { t } = useI18n()
 const showNutrients = ref(false)
 
-// A vote briefly swaps the selected button's thumb for a checkmark. The label
-// and control stay in place, so the acknowledgement adds neither commentary on
-// the choice nor a layout shift. Clearing a vote has nothing to acknowledge.
+// Brief visual confirmation without changing the control dimensions.
 const justVoted = ref(false)
 let thanksTimer = null
 
@@ -54,6 +41,7 @@ onUnmounted(() => clearTimeout(thanksTimer))
 const rows = computed(() => nutrientRows(props.food?.nutrients, 100, t))
 
 const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) : null))
+const hasVotes = computed(() => Number(props.food?.likes) > 0 || Number(props.food?.dislikes) > 0)
 </script>
 
 <template>
@@ -106,17 +94,7 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
     </div>
 
     <template v-if="canVote">
-      <!-- Nothing is asked above them. The two labels already say what the
-           buttons do, a question about knowing the food asks for more certainty
-           than anyone usually has, and a prompt would frame the vote as the
-           thing that vouches for a shared food. It is one signal, and not
-           necessarily the only one this card will ever carry. -->
       <div class="mt-3 flex gap-2">
-        <!-- Both stay clickable once cast, and the one you chose is marked. A
-             vote is an impression, and changing your mind about a number is the
-             normal thing to do — pressing the same one again clears it, which is
-             what the vote route already does and what food search already
-             offers. -->
         <button
           type="button"
           :disabled="busy"
@@ -158,11 +136,9 @@ const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) 
       </span>
     </template>
 
-    <!-- The same counters already shown in Own Food, kept compact here. They
-         update through the existing communityFoods listener and create no
-         separate notification or read state. -->
+    <!-- Contributor-only aggregate vote statistics. -->
     <div
-      v-else-if="showStatistics"
+      v-else-if="showStatistics && hasVotes"
       class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
     >
       <span class="font-medium">{{ $t('community.statistics') }}</span>

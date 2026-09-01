@@ -4,19 +4,16 @@ import { enUS, de, es, fr } from 'date-fns/locale'
 import { useStore } from '../../stores/index'
 import {
   emptySeen,
+  filterNewsItems,
+  hasEnoughCommunityItemsForFilter,
   isUnread,
+  NEWS_PAGE_SIZE,
   seenAfterVisit,
   utcDayForLocalFormatting,
   visibleNewsItems
 } from '../utils/news-grouping'
 
-// News: what has changed in the app, and what the community has shared.
-//
-// Nothing on this page is stored for it. Release notes come from a file in the
-// repository, so they are in the server-rendered HTML — which is also what makes
-// the changelog indexable for anyone who is not signed in. Community entries are
-// derived from the community foods the app already loads, and the reader's own
-// milestones from the dates already in their diary.
+// Combines the authored changelog with entries derived from existing store data.
 
 const store = useStore()
 const { t, locale } = useI18n()
@@ -28,26 +25,49 @@ const seenState = useNewsSeen()
 const userId = computed(() => store.user?.id ?? null)
 const votingKey = ref(null)
 
-// Voting is offered where there is something to decide: a signed-in reader, and
-// not one of their own foods, which the vote route refuses anyway. Whose food it
-// is was already worked out when the entry was built.
+// The API also rejects votes on the contributor's own food.
 const canVote = (item) => userIsAuthenticated.value && !!item.food && !item.isOwn
 const voteFor = (item) => (userId.value ? (item.food?.voterIds?.[userId.value] ?? null) : null)
 
-// Paging, by date — but only for someone signed in.
-//
-// The two readers are looking at different lists. Signed in, this is a feed:
-// release notes mixed with community foods and the reader's own milestones,
-// growing for as long as they use the app, so it has to end somewhere and
-// continue on a button.
-//
-// Signed out — which is every crawler, since none of them has an account — the
-// list is nothing but the changelog. That is finite, authored, and its whole
-// value is being complete and indexable: a changelog page truncated at twenty
-// entries is one that mostly is not there. So it is rendered whole. Nobody but
-// the operator can add to it, so there is no volume to defend against.
-const PAGE_SIZE = 20
+// Authenticated feeds paginate; the public changelog remains complete for SSR.
+const PAGE_SIZE = NEWS_PAGE_SIZE
 const visibleCount = ref(PAGE_SIZE)
+const selectedFilter = ref('all')
+
+const filterDefinitions = [
+  { key: 'all', label: 'news.filter-all' },
+  { key: 'note', label: 'news.filter-app' },
+  { key: 'food-shared', label: 'news.filter-community' },
+  { key: 'streak', label: 'news.filter-personal' }
+]
+
+const showFilters = computed(() => userIsAuthenticated.value)
+// Community remains in All at low volume but gets its own filter once useful.
+const showCommunityFilter = computed(() => hasEnoughCommunityItemsForFilter(items.value))
+const availableFilters = computed(() =>
+  filterDefinitions.filter(
+    (filter) =>
+      filter.key === 'all' ||
+      (filter.key === 'food-shared'
+        ? showCommunityFilter.value && items.value.some((item) => item.kind === filter.key)
+        : items.value.some((item) => item.kind === filter.key))
+  )
+)
+const filteredItems = computed(() =>
+  filterNewsItems(items.value, showFilters.value ? selectedFilter.value : 'all')
+)
+
+watch(showFilters, (shown) => {
+  if (!shown) selectedFilter.value = 'all'
+})
+watch(availableFilters, (filters) => {
+  if (!filters.some((filter) => filter.key === selectedFilter.value)) {
+    selectedFilter.value = 'all'
+  }
+})
+watch(selectedFilter, () => {
+  visibleCount.value = PAGE_SIZE
+})
 
 // What had been seen when this page opened. Frozen once, so unread labels stay
 // visible while the reader is on the page even after both markers advance.
@@ -63,10 +83,10 @@ const isItemUnread = (item) => canBeUnread.value && isUnread(item, seen.value)
 // Load more still carries its original unread label. Opening News counts as the
 // visit for the stored cursor, but no unread state forces all cards to mount.
 const visibleItems = computed(() =>
-  visibleNewsItems(items.value, visibleCount.value, userIsAuthenticated.value)
+  visibleNewsItems(filteredItems.value, visibleCount.value, userIsAuthenticated.value)
 )
 const hasMore = computed(
-  () => userIsAuthenticated.value && visibleItems.value.length < items.value.length
+  () => userIsAuthenticated.value && visibleItems.value.length < filteredItems.value.length
 )
 const loadMore = () => {
   visibleCount.value += PAGE_SIZE
@@ -77,17 +97,12 @@ const titleFor = (item) => {
   if (item.kind === 'streak') return t('news.streak-title', { days: item.count })
   return item.food.name
 }
-// Foods need no generic body saying that they are foods: their values and vote
-// controls already make that clear, and repeating it on every entry costs a
-// line. The shared metadata column identifies them instead.
 const bodyFor = (item) => {
   if (item.kind === 'note') return item.body
   if (item.kind === 'streak') return t('news.streak-text')
   return null
 }
 
-// Every kind gets one compact label below its date. Keeping that metadata in a
-// fixed two-row column makes short and long titles use the same header shape.
 const metaLabelFor = (item) => {
   if (item.kind === 'note') return t(`news.category-${item.category}`)
   if (item.kind === 'food-shared') {
@@ -95,15 +110,8 @@ const metaLabelFor = (item) => {
   }
   return t('news.only-you')
 }
-// Changelog bodies are plain text, and rendering authored markup would mean
-// trusting a file through v-html for no gain. Bare URLs are still links though,
-// and an entry that reads "New video: https://..."
-// with nothing to click is just a broken entry. So the text is split around URLs
-// and only those pieces become anchors.
-//
-// Two copies of the pattern on purpose. A global regex carries a lastIndex
-// between calls, so reusing the splitting one to test each piece would report
-// every other match as plain text.
+// Render authored text without v-html while turning bare HTTPS URLs into links.
+// Separate patterns avoid the stateful lastIndex of a reused global regex.
 const URL_SPLIT = /(https?:\/\/[^\s<>"']+[^\s<>"'.,;:!?)])/g
 const URL_MATCH = /^https?:\/\//
 
@@ -113,21 +121,8 @@ const bodyParts = (text) =>
     .filter((part) => part !== '')
     .map((part, index) => ({ key: index, text: part, href: URL_MATCH.test(part) ? part : null }))
 
-// Dates, the way the rest of the app writes them: date-fns with the locale
-// object, not toLocaleDateString, so News reads like the diary and the report.
-//
-// Two things have to hold at once.
-//
-// Hydration: the server has no idea where the reader is, so anything it renders
-// from an instant must not depend on a timezone. `2026-08-28T15:10:55Z` is the
-// 28th in UTC and already the 29th in Kiritimati, and formatting it locally on
-// both sides produces two different strings for the same node. So until mounted,
-// instants are read in UTC — the server and the browser's first render then
-// agree by construction — and the reader's own timezone takes over afterwards.
-//
-// Reactivity: every label is derived from `now`, and `now` is read before any
-// branch that could return early. A label that never touched it would never
-// re-render when the clock moved, so "Today" would still say today tomorrow.
+// SSR formats instants in UTC for stable hydration; mounted clients use local
+// time. `now` keeps relative labels reactive across day boundaries.
 const dateLocales = { en: enUS, de, es, fr }
 
 const now = ref(new Date())
@@ -143,8 +138,7 @@ onMounted(() => {
 
 onUnmounted(() => clearInterval(clock))
 
-// A milestone is a calendar day and is parsed as one, landing on local midnight
-// and formatting as the day it names anywhere. A note or a food is an instant.
+// Milestones are calendar dates; notes and food shares are instants.
 const entryDate = (item) => (item.date ? parseISO(item.date) : new Date(item.createdAt))
 
 const formatDate = (item) => {
@@ -251,9 +245,7 @@ defineOgImage('Default', {
       <PrimaryButton :text="$t('sign-in.title')" @click="navigateTo(localePath('sign-in'))" />
     </div>
 
-    <!-- Facts about this reader's own account. Pinned rather than dated,
-         because they are things to deal with rather than things that happened,
-         and each one disappears by itself once it is dealt with. -->
+    <!-- Derived account notices appear above chronological entries. -->
     <NuxtLink
       v-for="notice in notices"
       :key="notice.key"
@@ -271,6 +263,24 @@ defineOgImage('Default', {
       </span>
     </NuxtLink>
 
+    <nav v-if="showFilters" class="mb-4 flex flex-wrap gap-2" :aria-label="$t('news.filter-label')">
+      <button
+        v-for="filter in availableFilters"
+        :key="filter.key"
+        type="button"
+        :aria-pressed="selectedFilter === filter.key"
+        :class="[
+          'cursor-pointer rounded-full px-3 py-1.5 text-sm font-medium ring-1 transition-colors',
+          selectedFilter === filter.key
+            ? 'bg-sky-50 text-sky-700 ring-sky-300 dark:bg-sky-900/30 dark:text-sky-300 dark:ring-sky-700'
+            : 'text-gray-600 ring-gray-300 hover:text-sky-600 hover:ring-sky-400 dark:text-gray-400 dark:ring-gray-700 dark:hover:text-sky-400'
+        ]"
+        @click="selectedFilter = filter.key"
+      >
+        {{ $t(filter.label) }}
+      </button>
+    </nav>
+
     <p v-if="items.length === 0" class="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
       {{ $t('news.empty') }}
     </p>
@@ -283,9 +293,7 @@ defineOgImage('Default', {
         isItemUnread(item) ? 'ring-sky-300 dark:ring-sky-700' : 'ring-gray-200 dark:ring-gray-700'
       ]"
     >
-      <!-- A fixed-height header keeps a short title centered against the icon
-           and the two-row metadata column. Longer titles grow naturally;
-           descriptions and food details use the full card width below. -->
+      <!-- Fixed-height metadata keeps short titles aligned across card types. -->
       <div class="flex items-center">
         <span class="flex h-9 w-7 shrink-0 items-center justify-start text-lg">
           {{ emojiFor(item) }}

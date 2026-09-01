@@ -8,12 +8,7 @@ import { isUnread } from '../utils/news-grouping'
  * time rather than being imported here, so a file that only grows is not
  * shipped to someone looking at their diary.
  *
- * A notice counts even though it has no timestamp: it is the one thing on this
- * page nothing else in the app would ever tell the contributor, so it would be
- * pointless to raise it somewhere they have no reason to look. It stays lit
- * while the food is still questioned, because unlike an entry it is not
- * something to read — it is something to deal with, and it clears itself when
- * the values are corrected or the votes recover.
+ * Derived notices keep the dot active while their underlying condition holds.
  */
 export const useNewsBadge = () => {
   const { foodEntries, milestoneEntries, notices } = useNewsContext()
@@ -29,9 +24,7 @@ export const useNewsBadge = () => {
       revision: newestNoteRevision
     }
 
-    // Storage is loaded after mount so the server and first browser render
-    // agree. The same browser marker works whether or not an account is signed
-    // in; community foods simply join the calculation once auth restores them.
+    // Wait for browser storage to avoid a hydration mismatch.
     if (!seenState.ready.value) return false
     if (notices.value.length > 0) return true
 

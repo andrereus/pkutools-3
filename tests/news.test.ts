@@ -7,15 +7,16 @@ import { format } from 'date-fns'
 import { communityFoodAppearsInNews } from '../app/composables/useNewsContext'
 import {
   emptySeen,
+  filterNewsItems,
+  hasEnoughCommunityItemsForFilter,
   isUnread,
   seenAfterVisit,
   utcDayForLocalFormatting,
   visibleNewsItems
 } from '../app/utils/news-grouping'
 
-// News content stores nothing of its own. It is the changelog file plus the
-// community foods the app already loads; the only new persistence is two
-// browser-local read markers tested below.
+// News combines changelog content with derived store data and browser-local
+// read markers.
 
 const changelog = JSON.parse(
   readFileSync(resolve(__dirname, '../content/changelog.json'), 'utf8')
@@ -146,8 +147,6 @@ describe('streak milestones', () => {
     expect(streakMilestones(run('2026-01-01', 2))).toEqual([])
   })
 
-  // The ladder starts low on purpose: the first marker should reach someone who
-  // is still deciding whether to keep logging at all.
   it('marks a third day', () => {
     expect(streakMilestones(run('2026-01-01', 3))).toEqual([reached(3, '2026-01-03')])
   })
@@ -169,8 +168,6 @@ describe('streak milestones', () => {
     ])
   })
 
-  // A day missed ends the run. Building it back up is a thing that happened
-  // too, so the mark is reached a second time.
   it('starts again after a gap', () => {
     const dates = [...run('2026-01-01', 7), ...run('2026-01-10', 7)]
     expect(streakMilestones(dates)).toEqual([
@@ -294,6 +291,32 @@ describe('feed pagination', () => {
 
   it('keeps the complete public changelog for signed-out readers and crawlers', () => {
     expect(visibleNewsItems(items, 20, false)).toEqual(items)
+  })
+})
+
+describe('post-type filters', () => {
+  const food = (key: number) => ({ key: `food-${key}`, kind: 'food-shared' as const })
+  const note = { key: 'note-1', kind: 'note' as const }
+  const streak = { key: 'streak-3', kind: 'streak' as const }
+
+  it('offers a Community filter once it reaches the minimum useful size', () => {
+    expect(
+      hasEnoughCommunityItemsForFilter([note, ...Array.from({ length: 4 }, (_, i) => food(i))])
+    ).toBe(false)
+    expect(
+      hasEnoughCommunityItemsForFilter([note, ...Array.from({ length: 5 }, (_, i) => food(i))])
+    ).toBe(true)
+  })
+
+  it('filters the real post kinds without changing their order', () => {
+    const items = [food(1), note, streak, food(2)]
+    expect(filterNewsItems(items, 'all')).toEqual(items)
+    expect(filterNewsItems(items, 'food-shared').map((item) => item.key)).toEqual([
+      'food-1',
+      'food-2'
+    ])
+    expect(filterNewsItems(items, 'note')).toEqual([note])
+    expect(filterNewsItems(items, 'streak')).toEqual([streak])
   })
 })
 
