@@ -1,0 +1,134 @@
+import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai'
+import { getApp } from 'firebase/app'
+import { parseModelJson } from '../utils/model-json'
+import type { FoodType } from '../utils/nutrition'
+
+// Guessing a food's type from its name, to catch a factor that is wrong before
+// it reaches the diary. This is the counterpart of `foodTypeFromCategories`:
+// that one reads a scanned product's real category data, this one has nothing
+// but the name and is correspondingly weaker evidence.
+//
+// Neither one ever changes a calculation on its own. A suggestion is offered
+// and applied only when the user accepts it, because 'other' is both the app's
+// default and the highest factor (50 mg Phe per g protein) — so almost every
+// suggestion this makes points at a *lower* factor, the direction that would
+// understate someone's Phe if it were wrong and applied silently.
+//
+// The model tier matches `useFoodEmoji`: naming a group from a food name is a
+// small, cost-sensitive task, and a wrong answer costs a declined suggestion
+// rather than a wrong number.
+const FOOD_TYPE_MODEL = 'gemini-3.1-flash-lite'
+
+const FOOD_TYPES: readonly string[] = ['fruit', 'vegetable', 'meat', 'other']
+
+/**
+ * The food type named in a model's answer, or null when it named none.
+ *
+ * Strict on purpose: anything but one of the four exact values — a plural, a
+ * translated word, a sentence, a number — is treated as no answer at all, which
+ * leaves the caller on the type it already had. Reading an intention into
+ * "fruits" or "Obst" would put a lower factor behind a value the model never
+ * returned, and the whole point of this module is that a low factor needs
+ * evidence.
+ */
+export const parseFoodTypeAnswer = (value: unknown): FoodType | null => {
+  if (typeof value !== 'string') return null
+  const answer = value.trim().toLowerCase()
+  return FOOD_TYPES.includes(answer) ? (answer as FoodType) : null
+}
+
+export function useFoodTypeSuggestion() {
+  // Resolved while the page is still setting up. `confirmFoodType` reaches for
+  // both of these after an await, and `useI18n` has no active instance to bind
+  // to by then.
+  const { t } = useI18n()
+  const confirm = useConfirm()
+
+  /**
+   * The food type a name points at, or null when it points at none, when the
+   * name is empty, or when the call fails. Null always means "leave the type
+   * alone", never "this is a general food".
+   */
+  const suggestFoodType = async (foodName: string): Promise<FoodType | null> => {
+    if (!foodName || typeof foodName !== 'string' || foodName.trim() === '') {
+      return null
+    }
+
+    // The name is interpolated into the prompt, so it is bounded and stripped of
+    // quotes and line breaks the same way `useFoodEmoji` does it.
+    const sanitizedName = foodName
+      .trim()
+      .slice(0, 200)
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, ' ')
+      .replace(/\r/g, '')
+      .replace(/\t/g, ' ')
+      .trim()
+
+    if (sanitizedName === '') return null
+
+    try {
+      const ai = getAI(getApp(), { backend: new GoogleAIBackend() })
+      const model = getGenerativeModel(ai, {
+        model: FOOD_TYPE_MODEL,
+        generationConfig: { responseMimeType: 'application/json' }
+      })
+
+      // The factor describes where a food's protein comes from, so that is what
+      // the question asks. How much of a combined food's protein is fruit and
+      // how much is milk is the model's to work out.
+      const prompt = `Which group's protein does this food mostly contain: "${sanitizedName}"
+
+The groups are fruit, vegetable and meat, with fish and seafood counted as meat. A food that belongs to none of them is "other".
+
+Return JSON: {"foodType": "fruit" | "vegetable" | "meat" | "other" | null}`
+
+      const result = await model.generateContent(prompt)
+      return parseFoodTypeAnswer(parseModelJson(result.response.text())?.foodType)
+    } catch {
+      return null
+    }
+  }
+
+  /**
+   * The type to calculate with, after offering the user a correction. Returns
+   * `currentType` unchanged when there is nothing to suggest, when the
+   * suggestion agrees with it, or when the user declines — including when the
+   * dialog is dismissed, which means "no correction" and lets the save go on
+   * with the type the user chose themselves.
+   *
+   * `pheFor` gives the mg Phe the entry ends up with under a type, so the
+   * question is asked in the number the user is actually deciding about rather
+   * than in the name of a factor. It has to be computed from the same values the
+   * entry was built from, or the dialog would quote a figure the save doesn't
+   * produce.
+   */
+  const confirmFoodType = async (
+    foodName: string,
+    currentType: FoodType,
+    pheFor: (foodType: FoodType) => number
+  ): Promise<FoodType> => {
+    const suggested = await suggestFoodType(foodName)
+    if (!suggested || suggested === currentType) return currentType
+
+    const suggestedLabel = t(`phe-calculator.${suggested}`)
+    const currentLabel = t(`phe-calculator.${currentType}`)
+
+    const accepted = await confirm.confirm({
+      title: t('phe-calculator.type-suggestion-title'),
+      message: t('phe-calculator.type-suggestion-message', {
+        suggested: suggestedLabel,
+        selected: currentLabel,
+        current: pheFor(currentType),
+        corrected: pheFor(suggested)
+      }),
+      confirmLabel: t('phe-calculator.type-suggestion-use', { type: suggestedLabel }),
+      cancelLabel: t('phe-calculator.type-suggestion-keep', { type: currentLabel }),
+      variant: 'default'
+    })
+
+    return accepted ? suggested : currentType
+  }
+
+  return { suggestFoodType, confirmFoodType }
+}

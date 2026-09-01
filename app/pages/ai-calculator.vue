@@ -23,6 +23,7 @@ const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary } = useApi()
 const { saveAlongsideDiary, reportSaved } = useSaveToOwnFood()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
+const { confirmFoodType } = useFoodTypeSuggestion()
 
 // Reactive state
 // 'estimate' | 'label' — ?mode=label deep-links straight to the label scanner
@@ -100,6 +101,12 @@ const labelFoodTypes = computed(() => [
 
 const labelFactor = computed(() => pheFactor(labelFoodType.value))
 
+// Per-100 g Phe from a protein value and a food type. The figure on screen and a
+// food type corrected during the save both come through here, so the two can
+// never derive the reference differently.
+const proteinPheReference = (proteinPer100g, foodType) =>
+  roundReference(Number(proteinPer100g) * pheFactor(foodType))
+
 // Computed Phe: use phePer100g directly, or fall back to protein × factor (the
 // selectable food type factor for label results, the general one for estimates).
 // The result below is computed from this exact value, so it and any later
@@ -110,8 +117,10 @@ const pheReference = computed(() => {
     return result.value.phePer100g
   }
   if (result.value.proteinPer100g !== null && !isNaN(result.value.proteinPer100g)) {
-    const factor = isLabelResult.value ? labelFactor.value : PHE_FACTORS.other
-    return roundReference(result.value.proteinPer100g * factor)
+    return proteinPheReference(
+      result.value.proteinPer100g,
+      isLabelResult.value ? labelFoodType.value : 'other'
+    )
   }
   return 0
 })
@@ -553,6 +562,44 @@ const save = async () => {
   }
 
   isSaving.value = true
+
+  // Offering a corrected food type means waiting on a model and then on the
+  // user, and the page stays live throughout — another label can be read, and
+  // the name field writes straight into the result on screen. So the question is
+  // asked about the entry above and answered into it, and the correction reaches
+  // the form only where the result is still the same one under the same name; a
+  // type corrected for one food says nothing about another. Only a read label
+  // has a type to correct, and only where its Phe came from the protein it
+  // printed: a label that printed Phe uses no factor, and an estimate always
+  // converts with the general one.
+  if (isLabelResult.value && isProteinFallback.value) {
+    const correctedResult = result.value
+    const chosenType = labelFoodType.value
+    const labelProtein = correctedResult.proteinPer100g
+    // The dialog asks in mg Phe, and the figures it quotes come from the entry
+    // above — the same protein and weight the save will use — so what the user
+    // agrees to is what lands in the diary.
+    const pheUnder = (foodType) =>
+      scaleToWeight(proteinPheReference(labelProtein, foodType), logEntry.weight)
+
+    const correctedType = await confirmFoodType(logEntry.name, chosenType, pheUnder)
+    if (correctedType !== chosenType) {
+      const reference = proteinPheReference(labelProtein, correctedType)
+      logEntry = {
+        ...logEntry,
+        pheReference: reference,
+        phe: scaleToWeight(reference, logEntry.weight),
+        factor: pheFactor(correctedType)
+      }
+      if (
+        result.value === correctedResult &&
+        result.value.name === logEntry.name &&
+        labelFoodType.value === chosenType
+      ) {
+        labelFoodType.value = correctedType
+      }
+    }
+  }
 
   // Reported together with the diary entry below, rather than as a failure of
   // the whole save

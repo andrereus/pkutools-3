@@ -10,6 +10,7 @@ const notifications = useNotifications()
 const { addFoodItemToDiary } = useApi()
 const { saveAlongsideDiary, reportSaved } = useSaveToOwnFood()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
+const { confirmFoodType } = useFoodTypeSuggestion()
 
 // Reactive state
 const phe = ref(null)
@@ -39,14 +40,20 @@ const type = computed(() => [
 // Null in direct-Phe mode, where no protein conversion happens at all
 const factor = computed(() => (select.value === 'phe' ? null : pheFactor(select.value)))
 
+// Per-100 g Phe from a protein value and a food type. The figure on screen and
+// a food type corrected during the save both come through here, so the two can
+// never derive the reference differently.
+const proteinPheReference = (proteinValue, foodType) => {
+  const derived = Number(proteinValue) * pheFactor(foodType)
+  return Number.isFinite(derived) ? roundReference(derived) : 0
+}
+
 // Per-100 g Phe the entry is calculated from. In protein mode it is derived
 // from protein × factor; the result below is computed from this exact value, so
 // re-opening the entry in the diary recalculates to the same number.
-const pheReference = computed(() => {
-  if (select.value === 'phe') return Number(phe.value) || 0
-  const derived = Number(protein.value) * factor.value
-  return Number.isFinite(derived) ? roundReference(derived) : 0
-})
+const pheReference = computed(() =>
+  select.value === 'phe' ? Number(phe.value) || 0 : proteinPheReference(protein.value, select.value)
+)
 
 // Methods
 const calculatePhe = () => scaleToWeight(pheReference.value, weight.value)
@@ -119,6 +126,38 @@ const save = async () => {
   if (shouldSaveToOwnFood) logEntry.note = entryNote
 
   isSaving.value = true
+
+  // Offering a corrected food type means waiting on a model and then on the
+  // user, and the form stays editable throughout. So the question is asked
+  // about the entry above and answered into it — a name typed, a value changed
+  // or a mode switched while the dialog is open belongs to the next save, not
+  // to this one. Direct-Phe mode converts nothing and has no type to get wrong.
+  const chosenType = select.value
+  if (chosenType !== 'phe') {
+    // The dialog asks in mg Phe, and the figures it quotes come from the entry
+    // above — the same protein and weight the save will use — so what the user
+    // agrees to is what lands in the diary.
+    const pheUnder = (foodType) =>
+      scaleToWeight(proteinPheReference(logEntry.nutrients.protein, foodType), logEntry.weight)
+
+    const correctedType = await confirmFoodType(logEntry.name, chosenType, pheUnder)
+    if (correctedType !== chosenType) {
+      const reference = proteinPheReference(logEntry.nutrients.protein, correctedType)
+      logEntry = {
+        ...logEntry,
+        pheReference: reference,
+        phe: scaleToWeight(reference, logEntry.weight),
+        factor: pheFactor(correctedType)
+      }
+      // Leave the form on the correction the user accepted, so a failed save
+      // shows what was attempted. Not if they moved the mode themselves while
+      // the dialog was open, and not if the name now describes another food —
+      // a type corrected for the entry above says nothing about that one.
+      if (select.value === chosenType && name.value === logEntry.name) {
+        select.value = correctedType
+      }
+    }
+  }
 
   // Reported together with the diary entry below, rather than as a failure of
   // the whole save

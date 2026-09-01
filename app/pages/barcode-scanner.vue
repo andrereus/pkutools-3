@@ -19,6 +19,7 @@ const notifications = useNotifications()
 const { addFoodItemToDiary } = useApi()
 const { saveAlongsideDiary, reportSaved } = useSaveToOwnFood()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
+const { suggestFoodType } = useFoodTypeSuggestion()
 
 // Reactive state
 const loaded = ref(false)
@@ -45,6 +46,10 @@ const nameOverride = ref('')
 // the calculation until the user explicitly applies it: Open Food Facts is
 // community-edited, and a lower factor must not silently lower the Phe result.
 const categorySuggestion = ref(null)
+// Which evidence the suggestion above rests on: the product's own categories,
+// or — when those say nothing — the product name alone. Only the sentence the
+// user reads differs; neither source applies itself.
+const suggestionSource = ref('category')
 
 // Camera selection.
 // The MediaDevices API exposes no lens metadata, so there's no reliable way to
@@ -132,6 +137,20 @@ const categorySuggestionLabel = computed(
   () => type.value.find((option) => option.value === categorySuggestion.value)?.title || ''
 )
 
+// A suggestion from the product name, fetched only when the categories yielded
+// nothing. It is deliberately not awaited by the scan: the product is on screen
+// straight away, and the box appears underneath it when the answer arrives. A
+// suggestion that only repeats the active type is dropped rather than shown.
+const suggestFromName = async (forCode, foodName) => {
+  const suggested = await suggestFoodType(foodName)
+  // The user may have scanned something else, typed a type, or accepted another
+  // suggestion while this was in flight — all of which make this answer stale.
+  if (code.value !== forCode || !result.value) return
+  if (!suggested || suggested === select.value || categorySuggestion.value) return
+  suggestionSource.value = 'name'
+  categorySuggestion.value = suggested
+}
+
 const applyCategorySuggestion = () => {
   if (!categorySuggestion.value) return
   select.value = categorySuggestion.value
@@ -197,9 +216,16 @@ const onDetect = async (detectedCodes) => {
       // after the user accepts it; the previous product's choice never carries
       // over silently.
       select.value = 'other'
+      suggestionSource.value = 'category'
       categorySuggestion.value = foodTypeFromCategories(response.product.categories_tags)
       // Success: close the dialog and show the product on the page.
       cancel()
+      // Where the categories name a type, that is the suggestion. Where they
+      // leave it open, the name is asked instead — a product Open Food Facts
+      // publishes no name for has nothing to ask about.
+      if (!categorySuggestion.value && response.product.product_name) {
+        suggestFromName(scannedCode, response.product.product_name)
+      }
       return
     }
     showLookupError(scannedCode, t('barcode-scanner.error-not-found'))
@@ -638,17 +664,20 @@ defineOgImage('Default', {
           </option>
         </SelectMenu>
 
-        <!-- A category is a suggestion, not evidence. Keep the conservative
-             general factor active until the user explicitly chooses this. -->
+        <!-- A category or a name is a suggestion, not evidence. Keep the
+             conservative general factor active until the user chooses this. -->
         <div
           v-if="categorySuggestion"
           class="-mt-2 mb-3 rounded-lg bg-sky-50 p-3 text-sm text-gray-700 dark:bg-sky-950/50 dark:text-gray-300"
         >
           <p>
             {{
-              $t('barcode-scanner.type-suggestion', {
-                type: categorySuggestionLabel
-              })
+              $t(
+                suggestionSource === 'name'
+                  ? 'barcode-scanner.type-suggestion-name'
+                  : 'barcode-scanner.type-suggestion',
+                { type: categorySuggestionLabel }
+              )
             }}
           </p>
           <SecondaryButton
