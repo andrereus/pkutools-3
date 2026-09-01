@@ -118,18 +118,21 @@ describe('suggesting a food type from a name', () => {
   })
 })
 
+// What 20 g of protein in 100 g eaten comes to under each factor: 50 → 1000 mg
+// Phe, 46 → 920, 35 → 700, 27 → 540.
+const PHE_BY_TYPE = { other: 1000, meat: 920, vegetable: 700, fruit: 540 }
+
+const ask = (
+  name: string,
+  current: 'fruit' | 'vegetable' | 'meat' | 'other',
+  isCurrent?: () => boolean
+) => useFoodTypeSuggestion().confirmFoodType(name, current, (type) => PHE_BY_TYPE[type], isCurrent)
+
 describe('offering the correction', () => {
   beforeEach(() => {
     generateContent.mockReset()
     confirm.mockReset()
   })
-
-  // What 20 g of protein in 100 g eaten comes to under each factor: 50 → 1000 mg
-  // Phe, 46 → 920, 35 → 700, 27 → 540.
-  const PHE_BY_TYPE = { other: 1000, meat: 920, vegetable: 700, fruit: 540 }
-
-  const ask = (name: string, current: 'fruit' | 'vegetable' | 'meat' | 'other') =>
-    useFoodTypeSuggestion().confirmFoodType(name, current, (type) => PHE_BY_TYPE[type])
 
   it('applies the suggestion the user accepts', async () => {
     answering('{"foodType": "fruit"}')
@@ -171,16 +174,17 @@ describe('offering the correction', () => {
     await expect(ask('Fruchtjoghurt', 'fruit')).resolves.toBe('other')
   })
 
-  it('names both types in the question and on its buttons', async () => {
+  it('names the suggested type in the question, and neither type on a button', async () => {
     answering('{"foodType": "fruit"}')
     confirm.mockResolvedValue(false)
     await ask('Apfel', 'other')
 
     const options = confirm.mock.calls[0]![0]
     expect(options.message).toContain('phe-calculator.fruit')
-    expect(options.message).toContain('phe-calculator.other')
-    expect(options.confirmLabel).toContain('phe-calculator.fruit')
-    expect(options.cancelLabel).toContain('phe-calculator.other')
+    // A food type label is a phrase, and two of them on adjacent buttons wrap
+    // over several lines on a phone
+    expect(options.confirmLabel).not.toContain('phe-calculator.fruit')
+    expect(options.cancelLabel).not.toContain('phe-calculator.other')
     // Correcting a factor is not a destructive act, and the dialog must not
     // dress it up as one
     expect(options.variant).toBe('default')
@@ -196,5 +200,39 @@ describe('offering the correction', () => {
     const { message } = confirm.mock.calls[0]![0]
     expect(message).toContain('"current":1000')
     expect(message).toContain('"corrected":540')
+  })
+})
+
+// Do not show a suggestion after its edit was dismissed.
+describe('a food that is no longer on screen', () => {
+  beforeEach(() => {
+    generateContent.mockReset()
+    confirm.mockReset()
+  })
+
+  it('is not asked about, and keeps the type it had', async () => {
+    answering('{"foodType": "fruit"}')
+
+    await expect(ask('Apfel', 'other', () => false)).resolves.toBe('other')
+    expect(confirm).not.toHaveBeenCalled()
+  })
+
+  it('is asked about while it is still there', async () => {
+    answering('{"foodType": "fruit"}')
+    confirm.mockResolvedValue(true)
+
+    await expect(ask('Apfel', 'other', () => true)).resolves.toBe('fruit')
+    expect(confirm).toHaveBeenCalled()
+  })
+
+  it('is judged after the model answers, not before it is asked', async () => {
+    let onScreen = true
+    generateContent.mockImplementation(() => {
+      onScreen = false
+      return Promise.resolve({ response: { text: () => '{"foodType": "fruit"}' } })
+    })
+
+    await expect(ask('Apfel', 'other', () => onScreen)).resolves.toBe('other')
+    expect(confirm).not.toHaveBeenCalled()
   })
 })

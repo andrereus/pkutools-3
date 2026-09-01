@@ -7,6 +7,7 @@ import { format } from 'date-fns'
 import {
   PHE_FACTORS,
   pheFactor,
+  proteinPheReference,
   roundReference,
   scaleToWeight,
   nutrientRows,
@@ -83,7 +84,7 @@ const remainingEstimates = computed(() => {
   return Math.max(0, dailyEstimateLimit.value - currentCount)
 })
 
-const isBusy = computed(() => isEstimating.value || isReadingLabel.value)
+const isBusy = computed(() => isEstimating.value || isReadingLabel.value || isSaving.value)
 
 const isLabelResult = computed(() => result.value?.source === 'label')
 
@@ -100,12 +101,6 @@ const labelFoodTypes = computed(() => [
 ])
 
 const labelFactor = computed(() => pheFactor(labelFoodType.value))
-
-// Per-100 g Phe from a protein value and a food type. The figure on screen and a
-// food type corrected during the save both come through here, so the two can
-// never derive the reference differently.
-const proteinPheReference = (proteinPer100g, foodType) =>
-  roundReference(Number(proteinPer100g) * pheFactor(foodType))
 
 // Computed Phe: use phePer100g directly, or fall back to protein × factor (the
 // selectable food type factor for label results, the general one for estimates).
@@ -525,15 +520,9 @@ const save = async () => {
 
   if (!result.value) return
 
-  // Resolve this once for both records. An estimate always keeps the model's
-  // explanation; a label uses the note visible inside the Own Food option and
-  // ignores any stale hidden value after that option is unticked.
+  // Capture the options once for both records.
   const shouldSaveToOwnFood = saveToOwnFood.value
-  // Eligibility belongs to the result being saved, so it is read here with the
-  // rest of the intent rather than after the emoji lookup below
   const shouldShareWithCommunity = canShareResult.value && shareWithCommunity.value
-  // The date picker stays editable too, and the entry belongs to the day that
-  // was selected when the button was pressed
   const entryDate = selectedDate.value
   const saveNotes = resolveSaveNotes({
     useOwnFoodNote: isLabelResult.value,
@@ -563,22 +552,10 @@ const save = async () => {
 
   isSaving.value = true
 
-  // Offering a corrected food type means waiting on a model and then on the
-  // user, and the page stays live throughout — another label can be read, and
-  // the name field writes straight into the result on screen. So the question is
-  // asked about the entry above and answered into it, and the correction reaches
-  // the form only where the result is still the same one under the same name; a
-  // type corrected for one food says nothing about another. Only a read label
-  // has a type to correct, and only where its Phe came from the protein it
-  // printed: a label that printed Phe uses no factor, and an estimate always
-  // converts with the general one.
+  // Only label results whose Phe was converted from protein have a type to check.
   if (isLabelResult.value && isProteinFallback.value) {
-    const correctedResult = result.value
     const chosenType = labelFoodType.value
-    const labelProtein = correctedResult.proteinPer100g
-    // The dialog asks in mg Phe, and the figures it quotes come from the entry
-    // above — the same protein and weight the save will use — so what the user
-    // agrees to is what lands in the diary.
+    const labelProtein = result.value.proteinPer100g
     const pheUnder = (foodType) =>
       scaleToWeight(proteinPheReference(labelProtein, foodType), logEntry.weight)
 
@@ -591,13 +568,7 @@ const save = async () => {
         phe: scaleToWeight(reference, logEntry.weight),
         factor: pheFactor(correctedType)
       }
-      if (
-        result.value === correctedResult &&
-        result.value.name === logEntry.name &&
-        labelFoodType.value === chosenType
-      ) {
-        labelFoodType.value = correctedType
-      }
+      labelFoodType.value = correctedType
     }
   }
 
@@ -732,6 +703,7 @@ defineOgImage('Default', {
       accept="image/*"
       capture="environment"
       class="hidden"
+      :disabled="isBusy"
       @change="onImageSelected"
     />
 
@@ -741,6 +713,7 @@ defineOgImage('Default', {
       accept="image/*"
       capture="environment"
       class="hidden"
+      :disabled="isBusy"
       @change="onLabelImageSelected"
     />
 
@@ -867,9 +840,10 @@ defineOgImage('Default', {
       </div>
     </div>
 
-    <div
+    <fieldset
       v-if="result"
-      class="mt-6 rounded-xl bg-white dark:bg-gray-900 p-4 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
+      :disabled="isSaving"
+      class="mt-6 min-w-0 rounded-xl border-0 bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700"
     >
       <div class="flex items-start justify-between gap-3 mb-4">
         <h2 v-if="!isLabelResult" class="text-xl font-semibold text-gray-900 dark:text-white">
@@ -985,7 +959,7 @@ defineOgImage('Default', {
         :disabled="isLabelResult && !result.name?.trim()"
         @click="save"
       />
-    </div>
+    </fieldset>
 
     <ModalDialog
       ref="correctionDialog"

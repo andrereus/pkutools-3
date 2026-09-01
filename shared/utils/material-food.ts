@@ -9,6 +9,7 @@ export interface MaterialFoodValues {
   phe?: unknown
   kcal?: unknown
   nutrients?: unknown
+  factor?: unknown
 }
 
 export const normalizeFoodName = (value: unknown): string =>
@@ -41,6 +42,7 @@ const nutrientValue = (nutrients: unknown, key: (typeof NUTRIENT_KEYS)[number]):
 export const nutrientsEqual = (left: unknown, right: unknown): boolean =>
   NUTRIENT_KEYS.every((key) => numbersEqual(nutrientValue(left, key), nutrientValue(right, key)))
 
+// A factor-only correction is a material change for community votes.
 export const hasMaterialFoodChange = (
   before: MaterialFoodValues,
   after: MaterialFoodValues
@@ -48,4 +50,5 @@ export const hasMaterialFoodChange = (
   normalizeFoodName(before.name) !== normalizeFoodName(after.name) ||
   !numbersEqual(before.phe, after.phe) ||
   !numbersEqual(before.kcal, after.kcal) ||
+  !numbersEqual(before.factor, after.factor) ||
   !nutrientsEqual(before.nutrients, after.nutrients)

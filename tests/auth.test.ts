@@ -121,10 +121,7 @@ describe('handleServerError', () => {
     }
   })
 
-  // null and undefined included: a bare `throw` or a `Promise.reject()` with no
-  // reason reaches this as the catch-all for every authenticated route, and
-  // reading `.code` off them used to raise a TypeError that escaped instead of
-  // becoming a 500. Guarded on 2026-07-27.
+  // Catch-all handling must also accept throws without an Error object.
   it('gives a generic 500 for anything else it is handed', () => {
     for (const value of ['a string', 42, new Error('boom'), { some: 'object' }, null, undefined]) {
       expect(() => handleServerError(value)).toThrowError(

@@ -50,6 +50,8 @@ const categorySuggestion = ref(null)
 // or — when those say nothing — the product name alone. Only the sentence the
 // user reads differs; neither source applies itself.
 const suggestionSource = ref('category')
+// Invalidates a pending name suggestion after any manual choice.
+let typeChoices = 0
 
 // Camera selection.
 // The MediaDevices API exposes no lens metadata, so there's no reliable way to
@@ -57,7 +59,7 @@ const suggestionSource = ref('category')
 // Instead the user picks from a dropdown when the device has more than one camera;
 // we default to the OS choice (facingMode: environment) and remember the selection.
 const CAMERA_STORAGE_KEY = 'barcode_camera'
-const LEGACY_CAMERA_STORAGE_KEY = 'pku-barcode-camera' // renamed for naming consistency
+const LEGACY_CAMERA_STORAGE_KEY = 'pku-barcode-camera'
 const cameras = ref([]) // [{ deviceId, label }]
 const selectedCameraId = ref('') // '' = OS default, otherwise a specific deviceId
 
@@ -83,7 +85,7 @@ watch(selectedCameraId, (id) => {
 // Restore the remembered camera. Guarded for SSR (no localStorage on the server).
 onMounted(() => {
   try {
-    // Migrate any value saved under the previous key name (one-time).
+    // Carry a saved camera choice to the current key.
     const legacy = localStorage.getItem(LEGACY_CAMERA_STORAGE_KEY)
     if (legacy !== null && localStorage.getItem(CAMERA_STORAGE_KEY) === null) {
       localStorage.setItem(CAMERA_STORAGE_KEY, legacy)
@@ -142,10 +144,11 @@ const categorySuggestionLabel = computed(
 // straight away, and the box appears underneath it when the answer arrives. A
 // suggestion that only repeats the active type is dropped rather than shown.
 const suggestFromName = async (forCode, foodName) => {
+  const choicesWhenAsked = typeChoices
   const suggested = await suggestFoodType(foodName)
-  // The user may have scanned something else, typed a type, or accepted another
-  // suggestion while this was in flight — all of which make this answer stale.
+  // Drop the result when the scan or selection changed while it was pending.
   if (code.value !== forCode || !result.value) return
+  if (typeChoices !== choicesWhenAsked) return
   if (!suggested || suggested === select.value || categorySuggestion.value) return
   suggestionSource.value = 'name'
   categorySuggestion.value = suggested
@@ -157,9 +160,9 @@ const applyCategorySuggestion = () => {
   categorySuggestion.value = null
 }
 
-// Any direct choice belongs to the user, so the category suggestion no longer
-// describes the selected value and must disappear.
+// A manual choice overrides every pending or visible suggestion.
 const selectFoodType = (foodType) => {
+  typeChoices += 1
   select.value = foodType
   categorySuggestion.value = null
 }

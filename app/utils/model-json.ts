@@ -1,9 +1,5 @@
-// Reading the JSON object out of a model response. `responseMimeType:
-// 'application/json'` asks for JSON but does not guarantee it: the models
-// occasionally append a stray closing brace after a complete, valid object.
-// Matching the widest brace span swallows that extra brace and JSON.parse then
-// rejects the whole response — a failed estimate for the user, and a spent
-// daily quota slot, over output that was fine.
+// Structured model output can contain trailing characters. Extract the first
+// balanced object so they do not invalidate otherwise usable JSON.
 
 // The first balanced object in the text. Braces inside strings do not count
 // towards the depth, so a model-written explanation containing "{" cannot close

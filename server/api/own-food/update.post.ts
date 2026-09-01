@@ -76,18 +76,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  // Same duplicate rule as on save — same name (case-insensitive) and the exact
-  // same Phe value. Saving guards against creating a second copy, this guards
-  // against editing one food into a copy of another, which reaches the same
-  // state by a different route.
-  //
-  // Only an edit that moves those two values can do that, so only such an edit
-  // is checked. Everything else — unsharing, a note, an emoji, kcal — goes
-  // through untouched, including on an entry that already collides with another
-  // one: duplicate pairs exist from before this check did, and refusing to
-  // unshare a food over a name the user didn't touch would be a dead end rather
-  // than a guard. Renaming the entry back out of the collision stays possible
-  // for the same reason.
+  // Only name and Phe changes can introduce a duplicate. Keep unrelated edits
+  // independent of duplicate validation.
   const normalizedName = normalizeFoodName(data.name)
   const identityChanged =
     normalizeFoodName(ownFood.name) !== normalizedName || !storedNumberEquals(ownFood.phe, data.phe)
@@ -118,16 +108,15 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   const existingCommunityKey =
     typeof ownFood.communityKey === 'string' && ownFood.communityKey ? ownFood.communityKey : null
 
-  // Original provenance is immutable. The client may edit nutrients, but it
-  // cannot turn an AI estimate into a manual food by rewriting its source or
-  // erase the product id and factor that explain where it began.
+  // Source fields are immutable; omitted conversion fields retain stored values.
   const nutrients = data.nutrients !== undefined ? data.nutrients : (ownFood.nutrients ?? null)
-  const materialChange = hasMaterialFoodChange(ownFood, { ...data, nutrients })
+  const factor = data.factor !== undefined ? data.factor : (ownFood.factor ?? null)
+  const materialChange = hasMaterialFoodChange(ownFood, { ...data, nutrients, factor })
   const materiallyEdited = ownFood.materiallyEdited === true || materialChange
   const provenance = {
     source: (ownFood.source ?? null) as string | null,
     sourceId: (ownFood.sourceId ?? null) as string | null,
-    factor: (ownFood.factor ?? null) as number | null,
+    factor: factor as number | null,
     nutrients: nutrients as Record<string, unknown> | null,
     ...(materiallyEdited && { materiallyEdited: true })
   }
@@ -225,7 +214,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     const pheChanged = !storedNumberEquals(existingCommunityFood.phe, data.phe)
     const communityMaterialChange = hasMaterialFoodChange(existingCommunityFood, {
       ...data,
-      nutrients
+      nutrients,
+      factor
     })
 
     // Publishing checks for a duplicate, so editing a published food has to

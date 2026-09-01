@@ -73,15 +73,10 @@ export const FoodSourceSchema = z.enum([
 // tool wrote directly, where `source` already says how it was added.
 export const AddedFromSchema = z.enum(['own-food', 'community'])
 
-// Provenance carried by diary entries and own foods alike. `source`, sourceId
-// and factor describe the original values and are not rewritten by later
-// edits. `materiallyEdited` records that the current snapshot has diverged in
-// name or nutritional content. All are optional, so legacy records stay valid.
+// Optional provenance and conversion metadata; legacy records may omit it.
 const provenanceFields = {
   nutrients: NutrientsSchema.nullable().optional(),
-  // Original mg Phe per g protein (27/35/46/50), set when Phe was initially
-  // derived from protein. If materiallyEdited is true it remains provenance,
-  // not necessarily a formula for the current Phe value.
+  // mg Phe per g protein
   factor: numeric(
     z
       .number()
@@ -233,11 +228,8 @@ export const LabValueUpdateSchema = z.object({
 // Own Food Request Schemas
 // ============================================================================
 
-// Original provenance is immutable on an update. Nutrients are editable food
-// content; the route compares them with the stored record and derives the
-// monotonic materiallyEdited flag itself.
+// Source fields stay immutable; nutrients and factor remain editable.
 const OwnFoodEditableSchema = OwnFoodSchema.omit({
-  factor: true,
   source: true,
   sourceId: true,
   materiallyEdited: true,

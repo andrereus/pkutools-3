@@ -92,12 +92,8 @@ describe('DiaryEntrySchema', () => {
     }
   })
 
-  // Zod's coercing number ran Number() over anything, so a malformed body was
-  // stored as a plausible value instead of being refused: `false` and `[]`
-  // became 0, `true` became 1. On a Phe field that is a silent wrong number,
-  // which is the failure this app guards hardest against. Narrowed on
-  // 2026-07-27; these assertions are what stops it drifting back.
-  it('rejects the values that used to coerce to 0 or 1', () => {
+  // Reject values Number() would turn into plausible nutrient values.
+  it('rejects values that coerce to 0 or 1', () => {
     for (const value of [null, '', '   ', false, true, [], [150], {}]) {
       expect(
         DiaryEntrySchema.safeParse({ ...validEntry, phe: value }).success,
@@ -228,7 +224,6 @@ describe('DiaryEntrySchema provenance', () => {
     expect(DiaryEntrySchema.safeParse({ ...validEntry, source: '' }).success).toBe(false)
   })
 
-  // 27/35/46/50 are the real factors; the cap only keeps junk out.
   it('rejects a non-positive or implausible factor', () => {
     expect(DiaryEntrySchema.safeParse({ ...validEntry, factor: 0 }).success).toBe(false)
     expect(DiaryEntrySchema.safeParse({ ...validEntry, factor: -46 }).success).toBe(false)
@@ -339,8 +334,7 @@ describe('LabValueSchema', () => {
     expect(LabValueSchema.safeParse({ date: '2026-07-26', tyrosine: 50 }).success).toBe(true)
   })
 
-  // Regression guard for the documented `!= null` refinement: with a strict
-  // `!== null` an omitted key counts as "provided" and an empty reading slips in.
+  // An omitted key is not a provided measurement.
   it('rejects a reading with neither phe nor tyrosine', () => {
     expect(LabValueSchema.safeParse({ date: '2026-07-26' }).success).toBe(false)
     expect(LabValueSchema.safeParse({ date: '2026-07-26', phe: null }).success).toBe(false)
@@ -414,7 +408,7 @@ describe('OwnFoodSchema', () => {
     expect(OwnFoodUpdateSchema.safeParse({ data }).success).toBe(false)
   })
 
-  it('strips attempts to rewrite original provenance on update', () => {
+  it('strips attempts to rewrite where a food came from', () => {
     const result = OwnFoodUpdateSchema.parse({
       entryKey: '-Nabc',
       data: {
@@ -423,15 +417,22 @@ describe('OwnFoodSchema', () => {
         kcal: 90,
         source: 'manual',
         sourceId: null,
-        factor: null,
         materiallyEdited: false
       }
     })
 
     expect(result.data).not.toHaveProperty('source')
     expect(result.data).not.toHaveProperty('sourceId')
-    expect(result.data).not.toHaveProperty('factor')
     expect(result.data).not.toHaveProperty('materiallyEdited')
+  })
+
+  it('accepts a corrected factor on update', () => {
+    const result = OwnFoodUpdateSchema.parse({
+      entryKey: '-Nabc',
+      data: { name: 'Apple', phe: 54, kcal: 52, factor: 27, nutrients: { protein: 2 } }
+    })
+
+    expect(result.data.factor).toBe(27)
   })
 })
 

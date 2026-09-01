@@ -24,6 +24,7 @@ import {
   nutrientRows,
   parseReference,
   numericOrZero,
+  pheContradictsConversion,
   diaryProvenanceAfterEdit
 } from '../utils/nutrition'
 import { hasMaterialFoodChange } from '#shared/utils/material-food'
@@ -827,7 +828,8 @@ const logMaterialValues = (item) => ({
   name: item.name,
   phe: parseReference(item.pheReference),
   kcal: parseReference(item.kcalReference),
-  nutrients: item.nutrients
+  nutrients: item.nutrients,
+  factor: item.factor
 })
 const openedLogMaterialValues = ref(null)
 
@@ -835,7 +837,12 @@ const editLogItem = (item, index) => {
   editedLogIndex.value = index
   editedLogItem.value = { ...item }
   openedLogMaterialValues.value = logMaterialValues(editedLogItem.value)
-  showLogReferenceInputs.value = false
+  // Expand inconsistent conversions automatically.
+  showLogReferenceInputs.value = pheContradictsConversion(
+    editedLogItem.value.pheReference,
+    editedLogItem.value.nutrients?.protein,
+    editedLogItem.value.factor
+  )
   logEmojiBasisName.value = editedLogItem.value.name || ''
   hasRerolledLogEmoji.value = false
   dialog2.value.openDialog()
@@ -899,7 +906,8 @@ const saveLogEdit = async () => {
       name: editedLogItem.value.name,
       phe: pheReference,
       kcal: kcalReference,
-      nutrients: editedLogItem.value.nutrients
+      nutrients: editedLogItem.value.nutrients,
+      factor: editedLogItem.value.factor
     })
 
   let updatedItem = {
@@ -1473,20 +1481,14 @@ defineOgImage('Default', {
               :class="showLogReferenceInputs ? 'rotate-180' : ''"
             />
           </button>
-          <div v-if="editedLogIndex === -1 || showLogReferenceInputs" class="flex gap-4">
-            <NumberInput
-              v-model.number="editedLogItem.pheReference"
-              id-name="phe"
-              :label="$t('common.phe-per-100g')"
-              class="flex-1"
-            />
-            <NumberInput
-              v-model.number="editedLogItem.kcalReference"
-              id-name="kcalRef"
-              :label="$t('common.kcal-per-100g')"
-              class="flex-1"
-            />
-          </div>
+          <FoodReferenceInputs
+            v-if="editedLogIndex === -1 || showLogReferenceInputs"
+            v-model:phe="editedLogItem.pheReference"
+            v-model:kcal="editedLogItem.kcalReference"
+            v-model:nutrients="editedLogItem.nutrients"
+            v-model:factor="editedLogItem.factor"
+            id-prefix="log-"
+          />
           <NumberInput
             v-model.number="editedLogItem.weight"
             id-name="weight"

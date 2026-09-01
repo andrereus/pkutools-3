@@ -1,7 +1,7 @@
 <script setup>
 import { useStore } from '../../stores/index'
 import { format } from 'date-fns'
-import { pheFactor, roundReference, scaleToWeight } from '../utils/nutrition'
+import { pheFactor, proteinPheReference, scaleToWeight } from '../utils/nutrition'
 
 const store = useStore()
 const { t } = useI18n()
@@ -39,14 +39,6 @@ const type = computed(() => [
 
 // Null in direct-Phe mode, where no protein conversion happens at all
 const factor = computed(() => (select.value === 'phe' ? null : pheFactor(select.value)))
-
-// Per-100 g Phe from a protein value and a food type. The figure on screen and
-// a food type corrected during the save both come through here, so the two can
-// never derive the reference differently.
-const proteinPheReference = (proteinValue, foodType) => {
-  const derived = Number(proteinValue) * pheFactor(foodType)
-  return Number.isFinite(derived) ? roundReference(derived) : 0
-}
 
 // Per-100 g Phe the entry is calculated from. In protein mode it is derived
 // from protein × factor; the result below is computed from this exact value, so
@@ -112,31 +104,18 @@ const save = async () => {
     })
   }
 
-  // The intent, taken before the emoji lookup awaits below. The form stays
-  // editable while that request is in flight, and both records have to describe
-  // the food the button was pressed for — not a half-edited one.
+  // Keep one snapshot for both records while the asynchronous save runs.
   const shouldSaveToOwnFood = saveToOwnFood.value
   const shouldShareWithCommunity = shareWithCommunity.value
-  // The date picker stays editable too, and the entry belongs to the day that
-  // was selected when the button was pressed
   const entryDate = selectedDate.value
-  // The note is whatever the field shows, so it can only ever describe the food
-  // in front of the user
   const entryNote = shouldSaveToOwnFood && note.value?.trim() ? note.value.trim() : null
   if (shouldSaveToOwnFood) logEntry.note = entryNote
 
   isSaving.value = true
 
-  // Offering a corrected food type means waiting on a model and then on the
-  // user, and the form stays editable throughout. So the question is asked
-  // about the entry above and answered into it — a name typed, a value changed
-  // or a mode switched while the dialog is open belongs to the next save, not
-  // to this one. Direct-Phe mode converts nothing and has no type to get wrong.
+  // Direct-Phe mode has no protein conversion to check.
   const chosenType = select.value
   if (chosenType !== 'phe') {
-    // The dialog asks in mg Phe, and the figures it quotes come from the entry
-    // above — the same protein and weight the save will use — so what the user
-    // agrees to is what lands in the diary.
     const pheUnder = (foodType) =>
       scaleToWeight(proteinPheReference(logEntry.nutrients.protein, foodType), logEntry.weight)
 
@@ -149,13 +128,8 @@ const save = async () => {
         phe: scaleToWeight(reference, logEntry.weight),
         factor: pheFactor(correctedType)
       }
-      // Leave the form on the correction the user accepted, so a failed save
-      // shows what was attempted. Not if they moved the mode themselves while
-      // the dialog was open, and not if the name now describes another food —
-      // a type corrected for the entry above says nothing about that one.
-      if (select.value === chosenType && name.value === logEntry.name) {
-        select.value = correctedType
-      }
+      // Keep a failed save on the correction the user accepted.
+      select.value = correctedType
     }
   }
 
@@ -274,75 +248,82 @@ defineOgImage('Default', {
       <PageHeader :title="$t('phe-calculator.title')" />
     </header>
 
-    <TextInput
-      v-if="userIsAuthenticated"
-      v-model="name"
-      id-name="food"
-      :label="$t('common.food-name')"
-    />
+    <fieldset :disabled="isSaving" class="m-0 min-w-0 border-0 p-0">
+      <TextInput
+        v-if="userIsAuthenticated"
+        v-model="name"
+        id-name="food"
+        :label="$t('common.food-name')"
+      />
 
-    <div v-if="userIsAuthenticated" class="flex gap-4">
-      <div class="flex-1">
-        <SelectMenu v-model="select" id-name="factor" :label="$t('phe-calculator.mode')">
-          <option v-for="option in type" :key="option.value" :value="option.value">
-            {{ option.title }}
-          </option>
-        </SelectMenu>
+      <div v-if="userIsAuthenticated" class="flex gap-4">
+        <div class="flex-1">
+          <SelectMenu v-model="select" id-name="factor" :label="$t('phe-calculator.mode')">
+            <option v-for="option in type" :key="option.value" :value="option.value">
+              {{ option.title }}
+            </option>
+          </SelectMenu>
+        </div>
+        <DateInput
+          v-model="selectedDate"
+          id-name="date"
+          :label="$t('common.date')"
+          class="flex-1"
+        />
       </div>
-      <DateInput v-model="selectedDate" id-name="date" :label="$t('common.date')" class="flex-1" />
-    </div>
 
-    <SelectMenu
-      v-if="!userIsAuthenticated"
-      v-model="select"
-      id-name="factor"
-      :label="$t('phe-calculator.mode')"
-    >
-      <option v-for="option in type" :key="option.value" :value="option.value">
-        {{ option.title }}
-      </option>
-    </SelectMenu>
+      <SelectMenu
+        v-if="!userIsAuthenticated"
+        v-model="select"
+        id-name="factor"
+        :label="$t('phe-calculator.mode')"
+      >
+        <option v-for="option in type" :key="option.value" :value="option.value">
+          {{ option.title }}
+        </option>
+      </SelectMenu>
 
-    <div class="flex gap-4">
-      <NumberInput
-        v-if="select === 'phe'"
-        v-model.number="phe"
-        id-name="phe"
-        :label="$t('common.phe-per-100g')"
-        class="flex-1"
+      <div class="flex gap-4">
+        <NumberInput
+          v-if="select === 'phe'"
+          v-model.number="phe"
+          id-name="phe"
+          :label="$t('common.phe-per-100g')"
+          class="flex-1"
+        />
+        <NumberInput
+          v-else
+          v-model.number="protein"
+          id-name="protein"
+          :label="$t('common.protein-per-100g')"
+          class="flex-1"
+        />
+        <NumberInput
+          v-model.number="kcalReference"
+          id-name="kcalRef"
+          :label="$t('common.kcal-per-100g')"
+          class="flex-1"
+          :placeholder="$t('common.optional')"
+        />
+      </div>
+      <NumberInput v-model.number="weight" id-name="weight" :label="$t('common.consumed-weight')" />
+
+      <div class="flex gap-4 my-6">
+        <span class="flex-1 ml-1 text-lg">
+          <template v-if="select === 'phe'">= {{ calculatePhe() }} mg Phe</template>
+          <template v-else>≈ {{ calculatePhe() }} mg Phe</template>
+        </span>
+        <span class="flex-1 ml-1 text-lg">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
+      </div>
+
+      <SaveToOwnFood
+        v-if="userIsAuthenticated"
+        v-model="saveToOwnFood"
+        v-model:note="note"
+        v-model:shared="shareWithCommunity"
+        :hint="select === 'phe' ? null : $t('phe-calculator.check-mode')"
       />
-      <NumberInput
-        v-else
-        v-model.number="protein"
-        id-name="protein"
-        :label="$t('common.protein-per-100g')"
-        class="flex-1"
-      />
-      <NumberInput
-        v-model.number="kcalReference"
-        id-name="kcalRef"
-        :label="$t('common.kcal-per-100g')"
-        class="flex-1"
-        :placeholder="$t('common.optional')"
-      />
-    </div>
-    <NumberInput v-model.number="weight" id-name="weight" :label="$t('common.consumed-weight')" />
-
-    <div class="flex gap-4 my-6">
-      <span class="flex-1 ml-1 text-lg">
-        <template v-if="select === 'phe'">= {{ calculatePhe() }} mg Phe</template>
-        <template v-else>≈ {{ calculatePhe() }} mg Phe</template>
-      </span>
-      <span class="flex-1 ml-1 text-lg">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
-    </div>
-
-    <SaveToOwnFood
-      v-if="userIsAuthenticated"
-      v-model="saveToOwnFood"
-      v-model:note="note"
-      v-model:shared="shareWithCommunity"
-      :hint="select === 'phe' ? null : $t('phe-calculator.check-mode')"
-    />
+    </fieldset>
 
     <PrimaryButton
       v-if="userIsAuthenticated"

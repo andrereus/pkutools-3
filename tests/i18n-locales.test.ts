@@ -120,3 +120,27 @@ describe('translation keys used in the app', () => {
     expect(missing).toEqual([])
   })
 })
+
+describe('duplicate keys', () => {
+  // Count declarations before JSON.parse discards duplicates.
+  const keyLines = (locale: string) =>
+    readFileSync(join(root, 'i18n/locales', `${locale}.json`), 'utf8')
+      .split('\n')
+      .filter((line) => /^\s*"[^"]+":/.test(line)).length
+
+  it.each(LOCALES)('%s declares each key once', (locale) => {
+    expect(keyLines(locale)).toBe(countKeys(load(locale)))
+  })
+})
+
+/** Keys at every level of a parsed messages object, objects included. */
+const countKeys = (obj: Messages): number =>
+  Object.entries(obj).reduce(
+    (total, [, value]) =>
+      total +
+      1 +
+      (value !== null && typeof value === 'object' && !Array.isArray(value)
+        ? countKeys(value as Messages)
+        : 0),
+    0
+  )

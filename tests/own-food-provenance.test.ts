@@ -351,7 +351,7 @@ describe('editing a published food', () => {
     })
   })
 
-  it('preserves original provenance and marks a material edit', async () => {
+  it('preserves where the food came from and marks a material edit', async () => {
     seedShared({
       name: 'Oat drink',
       phe: 50,
@@ -361,7 +361,7 @@ describe('editing a published food', () => {
       factor: 50
     })
 
-    await updateOwnFood(editRequest({ phe: 62, source: 'manual', sourceId: null, factor: null }))
+    await updateOwnFood(editRequest({ phe: 62, source: 'manual', sourceId: null }))
 
     expect(community().community1).toMatchObject({
       phe: 62,
@@ -376,6 +376,67 @@ describe('editing a published food', () => {
       factor: 50,
       materiallyEdited: true
     })
+  })
+
+  it('takes a corrected factor through to the published copy', async () => {
+    seedShared({
+      name: 'Apple',
+      phe: 100,
+      kcal: 52,
+      source: 'manual',
+      sourceId: null,
+      factor: 50,
+      nutrients: { protein: 2 }
+    })
+
+    await updateOwnFood(editRequest({ phe: 54, factor: 27, nutrients: { protein: 2 } }))
+
+    expect(community().community1).toMatchObject({
+      phe: 54,
+      factor: 27,
+      source: 'manual',
+      materiallyEdited: true
+    })
+    expect(storedOwnFood()).toMatchObject({ phe: 54, factor: 27 })
+  })
+
+  it('resets the votes when only the conversion is corrected', async () => {
+    seedShared({
+      name: 'Apple',
+      phe: 54,
+      kcal: 52,
+      source: 'manual',
+      sourceId: null,
+      factor: 50,
+      nutrients: { protein: 2 }
+    })
+
+    await updateOwnFood(editRequest({ phe: 54, factor: 27, nutrients: { protein: 2 } }))
+
+    expect(community().community1).toMatchObject({
+      phe: 54,
+      factor: 27,
+      materiallyEdited: true,
+      likes: 0,
+      dislikes: 0,
+      score: 0
+    })
+  })
+
+  it('keeps the stored factor when the form sends none', async () => {
+    seedShared({
+      name: 'Oat drink',
+      phe: 50,
+      kcal: 45,
+      source: 'barcode',
+      sourceId: '4009233001234',
+      factor: 50
+    })
+
+    await updateOwnFood(editRequest({ note: 'Unsweetened' }))
+
+    expect(storedOwnFood()).toMatchObject({ factor: 50 })
+    expect(community().community1).toMatchObject({ factor: 50 })
   })
 })
 

@@ -102,28 +102,31 @@ Return JSON: {"foodType": "fruit" | "vegetable" | "meat" | "other" | null}`
    * than in the name of a factor. It has to be computed from the same values the
    * entry was built from, or the dialog would quote a figure the save doesn't
    * produce.
+   *
+   * `isCurrent` prevents a suggestion for an edit that was dismissed while the
+   * model request was pending.
    */
   const confirmFoodType = async (
     foodName: string,
     currentType: FoodType,
-    pheFor: (foodType: FoodType) => number
+    pheFor: (foodType: FoodType) => number,
+    isCurrent: () => boolean = () => true
   ): Promise<FoodType> => {
     const suggested = await suggestFoodType(foodName)
-    if (!suggested || suggested === currentType) return currentType
+    if (!suggested || suggested === currentType || !isCurrent()) return currentType
 
-    const suggestedLabel = t(`phe-calculator.${suggested}`)
-    const currentLabel = t(`phe-calculator.${currentType}`)
-
+    // The buttons stand on their own rather than naming the types: a food type
+    // label is a phrase ("Protein from vegetables"), and two of them side by
+    // side wrap onto several lines on a phone.
     const accepted = await confirm.confirm({
       title: t('phe-calculator.type-suggestion-title'),
       message: t('phe-calculator.type-suggestion-message', {
-        suggested: suggestedLabel,
-        selected: currentLabel,
+        type: t(`phe-calculator.${suggested}`),
         current: pheFor(currentType),
         corrected: pheFor(suggested)
       }),
-      confirmLabel: t('phe-calculator.type-suggestion-use', { type: suggestedLabel }),
-      cancelLabel: t('phe-calculator.type-suggestion-keep', { type: currentLabel }),
+      confirmLabel: t('phe-calculator.type-suggestion-use'),
+      cancelLabel: t('phe-calculator.type-suggestion-keep'),
       variant: 'default'
     })
 

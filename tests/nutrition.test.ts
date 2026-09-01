@@ -9,12 +9,13 @@ import {
   isReported,
   numericOrZero,
   parseReference,
-  diaryProvenanceAfterEdit
+  diaryProvenanceAfterEdit,
+  foodTypeForFactor,
+  proteinPheReference,
+  pheContradictsConversion
 } from '../app/utils/nutrition'
 
-// These rules were duplicated across every page that calculates or displays a
-// food value. A copy that drifted from the others produced a wrong number
-// rather than a visible failure, which is what these tests now guard.
+// Shared calculation and formatting contract for every food workflow.
 
 describe('pheFactor', () => {
   // Clinical constants, also documented in the FAQ. If one changes here it has
@@ -99,9 +100,7 @@ describe('formatNutrient half boundaries', () => {
 })
 
 describe('parseReference', () => {
-  // Some reference foods legitimately have phe: 0. `|| null` collapsed those
-  // to null, which the diary then read as a hand edit and used to rewrite the
-  // entry's source to 'manual'.
+  // Zero is a valid reference and must not be treated as missing.
   it('keeps an explicit zero', () => {
     expect(parseReference(0)).toBe(0)
     expect(parseReference('0')).toBe(0)
@@ -208,8 +207,6 @@ describe('scaleToWeight', () => {
     expect(scaleToWeight(0, 0)).toBe(0)
   })
 
-  // Four of the fourteen copies this replaced lacked the guard and would render
-  // NaN into the diary from a blank input.
   it('returns 0 rather than NaN for a missing or non-numeric input', () => {
     expect(scaleToWeight(NaN, 100)).toBe(0)
     expect(scaleToWeight(100, NaN)).toBe(0)
@@ -218,9 +215,7 @@ describe('scaleToWeight', () => {
   })
 })
 
-// The bug this whole change set started from: a reference was rounded to a whole
-// mg on save while the result was computed from the unrounded product, so
-// re-opening the entry and recalculating produced a different number.
+// A stored reference must reproduce the stored result when recalculated.
 describe('a result stays stable when it is recalculated', () => {
   it('reproduces the stored result from the stored reference', () => {
     const FACTORS = Object.values(PHE_FACTORS)
@@ -241,8 +236,7 @@ describe('a result stays stable when it is recalculated', () => {
     expect(checked).toBe(8428)
   })
 
-  // The old behaviour, kept as a description of what regressed: rounding the
-  // reference to a whole mg while computing the result from the raw product.
+  // Whole-mg references are not precise enough for stable recalculation.
   it('would drift if the reference were rounded to a whole mg', () => {
     const protein = 2.3
     const factor = PHE_FACTORS.meat
@@ -327,5 +321,79 @@ describe('nutrientRows', () => {
   it('keeps an explicit zero, which is a real declared value', () => {
     const rows = nutrientRows({ sugar: 0 }, 100, t)
     expect(rows).toEqual([{ key: 'sugar', label: 'common.sugar', value: 0 }])
+  })
+})
+
+describe('converting protein to Phe', () => {
+  it('applies the factor for the type and rounds like every other reference', () => {
+    expect(proteinPheReference(2, 'fruit')).toBe(54)
+    expect(proteinPheReference(2, 'vegetable')).toBe(70)
+    expect(proteinPheReference(2, 'meat')).toBe(92)
+    expect(proteinPheReference(2, 'other')).toBe(100)
+    // 3.3 × 46 = 151.79999999999998 in binary
+    expect(proteinPheReference(3.3, 'meat')).toBe(151.8)
+  })
+
+  it('converts an unknown type at the general factor, the highest one', () => {
+    expect(proteinPheReference(2, null)).toBe(100)
+    expect(proteinPheReference(2, 'dairy')).toBe(100)
+  })
+
+  it('reads a blank or unusable protein as none, not as NaN', () => {
+    for (const protein of ['', ' ', null, undefined, 'abc', {}]) {
+      expect(proteinPheReference(protein, 'fruit')).toBe(0)
+    }
+    expect(proteinPheReference(0, 'fruit')).toBe(0)
+  })
+
+  it('accepts the numeric strings legacy records hold', () => {
+    expect(proteinPheReference('2', 'fruit')).toBe(54)
+  })
+})
+
+describe('reading a food type back out of a stored factor', () => {
+  it('names the type each of the four factors stands for', () => {
+    expect(foodTypeForFactor(27)).toBe('fruit')
+    expect(foodTypeForFactor(35)).toBe('vegetable')
+    expect(foodTypeForFactor(46)).toBe('meat')
+    expect(foodTypeForFactor(50)).toBe('other')
+    expect(foodTypeForFactor('27')).toBe('fruit')
+  })
+
+  it('names none for a factor outside the four', () => {
+    expect(foodTypeForFactor(40)).toBeNull()
+    expect(foodTypeForFactor(null)).toBeNull()
+    expect(foodTypeForFactor(undefined)).toBeNull()
+    expect(foodTypeForFactor(0)).toBeNull()
+    expect(foodTypeForFactor('')).toBeNull()
+    expect(foodTypeForFactor('fruit')).toBeNull()
+  })
+})
+
+describe('spotting a Phe its own conversion does not produce', () => {
+  it('reports the disagreement', () => {
+    expect(pheContradictsConversion(54, 2, 50)).toBe(true)
+  })
+
+  it('stays quiet when the numbers agree', () => {
+    expect(pheContradictsConversion(54, 2, 27)).toBe(false)
+    expect(pheContradictsConversion(100, 2, 50)).toBe(false)
+    expect(pheContradictsConversion('54', '2', '27')).toBe(false)
+  })
+
+  it('accepts the whole-mg precision stored by older conversions', () => {
+    expect(pheContradictsConversion(151.8, 3.3, 46)).toBe(false)
+    expect(pheContradictsConversion(152, 3.3, 46)).toBe(false)
+    expect(pheContradictsConversion(151, 3.3, 46)).toBe(true)
+  })
+
+  it('stays quiet where there is no conversion to contradict', () => {
+    expect(pheContradictsConversion(54, 2, null)).toBe(false)
+    expect(pheContradictsConversion(54, 2, undefined)).toBe(false)
+    expect(pheContradictsConversion(54, null, 27)).toBe(false)
+    expect(pheContradictsConversion(54, undefined, 27)).toBe(false)
+    expect(pheContradictsConversion(54, 2, 40)).toBe(false)
+    expect(pheContradictsConversion(54, '', 27)).toBe(false)
+    expect(pheContradictsConversion('', 2, 27)).toBe(false)
   })
 })

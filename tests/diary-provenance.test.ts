@@ -31,6 +31,11 @@ const ORIGINAL = {
   updatedAt: 1000
 }
 
+const withoutConversion = () => {
+  const { factor: _factor, nutrients: _nutrients, ...entry } = ORIGINAL
+  return entry
+}
+
 const seed = (item: Record<string, unknown> = ORIGINAL) => {
   fake = createFakeDatabase({
     'user-1': {
@@ -63,14 +68,13 @@ const putItem = (entry: Record<string, unknown>) =>
 beforeEach(() => seed())
 
 describe('diary item provenance after edits', () => {
-  it('preserves original provenance and marks a material edit', async () => {
+  it('preserves where the item came from and marks a material edit', async () => {
     await putItem({
       name: 'Oat drink unsweetened',
       pheReference: 60,
       phe: 60,
       source: 'manual',
       sourceId: null,
-      factor: null,
       addedFrom: null,
       communityFoodKey: null
     })
@@ -86,6 +90,46 @@ describe('diary item provenance after edits', () => {
       materiallyEdited: true,
       createdAt: 1000
     })
+  })
+
+  it('takes a corrected factor with the reference it produced', async () => {
+    await putItem({
+      pheReference: 27,
+      phe: 27,
+      factor: 27,
+      nutrients: { protein: 1 }
+    })
+
+    expect(stored()).toMatchObject({
+      pheReference: 27,
+      factor: 27,
+      source: 'barcode',
+      sourceId: '4009233001234',
+      materiallyEdited: true
+    })
+  })
+
+  it('keeps conversion fields omitted by a single-item update', async () => {
+    await updateFoodItem(
+      requestEvent(
+        { logIndex: 0, entry: { ...withoutConversion(), note: 'Updated note' } },
+        {},
+        { key: 'day1' }
+      )
+    )
+
+    expect(stored()).toMatchObject({
+      note: 'Updated note',
+      nutrients: ORIGINAL.nutrients,
+      factor: ORIGINAL.factor
+    })
+    expect(stored()).not.toHaveProperty('materiallyEdited')
+  })
+
+  it('allows conversion fields to be cleared explicitly', async () => {
+    await putItem({ factor: null, nutrients: null })
+
+    expect(stored()).toMatchObject({ factor: null, nutrients: null, materiallyEdited: true })
   })
 
   it('does not count serving-size, note, or presentation edits as material', async () => {
@@ -140,6 +184,28 @@ describe('diary item provenance after edits', () => {
       sourceId: '4009233001234',
       materiallyEdited: true
     })
+  })
+
+  it('keeps conversion fields omitted by a complete-log update', async () => {
+    await updateDay(
+      requestEvent(
+        {
+          date: '2026-08-04',
+          phe: 50,
+          kcal: 45,
+          log: [{ ...withoutConversion(), note: 'Updated in Diet Report' }]
+        },
+        {},
+        { key: 'day1' }
+      )
+    )
+
+    expect(stored()).toMatchObject({
+      note: 'Updated in Diet Report',
+      nutrients: ORIGINAL.nutrients,
+      factor: ORIGINAL.factor
+    })
+    expect(stored()).not.toHaveProperty('materiallyEdited')
   })
 
   it('upgrades the oldest identity-less item without losing its provenance', async () => {

@@ -1,7 +1,5 @@
-// The nutrition rules the tools share. Each of these was duplicated across the
-// pages that calculate or display food values, and a copy that drifted from the
-// others is a silent miscalculation rather than a visible bug — the reason they
-// live here rather than in each page.
+// Shared nutrition rules for calculators and food editors. Keeping them here
+// ensures stored and displayed values use the same calculations.
 
 // Phe conversion factors in mg Phe per gram of protein, by food type. The FAQ
 // documents these same numbers.
@@ -19,6 +17,23 @@ export type FoodType = keyof typeof PHE_FACTORS
 // mode) decide that before asking.
 export const pheFactor = (foodType: string | null | undefined): number =>
   PHE_FACTORS[foodType as FoodType] ?? PHE_FACTORS.other
+
+// Returns null for factors outside the four supported food types.
+export const foodTypeForFactor = (factor: unknown): FoodType | null => {
+  const stored = Number(factor)
+  return (
+    (Object.keys(PHE_FACTORS) as FoodType[]).find((type) => PHE_FACTORS[type] === stored) ?? null
+  )
+}
+
+// Shared protein-to-Phe conversion for calculators and editors.
+export const proteinPheReference = (
+  protein: unknown,
+  foodType: string | null | undefined
+): number => {
+  const derived = Number(protein) * pheFactor(foodType)
+  return Number.isFinite(derived) ? roundReference(derived) : 0
+}
 
 // True when a source actually reported a value. Coercion is the trap here:
 // `Number(null)`, `Number('')`, `Number(' ')`, `Number(false)` and `Number([])`
@@ -53,10 +68,24 @@ interface DiaryProvenance {
   materiallyEdited?: boolean
 }
 
-// A diary item is a snapshot: edits do not erase its original value source or
-// the collection it was selected from. The flag is monotonic, because after a
-// manual change we cannot prove that typing an old-looking value restored the
-// source verbatim. The server independently enforces the same rule on updates.
+// Checks whether stored Phe matches its recorded protein conversion.
+export const pheContradictsConversion = (
+  phe: unknown,
+  protein: unknown,
+  factor: unknown
+): boolean => {
+  const foodType = foodTypeForFactor(factor)
+  if (foodType === null || !isReported(phe) || !isReported(protein)) return false
+
+  const stored = Number(phe)
+  const calculated = proteinPheReference(protein, foodType)
+
+  // Older records kept derived references as whole mg. Both precisions describe
+  // the same conversion and should not prompt a corrective edit.
+  return stored !== calculated && stored !== Math.round(calculated)
+}
+
+// Preserve source fields, update the factor, and keep the edit flag monotonic.
 export const diaryProvenanceAfterEdit = (item: DiaryProvenance, materialChange: boolean) => ({
   factor: Number(item.factor) || null,
   source: item.source || null,

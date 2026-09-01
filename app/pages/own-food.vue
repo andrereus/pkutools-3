@@ -15,7 +15,15 @@ import { valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
 import { LucideStickyNote, LucideUsers, LucideThumbsUp, LucideThumbsDown } from '@lucide/vue'
-import { scaleToWeight, nutrientRows } from '../utils/nutrition'
+import {
+  scaleToWeight,
+  nutrientRows,
+  isReported,
+  pheContradictsConversion,
+  foodTypeForFactor,
+  pheFactor,
+  proteinPheReference
+} from '../utils/nutrition'
 import { isShareableSource } from '../utils/community-food'
 import { foodSourceLabel } from '../utils/food-source-label'
 import { hasMaterialFoodChange } from '#shared/utils/material-food'
@@ -32,6 +40,7 @@ const confirm = useConfirm()
 const { isPremium, isPremiumAI } = useLicense()
 const { saveOwnFood, addFoodItemToDiary, updateOwnFood, deleteOwnFood } = useApi()
 const { fetchEmojiForFood, ensureEmojiForLogEntry } = useFoodEmoji()
+const { confirmFoodType } = useFoodTypeSuggestion()
 
 // Reactive state
 const search = ref('')
@@ -330,6 +339,14 @@ const deleteItem = async () => {
   }
 }
 
+// Invalidates a save when the user dismisses its edit dialog.
+let dismissals = 0
+
+const dismissModal = () => {
+  dismissals += 1
+  closeModal()
+}
+
 const closeModal = () => {
   dialog.value?.closeDialog()
   dialog2.value?.closeDialog()
@@ -366,13 +383,41 @@ const save = async () => {
   const entryName = editedItem.value.name
   const entryEmoji = editedItem.value.emoji || null
   const entryIcon = editedItem.value.icon || null
-  const entryPhe = Number(editedItem.value.phe)
+  let entryPhe = Number(editedItem.value.phe)
   const entryKcal = Number(editedItem.value.kcal) || 0
+  // Conversion metadata travels with derived Phe.
+  const entryNutrients = editedItem.value.nutrients ?? null
+  let entryFactor = editedItem.value.factor ?? null
   const entryNote =
     editedItem.value.note && editedItem.value.note.trim() !== ''
       ? editedItem.value.note.trim()
       : null
   const entryShared = editedItem.value.shared || false
+
+  // Check converted foods before calculating material changes.
+  const chosenType = foodTypeForFactor(entryFactor)
+  if (chosenType && isReported(entryNutrients?.protein)) {
+    const dismissalsWhenAsked = dismissals
+    isSaving.value = true
+    try {
+      const correctedType = await confirmFoodType(
+        entryName,
+        chosenType,
+        (foodType) => proteinPheReference(entryNutrients.protein, foodType),
+        () => dismissals === dismissalsWhenAsked
+      )
+      if (dismissals !== dismissalsWhenAsked) return
+      if (correctedType !== chosenType) {
+        entryFactor = pheFactor(correctedType)
+        entryPhe = proteinPheReference(entryNutrients.protein, correctedType)
+        // Keep a failed save on the correction the user accepted.
+        editedItem.value.factor = entryFactor
+        editedItem.value.phe = entryPhe
+      }
+    } finally {
+      isSaving.value = false
+    }
+  }
 
   // Check if unsharing (was shared, now not shared)
   const originalFood = entryKey ? ownFood.value.find((item) => item['.key'] === entryKey) : null
@@ -388,7 +433,8 @@ const save = async () => {
       name: entryName,
       phe: entryPhe,
       kcal: entryKcal,
-      nutrients: originalFood.nutrients
+      nutrients: entryNutrients,
+      factor: entryFactor
     })
 
   // Check if name, phe or kcal changed on a shared food (will reset votes)
@@ -443,7 +489,9 @@ const save = async () => {
         phe: entryPhe,
         kcal: entryKcal,
         note: entryNote,
-        shared: entryShared
+        shared: entryShared,
+        nutrients: entryNutrients,
+        factor: entryFactor
       })
     } else {
       // Add new entry - auto-generate emoji if missing, then save
@@ -538,6 +586,22 @@ const ownFoodNutrientRows = computed(() =>
 // AI estimates, and months later they look alike. The origin is what separates
 // a printed value from a guess — and it is the same sentence food search shows
 // for the same food.
+// Surface inconsistent conversions even while the edit fields are collapsed.
+const editedItemContradictsConversion = computed(() =>
+  pheContradictsConversion(
+    editedItem.value.phe,
+    editedItem.value.nutrients?.protein,
+    editedItem.value.factor
+  )
+)
+
+// Converted foods have a factor the AI can check.
+const editedItemIsConverted = computed(
+  () =>
+    foodTypeForFactor(editedItem.value.factor) !== null &&
+    isReported(editedItem.value.nutrients?.protein)
+)
+
 const editedItemSourceLabel = computed(() => foodSourceLabel(editedItem.value, t))
 
 const add = async () => {
@@ -814,97 +878,92 @@ defineOgImage('Default', {
         @refresh-emoji="generateIcon"
         @submit="save"
         @delete="deleteItem"
-        @close="closeModal"
+        @close="dismissModal"
       >
-        <TextInput v-model="editedItem.name" id-name="food" :label="$t('common.food-name')" />
-        <div>
-          <label
-            for="note"
-            class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
-            >{{ $t('diary.note') }}</label
-          >
-          <div class="mt-1 mb-3">
-            <textarea
-              id="note"
-              v-model="editedItem.note"
-              v-auto-grow
-              name="note"
-              rows="1"
-              :placeholder="$t('diary.note-placeholder')"
-              class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
-            />
-          </div>
-        </div>
-        <div class="flex gap-4">
-          <NumberInput
-            v-model.number="editedItem.phe"
-            id-name="phe"
-            :label="$t('common.phe-per-100g')"
-            class="flex-1"
-          />
-          <NumberInput
-            v-model.number="editedItem.kcal"
-            id-name="kcal"
-            :label="$t('common.kcal-per-100g')"
-            class="flex-1"
-          />
-        </div>
-        <!-- Share with community -->
-        <div
-          v-if="canShareEditedItem || wasEditedItemShared"
-          class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4"
-        >
-          <div class="flex items-start">
-            <div class="flex h-6 items-center">
-              <input
-                id="shared"
-                v-model="editedItem.shared"
-                name="shared"
-                type="checkbox"
-                :disabled="!canShareEditedItem && !editedItem.shared"
-                class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
+        <fieldset :disabled="isSaving" class="m-0 min-w-0 border-0 p-0">
+          <TextInput v-model="editedItem.name" id-name="food" :label="$t('common.food-name')" />
+          <div>
+            <label
+              for="note"
+              class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-300"
+              >{{ $t('diary.note') }}</label
+            >
+            <div class="mt-1 mb-3">
+              <textarea
+                id="note"
+                v-model="editedItem.note"
+                v-auto-grow
+                name="note"
+                rows="1"
+                :placeholder="$t('diary.note-placeholder')"
+                class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
               />
             </div>
-            <div class="ml-3 text-sm leading-6">
-              <label for="shared" class="font-medium text-gray-900 dark:text-gray-300">
-                {{ $t('community.share') }}
-              </label>
-              <p v-if="canShareEditedItem" class="text-gray-500 dark:text-gray-400">
-                {{ $t('community.shareLanguage', { language: $t('app.language-name') }) }}
-              </p>
-              <p v-else class="text-gray-500 dark:text-gray-400">
-                {{ $t('community.notShareable') }}
-              </p>
+          </div>
+          <FoodReferenceInputs
+            v-model:phe="editedItem.phe"
+            v-model:kcal="editedItem.kcal"
+            v-model:nutrients="editedItem.nutrients"
+            v-model:factor="editedItem.factor"
+            show-result
+          />
+          <!-- Share with community -->
+          <div
+            v-if="canShareEditedItem || wasEditedItemShared"
+            class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4"
+          >
+            <div class="flex items-start">
+              <div class="flex h-6 items-center">
+                <input
+                  id="shared"
+                  v-model="editedItem.shared"
+                  name="shared"
+                  type="checkbox"
+                  :disabled="!canShareEditedItem && !editedItem.shared"
+                  class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
+                />
+              </div>
+              <div class="ml-3 text-sm leading-6">
+                <label for="shared" class="font-medium text-gray-900 dark:text-gray-300">
+                  {{ $t('community.share') }}
+                </label>
+                <p v-if="canShareEditedItem" class="text-gray-500 dark:text-gray-400">
+                  {{ $t('community.shareLanguage', { language: $t('app.language-name') }) }}
+                </p>
+                <p v-else class="text-gray-500 dark:text-gray-400">
+                  {{ $t('community.notShareable') }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Vote counts for shared foods -->
+            <div
+              v-if="editedItem.shared && editedCommunityFood"
+              class="mt-3 flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400"
+            >
+              <span class="font-medium">{{ $t('community.statistics') }}</span>
+              <span class="flex items-center gap-1">
+                <LucideThumbsUp class="h-4 w-4 text-teal-600" />
+                {{ editedCommunityFood.likes || 0 }}
+              </span>
+              <span class="flex items-center gap-1">
+                <LucideThumbsDown class="h-4 w-4 text-red-500" />
+                {{ editedCommunityFood.dislikes || 0 }}
+              </span>
+              <span class="text-gray-400">
+                {{ $t('community.usageCount', { count: editedCommunityFood.usageCount || 0 }) }}
+              </span>
             </div>
           </div>
 
-          <!-- Vote counts for shared foods -->
-          <div
-            v-if="editedItem.shared && editedCommunityFood"
-            class="mt-3 flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400"
+          <!-- Why the option above is missing for this food -->
+          <p
+            v-else
+            class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 text-sm text-gray-500 dark:text-gray-400"
           >
-            <span class="font-medium">{{ $t('community.statistics') }}</span>
-            <span class="flex items-center gap-1">
-              <LucideThumbsUp class="h-4 w-4 text-teal-600" />
-              {{ editedCommunityFood.likes || 0 }}
-            </span>
-            <span class="flex items-center gap-1">
-              <LucideThumbsDown class="h-4 w-4 text-red-500" />
-              {{ editedCommunityFood.dislikes || 0 }}
-            </span>
-            <span class="text-gray-400">
-              {{ $t('community.usageCount', { count: editedCommunityFood.usageCount || 0 }) }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Why the option above is missing for this food -->
-        <p
-          v-else
-          class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 text-sm text-gray-500 dark:text-gray-400"
-        >
-          {{ $t('community.notShareable') }}
-        </p>
+            {{ $t('community.notShareable') }}
+          </p>
+        </fieldset>
       </ModalDialog>
 
       <SecondaryButton v-if="license" :text="$t('common.export')" @click="exportOwnFood" />
@@ -944,6 +1003,21 @@ defineOgImage('Default', {
           <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>
           <span class="flex-1 ml-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
         </div>
+
+        <p
+          v-if="editedItemContradictsConversion"
+          class="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-gray-700 dark:bg-amber-950/40 dark:text-gray-300"
+        >
+          {{ $t('common.phe-mismatch-short', { action: $t('common.edit') }) }}
+        </p>
+
+        <!-- Saving the edit checks its food type. -->
+        <p
+          v-else-if="editedItemIsConverted"
+          class="mt-3 ml-1 text-sm text-gray-500 dark:text-gray-400"
+        >
+          {{ $t('own-food.check-food-type', { action: $t('common.edit') }) }}
+        </p>
 
         <!-- Nutrient breakdown for the entered weight, for the foods that carry
              one. Same grid as food search and the tools the food came from. -->

@@ -1,14 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { parseModelJson } from '../app/utils/model-json'
 
-// The AI Calculator fails intermittently on responses that are complete and
-// valid apart from a stray closing brace the model appended. Reading to the
-// last brace in the text makes JSON.parse reject everything, so a usable
-// estimate surfaces as a failure and spends a paid quota slot.
-
 describe('parseModelJson', () => {
   it('ignores a stray closing brace after a complete object', () => {
-    // Regression fixture: a complete object followed by an extra closing brace.
     const response = `{
   "name": "Gemischter Salat mit Dressing",
   "phePer100g": 40,

@@ -14,6 +14,7 @@ import {
   scaleToWeight,
   nutrientRows,
   parseReference,
+  pheContradictsConversion,
   diaryProvenanceAfterEdit
 } from '../utils/nutrition'
 import { hasMaterialFoodChange } from '#shared/utils/material-food'
@@ -400,11 +401,15 @@ const entryNutrientRows = computed(() =>
 
 // Material edits are measured against the snapshot that opened the dialog.
 // Weight, notes and presentation fields are deliberately outside this shape.
+const itemContradictsConversion = (item) =>
+  pheContradictsConversion(item.pheReference, item.nutrients?.protein, item.factor)
+
 const materialValues = (item) => ({
   name: item.name,
   phe: parseReference(item.pheReference),
   kcal: parseReference(item.kcalReference),
-  nutrients: item.nutrients
+  nutrients: item.nutrients,
+  factor: item.factor
 })
 const openedMaterialValues = ref(null)
 
@@ -412,7 +417,8 @@ const editItem = (item, index) => {
   editedIndex.value = index
   editedItem.value = JSON.parse(JSON.stringify(item))
   openedMaterialValues.value = materialValues(editedItem.value)
-  showReferenceInputs.value = false
+  // Expand inconsistent conversions automatically.
+  showReferenceInputs.value = itemContradictsConversion(editedItem.value)
   emojiBasisName.value = editedItem.value.name || ''
   hasRerolledEmoji.value = false
   dialog2.value.openDialog()
@@ -421,7 +427,8 @@ const editItem = (item, index) => {
 const addLastAdded = (item) => {
   editedItem.value = JSON.parse(JSON.stringify(item))
   openedMaterialValues.value = materialValues(editedItem.value)
-  showReferenceInputs.value = false
+  // Expand inconsistent conversions automatically.
+  showReferenceInputs.value = itemContradictsConversion(editedItem.value)
   emojiBasisName.value = editedItem.value.name || ''
   hasRerolledEmoji.value = false
   dialog2.value.openDialog()
@@ -506,7 +513,8 @@ const save = async () => {
       name: editedItem.value.name,
       phe: pheReference,
       kcal: kcalReference,
-      nutrients: editedItem.value.nutrients
+      nutrients: editedItem.value.nutrients,
+      factor: editedItem.value.factor
     })
 
   let newLogEntry = {
@@ -998,20 +1006,13 @@ defineOgImage('Default', {
             :class="showReferenceInputs ? 'rotate-180' : ''"
           />
         </button>
-        <div v-if="showReferenceInputs" class="flex gap-4">
-          <NumberInput
-            v-model.number="editedItem.pheReference"
-            id-name="phe"
-            :label="$t('common.phe-per-100g')"
-            class="flex-1"
-          />
-          <NumberInput
-            v-model.number="editedItem.kcalReference"
-            id-name="kcalRef"
-            :label="$t('common.kcal-per-100g')"
-            class="flex-1"
-          />
-        </div>
+        <FoodReferenceInputs
+          v-if="showReferenceInputs"
+          v-model:phe="editedItem.pheReference"
+          v-model:kcal="editedItem.kcalReference"
+          v-model:nutrients="editedItem.nutrients"
+          v-model:factor="editedItem.factor"
+        />
         <NumberInput
           v-model.number="editedItem.weight"
           id-name="weight"

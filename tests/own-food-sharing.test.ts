@@ -574,9 +574,7 @@ describe('when the database write fails', () => {
     expect(storedOwnFood()).not.toHaveProperty('communityKey')
   })
 
-  // This is the expectation that flipped: the community entry used to be
-  // written first and survive a failed own-food write, leaving a public food
-  // whose owner did not consider it shared and could not withdraw it.
+  // Sharing is atomic: a failed write must not leave a public-only record.
   it('publishes nothing when the write fails', async () => {
     seed({ ...OWN_FOOD }, {}, failWrite)
 

@@ -26,8 +26,8 @@ type DiaryItemLocator = { itemId: string; logIndex?: never } | { itemId?: never;
 // Carried by diary entries and own foods alike
 interface Provenance {
   nutrients?: FoodNutrients | null
-  // Original calculation metadata. A material edit can make it historical
-  // rather than a formula for the current Phe value.
+  // mg Phe per g protein, the conversion the Phe was derived from. Editable
+  // content: it travels with the Phe and describes the current value.
   factor?: number | null
   source?: FoodSource | null
   sourceId?: string | null // barcode / BLS id / USDA id, within `source`
@@ -230,7 +230,7 @@ export const useApi = () => {
     )
 
   const updateOwnFood = (
-    data: Pick<Provenance, 'nutrients'> & {
+    data: Pick<Provenance, 'nutrients' | 'factor'> & {
       entryKey: string
       name: string
       icon?: string | null
@@ -252,10 +252,9 @@ export const useApi = () => {
         note: data.note,
         kcal: data.kcal,
         shared: data.shared,
-        // Nutrients are editable content. Original provenance and the material
-        // edit flag are preserved/derived by the server and cannot be reset by
-        // a stale client.
-        ...(data.nutrients !== undefined && { nutrients: data.nutrients })
+        // Omitted conversion fields retain their stored values.
+        ...(data.nutrients !== undefined && { nutrients: data.nutrients }),
+        ...(data.factor !== undefined && { factor: data.factor })
       }
     })
 

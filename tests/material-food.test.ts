@@ -39,3 +39,19 @@ describe('material food changes', () => {
     expect(nutrientsEqual({}, { protein: null })).toBe(true)
   })
 })
+
+describe('a corrected conversion', () => {
+  it('counts as a material change even when no value moves', () => {
+    const before = { name: 'Apple', phe: 54, kcal: 52, nutrients: { protein: 2 }, factor: 50 }
+
+    expect(hasMaterialFoodChange(before, { ...before, factor: 27 })).toBe(true)
+    expect(hasMaterialFoodChange(before, { ...before })).toBe(false)
+  })
+
+  it('does not fire on a record that never carried one', () => {
+    const before = { name: 'Juice', phe: 10, kcal: 40, nutrients: null }
+
+    expect(hasMaterialFoodChange(before, { ...before, factor: null })).toBe(false)
+    expect(hasMaterialFoodChange(before, { ...before, factor: undefined })).toBe(false)
+  })
+})

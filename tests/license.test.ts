@@ -51,9 +51,7 @@ describe('licenseFlags', () => {
     }
   })
 
-  // Regression guard for the documented fail-closed rule: with the env vars
-  // unset, a naive `licenseKey === configured` makes `undefined === undefined`
-  // true and hands premium to every user, including those with no license.
+  // Missing configuration must fail closed; absent keys must never match.
   describe('fails closed when the license env vars are not configured', () => {
     it('grants nothing to a user with no license when both keys are unset', () => {
       withConfig(undefined, undefined)
