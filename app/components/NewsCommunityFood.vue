@@ -45,7 +45,7 @@ const factorTypeLabel = computed(() => {
   const type = Object.entries(PHE_FACTORS).find(
     ([, factor]) => factor === Number(props.food?.factor)
   )?.[0]
-  return type ? t(`phe-calculator.${type}`) : null
+  return type ? t(`news.factor-${type}`) : null
 })
 const sourceDetails = computed(() =>
   [sourceLabel.value, factorTypeLabel.value].filter(Boolean).join(' · ')
