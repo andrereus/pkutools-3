@@ -1,6 +1,6 @@
 <script setup>
 import { foodSourceLabel } from '../utils/food-source-label'
-import { nutrientRows } from '../utils/nutrition'
+import { nutrientRows, PHE_FACTORS } from '../utils/nutrition'
 
 // Renders a community-food record inside a News card.
 const props = defineProps({
@@ -41,6 +41,15 @@ onUnmounted(() => clearTimeout(thanksTimer))
 const rows = computed(() => nutrientRows(props.food?.nutrients, 100, t))
 
 const sourceLabel = computed(() => (props.food ? foodSourceLabel(props.food, t) : null))
+const factorTypeLabel = computed(() => {
+  const type = Object.entries(PHE_FACTORS).find(
+    ([, factor]) => factor === Number(props.food?.factor)
+  )?.[0]
+  return type ? t(`phe-calculator.${type}`) : null
+})
+const sourceDetails = computed(() =>
+  [sourceLabel.value, factorTypeLabel.value].filter(Boolean).join(' · ')
+)
 const hasVotes = computed(() => Number(props.food?.likes) > 0 || Number(props.food?.dislikes) > 0)
 </script>
 
@@ -82,8 +91,8 @@ const hasVotes = computed(() => Number(props.food?.likes) > 0 || Number(props.fo
       </div>
     </div>
 
-    <p v-if="sourceLabel" class="mt-2 text-xs text-gray-500 sm:text-sm dark:text-gray-400">
-      {{ $t('food-search.value-source', { source: sourceLabel }) }}
+    <p v-if="sourceDetails" class="mt-2 text-xs text-gray-500 sm:text-sm dark:text-gray-400">
+      {{ sourceDetails }}
     </p>
 
     <div
