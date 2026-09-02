@@ -683,6 +683,7 @@ defineOgImage('Default', {
               )
             }}
           </p>
+          <p class="mt-1">{{ $t('common.check-composition') }}</p>
           <SecondaryButton
             :text="$t('barcode-scanner.use-suggestion')"
             class="mt-2 mr-0! mb-0!"

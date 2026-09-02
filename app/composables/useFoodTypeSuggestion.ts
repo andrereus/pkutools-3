@@ -3,33 +3,16 @@ import { getApp } from 'firebase/app'
 import { parseModelJson } from '../utils/model-json'
 import type { FoodType } from '../utils/nutrition'
 
-// Guessing a food's type from its name, to catch a factor that is wrong before
-// it reaches the diary. This is the counterpart of `foodTypeFromCategories`:
-// that one reads a scanned product's real category data, this one has nothing
-// but the name and is correspondingly weaker evidence.
-//
-// Neither one ever changes a calculation on its own. A suggestion is offered
-// and applied only when the user accepts it, because 'other' is both the app's
-// default and the highest factor (50 mg Phe per g protein) — so almost every
-// suggestion this makes points at a *lower* factor, the direction that would
-// understate someone's Phe if it were wrong and applied silently.
-//
-// The model tier matches `useFoodEmoji`: naming a group from a food name is a
-// small, cost-sensitive task, and a wrong answer costs a declined suggestion
-// rather than a wrong number.
+// A food type suggested from a food name, alongside `foodTypeFromCategories`,
+// which reads a scanned product's category data. Offered only: the caller keeps
+// its current type until the user accepts a suggestion.
 const FOOD_TYPE_MODEL = 'gemini-3.1-flash-lite'
 
 const FOOD_TYPES: readonly string[] = ['fruit', 'vegetable', 'meat', 'other']
 
 /**
- * The food type named in a model's answer, or null when it named none.
- *
- * Strict on purpose: anything but one of the four exact values — a plural, a
- * translated word, a sentence, a number — is treated as no answer at all, which
- * leaves the caller on the type it already had. Reading an intention into
- * "fruits" or "Obst" would put a lower factor behind a value the model never
- * returned, and the whole point of this module is that a low factor needs
- * evidence.
+ * The food type named in a model's answer, or null when it named none. Only the
+ * four exact values are accepted; anything else leaves the caller's type alone.
  */
 export const parseFoodTypeAnswer = (value: unknown): FoodType | null => {
   if (typeof value !== 'string') return null
@@ -74,9 +57,6 @@ export function useFoodTypeSuggestion() {
         generationConfig: { responseMimeType: 'application/json' }
       })
 
-      // The factor describes where a food's protein comes from, so that is what
-      // the question asks. How much of a combined food's protein is fruit and
-      // how much is milk is the model's to work out.
       const prompt = `Which group's protein does this food mostly contain: "${sanitizedName}"
 
 The groups are fruit, vegetable and meat, with fish and seafood counted as meat. A food that belongs to none of them is "other".
