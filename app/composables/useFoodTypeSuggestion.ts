@@ -57,9 +57,9 @@ export function useFoodTypeSuggestion() {
         generationConfig: { responseMimeType: 'application/json' }
       })
 
-      const prompt = `Which group's protein does this food mostly contain: "${sanitizedName}"
+      const prompt = `Identify the food type of: "${sanitizedName}"
 
-The groups are fruit, vegetable and meat, with fish and seafood counted as meat. A food that belongs to none of them is "other".
+It will be used as a factor to calculate phenylalanine from protein.
 
 Return JSON: {"foodType": "fruit" | "vegetable" | "meat" | "other" | null}`
 
