@@ -270,7 +270,7 @@
     "unshare-title": "Remove from community?",
     "unshare-warning": "This will remove the food from the community database. All likes, dislikes, and usage statistics will be permanently lost.",
     "unshare-confirm": "Remove from community",
-    "check-food-type": "To check the food type used for the calculation, open {action} and save.",
+    "type-check-notice": "Where Phe was calculated from protein, the food type is now checked when you save in {action}. Recommended to do for already shared foods.",
     "share-hint": "To share this food with the community, open {action}.",
     "reset-votes-title": "Update the shared food?",
     "reset-votes-warning": "Votes apply to the values people saw. If the values change, the votes are reset."

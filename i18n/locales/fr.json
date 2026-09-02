@@ -270,7 +270,7 @@
     "unshare-title": "Retirer de la communauté ?",
     "unshare-warning": "Cela supprimera l'aliment de la base de données communautaire. Tous les j'aime, je n'aime pas et statistiques d'utilisation seront définitivement perdus.",
     "unshare-confirm": "Retirer de la communauté",
-    "check-food-type": "Pour vérifier le type d'aliment utilisé pour le calcul, ouvre {action} et enregistre.",
+    "type-check-notice": "Quand la Phe a été calculée à partir des protéines, le type d'aliment est maintenant vérifié lors de l'enregistrement dans {action}. Recommandé de le faire pour les aliments déjà partagés.",
     "share-hint": "Pour partager cet aliment avec la communauté, ouvre {action}.",
     "reset-votes-title": "Mettre à jour l'aliment partagé ?",
     "reset-votes-warning": "Les votes portent sur les valeurs que les autres ont vues. Si les valeurs changent, les votes sont réinitialisés."

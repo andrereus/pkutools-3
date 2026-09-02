@@ -270,7 +270,7 @@
     "unshare-title": "Aus der Community entfernen?",
     "unshare-warning": "Dies entfernt das Lebensmittel aus der Community-Datenbank. Alle Likes, Dislikes und Nutzungsstatistiken gehen dauerhaft verloren.",
     "unshare-confirm": "Aus Community entfernen",
-    "check-food-type": "Zum Prüfen des Lebensmitteltyps für die Berechnung öffne {action} und speichere.",
+    "type-check-notice": "Wurde der Phe-Wert aus Eiweiß berechnet, wird der Lebensmitteltyp jetzt beim Speichern unter {action} geprüft. Empfohlen durchzuführen für bisher geteilte Lebensmittel.",
     "share-hint": "Zum Teilen mit der Community öffne {action}.",
     "reset-votes-title": "Geteiltes Lebensmittel aktualisieren?",
     "reset-votes-warning": "Stimmen gelten für die Werte, die andere gesehen haben. Ändern sich die Werte, werden die Stimmen zurückgesetzt."

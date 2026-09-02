@@ -595,13 +595,6 @@ const editedItemContradictsConversion = computed(() =>
   )
 )
 
-// Converted foods have a factor the AI can check.
-const editedItemIsConverted = computed(
-  () =>
-    foodTypeForFactor(editedItem.value.factor) !== null &&
-    isReported(editedItem.value.nutrients?.protein)
-)
-
 const editedItemSourceLabel = computed(() => foodSourceLabel(editedItem.value, t))
 
 const add = async () => {
@@ -790,6 +783,14 @@ defineOgImage('Default', {
           />
         </div>
       </div>
+
+      <!-- The food type check is new, and the foods most worth re-checking are
+           the published ones, which this page is the only place to reach. -->
+      <p
+        class="mb-6 rounded-lg bg-sky-50 p-3 text-sm text-gray-700 dark:bg-sky-950/50 dark:text-gray-300"
+      >
+        {{ $t('own-food.type-check-notice', { action: $t('common.edit') }) }}
+      </p>
 
       <div class="mb-8">
         <div class="mt-6 flow-root">
@@ -1028,10 +1029,6 @@ defineOgImage('Default', {
         >
           {{ $t('common.phe-mismatch-short', { action: $t('common.edit') }) }}
         </p>
-        <p v-else-if="editedItemIsConverted" class="mt-3 text-sm text-gray-500 dark:text-gray-400">
-          {{ $t('own-food.check-food-type', { action: $t('common.edit') }) }}
-        </p>
-
         <p
           v-if="!editedItem.shared && canShareEditedItem"
           class="mt-3 text-sm text-gray-500 dark:text-gray-400"
