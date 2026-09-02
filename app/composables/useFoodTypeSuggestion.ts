@@ -74,12 +74,13 @@ export function useFoodTypeSuggestion() {
         generationConfig: { responseMimeType: 'application/json' }
       })
 
-      // The factor describes where a food's protein comes from, so that is what
-      // the question asks. How much of a combined food's protein is fruit and
-      // how much is milk is the model's to work out.
-      const prompt = `Which group's protein does this food mostly contain: "${sanitizedName}"
+      // The factor converts protein, so the question asks where the protein
+      // comes from rather than what kind of food this is. The two part company
+      // in a mixed dish: one named for its vegetables can take most of its
+      // protein from the pasta in it, and the factor follows the protein.
+      const prompt = `Where does most of the protein in this food come from: "${sanitizedName}"
 
-The groups are fruit, vegetable and meat, with fish and seafood counted as meat. A food that belongs to none of them is "other".
+Answer "fruit", "vegetable" or "meat" only when most of the protein comes from that group; fish and seafood count as meat. Anything else is "other".
 
 Return JSON: {"foodType": "fruit" | "vegetable" | "meat" | "other" | null}`
 
