@@ -559,7 +559,7 @@ defineOgImage('Default', {
         v-if="open && cameras.length > 1"
         v-model="selectedCameraId"
         id-name="camera"
-        :label="$t('barcode-scanner.camera')"
+        :label="$t('barcode-scanner.camera-select')"
       >
         <option value="">{{ $t('barcode-scanner.camera-default') }}</option>
         <option v-for="cam in cameras" :key="cam.deviceId" :value="cam.deviceId">

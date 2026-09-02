@@ -235,6 +235,7 @@
     "please-wait": "Bitte warten ...",
     "camera": "Kamera",
     "camera-default": "Automatisch",
+    "camera-select": "Kamera (bei unscharfem Barcode wechseln)",
     "info": "Phe wird aus Eiweiß berechnet. Die Art des Lebensmittels bestimmt den Faktor. Quelle: openfoodfacts.org",
     "type-suggestion": "Die Produktkategorie schlägt {type} vor.",
     "type-suggestion-name": "Der Name des Lebensmittels deutet auf {type} hin.",

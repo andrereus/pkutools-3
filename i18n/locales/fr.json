@@ -235,6 +235,7 @@
     "please-wait": "Patiente...",
     "camera": "Caméra",
     "camera-default": "Automatique",
+    "camera-select": "Caméra (à changer si le code-barres est flou)",
     "info": "Le Phe est calculé à partir des protéines. Le type d'aliment détermine le facteur. Source: openfoodfacts.org",
     "type-suggestion": "La catégorie du produit suggère {type}.",
     "type-suggestion-name": "Le nom de l'aliment suggère {type}.",

@@ -235,6 +235,7 @@
     "please-wait": "Please wait ...",
     "camera": "Camera",
     "camera-default": "Automatic",
+    "camera-select": "Camera (switch if the barcode is blurry)",
     "info": "Phe gets calculated from protein. The type of food sets the factor. Source: openfoodfacts.org",
     "type-suggestion": "The product category suggests {type}.",
     "type-suggestion-name": "The food name suggests {type}.",
