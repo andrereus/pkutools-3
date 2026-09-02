@@ -58,7 +58,7 @@
     "fiber": "Fibra",
     "salt": "Sal",
     "mg-phe-per-100g": "mg Phe por 100g",
-    "phe-mismatch": "El Phe guardado no coincide con esta proteína y este tipo de alimento. Eso da {calculated} mg Phe por 100g.",
+    "phe-mismatch": "Los {saved} mg Phe por 100g guardados no coinciden con esta proteína y este tipo de alimento. Dan {calculated} mg.",
     "phe-mismatch-short": "El Phe guardado no coincide con el tipo de alimento. Consulta {action}.",
     "recalculate": "Recalcular",
     "g-protein-per-100g": "g de proteína por 100g",
@@ -270,6 +270,7 @@
     "unshare-warning": "Esto eliminará el alimento de la base de datos de la comunidad. Todos los me gusta, no me gusta y estadísticas de uso se perderán permanentemente.",
     "unshare-confirm": "Eliminar de la comunidad",
     "check-food-type": "Para comprobar el tipo de alimento usado para el cálculo, abre {action} y guarda.",
+    "share-hint": "Para compartir este alimento con la comunidad, abre {action}.",
     "reset-votes-title": "¿Actualizar el alimento compartido?",
     "reset-votes-warning": "Los votos se refieren a los valores que otros vieron. Si los valores cambian, los votos se restablecen."
   },

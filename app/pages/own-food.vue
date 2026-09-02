@@ -905,7 +905,6 @@ defineOgImage('Default', {
             v-model:kcal="editedItem.kcal"
             v-model:nutrients="editedItem.nutrients"
             v-model:factor="editedItem.factor"
-            show-result
           />
           <!-- Share with community -->
           <div
@@ -1004,21 +1003,6 @@ defineOgImage('Default', {
           <span class="flex-1 ml-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
         </div>
 
-        <p
-          v-if="editedItemContradictsConversion"
-          class="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-gray-700 dark:bg-amber-950/40 dark:text-gray-300"
-        >
-          {{ $t('common.phe-mismatch-short', { action: $t('common.edit') }) }}
-        </p>
-
-        <!-- Saving the edit checks its food type. -->
-        <p
-          v-else-if="editedItemIsConverted"
-          class="mt-3 ml-1 text-sm text-gray-500 dark:text-gray-400"
-        >
-          {{ $t('own-food.check-food-type', { action: $t('common.edit') }) }}
-        </p>
-
         <!-- Nutrient breakdown for the entered weight, for the foods that carry
              one. Same grid as food search and the tools the food came from. -->
         <div
@@ -1036,20 +1020,24 @@ defineOgImage('Default', {
           {{ $t('food-search.value-source', { source: editedItemSourceLabel }) }}
         </p>
 
-        <!-- Share with community CTA when not shared (where metrics would be) - opens edit form like Edit button -->
-        <div
-          v-if="!editedItem.shared && canShareEditedItem"
-          class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
+        <!-- What the edit form can settle about this food, told rather than
+             offered: this dialog logs a portion, it does not change the food -->
+        <p
+          v-if="editedItemContradictsConversion"
+          class="mt-3 rounded-lg bg-amber-50 p-3 text-sm text-gray-700 dark:bg-amber-950/40 dark:text-gray-300"
         >
-          <button
-            type="button"
-            class="inline-flex items-center gap-2 rounded-full bg-teal-50 dark:bg-teal-900/40 px-4 py-2 text-sm font-semibold text-teal-700 dark:text-teal-300 shadow-xs ring-1 ring-inset ring-teal-600/20 dark:ring-teal-400/20 hover:bg-teal-100 dark:hover:bg-teal-900/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 dark:focus-visible:outline-teal-400 cursor-pointer"
-            @click="editItem()"
-          >
-            <LucideUsers class="h-4 w-4" />
-            {{ $t('community.share') }}
-          </button>
-        </div>
+          {{ $t('common.phe-mismatch-short', { action: $t('common.edit') }) }}
+        </p>
+        <p v-else-if="editedItemIsConverted" class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+          {{ $t('own-food.check-food-type', { action: $t('common.edit') }) }}
+        </p>
+
+        <p
+          v-if="!editedItem.shared && canShareEditedItem"
+          class="mt-3 text-sm text-gray-500 dark:text-gray-400"
+        >
+          {{ $t('own-food.share-hint', { action: $t('common.edit') }) }}
+        </p>
 
         <!-- Community metrics for shared foods -->
         <div

@@ -7,11 +7,9 @@ import {
 } from '../utils/nutrition'
 
 // Edit converted foods as protein plus type, and all other foods as Phe.
-const props = defineProps({
+defineProps({
   // Distinguishes the field ids where two dialogs are in the DOM at once.
-  idPrefix: { type: String, default: '' },
-  // Own Food shows the reference result; portion editors already show a total.
-  showResult: { type: Boolean, default: false }
+  idPrefix: { type: String, default: '' }
 })
 
 const phe = defineModel('phe')
@@ -46,8 +44,6 @@ const applyConversion = (proteinValue, type) => {
 const storedPheDiffers = computed(() =>
   pheContradictsConversion(phe.value, protein.value, factor.value)
 )
-
-const showsResult = computed(() => props.showResult || storedPheDiffers.value)
 </script>
 
 <template>
@@ -79,17 +75,14 @@ const showsResult = computed(() => props.showResult || storedPheDiffers.value)
       />
     </div>
 
-    <p v-if="showsResult" class="mt-4 mb-3 ml-1 text-sm">
-      ≈ {{ phe }} {{ $t('common.mg-phe-per-100g') }}
-    </p>
-
     <div
       v-if="storedPheDiffers"
-      class="mt-2 mb-3 rounded-lg bg-amber-50 p-3 text-sm text-gray-700 dark:bg-amber-950/40 dark:text-gray-300"
+      class="mt-4 mb-3 rounded-lg bg-amber-50 p-3 text-sm text-gray-700 dark:bg-amber-950/40 dark:text-gray-300"
     >
       <p>
         {{
           $t('common.phe-mismatch', {
+            saved: phe,
             calculated: proteinPheReference(protein, foodType)
           })
         }}

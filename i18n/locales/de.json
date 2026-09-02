@@ -58,7 +58,7 @@
     "fiber": "Ballaststoffe",
     "salt": "Salz",
     "mg-phe-per-100g": "mg Phe pro 100g",
-    "phe-mismatch": "Der gespeicherte Phe-Wert passt nicht zu diesem Eiweiß und Lebensmitteltyp. Das ergibt {calculated} mg Phe pro 100g.",
+    "phe-mismatch": "Die gespeicherten {saved} mg Phe pro 100g passen nicht zu diesem Eiweiß und Lebensmitteltyp. Daraus ergeben sich {calculated} mg.",
     "phe-mismatch-short": "Der gespeicherte Phe-Wert passt nicht zum Lebensmitteltyp. Siehe {action}.",
     "recalculate": "Neu berechnen",
     "g-protein-per-100g": "g Eiweiß pro 100g",
@@ -270,6 +270,7 @@
     "unshare-warning": "Dies entfernt das Lebensmittel aus der Community-Datenbank. Alle Likes, Dislikes und Nutzungsstatistiken gehen dauerhaft verloren.",
     "unshare-confirm": "Aus Community entfernen",
     "check-food-type": "Zum Prüfen des Lebensmitteltyps für die Berechnung öffne {action} und speichere.",
+    "share-hint": "Zum Teilen mit der Community öffne {action}.",
     "reset-votes-title": "Geteiltes Lebensmittel aktualisieren?",
     "reset-votes-warning": "Stimmen gelten für die Werte, die andere gesehen haben. Ändern sich die Werte, werden die Stimmen zurückgesetzt."
   },

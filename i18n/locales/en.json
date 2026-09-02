@@ -58,7 +58,7 @@
     "fiber": "Fiber",
     "salt": "Salt",
     "mg-phe-per-100g": "mg Phe per 100g",
-    "phe-mismatch": "The saved Phe does not match this protein and food type. That gives {calculated} mg Phe per 100g.",
+    "phe-mismatch": "The saved {saved} mg Phe per 100g do not match this protein and food type. They give {calculated} mg.",
     "phe-mismatch-short": "The saved Phe does not match the food type. See {action}.",
     "recalculate": "Recalculate",
     "g-protein-per-100g": "g Protein per 100g",
@@ -270,6 +270,7 @@
     "unshare-warning": "This will remove the food from the community database. All likes, dislikes, and usage statistics will be permanently lost.",
     "unshare-confirm": "Remove from community",
     "check-food-type": "To check the food type used for the calculation, open {action} and save.",
+    "share-hint": "To share this food with the community, open {action}.",
     "reset-votes-title": "Update the shared food?",
     "reset-votes-warning": "Votes apply to the values people saw. If the values change, the votes are reset."
   },
