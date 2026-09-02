@@ -100,11 +100,12 @@ Return JSON: {"foodType": "fruit" | "vegetable" | "meat" | "other" | null}`
     // side wrap onto several lines on a phone.
     const accepted = await confirm.confirm({
       title: t('phe-calculator.type-suggestion-title'),
-      message: t('phe-calculator.type-suggestion-message', {
+      // The same disclaimer the scanner shows under its own suggestion
+      message: `${t('phe-calculator.type-suggestion-message', {
         type: t(`phe-calculator.${suggested}`),
         current: pheFor(currentType),
         corrected: pheFor(suggested)
-      }),
+      })} ${t('common.check-composition')}`,
       confirmLabel: t('phe-calculator.type-suggestion-use'),
       cancelLabel: t('phe-calculator.type-suggestion-keep'),
       variant: 'default'
