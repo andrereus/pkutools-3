@@ -432,6 +432,48 @@ defineOgImage('Default', {
       </div>
     </div>
 
+    <div class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 pt-8 sm:pt-10 pb-8 sm:pb-10">
+      <div class="mx-auto max-w-5xl px-6 lg:px-8">
+        <div class="grid items-center gap-10 lg:grid-cols-2">
+          <div class="order-2 lg:order-1">
+            <div
+              class="mx-auto w-full max-w-md rounded-2xl bg-gray-50 dark:bg-gray-800/60 p-5 sm:p-6 ring-1 ring-gray-900/5 dark:ring-white/10 text-left"
+            >
+              <!-- A saved food, with where its values came from -->
+              <div
+                class="flex items-center gap-3 rounded-lg bg-white dark:bg-gray-900 px-3 py-3 ring-1 ring-gray-900/5 dark:ring-white/5"
+              >
+                <span class="text-lg" aria-hidden="true">🍽</span>
+                <span class="text-sm font-medium text-gray-900 dark:text-white">
+                  {{
+                    $t('food-search.value-source', { source: $t('food-search.source-ai-label') })
+                  }}
+                </span>
+              </div>
+
+              <!-- The correction it is offered, in the colours the app uses -->
+              <div
+                class="mt-3 flex items-start gap-2 rounded-lg bg-sky-50 dark:bg-sky-950/50 px-3 py-3 ring-1 ring-gray-900/5 dark:ring-white/5"
+              >
+                <LucideSparkles class="mt-0.5 h-4 w-4 shrink-0 text-sky-500" aria-hidden="true" />
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  {{ $t('home.type-check-suggestion') }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="order-1 lg:order-2 text-center lg:text-left">
+            <h2 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-2xl">
+              {{ $t('home.type-check') }}
+            </h2>
+            <p class="mt-4 text-lg leading-8 text-gray-600 dark:text-gray-400">
+              {{ $t('home.type-check-desc') }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div
       class="w-screen ml-[calc(50%-50vw)] bg-white dark:bg-gray-900 pt-14 sm:pt-20 pb-8 sm:pb-10"
     >
