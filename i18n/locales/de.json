@@ -58,7 +58,7 @@
     "fiber": "Ballaststoffe",
     "salt": "Salz",
     "mg-phe-per-100g": "mg Phe pro 100g",
-    "check-composition": "Der Vorschlag kennt Anteile von Zutaten nicht. Prüfe die Zusammensetzung.",
+    "check-composition": "Der Vorschlag basiert auf dem Namen. Prüfe die Zutaten.",
     "phe-mismatch": "Die gespeicherten {saved} mg Phe pro 100g passen nicht zu diesem Eiweiß und Lebensmitteltyp. Daraus ergeben sich {calculated} mg.",
     "phe-mismatch-short": "Der gespeicherte Phe-Wert passt nicht zum Lebensmitteltyp. Siehe {action}.",
     "recalculate": "Neu berechnen",
