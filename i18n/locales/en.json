@@ -58,7 +58,7 @@
     "fiber": "Fiber",
     "salt": "Salt",
     "mg-phe-per-100g": "mg Phe per 100g",
-    "check-composition": "The suggestion is based on the name. Check the ingredients.",
+    "check-composition": "Check the exact ingredients.",
     "phe-mismatch": "The saved {saved} mg Phe per 100g do not match this protein and food type. They give {calculated} mg.",
     "phe-mismatch-short": "The saved Phe does not match the food type. See {action}.",
     "recalculate": "Recalculate",
