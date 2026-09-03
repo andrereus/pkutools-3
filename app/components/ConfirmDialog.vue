@@ -29,7 +29,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['confirm', 'cancel'])
+const emit = defineEmits(['confirm', 'cancel', 'dismiss'])
 
 const cancelButtonRef = ref(null)
 
@@ -62,11 +62,15 @@ const handleConfirm = () => {
 const handleCancel = () => {
   emit('cancel')
 }
+
+const handleDismiss = () => {
+  emit('dismiss')
+}
 </script>
 
 <template>
   <HeadlessTransitionRoot as="template" :show="show">
-    <HeadlessDialog class="relative z-60" @close="handleCancel">
+    <HeadlessDialog class="relative z-60" @close="handleDismiss">
       <HeadlessTransitionChild
         as="template"
         enter="ease-out duration-300"

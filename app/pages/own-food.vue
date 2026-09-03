@@ -407,6 +407,7 @@ const save = async () => {
         () => dismissals === dismissalsWhenAsked
       )
       if (dismissals !== dismissalsWhenAsked) return
+      if (correctedType === null) return
       if (correctedType !== chosenType) {
         entryFactor = pheFactor(correctedType)
         entryPhe = proteinPheReference(entryNutrients.protein, correctedType)
@@ -784,8 +785,7 @@ defineOgImage('Default', {
         </div>
       </div>
 
-      <!-- The food type check is new, and the foods most worth re-checking are
-           the published ones, which this page is the only place to reach. -->
+      <!-- Point contributors to the edit form where converted food types can be checked. -->
       <p
         class="mb-6 rounded-lg bg-sky-50 p-3 text-sm text-gray-700 dark:bg-sky-950/50 dark:text-gray-300"
       >

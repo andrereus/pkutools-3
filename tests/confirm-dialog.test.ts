@@ -61,6 +61,18 @@ describe('asking two questions in a row', () => {
     expect(confirmState.value).toBeNull()
   })
 
+  it('distinguishes dismissing the dialog from pressing its cancel button', async () => {
+    const { confirm, handleCancel, handleDismiss } = useConfirm()
+
+    const cancelled = confirm(ASK)
+    handleCancel()
+    await expect(cancelled).resolves.toBe(false)
+
+    const dismissed = confirm(ASK)
+    handleDismiss()
+    await expect(dismissed).resolves.toBeNull()
+  })
+
   it('answers a question that is replaced before anyone answers it', async () => {
     // Replacing a pending question must also resolve its promise.
     const { confirm, handleConfirm } = useConfirm()

@@ -560,6 +560,10 @@ const save = async () => {
       scaleToWeight(proteinPheReference(labelProtein, foodType), logEntry.weight)
 
     const correctedType = await confirmFoodType(logEntry.name, chosenType, pheUnder)
+    if (correctedType === null) {
+      isSaving.value = false
+      return
+    }
     if (correctedType !== chosenType) {
       const reference = proteinPheReference(labelProtein, correctedType)
       logEntry = {

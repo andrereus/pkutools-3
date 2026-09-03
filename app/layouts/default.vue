@@ -681,6 +681,7 @@ const handleCookieConsent = (consent) => {
       :variant="confirm.confirmState.value.variant || 'destructive'"
       @confirm="confirm.handleConfirm"
       @cancel="confirm.handleCancel"
+      @dismiss="confirm.handleDismiss"
     />
   </div>
 </template>

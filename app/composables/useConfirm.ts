@@ -9,7 +9,7 @@ export interface ConfirmOptions {
 // Singleton state for confirm dialog
 const confirmState = ref<ConfirmOptions | null>(null)
 const showConfirm = ref(false)
-let resolvePromise: ((value: boolean) => void) | null = null
+let resolvePromise: ((value: boolean | null) => void) | null = null
 // Keep the state through the closing animation without clearing a newer dialog.
 let clearStateTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -21,7 +21,7 @@ const clearStateAfterAnimation = () => {
   }, 300)
 }
 
-const confirm = (options: ConfirmOptions): Promise<boolean> => {
+const confirm = (options: ConfirmOptions): Promise<boolean | null> => {
   return new Promise((resolve) => {
     if (clearStateTimer) {
       clearTimeout(clearStateTimer)
@@ -40,7 +40,7 @@ const confirm = (options: ConfirmOptions): Promise<boolean> => {
 }
 
 // Ignore duplicate close events for an already answered question.
-const settle = (answer: boolean) => {
+const settle = (answer: boolean | null) => {
   if (!resolvePromise) return
   resolvePromise(answer)
   resolvePromise = null
@@ -52,12 +52,15 @@ const handleConfirm = () => settle(true)
 
 const handleCancel = () => settle(false)
 
+const handleDismiss = () => settle(null)
+
 export const useConfirm = () => {
   return {
     confirmState: readonly(confirmState),
     showConfirm: readonly(showConfirm),
     confirm,
     handleConfirm,
-    handleCancel
+    handleCancel,
+    handleDismiss
   }
 }

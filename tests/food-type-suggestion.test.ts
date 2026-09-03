@@ -93,6 +93,30 @@ describe('suggesting a food type from a name', () => {
     await expect(useFoodTypeSuggestion().suggestFoodType('Apfel')).resolves.toBeNull()
   })
 
+  it('reuses a completed suggestion for the same normalized name', async () => {
+    answering('{"foodType": "fruit"}')
+    const { suggestFoodType } = useFoodTypeSuggestion()
+
+    await expect(suggestFoodType('Apfel')).resolves.toBe('fruit')
+    await expect(suggestFoodType('  apfel  ')).resolves.toBe('fruit')
+    expect(generateContent).toHaveBeenCalledTimes(1)
+  })
+
+  it('caches a completed no-answer but retries a failed request', async () => {
+    answering('{"foodType": null}')
+    const { suggestFoodType } = useFoodTypeSuggestion()
+
+    await expect(suggestFoodType('Unklar')).resolves.toBeNull()
+    await expect(suggestFoodType('unklar')).resolves.toBeNull()
+    expect(generateContent).toHaveBeenCalledTimes(1)
+
+    generateContent.mockRejectedValueOnce(new Error('offline'))
+    await expect(suggestFoodType('Apfel')).resolves.toBeNull()
+    answering('{"foodType": "fruit"}')
+    await expect(suggestFoodType('Apfel')).resolves.toBe('fruit')
+    expect(generateContent).toHaveBeenCalledTimes(3)
+  })
+
   it('asks nothing at all for an empty or blank name', async () => {
     const { suggestFoodType } = useFoodTypeSuggestion()
     await expect(suggestFoodType('')).resolves.toBeNull()
@@ -146,12 +170,10 @@ describe('offering the correction', () => {
     await expect(ask('Apfel', 'other')).resolves.toBe('other')
   })
 
-  it('keeps the chosen type when the dialog is dismissed', async () => {
-    // A dismissal resolves the same way a decline does, so the save goes on with
-    // the type the user picked themselves — never with a guess they didn't see.
+  it('aborts the save when the dialog is dismissed', async () => {
     answering('{"foodType": "vegetable"}')
-    confirm.mockResolvedValue(undefined)
-    await expect(ask('Karotte', 'other')).resolves.toBe('other')
+    confirm.mockResolvedValue(null)
+    await expect(ask('Karotte', 'other')).resolves.toBeNull()
   })
 
   it('asks nothing when the model names the type already selected', async () => {

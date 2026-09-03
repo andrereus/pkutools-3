@@ -26,6 +26,9 @@ export function useFoodTypeSuggestion() {
   // to by then.
   const { t } = useI18n()
   const confirm = useConfirm()
+  // The model only sees the normalized name, so the answer remains usable when
+  // a dismissed save returns to the same form for other edits.
+  const suggestionCache = new Map<string, FoodType | null>()
 
   /**
    * The food type a name points at, or null when it points at none, when the
@@ -50,6 +53,9 @@ export function useFoodTypeSuggestion() {
 
     if (sanitizedName === '') return null
 
+    const cacheKey = sanitizedName.toLowerCase()
+    if (suggestionCache.has(cacheKey)) return suggestionCache.get(cacheKey) ?? null
+
     try {
       const ai = getAI(getApp(), { backend: new GoogleAIBackend() })
       const model = getGenerativeModel(ai, {
@@ -64,7 +70,9 @@ It will be used as a factor to calculate phenylalanine from protein.
 Return JSON: {"foodType": "fruit" | "vegetable" | "meat" | "other" | null}`
 
       const result = await model.generateContent(prompt)
-      return parseFoodTypeAnswer(parseModelJson(result.response.text())?.foodType)
+      const suggestion = parseFoodTypeAnswer(parseModelJson(result.response.text())?.foodType)
+      suggestionCache.set(cacheKey, suggestion)
+      return suggestion
     } catch {
       return null
     }
@@ -73,9 +81,9 @@ Return JSON: {"foodType": "fruit" | "vegetable" | "meat" | "other" | null}`
   /**
    * The type to calculate with, after offering the user a correction. Returns
    * `currentType` unchanged when there is nothing to suggest, when the
-   * suggestion agrees with it, or when the user declines — including when the
-   * dialog is dismissed, which means "no correction" and lets the save go on
-   * with the type the user chose themselves.
+   * suggestion agrees with it, or when the user explicitly keeps it. Returns
+   * null when the dialog is dismissed, which tells the caller to abort its save
+   * and leave the form available for editing.
    *
    * `pheFor` gives the mg Phe the entry ends up with under a type, so the
    * question is asked in the number the user is actually deciding about rather
@@ -91,7 +99,7 @@ Return JSON: {"foodType": "fruit" | "vegetable" | "meat" | "other" | null}`
     currentType: FoodType,
     pheFor: (foodType: FoodType) => number,
     isCurrent: () => boolean = () => true
-  ): Promise<FoodType> => {
+  ): Promise<FoodType | null> => {
     const suggested = await suggestFoodType(foodName)
     if (!suggested || suggested === currentType || !isCurrent()) return currentType
 
@@ -111,6 +119,7 @@ Return JSON: {"foodType": "fruit" | "vegetable" | "meat" | "other" | null}`
       variant: 'default'
     })
 
+    if (accepted === null) return null
     return accepted ? suggested : currentType
   }
 
