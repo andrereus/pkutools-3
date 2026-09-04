@@ -5,7 +5,9 @@ export default defineAuthedHandler(async ({ userId }) => {
   const db = getAdminDatabase()
   const auth = getAdminAuth()
 
-  // Delete the user's private database subtree
+  // Shared foods, votes and community comments remain as contributions after
+  // account deletion. Only the private subtree is removed; once the Auth user
+  // is deleted, retained comments can no longer be edited by that account.
   const userDataRef = db.ref(`/${userId}`)
   await userDataRef.remove()
 

@@ -164,10 +164,36 @@ export const OwnFoodSaveSchema = OwnFoodSchema.extend({
 // metadata. They are not accepted directly at a request boundary, so no
 // separate Zod record schema is needed here.
 
+const firebaseKeySchema = (label: string) =>
+  z
+    .string()
+    .min(1, `${label} is required`)
+    .max(128, `${label} is too long`)
+    .refine(
+      (key) => !['.', '#', '$', '[', ']', '/'].some((character) => key.includes(character)),
+      `${label} is invalid`
+    )
+
+const CommunityFoodKeySchema = firebaseKeySchema('Community food key')
+const CommunityFoodCommentIdSchema = firebaseKeySchema('Comment id')
+
 // Vote schema for community foods
 export const CommunityVoteSchema = z.object({
-  communityFoodKey: z.string().min(1, 'Community food key is required'),
+  communityFoodKey: CommunityFoodKeySchema,
   vote: z.union([z.literal(1), z.literal(-1)])
+})
+
+// Comments form a flat chronological conversation. Passing an id edits one
+// existing comment; omitting it appends a new one.
+export const CommunityFoodCommentSchema = z.object({
+  communityFoodKey: CommunityFoodKeySchema,
+  commentId: CommunityFoodCommentIdSchema.optional(),
+  comment: z.string().trim().min(1, 'Comment is required').max(300, 'Comment is too long')
+})
+
+export const CommunityFoodCommentDeleteSchema = z.object({
+  communityFoodKey: CommunityFoodKeySchema,
+  commentId: CommunityFoodCommentIdSchema
 })
 
 // ============================================================================

@@ -1,5 +1,6 @@
 import { getAdminDatabase } from '../../utils/firebase-admin'
 import { defineAuthedHandler } from '../../utils/handler'
+import { queueCommunityFoodCommentRemoval } from '../../utils/community-food-comment'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const body = await readBody(event)
@@ -44,6 +45,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
 
     if (communityFood?.contributorId === userId && communityFood?.ownFoodKey === entryKey) {
       writes[`communityFoods/${ownFood.communityKey}`] = null
+      queueCommunityFoodCommentRemoval(ownFood.communityKey, writes)
     }
   }
 

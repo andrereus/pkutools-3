@@ -11,12 +11,15 @@ const props = defineProps({
   canVote: { type: Boolean, default: false },
   /** Only the contributor sees the aggregate activity on their shared food. */
   showStatistics: { type: Boolean, default: false },
+  /** Signed-in reader; community comments remain unavailable without an account. */
+  currentUserId: { type: String, default: null },
   busy: { type: Boolean, default: false }
 })
 
 const emit = defineEmits(['vote'])
 const { t } = useI18n()
 const showNutrients = ref(false)
+const commentsExpanded = ref(false)
 
 // Brief visual confirmation without changing the control dimensions.
 const justVoted = ref(false)
@@ -51,6 +54,17 @@ const sourceDetails = computed(() =>
   [sourceLabel.value, factorTypeLabel.value].filter(Boolean).join(' · ')
 )
 const hasVotes = computed(() => Number(props.food?.likes) > 0 || Number(props.food?.dislikes) > 0)
+const commentCount = computed(() => {
+  const value = Number(props.food?.commentCount)
+  return Number.isSafeInteger(value) && value >= 0 ? value : 0
+})
+const hasCommunityActivity = computed(() => hasVotes.value || commentCount.value > 0)
+const commentButtonLabel = computed(() =>
+  commentCount.value > 0
+    ? t('news.comments-count', { count: commentCount.value })
+    : t('news.add-comment')
+)
+const visibleCommentCount = computed(() => (commentCount.value > 99 ? '99+' : commentCount.value))
 </script>
 
 <template>
@@ -102,15 +116,25 @@ const hasVotes = computed(() => Number(props.food?.likes) > 0 || Number(props.fo
       {{ food.note }}
     </div>
 
-    <template v-if="canVote">
-      <div class="mt-3 flex gap-2">
+    <!-- Contributors react to community activity; they do not start a fresh
+         discussion here. Keep an already-open editor mounted if the last
+         triggering vote is withdrawn while they are writing. -->
+    <div
+      v-if="
+        currentUserId &&
+        food['.key'] &&
+        (canVote || (showStatistics && (hasCommunityActivity || commentsExpanded)))
+      "
+      class="mt-3 flex items-center gap-2"
+    >
+      <template v-if="canVote">
         <button
           type="button"
           :disabled="busy"
           :aria-pressed="vote === 1"
           :aria-label="$t('news.looks-right')"
           :class="[
-            'flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg px-2 text-center text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50 sm:gap-2 sm:px-3',
+            'flex h-9 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 text-center text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50 sm:gap-2 sm:px-3',
             vote === 1
               ? 'bg-teal-50 text-teal-700 ring-teal-400 dark:bg-teal-900/40 dark:text-teal-300 dark:ring-teal-700'
               : 'text-gray-700 ring-gray-300 hover:text-teal-600 hover:ring-teal-400 dark:text-gray-300 dark:ring-gray-600 dark:hover:text-teal-400'
@@ -127,7 +151,7 @@ const hasVotes = computed(() => Number(props.food?.likes) > 0 || Number(props.fo
           :aria-pressed="vote === -1"
           :aria-label="$t('news.looks-off')"
           :class="[
-            'flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg px-2 text-center text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50 sm:gap-2 sm:px-3',
+            'flex h-9 min-w-0 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2 text-center text-sm font-semibold ring-1 transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:opacity-50 sm:gap-2 sm:px-3',
             vote === -1
               ? 'bg-red-50 text-red-700 ring-red-400 dark:bg-red-900/40 dark:text-red-300 dark:ring-red-700'
               : 'text-gray-700 ring-gray-300 hover:text-red-600 hover:ring-red-400 dark:text-gray-300 dark:ring-gray-600 dark:hover:text-red-400'
@@ -138,29 +162,71 @@ const hasVotes = computed(() => Number(props.food?.likes) > 0 || Number(props.fo
           <LucideThumbsDown v-else class="h-4 w-4 shrink-0" />
           <span class="truncate">{{ $t('news.looks-off') }}</span>
         </button>
-      </div>
 
-      <span class="sr-only" aria-live="polite">
-        {{ justVoted ? $t('news.vote-saved') : '' }}
-      </span>
-    </template>
+        <span class="sr-only" aria-live="polite">
+          {{ justVoted ? $t('news.vote-saved') : '' }}
+        </span>
+      </template>
 
-    <!-- Contributor-only aggregate vote statistics. -->
-    <div
-      v-else-if="showStatistics && hasVotes"
-      class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
-    >
-      <span class="font-medium">{{ $t('community.statistics') }}</span>
-      <span class="flex items-center gap-1">
-        <LucideThumbsUp class="h-4 w-4 text-teal-600" aria-hidden="true" />
-        {{ food.likes || 0 }}
-        <span class="sr-only">{{ $t('community.like') }}</span>
-      </span>
-      <span class="flex items-center gap-1">
-        <LucideThumbsDown class="h-4 w-4 text-red-500" aria-hidden="true" />
-        {{ food.dislikes || 0 }}
-        <span class="sr-only">{{ $t('community.dislike') }}</span>
-      </span>
+      <template v-else-if="showStatistics">
+        <!-- A comment without a rating deliberately shows 0 / 0: that tells
+             the contributor the feedback has not been endorsed either way. -->
+        <div
+          v-if="hasCommunityActivity"
+          class="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+        >
+          <div
+            class="inline-flex items-center gap-2.5 overflow-hidden rounded-lg bg-white px-2.5 ring-1 ring-gray-300 dark:bg-gray-900 dark:ring-gray-600"
+          >
+            <span
+              class="flex min-h-8 items-center bg-white text-gray-900 dark:bg-gray-900 dark:text-white"
+            >
+              {{ $t('community.statistics') }}
+            </span>
+            <span
+              class="flex min-h-8 items-center gap-1 bg-white text-teal-700 dark:bg-gray-900 dark:text-teal-300"
+            >
+              <LucideThumbsUp class="h-4 w-4" aria-hidden="true" />
+              <span>{{ food.likes || 0 }}</span>
+              <span class="sr-only">{{ $t('community.like') }}</span>
+            </span>
+            <span
+              class="flex min-h-8 items-center gap-1 bg-white text-red-700 dark:bg-gray-900 dark:text-red-300"
+            >
+              <LucideThumbsDown class="h-4 w-4" aria-hidden="true" />
+              <span>{{ food.dislikes || 0 }}</span>
+              <span class="sr-only">{{ $t('community.dislike') }}</span>
+            </span>
+          </div>
+        </div>
+      </template>
+
+      <button
+        type="button"
+        class="ml-auto flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2.5 text-sm font-normal ring-1 transition-colors hover:bg-sky-50 hover:text-sky-700 hover:ring-sky-400 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 dark:hover:ring-sky-600"
+        :class="[
+          canVote ? 'h-9' : 'min-h-8',
+          commentsExpanded
+            ? 'bg-sky-50 text-sky-700 ring-sky-400 dark:bg-sky-900/40 dark:text-sky-300 dark:ring-sky-700'
+            : 'bg-white text-gray-900 ring-gray-300 dark:bg-gray-900 dark:text-white dark:ring-gray-600'
+        ]"
+        :aria-label="commentButtonLabel"
+        :title="commentButtonLabel"
+        :aria-expanded="commentsExpanded"
+        :aria-controls="`community-comments-${food['.key']}`"
+        @click="commentsExpanded = !commentsExpanded"
+      >
+        <LucideMessageCircle class="h-4 w-4" aria-hidden="true" />
+        <span v-if="commentCount > 0">{{ visibleCommentCount }}</span>
+      </button>
     </div>
+
+    <CommunityFoodComments
+      v-if="currentUserId && food['.key']"
+      :food-key="food['.key']"
+      :contributor-id="food.contributorId"
+      :current-user-id="currentUserId"
+      :expanded="commentsExpanded"
+    />
   </div>
 </template>

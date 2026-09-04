@@ -43,6 +43,8 @@ const seed = (
 }
 
 const community = () => fake.data.communityFoods as Record<string, Record<string, unknown>>
+const communityComments = () =>
+  (fake.data.communityFoodComments ?? {}) as Record<string, Record<string, unknown>>
 const storedOwnFood = () =>
   (fake.data['owner-1'] as { ownFood: Record<string, Record<string, unknown>> }).ownFood.entry1!
 
@@ -68,7 +70,8 @@ describe('sharing an own food', () => {
       likes: 0,
       dislikes: 0,
       score: 0,
-      usageCount: 0
+      usageCount: 0,
+      commentCount: 0
     })
     // The own food keeps a pointer back, so a later edit finds the same entry.
     expect(storedOwnFood().communityKey).toBe(publishedKey)
@@ -265,7 +268,7 @@ describe('editing a food that already collides with another', () => {
     const result = await updateOwnFood(request({ shared: false }))
 
     expect(result.communityKey).toBeNull()
-    expect(community().community1).toBeUndefined()
+    expect(fake.data.communityFoods).toBeUndefined()
     expect(storedOwnFood().shared).toBe(false)
   })
 
@@ -298,11 +301,38 @@ describe('unsharing an own food', () => {
 
     const result = await updateOwnFood(request({ shared: false }))
 
-    expect(community().community1).toBeUndefined()
+    expect(fake.data.communityFoods).toBeUndefined()
     expect(result.communityKey).toBeNull()
     // Firebase deletes a child written as null, so the field is gone from the
     // record rather than present and null — what the client's listener sees.
     expect(storedOwnFood()).not.toHaveProperty('communityKey')
+  })
+
+  it('removes comments with the community entry', async () => {
+    seed(
+      { ...OWN_FOOD, shared: true, communityKey: 'community1' },
+      {
+        community1: {
+          name: 'Protein shake',
+          phe: 12,
+          contributorId: 'owner-1',
+          commentCount: 1
+        }
+      }
+    )
+    fake.data.communityFoodComments = {
+      community1: {
+        comment1: {
+          authorId: 'commenter-1',
+          text: 'Check the serving size',
+          createdAt: 100,
+          updatedAt: 100
+        }
+      }
+    }
+    await updateOwnFood(request({ shared: false }))
+
+    expect(fake.data.communityFoodComments).toBeUndefined()
   })
 
   it("does not delete another contributor's food through a malformed pointer", async () => {
@@ -333,7 +363,7 @@ describe('unsharing an own food', () => {
 
     await updateOwnFood(request({ shared: false }))
 
-    expect(community().community1).toBeUndefined()
+    expect(fake.data.communityFoods).toBeUndefined()
     expect(storedOwnFood()).not.toHaveProperty('communityKey')
   })
 })
@@ -430,15 +460,37 @@ describe('editing an already shared food', () => {
       }
     )
 
+  const seedComment = () => {
+    community().community1!.commentCount = 1
+    fake.data.communityFoodComments = {
+      community1: {
+        comment1: {
+          authorId: 'commenter-1',
+          text: 'Check the serving size',
+          createdAt: 100,
+          updatedAt: 100
+        }
+      }
+    }
+  }
+
   // Votes endorse a specific set of numbers. Once those change the endorsement
   // no longer applies, so the score has to start over.
   it('resets the votes when the phe value changes', async () => {
     seedShared()
+    seedComment()
 
     await updateOwnFood(request({ shared: true, phe: 20 }))
 
-    expect(community().community1).toMatchObject({ phe: 20, likes: 0, dislikes: 0, score: 0 })
+    expect(community().community1).toMatchObject({
+      phe: 20,
+      likes: 0,
+      dislikes: 0,
+      score: 0,
+      commentCount: 0
+    })
     expect(community().community1!.voterIds).toBeUndefined()
+    expect(fake.data.communityFoodComments).toBeUndefined()
   })
 
   it('resets the votes when the name or kcal changes', async () => {
@@ -510,6 +562,7 @@ describe('editing an already shared food', () => {
   // An edit that leaves the numbers alone must not wipe hard-earned votes.
   it('keeps the votes when only the note changes', async () => {
     seedShared()
+    seedComment()
 
     await updateOwnFood(request({ shared: true, note: 'Mixed with water' }))
 
@@ -517,9 +570,11 @@ describe('editing an already shared food', () => {
       note: 'Mixed with water',
       likes: 5,
       dislikes: 1,
-      score: 4
+      score: 4,
+      commentCount: 1
     })
     expect(community().community1!.voterIds).toEqual({ 'voter-1': 1 })
+    expect(communityComments().community1).toHaveProperty('comment1')
     expect(storedOwnFood()).not.toHaveProperty('materiallyEdited')
   })
 

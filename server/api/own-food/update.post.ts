@@ -4,6 +4,7 @@ import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { isCommunityFoodHidden, isShareableSource } from '../../utils/community-food'
 import { storedNumberEquals } from '../../utils/numeric'
+import { queueCommunityFoodCommentRemoval } from '../../utils/community-food-comment'
 import { hasMaterialFoodChange, normalizeFoodName } from '../../../shared/utils/material-food'
 import type { H3Event } from 'h3'
 
@@ -184,7 +185,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       likes: 0,
       dislikes: 0,
       score: 0,
-      usageCount: 0
+      usageCount: 0,
+      commentCount: 0
     }
   }
 
@@ -198,6 +200,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     // foreign target is left untouched while the broken local pointer clears.
     if (existingCommunityKey && hasValidCommunityLink) {
       writes[`communityFoods/${existingCommunityKey}`] = null
+      queueCommunityFoodCommentRemoval(existingCommunityKey, writes)
     }
     communityKey = null
   } else if (
@@ -254,11 +257,15 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
 
     if (communityMaterialChange) {
-      // Reset votes when the food identity or nutritional content changes.
+      // Votes and comments refer to the previous food identity/values. Reset
+      // both through the same material-change boundary so feedback never
+      // describes a version that is no longer visible.
       updateData.likes = 0
       updateData.dislikes = 0
       updateData.score = 0
       updateData.voterIds = null // Clear all votes
+      updateData.commentCount = 0
+      queueCommunityFoodCommentRemoval(existingCommunityKey, writes)
     }
 
     // Field by field rather than as a whole node: the votes, the usage count

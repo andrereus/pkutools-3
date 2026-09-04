@@ -1,6 +1,6 @@
 <template>
   <h1>Datenschutzerklärung</h1>
-  <p>Stand: 30. Juli 2026</p>
+  <p>Stand: 4. September 2026</p>
 
   <h2>Wer ist verantwortlich</h2>
   <p>
@@ -201,12 +201,13 @@
   <p>
     Eigene Lebensmittel sind privat. Du kannst ein einzelnes Lebensmittel mit der Community teilen,
     indem du die Option dafür setzt. Geteilt wird nur dieses Lebensmittel: was du dazu eingetragen
-    hast und die Sprache, in der du es geteilt hast. Name und E-Mail-Adresse gehören nie dazu. In
-    der App wird nichts angezeigt, was dich identifiziert.
+    hast und die Sprache, in der du es geteilt hast. Kommentare, die du zu Community-Lebensmitteln
+    schreibst, werden ebenfalls geteilt. Name und E-Mail-Adresse gehören nie dazu. In der App wird
+    nichts angezeigt, was dich identifiziert.
   </p>
   <p>
     Ein geteiltes Lebensmittel trägt deine interne Nutzer-ID. Sie verbindet es mit deiner eigenen
-    Kopie, damit du es weiter bearbeiten kannst. Auch deine Bewertungen tragen sie.
+    Kopie, damit du es weiter bearbeiten kannst. Auch deine Bewertungen und Kommentare tragen sie.
   </p>
   <p>
     Die ID wird in der App nicht angezeigt. Andere angemeldete Nutzer können sie nicht mit deinem
@@ -216,8 +217,8 @@
   </p>
   <p>
     Wenn du kein geteiltes Lebensmittel zurücklassen möchtest, lösche es vor der Kontolöschung unter
-    Eigene Lebensmittel. Damit wird auch der Community-Eintrag entfernt. Bewertungen, die du bei
-    Lebensmitteln anderer abgegeben hast, bleiben bestehen.
+    Eigene Lebensmittel. Damit werden auch der Community-Eintrag und seine Kommentare entfernt.
+    Deine Kommentare und Bewertungen zu Lebensmitteln anderer bleiben bestehen.
   </p>
 
   <h2>E-Mails</h2>
@@ -237,7 +238,7 @@
     Zeitraum kann also noch eine Kopie bestehen. Anbieter können eigene Restkopien in Protokollen
     oder Löschwarteschlangen halten, für die in ihren Datenschutzerklärungen genannten Zeiträume.
   </p>
-  <p>Geteilte Lebensmittel und Bewertungen bleiben, weil andere sie nutzen können.</p>
+  <p>Geteilte Lebensmittel, Bewertungen und Kommentare bleiben, weil andere sie nutzen können.</p>
 
   <h2>Deine Rechte</h2>
   <p>Nach der DSGVO kannst du:</p>

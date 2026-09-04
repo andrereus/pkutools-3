@@ -61,6 +61,22 @@ describe('deleting an own food', () => {
     expect(communityFood()).toBeUndefined()
   })
 
+  it('removes the community food comments in the same write', async () => {
+    fake.data.communityFoodComments = {
+      community1: {
+        comment1: {
+          authorId: 'commenter-1',
+          text: 'Check the serving size',
+          createdAt: 100,
+          updatedAt: 100
+        }
+      }
+    }
+    await deleteOwnFood(request())
+
+    expect(fake.data.communityFoodComments).toBeUndefined()
+  })
+
   it('removes only the own food when it has no community pointer', async () => {
     seed({ name: 'Oat drink', phe: 50, kcal: 45, shared: false })
 

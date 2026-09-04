@@ -1,6 +1,6 @@
 <template>
   <h1>Terms of Service</h1>
-  <p>Last updated: August 6, 2026</p>
+  <p>Last updated: September 4, 2026</p>
 
   <h2>About PKU Tools</h2>
   <p>
@@ -110,15 +110,16 @@
 
   <h2>Sharing foods with the community</h2>
   <p>
-    Only share food information you are allowed to share and reasonably believe is correct. Do not
-    put personal information in it. By sharing a food, you grant the operator a non-exclusive,
-    royalty-free licence to store, display and adapt that entry for as long as it is needed to run
-    the community database, including after your account is deleted.
+    Only share food information and write comments that you are allowed to share and reasonably
+    believe are correct. Do not put personal information in either. By sharing a food or writing a
+    comment, you grant the operator a non-exclusive, royalty-free licence to store, display and
+    adapt that content for as long as it is needed to run the community database, including after
+    your account is deleted.
   </p>
   <p>
-    Shared entries can stay available after you delete your account, because other people may be
-    relying on them. Not every entry can be checked, so please report anything that is wrong or
-    should not be there.
+    Shared entries and comments can stay available after you delete your account, because other
+    people may be relying on them. Not every contribution can be checked, so please report anything
+    that is wrong or should not be there.
   </p>
 
   <h2>Availability</h2>

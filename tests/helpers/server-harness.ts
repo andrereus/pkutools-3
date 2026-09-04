@@ -14,10 +14,22 @@ export class HttpError extends Error {
   }
 }
 
-/** Marker written by the ServerValue.increment stub, resolved on update(). */
-type Increment = { __increment: number }
-const isIncrement = (value: unknown): value is Increment =>
-  typeof value === 'object' && value !== null && '__increment' in value
+/** Markers written by the local stub or the Admin SDK's ServerValue.increment. */
+type Increment = { __increment: number } | { '.sv': { increment: number } }
+const incrementDelta = (value: unknown): number | null => {
+  if (typeof value !== 'object' || value === null) return null
+  if ('__increment' in value && typeof value.__increment === 'number') return value.__increment
+  if (
+    '.sv' in value &&
+    typeof value['.sv'] === 'object' &&
+    value['.sv'] !== null &&
+    'increment' in value['.sv'] &&
+    typeof value['.sv'].increment === 'number'
+  ) {
+    return value['.sv'].increment
+  }
+  return null
+}
 
 export const ServerValueStub = {
   increment: (delta: number): Increment => ({ __increment: delta })
@@ -45,6 +57,24 @@ const writePath = (root: Data, path: string, value: unknown) => {
   if (value === null) {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keys are database paths
     delete node[last]
+    // Realtime Database does not retain childless ancestors.
+    for (let index = keys.length; index > 0; index -= 1) {
+      const parent =
+        index === 1 ? root : (readPath(root, keys.slice(0, index - 1).join('/')) as Data)
+      const childKey = keys[index - 1]!
+      const child = parent?.[childKey]
+      if (
+        typeof child === 'object' &&
+        child !== null &&
+        !Array.isArray(child) &&
+        Object.keys(child as Data).length === 0
+      ) {
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- keys are database paths
+        delete parent[childKey]
+      } else {
+        break
+      }
+    }
   } else {
     node[last] = value
   }
@@ -114,13 +144,15 @@ export function createFakeDatabase(initial: Data = {}, failWrite?: WriteFailure)
       },
       update: async (patch: Data) => {
         guard('update', path)
-        const current = (readPath(data, path) as Data) ?? {}
         for (const [key, value] of Object.entries(patch)) {
-          if (isIncrement(value)) {
-            const base = typeof current[key] === 'number' ? (current[key] as number) : 0
-            writePath(data, `${path}/${key}`, base + value.__increment)
+          const targetPath = `${path}/${key}`
+          const delta = incrementDelta(value)
+          if (delta !== null) {
+            const current = readPath(data, targetPath)
+            const base = typeof current === 'number' ? current : 0
+            writePath(data, targetPath, base + delta)
           } else {
-            writePath(data, `${path}/${key}`, value)
+            writePath(data, targetPath, value)
           }
         }
       },

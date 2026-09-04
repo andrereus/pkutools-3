@@ -21,6 +21,14 @@ export type FoodSource =
 // origin
 export type AddedFrom = 'own-food' | 'community'
 
+export interface CommunityFoodComment {
+  '.key': string
+  authorId: string
+  text: string
+  createdAt: number
+  updatedAt: number
+}
+
 type DiaryItemLocator = { itemId: string; logIndex?: never } | { itemId?: never; logIndex: number }
 
 // Carried by diary entries and own foods alike
@@ -311,6 +319,19 @@ export const useApi = () => {
     hidden: boolean
   }> => request('/api/community-food/vote', 'Vote community food', 'POST', data)
 
+  const saveCommunityFoodComment = (data: {
+    communityFoodKey: string
+    commentId?: string
+    comment: string
+  }): Promise<{ success: boolean }> =>
+    request('/api/community-food/comment', 'Save community food comment', 'POST', data)
+
+  const deleteCommunityFoodComment = (data: {
+    communityFoodKey: string
+    commentId: string
+  }): Promise<{ success: boolean }> =>
+    request('/api/community-food/comment', 'Delete community food comment', 'DELETE', data)
+
   return {
     // Diary
     createDiaryDay,
@@ -329,6 +350,8 @@ export const useApi = () => {
     deleteOwnFood,
     // Community Food
     voteCommunityFood,
+    saveCommunityFoodComment,
+    deleteCommunityFoodComment,
     // Settings
     updateSettings,
     updateConsent,

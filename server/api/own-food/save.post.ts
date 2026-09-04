@@ -165,7 +165,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
 
     // Create community food entry
     const communityFoodRef = db.ref('communityFoods').push()
-    communityKey = communityFoodRef.key
+    communityKey = communityFoodRef.key!
 
     const now = Date.now()
     const communityFoodData = {
@@ -191,7 +191,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       likes: 0,
       dislikes: 0,
       score: 0,
-      usageCount: 0
+      usageCount: 0,
+      commentCount: 0
     }
 
     // Write both atomically (multi-location update) so a failed write can't

@@ -1,6 +1,6 @@
 <template>
   <h1>Política de privacidad</h1>
-  <p>Última actualización: 30 de julio de 2026</p>
+  <p>Última actualización: 4 de septiembre de 2026</p>
 
   <h2>Quién es responsable</h2>
   <p>
@@ -202,12 +202,13 @@
   <p>
     Tus alimentos propios son privados. Puedes compartir uno con la comunidad marcando la opción
     correspondiente en ese alimento. Solo se comparte ese alimento: lo que introdujiste sobre él y
-    el idioma en el que lo compartiste. Tu nombre y tu correo nunca forman parte de ello, y en la
-    aplicación no se muestra nada que te identifique.
+    el idioma en el que lo compartiste. Los comentarios que escribas sobre alimentos de la comunidad
+    también se comparten. Tu nombre y tu correo nunca forman parte de esos datos, y en la aplicación
+    no se muestra nada que te identifique.
   </p>
   <p>
     Un alimento compartido lleva tu identificador interno. Eso es lo que lo enlaza con tu propia
-    copia para que puedas seguir editándolo. Tus valoraciones también lo llevan.
+    copia para que puedas seguir editándolo. Tus valoraciones y comentarios también lo llevan.
   </p>
   <p>
     El identificador no se muestra en la aplicación y otros usuarios con sesión iniciada no pueden
@@ -217,8 +218,8 @@
   </p>
   <p>
     Si prefieres no dejar atrás un alimento compartido, bórralo desde Alimentos propios antes de
-    borrar tu cuenta: eso elimina también la entrada de la comunidad. Las valoraciones que diste a
-    alimentos de otras personas permanecen donde están.
+    borrar tu cuenta: eso elimina también la entrada de la comunidad y sus comentarios. Tus
+    comentarios y valoraciones en alimentos de otras personas permanecen donde están.
   </p>
 
   <h2>Correos electrónicos</h2>
@@ -240,8 +241,8 @@
     privacidad.
   </p>
   <p>
-    Los alimentos compartidos y las valoraciones permanecen, porque otras personas pueden estar
-    usándolos.
+    Los alimentos compartidos, las valoraciones y los comentarios permanecen, porque otras personas
+    pueden estar usándolos.
   </p>
 
   <h2>Tus derechos</h2>

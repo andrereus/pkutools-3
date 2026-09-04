@@ -1,6 +1,6 @@
 <template>
   <h1>Conditions d'utilisation</h1>
-  <p>Dernière mise à jour : 6 août 2026</p>
+  <p>Dernière mise à jour : 4 septembre 2026</p>
 
   <h2>À propos de PKU Tools</h2>
   <p>
@@ -124,16 +124,16 @@
 
   <h2>Partager des aliments avec la communauté</h2>
   <p>
-    Ne partage que des informations que tu as le droit de partager et que tu crois raisonnablement
-    exactes. N'y mets pas de données personnelles. En partageant un aliment, tu accordes à
-    l'exploitant une licence non exclusive et gratuite pour stocker, afficher et adapter cette
-    entrée aussi longtemps que nécessaire au fonctionnement de la base communautaire, y compris
-    après la suppression de ton compte.
+    Ne partage que des informations et n'écris que des commentaires que tu as le droit de partager
+    et que tu crois raisonnablement exacts. N'y mets pas de données personnelles. En partageant un
+    aliment ou en écrivant un commentaire, tu accordes à l'exploitant une licence non exclusive et
+    gratuite pour stocker, afficher et adapter ce contenu aussi longtemps que nécessaire au
+    fonctionnement de la base communautaire, y compris après la suppression de ton compte.
   </p>
   <p>
-    Les entrées partagées peuvent rester disponibles après la suppression de ton compte, car
-    d'autres personnes peuvent s'appuyer dessus. Toutes les entrées ne peuvent pas être vérifiées :
-    signale donc tout ce qui est faux ou qui ne devrait pas s'y trouver.
+    Les entrées partagées et les commentaires peuvent rester disponibles après la suppression de ton
+    compte, car d'autres personnes peuvent s'appuyer dessus. Toutes les contributions ne peuvent pas
+    être vérifiées : signale donc tout ce qui est faux ou qui ne devrait pas s'y trouver.
   </p>
 
   <h2>Disponibilité</h2>

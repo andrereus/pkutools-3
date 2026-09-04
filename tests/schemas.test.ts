@@ -6,6 +6,8 @@ import {
   OwnFoodSaveSchema,
   OwnFoodUpdateSchema,
   CommunityVoteSchema,
+  CommunityFoodCommentSchema,
+  CommunityFoodCommentDeleteSchema,
   CreateDaySchema,
   UpdateDaySchema,
   UpdateFoodItemSchema,
@@ -452,6 +454,33 @@ describe('CommunityVoteSchema', () => {
 
   it('requires a community food key', () => {
     expect(CommunityVoteSchema.safeParse({ communityFoodKey: '', vote: 1 }).success).toBe(false)
+  })
+})
+
+describe('CommunityFoodCommentSchema', () => {
+  it('distinguishes a new comment from an edit by its optional comment id', () => {
+    expect(
+      CommunityFoodCommentSchema.safeParse({ communityFoodKey: 'food', comment: 'New' }).success
+    ).toBe(true)
+    expect(
+      CommunityFoodCommentSchema.safeParse({
+        communityFoodKey: 'food',
+        commentId: 'comment',
+        comment: 'Edited'
+      }).success
+    ).toBe(true)
+  })
+
+  it('requires the exact comment id for deletion', () => {
+    expect(
+      CommunityFoodCommentDeleteSchema.safeParse({
+        communityFoodKey: 'food',
+        commentId: 'comment'
+      }).success
+    ).toBe(true)
+    expect(CommunityFoodCommentDeleteSchema.safeParse({ communityFoodKey: 'food' }).success).toBe(
+      false
+    )
   })
 })
 

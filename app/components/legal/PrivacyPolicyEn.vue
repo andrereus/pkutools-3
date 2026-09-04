@@ -1,6 +1,6 @@
 <template>
   <h1>Privacy Policy</h1>
-  <p>Last updated: July 30, 2026</p>
+  <p>Last updated: September 4, 2026</p>
 
   <h2>Who is responsible</h2>
   <p>
@@ -196,11 +196,12 @@
   <p>
     Custom foods are private. You can share one with the community by ticking the sharing option on
     that food. Only that food is shared: what you entered about it, and the language you shared it
-    in. Your name and email are never part of it, and nothing identifying you is shown in the app.
+    in. Comments you write on community foods are shared too. Your name and email are never part of
+    either, and nothing identifying you is shown in the app.
   </p>
   <p>
     A shared food carries your internal user ID. That is what links it to your own copy, so you can
-    keep editing it. Ratings you give carry it too.
+    keep editing it. Ratings and comments you give carry it too.
   </p>
   <p>
     The ID is not shown in the app, and other signed-in users have no way to connect it to your name
@@ -209,8 +210,8 @@
   </p>
   <p>
     If you would rather not leave a shared food behind, delete it from Own Food before deleting your
-    account: that removes the community entry as well. Ratings you gave on other people's foods stay
-    where they are.
+    account: that removes the community entry and its comments as well. Your comments on other
+    people's foods stay where they are, as do your ratings.
   </p>
 
   <h2>Emails</h2>
@@ -230,7 +231,7 @@
     still exist during that period. Providers may hold their own residual copies in logs or deletion
     queues for the periods set out in their privacy policies.
   </p>
-  <p>Shared foods and ratings stay, because other people may be using them.</p>
+  <p>Shared foods, ratings and comments stay, because other people may be using them.</p>
 
   <h2>Your rights</h2>
   <p>Under the GDPR you can:</p>

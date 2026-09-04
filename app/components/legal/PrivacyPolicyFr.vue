@@ -1,6 +1,6 @@
 <template>
   <h1>Politique de confidentialité</h1>
-  <p>Dernière mise à jour : 30 juillet 2026</p>
+  <p>Dernière mise à jour : 4 septembre 2026</p>
 
   <h2>Qui est responsable</h2>
   <p>
@@ -209,12 +209,13 @@
   <p>
     Tes aliments personnels sont privés. Tu peux en partager un avec la communauté en cochant
     l'option de partage sur cet aliment. Seul cet aliment est partagé : ce que tu as saisi à son
-    sujet et la langue dans laquelle tu l'as partagé. Ton nom et ton e-mail n'en font jamais partie,
-    et rien qui t'identifie n'est affiché dans l'application.
+    sujet et la langue dans laquelle tu l'as partagé. Les commentaires que tu écris sur les aliments
+    de la communauté sont également partagés. Ton nom et ton e-mail n'en font jamais partie, et rien
+    qui t'identifie n'est affiché dans l'application.
   </p>
   <p>
     Un aliment partagé porte ton identifiant interne. C'est ce qui le relie à ta propre copie, pour
-    que tu puisses continuer à le modifier. Tes évaluations le portent aussi.
+    que tu puisses continuer à le modifier. Tes évaluations et commentaires le portent aussi.
   </p>
   <p>
     L'identifiant n'est pas affiché dans l'application et les autres utilisateurs connectés ne
@@ -224,8 +225,9 @@
   </p>
   <p>
     Si tu préfères ne pas laisser un aliment partagé derrière toi, supprime-le depuis Aliments
-    personnels avant de supprimer ton compte : cela retire aussi l'entrée de la communauté. Les
-    évaluations que tu as données sur les aliments d'autres personnes restent en place.
+    personnels avant de supprimer ton compte : cela retire aussi l'entrée de la communauté et ses
+    commentaires. Tes commentaires et évaluations sur les aliments d'autres personnes restent en
+    place.
   </p>
 
   <h2>E-mails</h2>
@@ -249,7 +251,8 @@
     durées indiquées dans leurs politiques de confidentialité.
   </p>
   <p>
-    Les aliments partagés et les évaluations restent, car d'autres personnes peuvent les utiliser.
+    Les aliments partagés, les évaluations et les commentaires restent, car d'autres personnes
+    peuvent les utiliser.
   </p>
 
   <h2>Tes droits</h2>

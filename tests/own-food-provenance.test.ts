@@ -74,7 +74,8 @@ describe('saving a calculated food as an own food', () => {
       sourceId: '4009233001234',
       factor: 50,
       language: 'en',
-      contributorId: 'owner-1'
+      contributorId: 'owner-1',
+      commentCount: 0
     })
     expect(published.nutrients).toEqual({ protein: 1, fat: 1.5, salt: 0.09 })
   })

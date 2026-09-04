@@ -62,8 +62,8 @@ describe('community food vote', () => {
   it.each([
     ['casts a new like', undefined, 1, { likes: 3, dislikes: 2, score: 1 }, { 'voter-1': 1 }],
     ['casts a new dislike', undefined, -1, { likes: 2, dislikes: 3, score: -1 }, { 'voter-1': -1 }],
-    ['undoes a like', 1, 1, { likes: 1, dislikes: 2, score: -1 }, {}],
-    ['undoes a dislike', -1, -1, { likes: 2, dislikes: 1, score: 1 }, {}],
+    ['undoes a like', 1, 1, { likes: 1, dislikes: 2, score: -1 }, undefined],
+    ['undoes a dislike', -1, -1, { likes: 2, dislikes: 1, score: 1 }, undefined],
     ['switches dislike to like', -1, 1, { likes: 3, dislikes: 1, score: 2 }, { 'voter-1': 1 }],
     ['switches like to dislike', 1, -1, { likes: 1, dislikes: 3, score: -2 }, { 'voter-1': -1 }]
   ])('%s', async (_label, existingVote, newVote, expected, expectedVoters) => {

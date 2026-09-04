@@ -5,6 +5,10 @@
       ".write": false,
       ".indexOn": ["language", "contributorId", "score"]
     },
+    "communityFoodComments": {
+      ".read": "auth != null",
+      ".write": false
+    },
     "$uid": {
       ".read": "$uid === auth.uid",
       ".write": false,
