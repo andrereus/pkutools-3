@@ -265,6 +265,61 @@ describe('streak milestones', () => {
     expect(streakMilestones(run('2026-01-01', 3))).toEqual([reached(3, '2026-01-03')])
   })
 
+  it('notifies for a milestone reached after an earlier News visit on the same day', () => {
+    const morning = new Date(2026, 0, 3, 9).getTime()
+    const afternoon = new Date(2026, 0, 3, 14).getTime()
+    const milestones = streakMilestones([
+      ...run('2026-01-01', 2),
+      { date: '2026-01-03', createdAt: afternoon }
+    ])
+    expect(milestones).toEqual([{ count: 3, date: '2026-01-03', createdAt: afternoon }])
+    const entry = { ...milestones[0]!, key: 'streak-3-2026-01-03' }
+    expect(isUnread(entry, { lastReadAt: morning, lastSeenRevision: null })).toBe(true)
+    expect(isUnread(entry, seenAfterVisit([entry]))).toBe(false)
+  })
+
+  it('does not make a seen milestone unread again when the diary day is edited', () => {
+    const createdAt = new Date(2026, 0, 3, 9).getTime()
+    const updatedAt = new Date(2026, 0, 3, 14).getTime()
+    const day = { date: '2026-01-03', createdAt, updatedAt }
+    const [milestone] = streakMilestones([...run('2026-01-01', 2), day])
+    expect(milestone?.createdAt).toBe(createdAt)
+    expect(
+      isUnread(
+        { ...milestone!, key: 'streak-3-2026-01-03' },
+        { lastReadAt: createdAt, lastSeenRevision: null }
+      )
+    ).toBe(false)
+  })
+
+  it('uses the earliest same-day creation time if legacy days are duplicated', () => {
+    const early = new Date(2026, 0, 3, 9).getTime()
+    const late = new Date(2026, 0, 3, 14).getTime()
+    const entries = [
+      ...run('2026-01-01', 2),
+      { date: '2026-01-03', createdAt: late },
+      { date: '2026-01-03', createdAt: early }
+    ]
+    const expected = [{ count: 3, date: '2026-01-03', createdAt: early }]
+    expect(streakMilestones(entries)).toEqual(expected)
+    expect(streakMilestones([...entries].reverse())).toEqual(expected)
+  })
+
+  it('keeps invalid, backfilled, and pre-entered timestamps at the calendar date', () => {
+    for (const createdAt of [
+      undefined,
+      Number.NaN,
+      Number.POSITIVE_INFINITY,
+      Number.MAX_SAFE_INTEGER,
+      new Date(2026, 0, 2, 14).getTime(),
+      new Date(2026, 0, 4, 14).getTime()
+    ]) {
+      expect(
+        streakMilestones([...run('2026-01-01', 2), { date: '2026-01-03', createdAt }])
+      ).toEqual([reached(3, '2026-01-03')])
+    }
+  })
+
   // The day the seventh consecutive entry was made, not the day the run began.
   it('dates a milestone to the day it was reached', () => {
     expect(streakMilestones(run('2026-01-01', 7))).toEqual([
@@ -320,7 +375,7 @@ describe('streak milestones', () => {
     ])
   })
 
-  it('keeps a backfilled streak at its calendar date and ignores row timestamps', () => {
+  it('keeps a backfilled streak at its calendar date despite timestamps on other days', () => {
     const backfilled = [
       { date: '2026-01-01', createdAt: 100 },
       { date: '2026-01-02', createdAt: Date.UTC(2030, 0, 1) },
@@ -347,9 +402,21 @@ describe('what counts as unread', () => {
     revision
   })
 
-  it('calls every item unread when there has been no visit', () => {
+  it('marks ordinary entries unread when there has been no visit', () => {
     expect(isUnread(item('latest', daysAgo(1)), emptySeen())).toBe(true)
     expect(isUnread(item('older', daysAgo(200)), emptySeen())).toBe(true)
+  })
+
+  it('never marks a food shared by the current reader unread', () => {
+    const food = { ...item('own-food', daysAgo(1)), isOwn: true }
+    expect(isUnread(food, emptySeen())).toBe(false)
+    expect(isUnread(food, { lastReadAt: daysAgo(2), lastSeenRevision: null })).toBe(false)
+  })
+
+  it('still marks a newer food shared by another reader unread', () => {
+    const food = { ...item('community-food', daysAgo(1)), isOwn: false }
+    expect(isUnread(food, emptySeen())).toBe(true)
+    expect(isUnread(food, { lastReadAt: daysAgo(2), lastSeenRevision: null })).toBe(true)
   })
 
   it('never marks a rating-hidden food unread, even when manually revealed', () => {

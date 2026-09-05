@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { computed, ref } from 'vue'
 import type { NewsEntry, Notice } from '../app/composables/useNewsContext'
 import { useNewsBadge } from '../app/composables/useNewsBadge'
+import { streakMilestones } from '../app/utils/milestones'
 
 const context = {
   foodEntries: ref<NewsEntry[]>([]),
@@ -52,12 +53,24 @@ describe('News unread badge', () => {
     expect(hasUnread.value).toBe(false)
   })
 
-  it('still notifies for a questioned food that is not hidden, then clears when hidden', () => {
+  it('does not notify for negative feedback, whether the food is hidden or not', () => {
     const { hasUnread } = useNewsBadge()
     context.notices.value = [{ ...hiddenNotice, netDislikes: 2, isHidden: false }]
-    expect(hasUnread.value).toBe(true)
+    expect(hasUnread.value).toBe(false)
     context.notices.value = [hiddenNotice]
     expect(hasUnread.value).toBe(false)
+  })
+
+  it('still notifies for new posts alongside a non-hidden feedback warning', () => {
+    const { hasUnread } = useNewsBadge()
+    context.notices.value = [{ ...hiddenNotice, netDislikes: 2, isHidden: false }]
+    context.foodEntries.value = [
+      { key: 'visible-food', kind: 'food-shared', createdAt: 100, isOwn: false }
+    ]
+    expect(hasUnread.value).toBe(true)
+    seen.lastReadAt.value = 100
+    expect(hasUnread.value).toBe(false)
+    expect(context.notices.value).toHaveLength(1)
   })
 
   it('still notifies for other unread posts while a hidden notice exists', () => {
@@ -83,8 +96,32 @@ describe('News unread badge', () => {
     expect(hasUnread.value).toBe(false)
   })
 
+  it('notifies when a milestone is reached after a News visit earlier that day', () => {
+    seen.lastReadAt.value = new Date(2026, 0, 3, 9).getTime()
+    const { hasUnread } = useNewsBadge()
+    expect(hasUnread.value).toBe(false)
+
+    const createdAt = new Date(2026, 0, 3, 14).getTime()
+    context.milestoneEntries.value = streakMilestones([
+      '2026-01-01',
+      '2026-01-02',
+      { date: '2026-01-03', createdAt }
+    ]).map((milestone) => ({
+      ...milestone,
+      key: `streak-${milestone.count}-${milestone.date}`,
+      kind: 'streak'
+    }))
+
+    expect(hasUnread.value).toBe(true)
+    seen.lastReadAt.value = createdAt
+    expect(hasUnread.value).toBe(false)
+  })
+
   it('waits for read-state restoration before notifying', () => {
     context.notices.value = [{ ...hiddenNotice, netDislikes: 2, isHidden: false }]
+    context.foodEntries.value = [
+      { key: 'visible-food', kind: 'food-shared', createdAt: 100, isOwn: false }
+    ]
     seen.ready.value = false
     const { hasUnread } = useNewsBadge()
     expect(hasUnread.value).toBe(false)

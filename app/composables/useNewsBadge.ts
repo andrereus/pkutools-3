@@ -8,10 +8,10 @@ import { isUnread } from '../utils/news-grouping'
  * time rather than being imported here, so a file that only grows is not
  * shipped to someone looking at their diary.
  *
- * Notices for non-hidden foods keep the dot active while their condition holds.
+ * Contributor feedback warnings stay on the News page without triggering a dot.
  */
 export const useNewsBadge = () => {
-  const { foodEntries, milestoneEntries, notices } = useNewsContext()
+  const { foodEntries, milestoneEntries } = useNewsContext()
   const seenState = useNewsSeen()
   const config = useRuntimeConfig().public
   const newestNoteAt = Number(config.changelogLatestAt ?? 0)
@@ -26,8 +26,6 @@ export const useNewsBadge = () => {
 
     // Wait for browser storage to avoid a hydration mismatch.
     if (!seenState.ready.value) return false
-    if (notices.value.some((notice) => !notice.isHidden)) return true
-
     const seen = {
       lastReadAt: seenState.lastReadAt.value,
       lastSeenRevision: seenState.lastSeenRevision.value

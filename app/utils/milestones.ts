@@ -10,21 +10,45 @@ export interface Milestone {
   count: number
   /** The day it was reached, as YYYY-MM-DD. */
   date: string
-  /** Stable timestamp derived from `date`, for the shared feed ordering. */
+  /** When the final day was first logged, or its calendar date for legacy/backfilled days. */
   createdAt: number
 }
 
 export interface MilestoneDay {
   date?: string
+  createdAt?: number
 }
 
 /**
  * A date-only entry has no real instant. Local midnight puts it at the start of
  * the reader's named calendar day and, for today, can never move the read cursor
- * into the future. It is used only for ordering and the chronological cursor;
+ * into the future. Used when no same-day creation time is available;
  * the UI displays `date` itself.
  */
 export const dateToTime = (date: string) => new Date(`${date}T00:00:00`).getTime()
+
+/** Use the final day's first save time without resurfacing historical backfills. */
+const milestoneTime = (date: string, entries: (string | MilestoneDay | undefined)[]): number => {
+  const dayStart = dateToTime(date)
+  const nextDay = new Date(dayStart)
+  nextDay.setDate(nextDay.getDate() + 1)
+  let firstRecordedAt: number | undefined
+
+  for (const entry of entries) {
+    if (!entry || typeof entry === 'string' || entry.date !== date) continue
+    const recordedAt = entry.createdAt
+    if (
+      typeof recordedAt !== 'number' ||
+      !Number.isSafeInteger(recordedAt) ||
+      recordedAt < dayStart ||
+      recordedAt >= nextDay.getTime()
+    )
+      continue
+    firstRecordedAt = Math.min(firstRecordedAt ?? recordedAt, recordedAt)
+  }
+
+  return firstRecordedAt ?? dayStart
+}
 
 /** Valid calendar dates, sorted and deduplicated. */
 const sortedDays = (entries: (string | MilestoneDay | undefined)[]): string[] => {
@@ -71,10 +95,9 @@ export const streakMilestones = (entries: (string | MilestoneDay | undefined)[])
         milestones.push({
           count,
           date,
-          // A backfilled historical run remains a historical event. Using the
-          // same date for display, order, and unread status keeps one coherent
-          // chronological rule and prevents row timestamps moving the cursor.
-          createdAt: dateToTime(date)
+          // A same-day save can follow a morning News visit. Use that instant
+          // for unread status; historical backfills retain their calendar date.
+          createdAt: milestoneTime(date, entries)
         })
       }
       runStart = index

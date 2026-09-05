@@ -7,6 +7,8 @@ export interface SeenEntry {
   key: string
   createdAt: number
   revision?: number
+  /** A food shared by the current reader. */
+  isOwn?: boolean
   isHidden?: boolean
 }
 
@@ -43,9 +45,9 @@ export const isNewsTimestamp = (value: unknown): value is number =>
  * a second, independent check for a note that first appears behind that time.
  */
 export const isUnread = (entry: SeenEntry, seen: SeenState): boolean => {
-  // Revealing a rating-hidden food should not give it unread decoration or
-  // cause an unread notification.
-  if (entry.isHidden) return false
+  // Own shares and rating-hidden foods should not get unread decoration or
+  // trigger the badge. Contributor feedback warnings stay on the News page.
+  if (entry.isOwn || entry.isHidden) return false
   const newerThanTime =
     isNewsTimestamp(entry.createdAt) &&
     (seen.lastReadAt === null || entry.createdAt > seen.lastReadAt)
