@@ -179,11 +179,6 @@ const showCorrectionHint = computed(
             class="inline-flex items-center gap-2.5 overflow-hidden rounded-lg bg-white px-2.5 ring-1 ring-gray-300 dark:bg-gray-900 dark:ring-gray-600"
           >
             <span
-              class="flex min-h-8 items-center bg-white text-gray-900 dark:bg-gray-900 dark:text-white"
-            >
-              {{ $t('community.statistics') }}
-            </span>
-            <span
               class="flex min-h-8 items-center gap-1 bg-white text-teal-700 dark:bg-gray-900 dark:text-teal-300"
             >
               <LucideThumbsUp class="h-4 w-4" aria-hidden="true" />
@@ -196,6 +191,16 @@ const showCorrectionHint = computed(
               <LucideThumbsDown class="h-4 w-4" aria-hidden="true" />
               <span>{{ food.dislikes || 0 }}</span>
               <span class="sr-only">{{ $t('community.dislike') }}</span>
+            </span>
+            <span
+              class="-ml-0.5 flex min-h-8 items-center gap-1 bg-white text-sky-700 dark:bg-gray-900 dark:text-sky-300"
+              :title="$t('community.usageCount', { count: food.usageCount || 0 })"
+            >
+              <LucidePlus class="h-4 w-4" aria-hidden="true" />
+              <span aria-hidden="true">{{ food.usageCount || 0 }}</span>
+              <span class="sr-only">
+                {{ $t('community.usageCount', { count: food.usageCount || 0 }) }}
+              </span>
             </span>
           </div>
         </div>

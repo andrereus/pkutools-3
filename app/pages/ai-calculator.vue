@@ -953,7 +953,6 @@ defineOgImage('Default', {
         v-model:shared="shareWithCommunity"
         :can-share="canShareResult"
         :show-note="isLabelResult"
-        :hint="isLabelResult && result.phePer100g === null ? $t('common.check-food-type') : null"
       />
 
       <PrimaryButton

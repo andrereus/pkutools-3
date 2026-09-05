@@ -39,7 +39,6 @@
     "food": "Alimento",
     "food-name": "Nombre del alimento",
     "food-type": "Tipo de alimento",
-    "check-food-type": "Asegúrate de que el tipo de alimento sea correcto para el cálculo a partir de la proteína.",
     "weight": "Peso",
     "weight-in-g": "Peso (en g)",
     "consumed-weight": "Peso consumido (en g)",
@@ -171,7 +170,6 @@
     "description": "Calcula la cantidad de Phe para un peso específico o convierte proteína en Phe.",
     "tab-title": "Phe",
     "mode": "Modo de entrada",
-    "check-mode": "Asegúrate de que el modo de entrada sea correcto para el cálculo a partir de la proteína.",
     "type-suggestion-title": "Comprueba el tipo de alimento",
     "type-suggestion-message": "El nombre del alimento sugiere {type}. Eso da {corrected} mg Phe en lugar de {current}.",
     "type-suggestion-use": "Usar sugerencia",
@@ -274,7 +272,6 @@
     "unshare-title": "¿Eliminar de la comunidad?",
     "unshare-warning": "Esto eliminará el alimento de la base de datos de la comunidad. Todos los comentarios, me gusta, no me gusta y estadísticas de uso se perderán permanentemente.",
     "unshare-confirm": "Eliminar de la comunidad",
-    "type-check-notice": "Cuando la Phe se calculó a partir de la proteína, el tipo de alimento ahora se comprueba al guardar en {action}. Recomendado hacerlo con los alimentos ya compartidos.",
     "share-hint": "Para compartir este alimento con la comunidad, abre {action}.",
     "reset-votes-title": "¿Actualizar el alimento compartido?",
     "reset-votes-warning": "Los votos y comentarios se refieren a la información anterior del alimento. Al guardar estos cambios, se restablecerán los votos y se eliminarán permanentemente todos los comentarios."

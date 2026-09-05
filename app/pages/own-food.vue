@@ -785,13 +785,6 @@ defineOgImage('Default', {
         </div>
       </div>
 
-      <!-- Point contributors to the edit form where converted food types can be checked. -->
-      <p
-        class="mb-6 rounded-lg bg-sky-50 p-3 text-sm text-gray-700 dark:bg-sky-950/50 dark:text-gray-300"
-      >
-        {{ $t('own-food.type-check-notice', { action: $t('common.edit') }) }}
-      </p>
-
       <div class="mb-8">
         <div class="mt-6 flow-root">
           <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

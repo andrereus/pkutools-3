@@ -8,10 +8,6 @@ defineProps({
   // SHAREABLE_FOOD_SOURCES decides. Absent rather than explained — an option
   // that was never offered needs no note.
   canShare: { type: Boolean, default: true },
-  // Warning for a Phe converted from protein via a user-picked setting. Passed
-  // in rather than built here: each page names its own control, and
-  // interpolating that name breaks German gender agreement.
-  hint: { type: String, default: null },
   // False where the note is filled for the user — an AI estimate writes the
   // model's explanation. It stays editable in Own Food.
   showNote: { type: Boolean, default: true }
@@ -45,10 +41,6 @@ watch(model, (value) => {
         </label>
       </div>
     </div>
-
-    <p v-if="model && hint" class="mt-3 text-sm text-amber-600 dark:text-amber-400">
-      {{ hint }}
-    </p>
 
     <div v-if="model && showNote" class="mt-3">
       <label

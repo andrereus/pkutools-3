@@ -39,7 +39,6 @@
     "food": "Lebensmittel",
     "food-name": "Lebensmittelname",
     "food-type": "Art des Lebensmittels",
-    "check-food-type": "Stelle sicher, dass die Art des Lebensmittels für die Eiweißberechnung stimmt.",
     "weight": "Gewicht",
     "weight-in-g": "Gewicht (in g)",
     "consumed-weight": "Konsumiertes Gewicht (in g)",
@@ -171,7 +170,6 @@
     "description": "Berechne die Phe-Menge für ein bestimmtes Gewicht oder rechne Eiweiß in Phe um.",
     "tab-title": "Phe",
     "mode": "Eingabemodus",
-    "check-mode": "Stelle sicher, dass der Eingabemodus für die Eiweißberechnung stimmt.",
     "type-suggestion-title": "Art des Lebensmittels prüfen",
     "type-suggestion-message": "Der Name des Lebensmittels deutet auf {type} hin. Das ergibt {corrected} mg Phe statt {current}.",
     "type-suggestion-use": "Vorschlag verwenden",
@@ -274,7 +272,6 @@
     "unshare-title": "Aus der Community entfernen?",
     "unshare-warning": "Dies entfernt das Lebensmittel aus der Community-Datenbank. Alle Kommentare, Likes, Dislikes und Nutzungsstatistiken gehen dauerhaft verloren.",
     "unshare-confirm": "Aus Community entfernen",
-    "type-check-notice": "Wurde der Phe-Wert aus Eiweiß berechnet, wird der Lebensmitteltyp jetzt beim Speichern unter {action} geprüft. Empfohlen durchzuführen für bisher geteilte Lebensmittel.",
     "share-hint": "Zum Teilen mit der Community öffne {action}.",
     "reset-votes-title": "Geteiltes Lebensmittel aktualisieren?",
     "reset-votes-warning": "Stimmen und Kommentare beziehen sich auf die bisherigen Angaben zum Lebensmittel. Beim Speichern dieser Änderungen werden die Stimmen zurückgesetzt und alle Kommentare dauerhaft gelöscht."

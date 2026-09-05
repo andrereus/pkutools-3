@@ -4,7 +4,11 @@ import { resolve } from 'node:path'
 import { dateToTime, streakMilestones } from '../app/utils/milestones'
 import { parseNewsSeenMarker } from '../app/composables/useNewsSeen'
 import { format } from 'date-fns'
-import { communityFoodAppearsInNews, communityFoodNotices } from '../app/composables/useNewsContext'
+import {
+  communityFoodAppearsInNews,
+  communityFoodNotices,
+  hasHiddenFoodsInNews
+} from '../app/composables/useNewsContext'
 import {
   emptySeen,
   filterNewsItems,
@@ -158,6 +162,30 @@ describe('which community foods appear', () => {
   // food has no record, so it has no entry, with nothing left to clean up.
   it('has nothing to show for a food that no longer exists', () => {
     expect([].filter((food) => appears(food, 'de'))).toHaveLength(0)
+  })
+})
+
+describe('availability of the hidden-food toggle', () => {
+  const food = { language: 'de', createdAt: 100, likes: 0, dislikes: 3 }
+
+  it('appears only when there are rating-hidden foods', () => {
+    expect(hasHiddenFoodsInNews([], 'de')).toBe(false)
+    expect(hasHiddenFoodsInNews([{ ...food, dislikes: 2 }], 'de')).toBe(false)
+    expect(hasHiddenFoodsInNews([{ ...food, likes: 1 }], 'de')).toBe(false)
+    expect(hasHiddenFoodsInNews([food], 'de')).toBe(true)
+  })
+
+  it('ignores foods in other languages and malformed records that cannot be revealed', () => {
+    expect(hasHiddenFoodsInNews([food], 'en')).toBe(false)
+    expect(hasHiddenFoodsInNews([{ ...food, createdAt: Number.NaN }], 'de')).toBe(false)
+    expect(hasHiddenFoodsInNews([{ ...food, createdAt: undefined }], 'de')).toBe(false)
+  })
+
+  it('stays available when the hidden food is shown, for contributors and other readers', () => {
+    const contributorFood = { ...food, contributorId: 'owner-1' }
+    expect(communityFoodAppearsInNews(contributorFood, 'de', true)).toBe(true)
+    expect(hasHiddenFoodsInNews([contributorFood], 'de')).toBe(true)
+    expect(hasHiddenFoodsInNews([food], 'de')).toBe(true)
   })
 })
 

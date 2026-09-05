@@ -21,7 +21,7 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const { voteCommunityFood } = useApi()
-const { items, notices, showHiddenFoods, userIsAuthenticated } = useNews()
+const { items, notices, showHiddenFoods, hasHiddenFoods, userIsAuthenticated } = useNews()
 const seenState = useNewsSeen()
 
 const userId = computed(() => store.user?.id ?? null)
@@ -356,10 +356,17 @@ defineOgImage('Default', {
         </button>
       </nav>
       <label
-        class="ml-auto flex min-h-9 shrink-0 cursor-pointer items-center gap-2 text-sm whitespace-nowrap text-gray-600 dark:text-gray-400"
+        v-if="hasHiddenFoods"
+        class="ml-auto flex min-h-9 shrink-0 cursor-pointer items-center gap-2 text-xs whitespace-nowrap text-gray-500 dark:text-gray-400"
       >
         <span>{{ $t('news.show-hidden-foods') }}</span>
-        <ToggleSwitch v-model="showHiddenFoods" small :label="$t('news.show-hidden-foods')" />
+        <ToggleSwitch
+          v-model="showHiddenFoods"
+          small
+          thin
+          :label="$t('news.show-hidden-foods')"
+          class="opacity-75 hover:opacity-100 focus-visible:opacity-100"
+        />
       </label>
     </div>
 

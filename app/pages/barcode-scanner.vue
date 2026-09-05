@@ -720,7 +720,6 @@ defineOgImage('Default', {
           v-model="saveToOwnFood"
           v-model:note="note"
           v-model:shared="shareWithCommunity"
-          :hint="$t('common.check-food-type')"
         />
 
         <PrimaryButton

@@ -325,7 +325,6 @@ defineOgImage('Default', {
         v-model="saveToOwnFood"
         v-model:note="note"
         v-model:shared="shareWithCommunity"
-        :hint="select === 'phe' ? null : $t('phe-calculator.check-mode')"
       />
     </fieldset>
 

@@ -39,7 +39,6 @@
     "food": "Food",
     "food-name": "Food name",
     "food-type": "Type of food",
-    "check-food-type": "Make sure the type of food is correct for the protein calculation.",
     "weight": "Weight",
     "weight-in-g": "Weight (in g)",
     "consumed-weight": "Consumed weight (in g)",
@@ -171,7 +170,6 @@
     "description": "Calculate the amount of Phe for a specific weight or convert protein to Phe.",
     "tab-title": "Phe",
     "mode": "Input mode",
-    "check-mode": "Make sure the input mode is correct for the protein calculation.",
     "type-suggestion-title": "Check the food type",
     "type-suggestion-message": "The food name suggests {type}. That gives {corrected} mg Phe instead of {current}.",
     "type-suggestion-use": "Use suggestion",
@@ -274,7 +272,6 @@
     "unshare-title": "Remove from community?",
     "unshare-warning": "This will remove the food from the community database. All comments, likes, dislikes, and usage statistics will be permanently lost.",
     "unshare-confirm": "Remove from community",
-    "type-check-notice": "Where Phe was calculated from protein, the food type is now checked when you save in {action}. Recommended to do for already shared foods.",
     "share-hint": "To share this food with the community, open {action}.",
     "reset-votes-title": "Update the shared food?",
     "reset-votes-warning": "Votes and comments refer to the previous food information. Saving these changes resets the votes and permanently deletes all comments."

@@ -23,6 +23,14 @@ export const communityFoodAppearsInNews = (
   isNewsTimestamp(food.createdAt) &&
   (showHiddenFoods || !isCommunityFoodHidden(communityFoodScore(food)))
 
+/** Whether the toggle can reveal any food in this language, regardless of its current state. */
+export const hasHiddenFoodsInNews = (foods: Food[], locale: string): boolean =>
+  foods.some(
+    (food) =>
+      communityFoodAppearsInNews(food, locale, true) &&
+      isCommunityFoodHidden(communityFoodScore(food))
+  )
+
 /** Something that happened to the reader, shown above the timeline. */
 export interface Notice {
   key: string
@@ -106,6 +114,9 @@ export const useNewsContext = () => {
   // Local to this consumer, not a saved setting. The header badge keeps the
   // default exclusion even when the News page opts in to hidden foods.
   const showHiddenFoods = ref(false)
+  const hasHiddenFoods = computed(
+    () => userIsAuthenticated.value && hasHiddenFoodsInNews(foods.value, locale.value)
+  )
 
   const foodEntries = computed<NewsEntry[]>(() => {
     if (!userIsAuthenticated.value) return []
@@ -175,6 +186,7 @@ export const useNewsContext = () => {
     milestoneEntries,
     notices,
     showHiddenFoods,
+    hasHiddenFoods,
     userIsAuthenticated
   }
 }

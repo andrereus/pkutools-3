@@ -39,7 +39,6 @@
     "food": "Aliment",
     "food-name": "Nom de l'aliment",
     "food-type": "Type d'aliment",
-    "check-food-type": "Assure-toi que le type d'aliment est correct pour le calcul à partir des protéines.",
     "weight": "Poids",
     "weight-in-g": "Poids (en g)",
     "consumed-weight": "Poids consommé (en g)",
@@ -171,7 +170,6 @@
     "description": "Calcule la quantité de Phe pour un poids spécifique ou convertis des protéines en Phe.",
     "tab-title": "Phe",
     "mode": "Mode d'entrée",
-    "check-mode": "Assure-toi que le mode d'entrée est correct pour le calcul à partir des protéines.",
     "type-suggestion-title": "Vérifie le type d'aliment",
     "type-suggestion-message": "Le nom de l'aliment suggère {type}. Cela donne {corrected} mg Phe au lieu de {current}.",
     "type-suggestion-use": "Utiliser la suggestion",
@@ -274,7 +272,6 @@
     "unshare-title": "Retirer de la communauté ?",
     "unshare-warning": "Cela supprimera l'aliment de la base de données communautaire. Tous les commentaires, les j'aime, les je n'aime pas et les statistiques d'utilisation seront définitivement perdus.",
     "unshare-confirm": "Retirer de la communauté",
-    "type-check-notice": "Quand la Phe a été calculée à partir des protéines, le type d'aliment est maintenant vérifié lors de l'enregistrement dans {action}. Recommandé de le faire pour les aliments déjà partagés.",
     "share-hint": "Pour partager cet aliment avec la communauté, ouvre {action}.",
     "reset-votes-title": "Mettre à jour l'aliment partagé ?",
     "reset-votes-warning": "Les votes et les commentaires portent sur les informations précédentes de l'aliment. Enregistrer ces modifications réinitialisera les votes et supprimera définitivement tous les commentaires."
