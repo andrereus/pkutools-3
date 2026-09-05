@@ -8,7 +8,7 @@ import { isUnread } from '../utils/news-grouping'
  * time rather than being imported here, so a file that only grows is not
  * shipped to someone looking at their diary.
  *
- * Derived notices keep the dot active while their underlying condition holds.
+ * Notices for non-hidden foods keep the dot active while their condition holds.
  */
 export const useNewsBadge = () => {
   const { foodEntries, milestoneEntries, notices } = useNewsContext()
@@ -26,7 +26,7 @@ export const useNewsBadge = () => {
 
     // Wait for browser storage to avoid a hydration mismatch.
     if (!seenState.ready.value) return false
-    if (notices.value.length > 0) return true
+    if (notices.value.some((notice) => !notice.isHidden)) return true
 
     const seen = {
       lastReadAt: seenState.lastReadAt.value,

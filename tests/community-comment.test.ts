@@ -54,6 +54,27 @@ const comments = () =>
 
 beforeEach(() => seed())
 
+const seedThread = (count: number, contributorId = 'author-1') => {
+  seed({
+    communityFoods: {
+      food1: { name: 'Rice cake', contributorId, commentCount: count }
+    },
+    communityFoodComments: {
+      food1: Object.fromEntries(
+        Array.from({ length: count }, (_, index) => [
+          `comment-${index}`,
+          {
+            authorId: 'commenter-1',
+            text: `Comment ${index}`,
+            createdAt: index + 1,
+            updatedAt: index + 1
+          }
+        ])
+      )
+    }
+  })
+}
+
 describe('community food comments', () => {
   it('appends a public comment and increments the summary count', async () => {
     const result = await saveComment(saveRequest('  Check the serving size.  '))
@@ -68,6 +89,31 @@ describe('community food comments', () => {
     expect(food()).toMatchObject({ commentCount: 1 })
     expect(result).toEqual({ success: true })
     expect(commentId).toMatch(/^-Nfake/)
+  })
+
+  it('allows feedback on a food hidden from search without changing its ratings', async () => {
+    seed({
+      communityFoods: {
+        food1: {
+          name: 'Rice cake',
+          contributorId: 'author-1',
+          likes: 0,
+          dislikes: 3,
+          score: -3,
+          commentCount: 0
+        }
+      }
+    })
+
+    await saveComment(saveRequest('The label lists values per serving.'))
+
+    expect(Object.values(comments())).toEqual([
+      expect.objectContaining({
+        authorId: 'commenter-1',
+        text: 'The label lists values per serving.'
+      })
+    ])
+    expect(food()).toMatchObject({ likes: 0, dislikes: 3, score: -3, commentCount: 1 })
   })
 
   it('allows one account to add several chronological comments', async () => {
@@ -97,31 +143,48 @@ describe('community food comments', () => {
     expect(food()).toMatchObject({ commentCount: 2 })
   })
 
-  it('rejects a new comment once the food has 100 comments', async () => {
-    const existing = Object.fromEntries(
-      Array.from({ length: 100 }, (_, index) => [
-        `comment-${index}`,
-        {
-          authorId: 'commenter-2',
-          text: `Comment ${index}`,
-          createdAt: index + 1,
-          updatedAt: index + 1
-        }
-      ])
-    )
-    seed({
-      communityFoods: {
-        food1: { name: 'Rice cake', contributorId: 'author-1', commentCount: 100 }
-      },
-      communityFoodComments: { food1: existing }
-    })
+  it.each([
+    { count: 98, contributorId: 'author-1', allowed: true },
+    { count: 99, contributorId: 'author-1', allowed: false },
+    { count: 99, contributorId: 'commenter-1', allowed: true },
+    { count: 100, contributorId: 'commenter-1', allowed: false },
+    { count: 100, contributorId: 'author-1', allowed: false }
+  ])(
+    'reserves the 100th comment: $count existing, contributor $contributorId',
+    async ({ count, contributorId, allowed }) => {
+      seedThread(count, contributorId)
 
-    await expect(saveComment(saveRequest('One too many'))).rejects.toMatchObject({
-      statusCode: 409,
-      data: { code: 'community-food-comment-limit' }
+      if (allowed) {
+        await expect(saveComment(saveRequest('Another comment'))).resolves.toEqual({
+          success: true
+        })
+      } else {
+        await expect(saveComment(saveRequest('Another comment'))).rejects.toMatchObject({
+          statusCode: 409,
+          data: { code: 'community-food-comment-limit' }
+        })
+      }
+      const expectedCount = count + Number(allowed)
+      expect(Object.keys(comments())).toHaveLength(expectedCount)
+      expect(food()).toMatchObject({ commentCount: expectedCount })
+    }
+  )
+
+  it('allows editing and deleting existing comments when new submissions are capped', async () => {
+    seedThread(99)
+    await expect(saveComment(saveRequest('Edited', 'comment-0'))).resolves.toEqual({
+      success: true
     })
-    expect(Object.keys(comments())).toHaveLength(100)
-    expect(food()).toMatchObject({ commentCount: 100 })
+    expect(comments()['comment-0']).toMatchObject({ text: 'Edited', createdAt: 1 })
+    expect(food()).toMatchObject({ commentCount: 99 })
+
+    await deleteComment(deleteRequest('comment-0'))
+    await saveComment(saveRequest('Replacement'))
+    expect(Object.keys(comments())).toHaveLength(99)
+    expect(food()).toMatchObject({ commentCount: 99 })
+    await expect(saveComment(saveRequest('Reserved place'))).rejects.toMatchObject({
+      statusCode: 409
+    })
   })
 
   it('edits only the selected own comment without changing its count or creation time', async () => {

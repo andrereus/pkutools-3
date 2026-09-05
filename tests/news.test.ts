@@ -4,12 +4,13 @@ import { resolve } from 'node:path'
 import { dateToTime, streakMilestones } from '../app/utils/milestones'
 import { parseNewsSeenMarker } from '../app/composables/useNewsSeen'
 import { format } from 'date-fns'
-import { communityFoodAppearsInNews } from '../app/composables/useNewsContext'
+import { communityFoodAppearsInNews, communityFoodNotices } from '../app/composables/useNewsContext'
 import {
   emptySeen,
   filterNewsItems,
   hasEnoughCommunityItemsForFilter,
   isUnread,
+  newsCountToReveal,
   seenAfterVisit,
   utcDayForLocalFormatting,
   visibleNewsItems
@@ -99,8 +100,8 @@ describe('changelog file', () => {
   })
 })
 
-// Which community foods reach News. The rule is food search's own, reused
-// rather than restated, so a food voted out of one is out of both.
+// News hides poorly rated foods by default, but readers can reveal them for
+// feedback. The same toggle applies to contributors and other readers.
 describe('which community foods appear', () => {
   const createdAt = Date.UTC(2026, 7, 31, 12)
   const appears = communityFoodAppearsInNews
@@ -116,7 +117,36 @@ describe('which community foods appear', () => {
   })
 
   it('hides one the community voted out', () => {
-    expect(appears({ language: 'de', dislikes: 4, createdAt }, 'de')).toBe(false)
+    expect(appears({ language: 'de', likes: 0, dislikes: 3, createdAt }, 'de')).toBe(false)
+    expect(appears({ language: 'de', likes: 1, dislikes: 3, createdAt }, 'de')).toBe(true)
+  })
+
+  it('only reveals contributor foods when the toggle is on, too', () => {
+    const food = { language: 'de', dislikes: 3, createdAt, contributorId: 'owner-1' }
+    expect(appears(food, 'de')).toBe(false)
+    expect(appears(food, 'de', true)).toBe(true)
+    expect(appears(food, 'de', false)).toBe(false)
+  })
+
+  it('can reveal and hide even a strongly disliked food without changing its rating', () => {
+    const food = { language: 'de', likes: 0, dislikes: 100, createdAt, contributorId: 'owner-1' }
+    expect(appears(food, 'de')).toBe(false)
+    expect(appears(food, 'de', true)).toBe(true)
+    expect(appears(food, 'de', false)).toBe(false)
+    expect(food.dislikes).toBe(100)
+  })
+
+  it('still rejects other languages and invalid timestamps when hidden foods are shown', () => {
+    const food = { language: 'de', dislikes: 3, createdAt, contributorId: 'owner-1' }
+    expect(appears(food, 'fr', true)).toBe(false)
+    expect(appears({ ...food, createdAt: Number.NaN }, 'de', true)).toBe(false)
+    expect(appears({ ...food, createdAt: undefined }, 'de', true)).toBe(false)
+  })
+
+  it('also keeps a food reachable after its contributor account is removed', () => {
+    const food = { language: 'de', dislikes: 3, createdAt }
+    expect(appears(food, 'de')).toBe(false)
+    expect(appears(food, 'de', true)).toBe(true)
   })
 
   it('rejects a food whose timestamp could poison the read cursor', () => {
@@ -128,6 +158,62 @@ describe('which community foods appear', () => {
   // food has no record, so it has no entry, with nothing left to clean up.
   it('has nothing to show for a food that no longer exists', () => {
     expect([].filter((food) => appears(food, 'de'))).toHaveLength(0)
+  })
+})
+
+describe('contributor feedback notices', () => {
+  const food = {
+    '.key': 'food1',
+    name: 'Rice cakes',
+    contributorId: 'owner-1',
+    language: 'en',
+    createdAt: 100,
+    likes: 2,
+    dislikes: 4
+  }
+
+  it('reports the current net dislikes and the transition to hidden', () => {
+    expect(communityFoodNotices([food], 'owner-1')).toEqual([
+      {
+        key: 'own-flag-food1',
+        foodKey: 'food1',
+        language: 'en',
+        name: 'Rice cakes',
+        netDislikes: 2,
+        isHidden: false
+      }
+    ])
+    expect(communityFoodNotices([{ ...food, dislikes: 5 }], 'owner-1')[0]).toMatchObject({
+      netDislikes: 3,
+      isHidden: true
+    })
+    expect(communityFoodNotices([{ ...food, dislikes: 3 }], 'owner-1')).toEqual([])
+  })
+
+  it('only notifies the contributor while they are signed in', () => {
+    expect(communityFoodNotices([food], 'reader-2')).toEqual([])
+    expect(communityFoodNotices([food], null)).toEqual([])
+    expect(communityFoodNotices([food])).toEqual([])
+  })
+
+  it('keeps the published language so a notice can link to another locale', () => {
+    expect(communityFoodNotices([{ ...food, language: 'fr' }], 'owner-1')[0]).toMatchObject({
+      foodKey: 'food1',
+      language: 'fr'
+    })
+  })
+
+  it('does not offer links to malformed records that cannot appear in News', () => {
+    expect(
+      communityFoodNotices(
+        [
+          { ...food, '.key': undefined },
+          { ...food, createdAt: Number.NaN },
+          { ...food, language: 'unknown' }
+        ],
+        'owner-1'
+      )
+    ).toEqual([])
   })
 })
 
@@ -238,6 +324,13 @@ describe('what counts as unread', () => {
     expect(isUnread(item('older', daysAgo(200)), emptySeen())).toBe(true)
   })
 
+  it('never marks a rating-hidden food unread, even when manually revealed', () => {
+    const food = { ...item('hidden-food', daysAgo(1)), isHidden: true }
+    expect(isUnread(food, emptySeen())).toBe(false)
+    expect(isUnread(food, { lastReadAt: daysAgo(2), lastSeenRevision: null })).toBe(false)
+    expect(isUnread({ ...food, isHidden: false }, emptySeen())).toBe(true)
+  })
+
   it('calls only items newer than the last chronological marker unread', () => {
     const seen = { lastReadAt: daysAgo(5), lastSeenRevision: 10 }
     expect(isUnread(item('new-note', daysAgo(2)), seen)).toBe(true)
@@ -291,6 +384,24 @@ describe('feed pagination', () => {
 
   it('keeps the complete public changelog for signed-out readers and crawlers', () => {
     expect(visibleNewsItems(items, 20, false)).toEqual(items)
+  })
+})
+
+describe('revealing a food from a notice', () => {
+  const items = Array.from({ length: 45 }, (_, index) => ({ key: `food-${index}` }))
+
+  it('includes an older target beyond the first page', () => {
+    const count = newsCountToReveal(items, 20, 'food-35')
+    expect(count).toBe(36)
+    expect(visibleNewsItems(items, count!, true)).toContainEqual({ key: 'food-35' })
+  })
+
+  it('keeps already revealed items visible when the target is near the top', () => {
+    expect(newsCountToReveal(items, 40, 'food-2')).toBe(40)
+  })
+
+  it('does not change pagination for a food that has been removed', () => {
+    expect(newsCountToReveal(items, 20, 'removed')).toBeNull()
   })
 })
 

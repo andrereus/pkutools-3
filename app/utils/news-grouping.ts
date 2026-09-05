@@ -7,6 +7,7 @@ export interface SeenEntry {
   key: string
   createdAt: number
   revision?: number
+  isHidden?: boolean
 }
 
 export interface SeenState {
@@ -42,6 +43,9 @@ export const isNewsTimestamp = (value: unknown): value is number =>
  * a second, independent check for a note that first appears behind that time.
  */
 export const isUnread = (entry: SeenEntry, seen: SeenState): boolean => {
+  // Revealing a rating-hidden food should not give it unread decoration or
+  // cause an unread notification.
+  if (entry.isHidden) return false
   const newerThanTime =
     isNewsTimestamp(entry.createdAt) &&
     (seen.lastReadAt === null || entry.createdAt > seen.lastReadAt)
@@ -73,6 +77,16 @@ export const seenAfterVisit = (items: SeenEntry[]): SeenState => {
 /** Signed-in feeds page; the public changelog remains complete for crawlers. */
 export const visibleNewsItems = <T>(items: readonly T[], count: number, paginate: boolean): T[] =>
   paginate ? items.slice(0, count) : [...items]
+
+/** Reveal a linked card without shrinking the part of the feed already visible. */
+export const newsCountToReveal = (
+  items: readonly { key: string }[],
+  count: number,
+  key: string
+): number | null => {
+  const index = items.findIndex((item) => item.key === key)
+  return index === -1 ? null : Math.max(count, index + 1)
+}
 
 /**
  * Stable server-rendered calendar day for a real instant. The browser switches

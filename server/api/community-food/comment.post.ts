@@ -43,7 +43,13 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   const storedCommentCount = Number(storedFood.commentCount)
   const commentCount =
     Number.isSafeInteger(storedCommentCount) && storedCommentCount >= 0 ? storedCommentCount : 0
-  if (commentCount >= MAX_COMMUNITY_FOOD_COMMENTS) {
+  // Reserve the final place for the contributor's reply. Like the overall
+  // limit, this is checked against the snapshot without serializing requests.
+  const commentLimit =
+    storedFood.contributorId === userId
+      ? MAX_COMMUNITY_FOOD_COMMENTS
+      : MAX_COMMUNITY_FOOD_COMMENTS - 1
+  if (commentCount >= commentLimit) {
     throw createError({
       statusCode: 409,
       message: 'Community food comment limit reached',

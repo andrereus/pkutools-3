@@ -2,7 +2,7 @@
  * Community food configuration constants
  */
 
-// Score threshold below which community foods are automatically hidden
+// Community foods are hidden at this score or below (three net dislikes).
 export const COMMUNITY_FOOD_HIDE_THRESHOLD = -3
 
 /**
@@ -11,7 +11,7 @@ export const COMMUNITY_FOOD_HIDE_THRESHOLD = -3
  * @returns true if the food should be hidden
  */
 export function isCommunityFoodHidden(score: number): boolean {
-  return score < COMMUNITY_FOOD_HIDE_THRESHOLD
+  return score <= COMMUNITY_FOOD_HIDE_THRESHOLD
 }
 
 // The origins whose values may be published to the community. Each of them is

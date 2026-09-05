@@ -1,6 +1,7 @@
 <script setup>
 import { foodSourceLabel } from '../utils/food-source-label'
 import { nutrientRows, PHE_FACTORS } from '../utils/nutrition'
+import { COMMUNITY_FOOD_FLAG_SCORE, communityFoodScore } from '../utils/community-food'
 
 // Renders a community-food record inside a News card.
 const props = defineProps({
@@ -18,8 +19,9 @@ const props = defineProps({
 
 const emit = defineEmits(['vote'])
 const { t } = useI18n()
+const localePath = useLocalePath()
 const showNutrients = ref(false)
-const commentsExpanded = ref(false)
+const commentsExpanded = defineModel('commentsExpanded', { type: Boolean, default: false })
 
 // Brief visual confirmation without changing the control dimensions.
 const justVoted = ref(false)
@@ -53,18 +55,22 @@ const factorTypeLabel = computed(() => {
 const sourceDetails = computed(() =>
   [sourceLabel.value, factorTypeLabel.value].filter(Boolean).join(' · ')
 )
-const hasVotes = computed(() => Number(props.food?.likes) > 0 || Number(props.food?.dislikes) > 0)
 const commentCount = computed(() => {
   const value = Number(props.food?.commentCount)
   return Number.isSafeInteger(value) && value >= 0 ? value : 0
 })
-const hasCommunityActivity = computed(() => hasVotes.value || commentCount.value > 0)
 const commentButtonLabel = computed(() =>
   commentCount.value > 0
     ? t('news.comments-count', { count: commentCount.value })
     : t('news.add-comment')
 )
 const visibleCommentCount = computed(() => (commentCount.value > 99 ? '99+' : commentCount.value))
+const showCorrectionHint = computed(
+  () =>
+    !!props.currentUserId &&
+    props.food.contributorId === props.currentUserId &&
+    communityFoodScore(props.food) <= COMMUNITY_FOOD_FLAG_SCORE
+)
 </script>
 
 <template>
@@ -116,15 +122,10 @@ const visibleCommentCount = computed(() => (commentCount.value > 99 ? '99+' : co
       {{ food.note }}
     </div>
 
-    <!-- Contributors react to community activity; they do not start a fresh
-         discussion here. Keep an already-open editor mounted if the last
-         triggering vote is withdrawn while they are writing. -->
+    <!-- Keep contributor statistics and comments accessible even before the
+         first rating, or if a stale comment count temporarily reads zero. -->
     <div
-      v-if="
-        currentUserId &&
-        food['.key'] &&
-        (canVote || (showStatistics && (hasCommunityActivity || commentsExpanded)))
-      "
+      v-if="currentUserId && food['.key'] && (canVote || showStatistics)"
       class="mt-3 flex items-center gap-2"
     >
       <template v-if="canVote">
@@ -169,10 +170,9 @@ const visibleCommentCount = computed(() => (commentCount.value > 99 ? '99+' : co
       </template>
 
       <template v-else-if="showStatistics">
-        <!-- A comment without a rating deliberately shows 0 / 0: that tells
-             the contributor the feedback has not been endorsed either way. -->
+        <!-- Zero ratings are useful information too, including on a food
+             that has comments but no votes. -->
         <div
-          v-if="hasCommunityActivity"
           class="flex min-w-0 flex-1 flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
         >
           <div
@@ -220,6 +220,23 @@ const visibleCommentCount = computed(() => (commentCount.value > 99 ? '99+' : co
         <span v-if="commentCount > 0">{{ visibleCommentCount }}</span>
       </button>
     </div>
+
+    <i18n-t
+      v-if="showCorrectionHint"
+      keypath="news.food-correction-hint"
+      tag="p"
+      scope="global"
+      class="mt-3 text-xs text-gray-500 sm:text-sm dark:text-gray-400"
+    >
+      <template #ownFood>
+        <NuxtLink
+          :to="localePath('own-food')"
+          class="text-sky-600 hover:underline dark:text-sky-400"
+        >
+          {{ $t('own-food.title') }}
+        </NuxtLink>
+      </template>
+    </i18n-t>
 
     <CommunityFoodComments
       v-if="currentUserId && food['.key']"

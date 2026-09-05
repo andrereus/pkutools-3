@@ -7,6 +7,7 @@ import {
   filterNewsItems,
   hasEnoughCommunityItemsForFilter,
   isUnread,
+  newsCountToReveal,
   NEWS_PAGE_SIZE,
   seenAfterVisit,
   utcDayForLocalFormatting,
@@ -18,12 +19,14 @@ import {
 const store = useStore()
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+const route = useRoute()
 const { voteCommunityFood } = useApi()
-const { items, notices, userIsAuthenticated } = useNews()
+const { items, notices, showHiddenFoods, userIsAuthenticated } = useNews()
 const seenState = useNewsSeen()
 
 const userId = computed(() => store.user?.id ?? null)
 const votingKey = ref(null)
+const expandedComments = ref({})
 
 // The API also rejects votes on the contributor's own food.
 const canVote = (item) => userIsAuthenticated.value && !!item.food && !item.isOwn
@@ -58,14 +61,17 @@ const filteredItems = computed(() =>
 )
 
 watch(showFilters, (shown) => {
-  if (!shown) selectedFilter.value = 'all'
+  if (!shown) {
+    selectedFilter.value = 'all'
+    showHiddenFoods.value = false
+  }
 })
 watch(availableFilters, (filters) => {
   if (!filters.some((filter) => filter.key === selectedFilter.value)) {
     selectedFilter.value = 'all'
   }
 })
-watch(selectedFilter, () => {
+watch([selectedFilter, showHiddenFoods], () => {
   visibleCount.value = PAGE_SIZE
 })
 
@@ -91,6 +97,69 @@ const hasMore = computed(
 const loadMore = () => {
   visibleCount.value += PAGE_SIZE
 }
+
+const foodNoticeFor = (key) =>
+  notices.value.find(
+    (notice) => `food-${notice.foodKey}` === key && notice.language === locale.value
+  )
+
+const revealFood = async (key) => {
+  // A contributor notice remains accessible with the toggle off. Following
+  // its link reveals the food and makes the toggle reflect that choice.
+  if (foodNoticeFor(key)?.isHidden) showHiddenFoods.value = true
+  if (!items.value.some((item) => item.key === key && item.food)) return
+  selectedFilter.value = 'all'
+  // Let the filter's pagination reset finish before extending the visible list.
+  await nextTick()
+  const count = newsCountToReveal(filteredItems.value, visibleCount.value, key)
+  if (count === null) return
+  visibleCount.value = count
+  expandedComments.value[key] = true
+  await nextTick()
+  const card = document.getElementById(key)
+  card?.focus({ preventScroll: true })
+  card?.scrollIntoView({ block: 'start' })
+}
+
+const viewNotice = (event, notice) => {
+  // A repeated click on the current link must reopen comments too. Other
+  // clicks follow the localized link and are handled by the hash watcher.
+  if (
+    notice.language !== locale.value ||
+    route.hash !== `#food-${notice.foodKey}` ||
+    event.button !== 0 ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey
+  )
+    return
+  event.preventDefault()
+  void revealFood(`food-${notice.foodKey}`)
+}
+
+onMounted(() => {
+  let revealedHash = null
+  watch(
+    () => route.hash,
+    () => {
+      revealedHash = null
+    }
+  )
+  // A localized link can arrive before authentication/data restoration. Wait
+  // for its food, then reveal it once; later votes must not steal focus again.
+  watch(
+    [() => route.hash, items, notices],
+    ([hash]) => {
+      if (!hash.startsWith('#food-') || hash === revealedHash) return
+      const key = hash.slice(1)
+      if (!items.value.some((item) => item.key === key && item.food) && !foodNoticeFor(key)) return
+      revealedHash = hash
+      void revealFood(key)
+    },
+    { immediate: true }
+  )
+})
 
 const titleFor = (item) => {
   if (item.kind === 'note') return item.title
@@ -246,40 +315,53 @@ defineOgImage('Default', {
     </div>
 
     <!-- Derived account notices appear above chronological entries. -->
-    <NuxtLink
-      v-for="notice in notices"
-      :key="notice.key"
-      :to="localePath(notice.route)"
-      class="mb-3 block rounded-xl bg-amber-50 p-4 ring-1 ring-amber-200 hover:ring-amber-300 dark:bg-amber-950/30 dark:ring-amber-900"
-    >
-      <p class="font-semibold text-gray-900 dark:text-white">
-        {{ $t(`news.notice-${notice.kind}-title`, notice.params || {}) }}
-      </p>
-      <p class="mt-1 text-sm text-gray-700 dark:text-gray-300">
-        {{ $t(`news.notice-${notice.kind}-text`, notice.params || {}) }}
-      </p>
-      <span class="mt-2 inline-block text-sm font-semibold text-sky-600 dark:text-sky-400">
-        {{ $t(`news.notice-${notice.kind}-action`) }} →
-      </span>
-    </NuxtLink>
-
-    <nav v-if="showFilters" class="mb-4 flex flex-wrap gap-2" :aria-label="$t('news.filter-label')">
-      <button
-        v-for="filter in availableFilters"
-        :key="filter.key"
-        type="button"
-        :aria-pressed="selectedFilter === filter.key"
-        :class="[
-          'cursor-pointer rounded-full px-3 py-1.5 text-sm font-medium ring-1 transition-colors',
-          selectedFilter === filter.key
-            ? 'bg-sky-50 text-sky-700 ring-sky-300 dark:bg-sky-900/30 dark:text-sky-300 dark:ring-sky-700'
-            : 'text-gray-600 ring-gray-300 hover:text-sky-600 hover:ring-sky-400 dark:text-gray-400 dark:ring-gray-700 dark:hover:text-sky-400'
-        ]"
-        @click="selectedFilter = filter.key"
+    <div v-if="notices.length" class="mb-4 space-y-2">
+      <NuxtLink
+        v-for="notice in notices"
+        :key="notice.key"
+        :to="localePath({ name: 'news', hash: `#food-${notice.foodKey}` }, notice.language)"
+        class="block rounded-lg bg-amber-50 px-3 py-2 text-sm text-gray-700 ring-1 ring-amber-200 hover:ring-amber-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:bg-amber-950/30 dark:text-gray-300 dark:ring-amber-900"
+        @click="viewNotice($event, notice)"
       >
-        {{ $t(filter.label) }}
-      </button>
-    </nav>
+        <span class="font-medium break-words text-gray-900 dark:text-white"
+          >{{ notice.name }}:</span
+        >
+        {{ $t('news.notice-own-flag-text', { count: notice.netDislikes }) }}
+        <span v-if="notice.isHidden">{{ $t('news.notice-own-flag-hidden') }}</span>
+        <span class="ml-1 inline-block font-medium text-sky-600 dark:text-sky-400">
+          {{ $t('news.notice-own-flag-action') }} →
+        </span>
+      </NuxtLink>
+    </div>
+
+    <div
+      v-if="showFilters"
+      class="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2"
+    >
+      <nav class="flex flex-wrap gap-2" :aria-label="$t('news.filter-label')">
+        <button
+          v-for="filter in availableFilters"
+          :key="filter.key"
+          type="button"
+          :aria-pressed="selectedFilter === filter.key"
+          :class="[
+            'cursor-pointer rounded-full px-3 py-1.5 text-sm font-medium ring-1 transition-colors',
+            selectedFilter === filter.key
+              ? 'bg-sky-50 text-sky-700 ring-sky-300 dark:bg-sky-900/30 dark:text-sky-300 dark:ring-sky-700'
+              : 'text-gray-600 ring-gray-300 hover:text-sky-600 hover:ring-sky-400 dark:text-gray-400 dark:ring-gray-700 dark:hover:text-sky-400'
+          ]"
+          @click="selectedFilter = filter.key"
+        >
+          {{ $t(filter.label) }}
+        </button>
+      </nav>
+      <label
+        class="ml-auto flex min-h-9 shrink-0 cursor-pointer items-center gap-2 text-sm whitespace-nowrap text-gray-600 dark:text-gray-400"
+      >
+        <span>{{ $t('news.show-hidden-foods') }}</span>
+        <ToggleSwitch v-model="showHiddenFoods" small :label="$t('news.show-hidden-foods')" />
+      </label>
+    </div>
 
     <p v-if="items.length === 0" class="py-12 text-center text-sm text-gray-500 dark:text-gray-400">
       {{ $t('news.empty') }}
@@ -287,9 +369,11 @@ defineOgImage('Default', {
 
     <article
       v-for="item in visibleItems"
+      :id="item.key"
       :key="item.key"
+      tabindex="-1"
       :class="[
-        'mb-3 rounded-xl bg-white p-4 shadow-sm ring-1 dark:bg-gray-900',
+        'mb-3 scroll-mt-24 rounded-xl bg-white p-4 shadow-sm ring-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-gray-900',
         isItemUnread(item) ? 'ring-sky-300 dark:ring-sky-700' : 'ring-gray-200 dark:ring-gray-700'
       ]"
     >
@@ -303,6 +387,13 @@ defineOgImage('Default', {
           <div class="min-w-0 flex-1">
             <h3 class="text-sm leading-5 font-semibold break-words text-gray-900 dark:text-white">
               {{ titleFor(item) }}
+              <span
+                v-if="item.isHidden"
+                class="ml-1 inline-flex items-center rounded bg-amber-50 px-1.5 text-xs font-medium text-amber-700 dark:bg-amber-950/50 dark:text-amber-300"
+                :title="$t('news.hidden-description')"
+              >
+                {{ $t('news.hidden') }}
+              </span>
             </h3>
           </div>
           <div class="flex h-9 shrink-0 flex-col items-end justify-between">
@@ -350,6 +441,7 @@ defineOgImage('Default', {
 
       <NewsCommunityFood
         v-if="item.food"
+        v-model:comments-expanded="expandedComments[item.key]"
         :food="item.food"
         :vote="voteFor(item)"
         :can-vote="canVote(item)"

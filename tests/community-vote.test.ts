@@ -82,12 +82,26 @@ describe('community food vote', () => {
     expect(result).toMatchObject(expected)
   })
 
-  it('reports a food as hidden once the score passes the threshold', async () => {
-    seedFood({ likes: 0, dislikes: 3, score: -3 })
+  it('reports a food as hidden once it reaches three net dislikes', async () => {
+    seedFood({ likes: 0, dislikes: 2, score: -2 })
 
     const result = await vote(requestEvent({ communityFoodKey: 'food1', vote: -1 }))
 
-    expect(result).toMatchObject({ score: -4, hidden: true })
+    expect(result).toMatchObject({ score: -3, hidden: true })
+  })
+
+  it('lets a reader reconsider their vote and restore a hidden food to search', async () => {
+    seedFood({ likes: 0, dislikes: 3, score: -3, voterIds: { 'voter-1': -1 } })
+
+    const result = await vote(requestEvent({ communityFoodKey: 'food1', vote: 1 }))
+
+    expect(result).toMatchObject({ likes: 1, dislikes: 2, score: -1, hidden: false })
+    expect(storedFood()).toMatchObject({
+      likes: 1,
+      dislikes: 2,
+      score: -1,
+      voterIds: { 'voter-1': 1 }
+    })
   })
 
   // Otherwise a contributor could lift their own entry above the hide threshold.

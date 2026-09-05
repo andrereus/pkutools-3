@@ -22,6 +22,7 @@ import {
 
 describe('community food hide threshold', () => {
   it('warns the contributor before their food is hidden', () => {
+    expect(COMMUNITY_FOOD_FLAG_SCORE).toBe(-2)
     expect(COMMUNITY_FOOD_FLAG_SCORE).toBeGreaterThan(CLIENT_THRESHOLD)
   })
 
@@ -40,9 +41,9 @@ describe('community food hide threshold', () => {
   // The exact cutoff matters in both directions: too low and a food nobody can
   // correct stays in search, too high and a handful of dislikes lets one user
   // bury someone else's contribution.
-  it('hides a food only once its score drops below -3', () => {
+  it('hides a food at three net dislikes or more', () => {
     expect(isHiddenServer(-2)).toBe(false)
-    expect(isHiddenServer(-3)).toBe(false)
+    expect(isHiddenServer(-3)).toBe(true)
     expect(isHiddenServer(-4)).toBe(true)
     expect(isHiddenServer(-100)).toBe(true)
     expect(isHiddenServer(0)).toBe(false)

@@ -14,17 +14,55 @@ import { isNewsTimestamp } from '../utils/news-grouping'
 type Food = Record<string, unknown>
 
 /** The exact visibility rule used by the runtime feed and its tests. */
-export const communityFoodAppearsInNews = (food: Food, locale: string): boolean =>
+export const communityFoodAppearsInNews = (
+  food: Food,
+  locale: string,
+  showHiddenFoods = false
+): boolean =>
   food.language === locale &&
   isNewsTimestamp(food.createdAt) &&
-  !isCommunityFoodHidden(communityFoodScore(food))
+  (showHiddenFoods || !isCommunityFoodHidden(communityFoodScore(food)))
 
 /** Something that happened to the reader, shown above the timeline. */
 export interface Notice {
   key: string
-  kind: 'own-flag'
-  route: string
-  params?: Record<string, string | number>
+  foodKey: string
+  language: string
+  name: string
+  netDislikes: number
+  isHidden: boolean
+}
+
+/** Notices include their target language so foods remain reachable across locales. */
+export const communityFoodNotices = (foods: Food[], currentUserId?: string | null): Notice[] => {
+  if (!currentUserId) return []
+  return foods.flatMap((food) => {
+    const score = communityFoodScore(food)
+    const foodKey = food['.key']
+    const language = food.language
+    if (
+      food.contributorId !== currentUserId ||
+      score > COMMUNITY_FOOD_FLAG_SCORE ||
+      typeof foodKey !== 'string' ||
+      !foodKey ||
+      typeof food.name !== 'string' ||
+      typeof language !== 'string' ||
+      !['en', 'de', 'es', 'fr'].includes(language) ||
+      !isNewsTimestamp(food.createdAt)
+    ) {
+      return []
+    }
+    return [
+      {
+        key: `own-flag-${foodKey}`,
+        foodKey,
+        language,
+        name: food.name,
+        netDislikes: -score,
+        isHidden: isCommunityFoodHidden(score)
+      }
+    ]
+  })
 }
 
 export interface NewsEntry {
@@ -39,6 +77,8 @@ export interface NewsEntry {
   food?: Record<string, unknown>
   /** Shared by the current reader. */
   isOwn?: boolean
+  /** Hidden from Food Search; News readers can opt in to review feedback. */
+  isHidden?: boolean
   /** Visible only to the current reader. */
   private?: boolean
   count?: number
@@ -63,13 +103,16 @@ export const useNewsContext = () => {
   const user = computed(() => store.user as { id?: string } | null)
   const userIsAuthenticated = computed(() => user.value !== null)
   const foods = computed(() => store.communityFoods as Food[])
+  // Local to this consumer, not a saved setting. The header badge keeps the
+  // default exclusion even when the News page opts in to hidden foods.
+  const showHiddenFoods = ref(false)
 
   const foodEntries = computed<NewsEntry[]>(() => {
     if (!userIsAuthenticated.value) return []
     return (
       foods.value
-        // Match Food Search visibility and language rules.
-        .filter((food) => communityFoodAppearsInNews(food, locale.value))
+        // The same toggle applies to every food, including the reader's own.
+        .filter((food) => communityFoodAppearsInNews(food, locale.value, showHiddenFoods.value))
         .map((food) => ({
           key: `food-${food['.key']}`,
           kind: 'food-shared' as const,
@@ -77,7 +120,8 @@ export const useNewsContext = () => {
           // record can reach rendering or the maximum read-cursor calculation.
           createdAt: food.createdAt as number,
           food,
-          isOwn: !!user.value?.id && food.contributorId === user.value.id
+          isOwn: !!user.value?.id && food.contributorId === user.value.id,
+          isHidden: isCommunityFoodHidden(communityFoodScore(food))
         }))
     )
   })
@@ -122,21 +166,7 @@ export const useNewsContext = () => {
 
   // Derived from the current score, so the notice clears when the score or food
   // changes rather than requiring separate persisted state.
-  const notices = computed<Notice[]>(() => {
-    const userId = user.value?.id
-    if (!userIsAuthenticated.value || !userId) return []
-    return foods.value
-      .filter(
-        (food) =>
-          food.contributorId === userId && communityFoodScore(food) <= COMMUNITY_FOOD_FLAG_SCORE
-      )
-      .map((food) => ({
-        key: `own-flag-${food['.key']}`,
-        kind: 'own-flag' as const,
-        route: 'own-food',
-        params: { name: food.name as string }
-      }))
-  })
+  const notices = computed(() => communityFoodNotices(foods.value, user.value?.id))
 
   return {
     store,
@@ -144,6 +174,7 @@ export const useNewsContext = () => {
     foodEntries,
     milestoneEntries,
     notices,
+    showHiddenFoods,
     userIsAuthenticated
   }
 }

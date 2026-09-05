@@ -26,7 +26,8 @@ const entries = changelog as ChangelogEntry[]
 
 /** The whole page, changelog included. Only the news page pays for this. */
 export const useNews = () => {
-  const { locale, foodEntries, milestoneEntries, notices, userIsAuthenticated } = useNewsContext()
+  const { locale, foodEntries, milestoneEntries, notices, showHiddenFoods, userIsAuthenticated } =
+    useNewsContext()
 
   const noteEntries = computed<NewsEntry[]>(() =>
     entries.map((entry) => {
@@ -55,5 +56,5 @@ export const useNews = () => {
     )
   )
 
-  return { items, notices, userIsAuthenticated }
+  return { items, notices, showHiddenFoods, userIsAuthenticated }
 }

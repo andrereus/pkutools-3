@@ -113,7 +113,7 @@ describe('sharing an own food', () => {
     seed(
       { ...OWN_FOOD },
       {
-        buried: { name: 'Protein shake', phe: 12, language: 'en', likes: 0, dislikes: 9 }
+        buried: { name: 'Protein shake', phe: 12, language: 'en', likes: 0, dislikes: 3 }
       }
     )
 
