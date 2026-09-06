@@ -606,7 +606,7 @@
     "title-unread": "Neuigkeiten, ungelesene Updates",
     "unread-suffix": "ungelesene Updates",
     "description": "Was es Neues bei PKU Tools gibt und was die Community teilt.",
-    "subtitle": "Nach Beitragsdatum sortiert, unabhängig von Lesestatus oder Updates.",
+    "subtitle": "Nach Beitragsdatum sortiert. Updates können auch weiter unten auftauchen.",
     "subtitle-signed-out": "Neuigkeiten zu PKU Tools.",
     "sign-in": "Melde dich an, um Lebensmittel der Community zu sehen und eigene zu teilen.",
     "unread-item": "Ungelesen",

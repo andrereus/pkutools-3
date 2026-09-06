@@ -606,7 +606,7 @@
     "title-unread": "Actualités, mises à jour non lues",
     "unread-suffix": "mises à jour non lues",
     "description": "Les nouveautés de PKU Tools et ce que la communauté partage.",
-    "subtitle": "Trié par date de publication, indépendamment du statut de lecture ou des mises à jour.",
+    "subtitle": "Trié par date de publication. Les mises à jour peuvent aussi apparaître plus bas.",
     "subtitle-signed-out": "Nouveautés de PKU Tools.",
     "sign-in": "Connecte-toi pour voir les aliments partagés par la communauté et partager les tiens.",
     "unread-item": "Non lu",
