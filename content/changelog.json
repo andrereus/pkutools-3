@@ -1,5 +1,89 @@
 [
   {
+    "revision": 120,
+    "publishedAt": "2026-09-04T08:58:52.179Z",
+    "category": "new",
+    "en": {
+      "title": "Comments on community foods",
+      "body": "Comments can now also be added to community foods in News."
+    },
+    "de": {
+      "title": "Kommentare bei Community Lebensmitteln",
+      "body": "Community Lebensmittel können in den Neuigkeiten jetzt auch kommentiert werden."
+    },
+    "es": {
+      "title": "Comentarios en alimentos de la comunidad",
+      "body": "Ahora también se pueden comentar los alimentos de la comunidad en Novedades."
+    },
+    "fr": {
+      "title": "Commentaires sur les aliments communautaires",
+      "body": "Les aliments communautaires peuvent maintenant aussi être commentés dans les Actualités."
+    }
+  },
+  {
+    "revision": 119,
+    "publishedAt": "2026-09-02T08:49:02.719Z",
+    "category": "new",
+    "en": {
+      "title": "Food type checks",
+      "body": "The Barcode Scanner, Label Scanner and Phe Calculator now check the food type when converting protein to Phe and suggest corrections. These checks also apply to own and shared foods. I recommend a one-time check of existing own and shared foods by saving them again via “Edit”."
+    },
+    "de": {
+      "title": "Überprüfung der Lebensmittelart",
+      "body": "Barcode Scanner, Label Scanner, Phe Rechner, eigene und geteilte Lebensmittel prüfen jetzt die Lebensmittelart bei Berechnungen von Eiweiß zu Phe und schlagen Korrekturen vor. Ich empfehle, bisherige eigene und geteilte Lebensmittel einmalig zur Prüfung über „Bearbeiten“ erneut zu speichern."
+    },
+    "es": {
+      "title": "Comprobación del tipo de alimento",
+      "body": "El Escáner de código de barras, el Escáner de etiquetas y la Calculadora de Phe ahora comprueban el tipo de alimento al convertir proteína en Phe y sugieren correcciones. Estas comprobaciones también se aplican a los alimentos propios y compartidos. Recomiendo volver a guardar una sola vez los alimentos propios y compartidos existentes desde «Editar» para realizar esta comprobación."
+    },
+    "fr": {
+      "title": "Vérification du type d'aliment",
+      "body": "Le Scanner de code-barres, le Scanner d'étiquettes et le Calculateur Phe vérifient maintenant le type d'aliment lors de la conversion des protéines en Phe et proposent des corrections. Ces vérifications s'appliquent aussi aux aliments personnels et partagés. Je recommande de réenregistrer une seule fois les aliments personnels et partagés existants via « Modifier » pour lancer la vérification."
+    }
+  },
+  {
+    "revision": 118,
+    "publishedAt": "2026-09-01T08:35:53.904Z",
+    "category": "improved",
+    "en": {
+      "title": "Changing the food type after saving",
+      "body": "The food type and protein-to-Phe calculation can now be corrected for saved foods."
+    },
+    "de": {
+      "title": "Nachträgliche Änderung der Lebensmittelart",
+      "body": "Bei gespeicherten Lebensmitteln können jetzt die Lebensmittelart und die Berechnung von Eiweiß zu Phe nachträglich korrigiert werden."
+    },
+    "es": {
+      "title": "Cambiar el tipo de alimento después de guardarlo",
+      "body": "Ahora se pueden corregir el tipo de alimento y el cálculo de conversión de proteína en Phe en los alimentos guardados."
+    },
+    "fr": {
+      "title": "Modifier le type d'aliment après l'enregistrement",
+      "body": "Le type d'aliment et le calcul de conversion des protéines en Phe peuvent maintenant être corrigés pour les aliments enregistrés."
+    }
+  },
+  {
+    "revision": 117,
+    "publishedAt": "2026-08-31T08:28:36.717Z",
+    "category": "new",
+    "en": {
+      "title": "News feed",
+      "body": "PKU Tools now has its own news feed with translated app updates, community foods and personal milestones."
+    },
+    "de": {
+      "title": "Newsfeed",
+      "body": "PKU Tools hat jetzt einen eigenen Newsfeed mit übersetzten App Updates, Community Lebensmitteln und persönlichen Meilensteinen."
+    },
+    "es": {
+      "title": "Feed de novedades",
+      "body": "PKU Tools ahora tiene su propio feed de novedades con actualizaciones de la app traducidas, alimentos de la comunidad e hitos personales."
+    },
+    "fr": {
+      "title": "Fil d'actualités",
+      "body": "PKU Tools a maintenant son propre fil d'actualités avec les annonces traduites des mises à jour de l'app, les aliments communautaires et les étapes marquantes du parcours personnel."
+    }
+  },
+  {
     "category": "new",
     "en": {
       "title": "Google Play Store",
@@ -7,7 +91,7 @@
     },
     "de": {
       "title": "Google Play Store",
-      "body": "Wenn dir PKU Tools gefällt und du die Android-App nutzt freue ich mich über eine Bewertung im Google Play Store 😊"
+      "body": "Wenn dir PKU Tools gefällt und du die Android-App nutzt, freue ich mich über eine Bewertung im Google Play Store 😊"
     },
     "es": {
       "title": "Google Play Store",
@@ -15,7 +99,7 @@
     },
     "fr": {
       "title": "Google Play Store",
-      "body": "Si tu aimes PKU Tools et que tu utilises l'app Android, j'apprécierais une évaluation sur le Google Play Store 😊"
+      "body": "Si tu aimes PKU Tools et que tu utilises l'app Android, j'apprécierais un avis sur le Google Play Store 😊"
     },
     "publishedAt": "2026-08-28T15:10:55Z",
     "revision": 116
@@ -49,7 +133,7 @@
     },
     "de": {
       "title": "Lebensmittel-Icons ändern",
-      "body": "Premium-Nutzer können ein Lebensmittel-Icon jetzt ändern wenn es ihnen nicht gefällt."
+      "body": "Premium-Nutzer können ein Lebensmittel-Icon jetzt ändern, wenn es ihnen nicht gefällt."
     },
     "es": {
       "title": "Cambiar iconos de alimentos",
@@ -70,11 +154,11 @@
     },
     "de": {
       "title": "In Eigene Lebensmittel speichern",
-      "body": "Gewünschte Funktion: Lebensmittel lassen sich jetzt auch beim Eintragen ins Tagebuch in Eigene Lebensmittel speichern. Der Barcode Scanner schlägt außerdem die Lebensmittelart vor wenn möglich."
+      "body": "Gewünschte Funktion: Lebensmittel lassen sich jetzt auch beim Eintragen ins Tagebuch in Eigene Lebensmittel speichern. Der Barcode Scanner schlägt außerdem die Lebensmittelart vor, wenn möglich."
     },
     "es": {
       "title": "Guardar en Alimentos propios",
-      "body": "Función solicitada: los alimentos ahora también se pueden guardar en Alimentos propios al añadirlos al Diario. Además el Escáner de código de barras sugiere el tipo de alimento cuando es posible."
+      "body": "Función solicitada: los alimentos ahora también se pueden guardar en Alimentos propios al añadirlos al Diario. Además, el Escáner de código de barras sugiere el tipo de alimento cuando es posible."
     },
     "fr": {
       "title": "Enregistrer dans Aliments personnels",
@@ -112,15 +196,15 @@
     },
     "de": {
       "title": "Details zum Lebensmittel",
-      "body": "Das Lebensmittel-Icon lässt sich jetzt bei einer Namensänderung aktualisieren und du siehst wann ein Eintrag hinzugefügt wurde."
+      "body": "Das Lebensmittel-Icon lässt sich jetzt bei einer Namensänderung aktualisieren und du siehst, wann ein Lebensmittel hinzugefügt wurde."
     },
     "es": {
       "title": "Detalles del alimento",
-      "body": "El icono del alimento ahora se puede actualizar al cambiar el nombre y puedes ver cuándo se añadió una entrada."
+      "body": "El icono del alimento ahora se puede actualizar al cambiar el nombre y puedes ver cuándo se añadió un alimento."
     },
     "fr": {
       "title": "Détails de l'aliment",
-      "body": "L'icône de l'aliment peut maintenant être mise à jour lors d'un changement de nom et tu vois quand une entrée a été ajoutée."
+      "body": "L'icône de l'aliment peut maintenant être mise à jour lors d'un changement de nom et tu peux voir quand un aliment a été ajouté."
     },
     "publishedAt": "2026-07-25T11:10:37Z",
     "revision": 111
@@ -157,12 +241,12 @@
       "body": "Die Seite „Erste Schritte“ wurde verbessert."
     },
     "es": {
-      "title": "Primeros pasos mejorados",
-      "body": "La página «Primeros pasos» ha sido mejorada."
+      "title": "Mejoras en Primeros Pasos",
+      "body": "La página «Primeros Pasos» ha sido mejorada."
     },
     "fr": {
-      "title": "Premiers pas améliorés",
-      "body": "La page « Premiers pas » a été améliorée."
+      "title": "Amélioration de Premiers Pas",
+      "body": "La page « Premiers Pas » a été améliorée."
     },
     "publishedAt": "2026-07-22T20:05:21Z",
     "revision": 109
@@ -196,7 +280,7 @@
     },
     "de": {
       "title": "Neues Logo",
-      "body": "PKU Tools hat ein neues Logo. Auf Desktop, iPhone und iPad muss die App neu installiert werden damit das neue App-Icon erscheint."
+      "body": "PKU Tools hat ein neues Logo. Auf Desktop, iPhone und iPad muss die App neu installiert werden, damit das neue App-Icon erscheint."
     },
     "es": {
       "title": "Nuevo logotipo",
@@ -238,15 +322,15 @@
     },
     "de": {
       "title": "Etikett scannen",
-      "body": "Du kannst im KI Rechner jetzt ein Etikett scannen und damit Phe berechnen statt es nur zu schätzen."
+      "body": "Du kannst im KI Rechner jetzt das Etikett eines Produkts scannen und damit Phe berechnen, statt es wie bisher nur zu schätzen."
     },
     "es": {
       "title": "Escanear etiqueta",
-      "body": "Ahora puedes escanear la etiqueta de un producto en la Calculadora IA y calcular Phe con ella, no solo estimarla."
+      "body": "Ahora puedes escanear la etiqueta de un producto en la Calculadora IA y calcular Phe con ella, en lugar de solo estimarla como antes."
     },
     "fr": {
       "title": "Scanner une étiquette",
-      "body": "Tu peux maintenant scanner l'étiquette d'un produit dans le Calculateur IA et calculer la Phe avec, au lieu de seulement l'estimer."
+      "body": "Tu peux maintenant scanner l'étiquette d'un produit dans le Calculateur IA et calculer la Phe à partir de celle-ci, au lieu de seulement l'estimer comme auparavant."
     },
     "publishedAt": "2026-07-05T14:47:03Z",
     "revision": 105
@@ -280,15 +364,15 @@
     },
     "de": {
       "title": "Barcode Scanner Update",
-      "body": "Die Barcode-Erkennung wurde auf die neueste Version aktualisiert. (Viele solcher Updates laufen ohne Erwähnung.)"
+      "body": "Die Suche per Barcode wurde auf die neueste Version aktualisiert. (Viele solcher Updates werden durchgeführt, ohne erwähnt zu werden.)"
     },
     "es": {
       "title": "Actualización del Escáner",
-      "body": "La lectura de códigos de barras se ha actualizado a la última versión. (Muchas de estas actualizaciones se hacen sin mencionarlas.)"
+      "body": "La búsqueda por código de barras se ha actualizado a la última versión. (Muchas de estas actualizaciones se realizan sin mencionarlas.)"
     },
     "fr": {
       "title": "Mise à jour du Scanner",
-      "body": "La lecture des codes-barres a été mise à jour vers la dernière version. (Beaucoup de ces mises à jour se font sans être mentionnées.)"
+      "body": "La recherche par code-barres a été mise à jour vers la dernière version. (Beaucoup de ces mises à jour sont effectuées sans être mentionnées.)"
     },
     "publishedAt": "2026-07-03T12:41:52Z",
     "revision": 103
@@ -427,15 +511,15 @@
     },
     "de": {
       "title": "Kameraauswahl",
-      "body": "Der Barcode Scanner hat jetzt eine Kameraauswahl. Damit lässt sich eine bevorzugte Kamera wählen oder sogar eine von einem verbundenen Gerät. Hilft auch wenn die Kamera zu unscharf ist."
+      "body": "Der Barcode Scanner hat jetzt eine Kameraauswahl. Damit lässt sich eine bevorzugte Kamera wählen oder sogar eine von einem verbundenen Gerät. Das hilft auch, wenn das Kamerabild zu unscharf ist."
     },
     "es": {
       "title": "Selector de cámara",
-      "body": "El Escáner de código de barras ahora tiene un selector de cámara para elegir la preferida o incluso una de un dispositivo conectado. También ayuda si la cámara está borrosa."
+      "body": "El Escáner de código de barras ahora tiene un selector de cámara para elegir la preferida o incluso una de un dispositivo conectado. También ayuda si la imagen de la cámara está demasiado borrosa."
     },
     "fr": {
       "title": "Sélecteur de caméra",
-      "body": "Le Scanner de code-barres a maintenant un sélecteur de caméra pour choisir la caméra préférée ou même celle d'un appareil connecté. Utile aussi si la caméra est floue."
+      "body": "Le Scanner de code-barres a maintenant un sélecteur de caméra pour choisir la caméra préférée ou même celle d'un appareil connecté. Utile aussi si l'image de la caméra est trop floue."
     },
     "publishedAt": "2026-06-23T14:41:37Z",
     "revision": 96
@@ -511,15 +595,15 @@
     },
     "de": {
       "title": "Schätzung korrigieren",
-      "body": "Sag der KI was falsch ist und die Schätzung wird neu gemacht. Dazu eine kleine Korrektur: Bei mehreren Eingaben werden jetzt alle berücksichtigt."
+      "body": "Sag der KI, was falsch ist, und die Schätzung wird erneut durchgeführt. Dazu eine kleine Korrektur: Bei mehreren Eingaben werden jetzt alle berücksichtigt."
     },
     "es": {
       "title": "Corregir una estimación",
-      "body": "Dile a la IA qué está mal y la estimación se rehace. Además una pequeña corrección: ahora se tienen en cuenta todas las entradas cuando hay varias."
+      "body": "Dile a la IA qué está mal y se volverá a realizar la estimación. Además, una pequeña corrección: ahora se tienen en cuenta todas las entradas cuando hay varias."
     },
     "fr": {
       "title": "Corriger une estimation",
-      "body": "Dis à l'IA ce qui ne va pas et l'estimation est refaite. Avec une petite correction : toutes les entrées sont prises en compte quand il y en a plusieurs."
+      "body": "Indique à l'IA ce qui ne va pas et l'estimation sera réalisée à nouveau. Une petite correction a aussi été apportée : toutes les entrées sont maintenant prises en compte quand il y en a plusieurs."
     },
     "publishedAt": "2026-04-23T18:06:03Z",
     "revision": 92
@@ -532,7 +616,7 @@
     },
     "de": {
       "title": "Tage aus der Statistik ausnehmen",
-      "body": "Du kannst unvollständige Tage im Tagebuch jetzt markieren damit sie die Statistik nicht verfälschen."
+      "body": "Du kannst unvollständige Tage im Tagebuch jetzt markieren, damit sie die Statistik nicht verfälschen."
     },
     "es": {
       "title": "Excluir días de las estadísticas",
@@ -620,7 +704,7 @@
     },
     "es": {
       "title": "El primer análisis de imagen para PKU",
-      "body": "PKU Tools ahora tiene análisis de imagen 😃 (no es una broma tardía del día de los inocentes)"
+      "body": "PKU Tools ahora tiene una función de análisis de imagen 😃 (no es una broma tardía del 1 de abril)"
     },
     "fr": {
       "title": "La première analyse d'image PKU",
@@ -763,7 +847,7 @@
     },
     "de": {
       "title": "Optimierte Navigation",
-      "body": "Die Navigation wurde optimiert. Einige Funktionen die weniger nützlich waren als gedacht wurden entfernt."
+      "body": "Die Navigation wurde optimiert. Einige Funktionen, die weniger nützlich waren als gedacht, wurden entfernt."
     },
     "es": {
       "title": "Navegación optimizada",
@@ -822,19 +906,19 @@
     "category": "new",
     "en": {
       "title": "Community food database",
-      "body": "You can now share your own foods with the community and like good contributions in food search to help improve the community database 😃"
+      "body": "You can now share your own foods with the community and rate foods in Food Search to help improve the community database 😃"
     },
     "de": {
       "title": "Community-Datenbank",
-      "body": "Du kannst eigene Lebensmittel jetzt mit der Community teilen und gute Beiträge in der Lebensmittelsuche bewerten. So wird die Community-Datenbank besser 😃"
+      "body": "Du kannst eigene Lebensmittel jetzt mit der Community teilen und Lebensmittel in der Lebensmittelsuche bewerten, um die Community-Datenbank zu verbessern 😃"
     },
     "es": {
       "title": "Base de datos de la comunidad",
-      "body": "Ahora puedes compartir tus alimentos propios con la comunidad y valorar las buenas aportaciones en la Búsqueda de alimentos para mejorar la base de datos 😃"
+      "body": "Ahora puedes compartir tus alimentos propios con la comunidad y valorar los alimentos en la Búsqueda de alimentos para mejorar la base de datos de la comunidad 😃"
     },
     "fr": {
       "title": "Base de données communautaire",
-      "body": "Tu peux maintenant partager tes aliments personnels avec la communauté et noter les bonnes contributions dans la Recherche alimentaire pour améliorer la base 😃"
+      "body": "Tu peux maintenant partager tes aliments personnels avec la communauté et évaluer les aliments dans la Recherche alimentaire pour améliorer la base de données communautaire 😃"
     },
     "publishedAt": "2026-01-25T17:27:20Z",
     "revision": 77
@@ -847,15 +931,15 @@
     },
     "de": {
       "title": "Schnelleingabe & Notizen",
-      "body": "Im Tagebuch gibt es jetzt eine Schnelleingabe und du kannst Notizen zu Einträgen hinzufügen."
+      "body": "Im Tagebuch gibt es jetzt eine Schnelleingabe und die Möglichkeit, Notizen zu Lebensmitteleinträgen hinzuzufügen."
     },
     "es": {
       "title": "Añadido rápido y notas",
-      "body": "El Diario tiene ahora una función de añadido rápido y puedes añadir notas a las entradas."
+      "body": "El Diario tiene ahora una función de añadido rápido y la posibilidad de añadir notas a las entradas de alimentos."
     },
     "fr": {
       "title": "Ajout rapide et notes",
-      "body": "Le Journal a maintenant un ajout rapide et tu peux ajouter des notes aux entrées."
+      "body": "Le Journal propose maintenant une fonction d'ajout rapide et la possibilité d'ajouter des notes aux entrées alimentaires."
     },
     "publishedAt": "2026-01-22T21:15:17Z",
     "revision": 76
@@ -889,11 +973,11 @@
     },
     "de": {
       "title": "Sortierung und Seiten",
-      "body": "Tabellen haben jetzt Sortierung und Seitenaufteilung wo es nötig ist."
+      "body": "Tabellen haben jetzt Sortierung und Seitenaufteilung, wo es nötig ist."
     },
     "es": {
-      "title": "Orden y paginación",
-      "body": "Las tablas ahora tienen orden y paginación donde hace falta."
+      "title": "Ordenación y paginación",
+      "body": "Las tablas ahora permiten ordenar los datos y tienen paginación donde hace falta."
     },
     "fr": {
       "title": "Tri et pagination",
@@ -973,7 +1057,7 @@
     },
     "de": {
       "title": "Intelligente Schätzungen",
-      "body": "PKU Tools ist soweit ich weiß die erste PKU-App die Phenylalanin für beliebige Eingaben schätzen kann 😃 🎉 KI-Funktion: Geschätzte Werte können falsch sein."
+      "body": "PKU Tools ist, soweit ich weiß, die erste PKU-App, die Phenylalanin für beliebige Lebensmitteleingaben schätzen kann 😃 🎉 KI-Funktion: Geschätzte Werte können falsch sein."
     },
     "es": {
       "title": "Estimaciones inteligentes",
@@ -994,15 +1078,15 @@
     },
     "de": {
       "title": "Korrekturen und Verbesserungen",
-      "body": "Dazu kommen Bestätigungsdialoge und eine Korrektur bei der Seite Erste Schritte nach der Anmeldung."
+      "body": "Weitere Verbesserungen umfassen unter anderem Bestätigungsdialoge und eine Korrektur bei der Seite Erste Schritte nach der Anmeldung."
     },
     "es": {
       "title": "Correcciones y mejoras",
-      "body": "Se añaden diálogos de confirmación y una corrección en la página Primeros pasos al iniciar sesión."
+      "body": "Se han realizado otras mejoras, como diálogos de confirmación y una corrección en la página Primeros Pasos al iniciar sesión."
     },
     "fr": {
       "title": "Corrections et améliorations",
-      "body": "S'y ajoutent des dialogues de confirmation et une correction sur la page Premiers pas à la connexion."
+      "body": "D'autres améliorations ont été apportées, notamment des dialogues de confirmation et une correction sur la page Premiers Pas à la connexion."
     },
     "publishedAt": "2025-12-07T23:16:54Z",
     "revision": 69
@@ -1015,7 +1099,7 @@
     },
     "de": {
       "title": "Benachrichtigungen & Rückgängig",
-      "body": "Es gibt jetzt ein neues Benachrichtigungssystem in der App und die Möglichkeit bestimmte Aktionen rückgängig zu machen statt sie vorher zu bestätigen."
+      "body": "Es gibt jetzt ein neues Benachrichtigungssystem in der App und die Möglichkeit, bestimmte Aktionen rückgängig zu machen, statt sie vorher zu bestätigen."
     },
     "es": {
       "title": "Notificaciones y deshacer",
@@ -1074,19 +1158,19 @@
     "category": "new",
     "en": {
       "title": "New \"Getting Started\" page",
-      "body": "PKU Tools now has a “Getting Started” page, including consent for health data or email notifications, and the Assistant is now temporarily disabled."
+      "body": "PKU Tools now has a “Getting Started” page with health data consent and the option to enable email notifications. The Assistant is now temporarily disabled."
     },
     "de": {
       "title": "Neue Seite „Erste Schritte“",
-      "body": "PKU Tools hat jetzt eine Seite „Erste Schritte“ mit Einwilligung für Gesundheitsdaten und E-Mail-Benachrichtigungen. Der Assistant ist vorübergehend deaktiviert."
+      "body": "PKU Tools hat jetzt eine Seite „Erste Schritte“ mit der Einwilligung zur Verarbeitung von Gesundheitsdaten und der Möglichkeit, E-Mail-Benachrichtigungen zu aktivieren. Der Assistent ist vorübergehend deaktiviert."
     },
     "es": {
-      "title": "Nueva página «Primeros pasos»",
-      "body": "PKU Tools tiene ahora una página «Primeros pasos» con el consentimiento para datos de salud y avisos por correo. El Assistant está desactivado temporalmente."
+      "title": "Nueva página «Primeros Pasos»",
+      "body": "PKU Tools tiene ahora una página «Primeros Pasos» con el consentimiento para el tratamiento de datos de salud y la opción de activar las notificaciones por correo. El Asistente está desactivado temporalmente."
     },
     "fr": {
-      "title": "Nouvelle page « Premiers pas »",
-      "body": "PKU Tools a maintenant une page « Premiers pas » avec le consentement pour les données de santé et les e-mails. L'Assistant est temporairement désactivé."
+      "title": "Nouvelle page « Premiers Pas »",
+      "body": "PKU Tools a maintenant une page « Premiers Pas » avec le consentement au traitement des données de santé et la possibilité d'activer les notifications par e-mail. L'Assistant est temporairement désactivé."
     },
     "publishedAt": "2025-10-12T19:04:13Z",
     "revision": 65
@@ -1099,15 +1183,15 @@
     },
     "de": {
       "title": "Bessere Navigation",
-      "body": "Die Navigation wurde verbessert. Phe Rechner und Protein-Rechner wurden zusammengelegt. URLs sind jetzt übersetzt. Dazu weitere technische Verbesserungen (SEO)."
+      "body": "Die Navigation wurde verbessert. Phe Rechner und Eiweiß Rechner wurden zusammengelegt. URLs sind jetzt übersetzt. Dazu weitere technische Verbesserungen (SEO)."
     },
     "es": {
       "title": "Navegación mejorada",
-      "body": "Se ha mejorado la navegación, se han unido la Calculadora de Phe y la de proteínas, las URL se han traducido y hay más mejoras técnicas (SEO)."
+      "body": "Se ha mejorado la navegación, se han unido la Calculadora de Phe y la Calculadora de proteínas, las URL se han traducido y hay más mejoras técnicas (SEO)."
     },
     "fr": {
       "title": "Navigation améliorée",
-      "body": "La navigation a été améliorée, le Calculateur Phe et celui des protéines ont été fusionnés, les URL sont traduites et d'autres améliorations techniques (SEO) ont été faites."
+      "body": "La navigation a été améliorée, le Calculateur Phe et le Calculateur protéines ont été fusionnés, les URL sont traduites et d'autres améliorations techniques (SEO) ont été faites."
     },
     "publishedAt": "2025-09-13T14:21:04Z",
     "revision": 64
@@ -1162,15 +1246,15 @@
     },
     "de": {
       "title": "Aktualisierte Tarife",
-      "body": "PKU Tools lässt sich nicht dauerhaft kostenlos anbieten. Aufwand und Kosten übersteigen das Mögliche. Es gibt bereits Wege PKU Tools zu unterstützen und Vorteile wie unbegrenzte Einträge zu bekommen. Das wird eventuell erweitert. Mehr dazu hier: https://ko-fi.com/andrereus/tiers"
+      "body": "PKU Tools lässt sich nicht dauerhaft kostenlos anbieten, da Entwicklungsaufwand und Kosten das Mögliche übersteigen. Es gibt bereits Wege, PKU Tools zu unterstützen und Vorteile wie unbegrenzte Einträge zu bekommen. Dieses Angebot wird eventuell künftig erweitert. Mehr dazu hier: https://ko-fi.com/andrereus/tiers"
     },
     "es": {
       "title": "Planes actualizados",
-      "body": "PKU Tools no se puede ofrecer gratis de forma indefinida, ya que el esfuerzo y los costes superan lo posible. Ya hay formas de apoyar PKU Tools y obtener ventajas como entradas ilimitadas, y puede que se amplíen. Más información aquí: https://ko-fi.com/andrereus/tiers"
+      "body": "PKU Tools no se puede ofrecer gratis de forma indefinida, ya que el esfuerzo de desarrollo y los costes superan lo posible. Ya hay formas de apoyar PKU Tools y obtener ventajas como entradas ilimitadas, y puede que se amplíen en el futuro. Más información aquí: https://ko-fi.com/andrereus/tiers"
     },
     "fr": {
       "title": "Offres mises à jour",
-      "body": "PKU Tools ne peut pas rester gratuit indéfiniment : l'effort et les coûts dépassent ce qui est possible. Il existe déjà des moyens de soutenir PKU Tools et d'obtenir des avantages comme des entrées illimitées, et cela pourra être étendu. Plus d'informations ici : https://ko-fi.com/andrereus/tiers"
+      "body": "PKU Tools ne peut pas rester gratuit indéfiniment : l'effort de développement et les coûts dépassent ce qui est possible. Il existe déjà des moyens de soutenir PKU Tools et d'obtenir des avantages comme des entrées illimitées, et cette offre pourrait être étendue à l'avenir. Plus d'informations ici : https://ko-fi.com/andrereus/tiers"
     },
     "publishedAt": "2025-07-31T13:55:09Z",
     "revision": 61
@@ -1183,15 +1267,15 @@
     },
     "de": {
       "title": "PKU Tools Version 3",
-      "body": "PKU Tools Version 3 ist früher live 🎉 Technisch wurde das zugrunde liegende Framework ersetzt. Das eröffnet künftig mehr Möglichkeiten und ist besser für Performance und Suchmaschinen. URL-Pfade und Seitennamen wurden ebenfalls überarbeitet."
+      "body": "PKU Tools Version 3 ist früher als geplant verfügbar 🎉 Technisch wurde das zugrunde liegende Framework ersetzt. Das eröffnet künftig mehr Entwicklungsmöglichkeiten und ist besser für Performance und Suchmaschinen. URL-Pfade und Seitennamen wurden ebenfalls überarbeitet."
     },
     "es": {
       "title": "PKU Tools versión 3",
-      "body": "PKU Tools versión 3 está disponible antes de lo previsto 🎉 Técnicamente se ha sustituido el framework base, lo que dará más opciones en el futuro y mejora el rendimiento y el posicionamiento. También se han revisado las rutas URL y los nombres de las páginas."
+      "body": "PKU Tools versión 3 está disponible antes de lo previsto 🎉 Técnicamente se ha sustituido el framework base, lo que dará más opciones de desarrollo en el futuro. También mejora el rendimiento y el posicionamiento en buscadores. Se han revisado las rutas URL y los nombres de las páginas."
     },
     "fr": {
       "title": "PKU Tools version 3",
-      "body": "PKU Tools version 3 est en ligne en avance 🎉 Techniquement, le framework sous-jacent a été remplacé, ce qui ouvrira plus de possibilités et améliore les performances et le référencement. Les chemins d'URL et les noms de pages ont aussi été revus."
+      "body": "PKU Tools version 3 est en ligne en avance 🎉 Techniquement, le framework sous-jacent a été remplacé, ce qui ouvrira plus de possibilités de développement à l'avenir. Cela améliore aussi les performances et le référencement. Les chemins d'URL et les noms de pages ont également été revus."
     },
     "publishedAt": "2025-07-27T12:38:34Z",
     "revision": 60
@@ -1288,15 +1372,15 @@
     },
     "de": {
       "title": "PKU Tools Unlimited",
-      "body": "PKU Tools Unlimited wurde überarbeitet und enthält jetzt: unbegrenzte Tagebucheinträge, unbegrenzte Blutwerte, unbegrenzte eigene Lebensmittel, eigene Lebensmittel-Icons und CSV-Export (Excel)."
+      "body": "PKU Tools Unlimited wurde überarbeitet und enthält jetzt: unbegrenzte Tagebucheinträge, unbegrenzte Einträge für Blutwerte, unbegrenzte eigene Lebensmittel, eigene Lebensmittel-Icons und CSV-Export (Excel)."
     },
     "es": {
       "title": "PKU Tools Unlimited",
-      "body": "PKU Tools Unlimited se ha revisado e incluye ahora: entradas de diario ilimitadas, valores de laboratorio ilimitados, alimentos propios ilimitados, iconos propios y exportación CSV (Excel)."
+      "body": "PKU Tools Unlimited se ha revisado e incluye ahora: entradas de diario ilimitadas, registros de valores de laboratorio ilimitados, alimentos propios ilimitados, iconos personalizados para los alimentos y exportación CSV (Excel)."
     },
     "fr": {
       "title": "PKU Tools Unlimited",
-      "body": "PKU Tools Unlimited a été revu et comprend maintenant : entrées de journal illimitées, valeurs de laboratoire illimitées, aliments personnels illimités, icônes personnalisées et export CSV (Excel)."
+      "body": "PKU Tools Unlimited a été revu et comprend maintenant : entrées de journal illimitées, enregistrements de valeurs de laboratoire illimités, aliments personnels illimités, icônes personnalisées pour les aliments et export CSV (Excel)."
     },
     "publishedAt": "2025-06-07T07:54:49Z",
     "revision": 55
@@ -1308,12 +1392,12 @@
       "body": "PKU Tools is getting smarter. Get an overview, recommendations and motivation from Assistant 🤖"
     },
     "de": {
-      "title": "Assistant",
-      "body": "PKU Tools wird schlauer. Der Assistant gibt dir Überblick, Empfehlungen und Motivation 🤖"
+      "title": "Assistent",
+      "body": "PKU Tools wird schlauer. Der Assistent gibt dir Überblick, Empfehlungen und Motivation 🤖"
     },
     "es": {
-      "title": "Assistant",
-      "body": "PKU Tools se vuelve más inteligente. El Assistant te da una visión general, recomendaciones y motivación 🤖"
+      "title": "Asistente",
+      "body": "PKU Tools se vuelve más inteligente. El Asistente te da una visión general, recomendaciones y motivación 🤖"
     },
     "fr": {
       "title": "Assistant",
@@ -1351,15 +1435,15 @@
     },
     "de": {
       "title": "Energie (Kcal) erfassen",
-      "body": "Mit PKU Tools kannst du jetzt auch deine Energiezufuhr in Kilokalorien erfassen 🙌 (Kcal-Werte in der Phe Search folgen bald.)"
+      "body": "Mit PKU Tools kannst du jetzt auch deine Energiezufuhr in Kilokalorien (kcal) erfassen 🙌 (Kcal-Werte in der Phe Suche folgen bald.)"
     },
     "es": {
       "title": "Registrar energía (kcal)",
-      "body": "PKU Tools ahora te deja registrar tu consumo de energía en kilocalorías 🙌 (Los valores de kcal en Phe Search llegarán pronto.)"
+      "body": "PKU Tools ahora te permite registrar tu consumo de energía en kilocalorías (kcal) 🙌 (Los valores de kcal en la Búsqueda de Phe llegarán pronto.)"
     },
     "fr": {
       "title": "Suivre l'énergie (kcal)",
-      "body": "PKU Tools te permet maintenant de suivre ton apport énergétique en kilocalories 🙌 (Les valeurs kcal dans Phe Search arrivent bientôt.)"
+      "body": "PKU Tools te permet maintenant de suivre ton apport énergétique en kilocalories (kcal) 🙌 (Les valeurs kcal dans la Recherche de Phe arrivent bientôt.)"
     },
     "publishedAt": "2025-04-14T08:40:24Z",
     "revision": 52
@@ -1368,19 +1452,19 @@
     "category": "new",
     "en": {
       "title": "Phe Log = Phe Diary",
-      "body": "Phe Log now has a date picker and food is automatically saved to a specific day. Also you can now add or edit food entries in the Phe Diary. Maximum flexibility! 🎉 😃"
+      "body": "Phe Log now has a date picker and food is automatically assigned to a day. Also you can now add or edit food entries in the Phe Diary. Maximum flexibility! 🎉 😃"
     },
     "de": {
-      "title": "Phe Log = Phe Diary",
-      "body": "Phe Log hat jetzt eine Datumsauswahl und Lebensmittel werden automatisch einem Tag zugeordnet. Im Phe Diary kannst du Einträge hinzufügen und bearbeiten. Maximale Flexibilität 🎉 😃"
+      "title": "Phe Protokoll = Phe Tagebuch",
+      "body": "Das Phe Protokoll hat jetzt eine Datumsauswahl und Lebensmittel werden automatisch einem Tag zugeordnet. Im Phe Tagebuch kannst du jetzt auch Lebensmitteleinträge hinzufügen und bearbeiten. Maximale Flexibilität 🎉 😃"
     },
     "es": {
-      "title": "Phe Log = Phe Diary",
-      "body": "Phe Log tiene ahora un selector de fecha y los alimentos se guardan automáticamente en un día concreto. En Phe Diary puedes añadir y editar entradas. Máxima flexibilidad 🎉 😃"
+      "title": "Protocolo Phe = Diario de Phe",
+      "body": "El Protocolo Phe tiene ahora un selector de fecha y los alimentos se asignan automáticamente a un día. En el Diario de Phe ahora también puedes añadir y editar entradas de alimentos. Máxima flexibilidad 🎉 😃"
     },
     "fr": {
-      "title": "Phe Log = Phe Diary",
-      "body": "Phe Log a maintenant un sélecteur de date et les aliments sont enregistrés automatiquement sur un jour précis. Dans Phe Diary tu peux ajouter et modifier des entrées. Flexibilité maximale 🎉 😃"
+      "title": "Protocole Phe = Journal de Phe",
+      "body": "Le Protocole Phe a maintenant un sélecteur de date et les aliments sont automatiquement associés à un jour. Dans le Journal de Phe, tu peux maintenant aussi ajouter et modifier des entrées alimentaires. Flexibilité maximale 🎉 😃"
     },
     "publishedAt": "2025-04-13T06:48:31Z",
     "revision": 51
@@ -1434,16 +1518,16 @@
       "body": "You can now zoom the chart / diagram in Phe Diary. 😊"
     },
     "de": {
-      "title": "Zoom im Phe Diary Diagramm",
-      "body": "Du kannst das Diagramm im Phe Diary jetzt zoomen 😊"
+      "title": "Zoom im Diagramm des Phe Tagebuchs",
+      "body": "Du kannst das Diagramm im Phe Tagebuch jetzt zoomen 😊"
     },
     "es": {
-      "title": "Zoom en el gráfico de Phe Diary",
-      "body": "Ahora puedes hacer zoom en el gráfico de Phe Diary 😊"
+      "title": "Zoom en el gráfico del Diario de Phe",
+      "body": "Ahora puedes hacer zoom en el gráfico del Diario de Phe 😊"
     },
     "fr": {
-      "title": "Zoom dans le graphique Phe Diary",
-      "body": "Tu peux maintenant zoomer sur le graphique dans Phe Diary 😊"
+      "title": "Zoom dans le graphique du Journal de Phe",
+      "body": "Tu peux maintenant zoomer sur le graphique dans le Journal de Phe 😊"
     },
     "publishedAt": "2024-12-29T19:23:41Z",
     "revision": 48
@@ -1460,11 +1544,11 @@
     },
     "es": {
       "title": "Valores de laboratorio (niveles en sangre)",
-      "body": "Ahora puedes introducir valores de laboratorio y seguirlos en un gráfico."
+      "body": "Ahora puedes introducir valores de laboratorio (niveles en sangre) y seguirlos en un gráfico."
     },
     "fr": {
       "title": "Valeurs de laboratoire (taux sanguins)",
-      "body": "Tu peux maintenant saisir des valeurs de laboratoire et les suivre dans un graphique."
+      "body": "Tu peux maintenant saisir des valeurs de laboratoire (taux sanguins) et les suivre dans un graphique."
     },
     "publishedAt": "2024-12-18T08:49:46Z",
     "revision": 47
@@ -1519,15 +1603,15 @@
     },
     "de": {
       "title": "Bessere Vorschläge",
-      "body": "Der Algorithmus für Vorschläge wurde verbessert. Vorschläge lassen sich jetzt ohne seitliches Scrollen eintragen."
+      "body": "Der Algorithmus für Vorschläge wurde verbessert. Vorschläge lassen sich jetzt ohne seitliches Scrollen ins Phe Protokoll eintragen."
     },
     "es": {
       "title": "Optimización de sugerencias",
-      "body": "El algoritmo de sugerencias ha mejorado y las sugerencias se pueden añadir sin desplazarse en horizontal."
+      "body": "El algoritmo de sugerencias ha mejorado y las sugerencias ahora se pueden añadir al Protocolo Phe sin desplazarse en horizontal."
     },
     "fr": {
       "title": "Optimisation des suggestions",
-      "body": "L'algorithme de suggestions a été amélioré et les suggestions s'ajoutent sans défilement horizontal."
+      "body": "L'algorithme de suggestions a été amélioré et les suggestions peuvent maintenant être ajoutées au Protocole Phe sans défilement horizontal."
     },
     "publishedAt": "2024-09-01T22:57:32Z",
     "revision": 44
@@ -1544,11 +1628,11 @@
     },
     "es": {
       "title": "Rediseño",
-      "body": "Tras el diseño y ahora las páginas, el rediseño está casi terminado 😊 La parte técnica tiene ahora mucha más flexibilidad e independencia para el futuro."
+      "body": "Tras rediseñar la estructura visual y ahora también las páginas, el rediseño está casi terminado 😊 La parte técnica tiene ahora mucha más flexibilidad e independencia para futuros desarrollos."
     },
     "fr": {
       "title": "Refonte",
-      "body": "Après la mise en page et maintenant les pages, la refonte est presque terminée 😊 La partie technique a désormais beaucoup plus de flexibilité et d'indépendance pour l'avenir."
+      "body": "Après la refonte de la mise en page, puis des pages, la refonte globale est presque terminée 😊 La partie technique offre maintenant beaucoup plus de flexibilité et d'indépendance pour les développements futurs."
     },
     "publishedAt": "2024-09-01T07:57:47Z",
     "revision": 43
@@ -1560,16 +1644,16 @@
       "body": "The Protein Calculator has been improved and an additional food category has been added (meat)."
     },
     "de": {
-      "title": "Protein-Rechner optimiert",
-      "body": "Der Protein-Rechner wurde verbessert und eine weitere Lebensmittelkategorie kam dazu (Fleisch)."
+      "title": "Eiweiß Rechner optimiert",
+      "body": "Der Eiweiß Rechner wurde verbessert und eine weitere Lebensmittelkategorie kam dazu (Fleisch)."
     },
     "es": {
-      "title": "Optimización de la calculadora de proteínas",
-      "body": "La calculadora de proteínas ha mejorado y se ha añadido otra categoría de alimentos (carne)."
+      "title": "Optimización de la Calculadora de proteínas",
+      "body": "La Calculadora de proteínas ha mejorado y se ha añadido otra categoría de alimentos (carne)."
     },
     "fr": {
-      "title": "Optimisation du calculateur de protéines",
-      "body": "Le calculateur de protéines a été amélioré et une catégorie d'aliments supplémentaire a été ajoutée (viande)."
+      "title": "Optimisation du Calculateur de protéines",
+      "body": "Le Calculateur de protéines a été amélioré et une catégorie d'aliments supplémentaire a été ajoutée (viande)."
     },
     "publishedAt": "2024-08-21T11:04:31Z",
     "revision": 42
@@ -1582,15 +1666,15 @@
     },
     "de": {
       "title": "Gesamt-Phe in der Navigationsleiste",
-      "body": "Gesamt-Phe und verbleibendes Phe stehen jetzt in der Navigationsleiste damit sie auf jeder Seite sichtbar sind."
+      "body": "Gesamt-Phe und verbleibendes Phe stehen jetzt in der Navigationsleiste, damit diese Informationen auf jeder Seite sichtbar sind."
     },
     "es": {
       "title": "Phe total en la barra de navegación",
-      "body": "El Phe total y el Phe restante se muestran ahora en la barra de navegación para verlos en cada página."
+      "body": "La Phe total y la Phe restante se muestran ahora en la barra de navegación para que esta información esté disponible en cada página."
     },
     "fr": {
-      "title": "Phe total dans la barre de navigation",
-      "body": "Le Phe total et le Phe restant sont maintenant affichés dans la barre de navigation pour les voir sur chaque page."
+      "title": "Phe totale dans la barre de navigation",
+      "body": "La Phe totale et la Phe restante sont maintenant affichées dans la barre de navigation pour que ces informations soient disponibles sur chaque page."
     },
     "publishedAt": "2024-08-12T17:56:10Z",
     "revision": 41
@@ -1603,15 +1687,15 @@
     },
     "de": {
       "title": "Bessere Suche",
-      "body": "Die Suche in PKU Tools wurde verbessert. Mit mehreren Wörtern lassen sich Treffer eingrenzen, zum Beispiel „Äpfel roh“ oder „Kartoffeln gekocht“. Der Pipe-Operator (|) verknüpft Suchen und Anführungszeichen suchen exakt."
+      "body": "Die Suche in PKU Tools wurde verbessert. Mit mehreren Wörtern lassen sich Treffer eingrenzen, zum Beispiel „Äpfel roh“ oder „Kartoffeln gekocht“. Der Pipe-Operator (|) verknüpft Suchen. Wörter in Anführungszeichen werden als exakte Übereinstimmungen gesucht."
     },
     "es": {
       "title": "Búsqueda mejorada",
-      "body": "La búsqueda en PKU Tools ha mejorado. Se puede afinar con varias palabras, por ejemplo «manzanas crudas» o «patatas cocidas». El operador de barra vertical (|) combina búsquedas y las comillas buscan coincidencias exactas."
+      "body": "La búsqueda en PKU Tools ha mejorado. Se pueden afinar los resultados con varias palabras, por ejemplo «manzanas crudas» o «patatas cocidas». El operador de barra vertical (|) combina búsquedas y las palabras entre comillas se buscan como coincidencias exactas."
     },
     "fr": {
       "title": "Recherche améliorée",
-      "body": "La recherche dans PKU Tools a été améliorée. Plusieurs mots permettent d'affiner, par exemple « pommes crues » ou « pommes de terre cuites ». L'opérateur pipe (|) combine les recherches et les guillemets cherchent une correspondance exacte."
+      "body": "La recherche dans PKU Tools a été améliorée. Plusieurs mots permettent d'affiner les résultats, par exemple « pommes crues » ou « pommes de terre cuites ». L'opérateur pipe (|) combine les recherches et les mots entre guillemets sont recherchés comme des correspondances exactes."
     },
     "publishedAt": "2024-08-01T17:16:33Z",
     "revision": 40
@@ -1632,7 +1716,7 @@
     },
     "fr": {
       "title": "Nouveau scanner de codes-barres",
-      "body": "Le Scanner de code-barres a été nettement amélioré et reconnaît les codes bien plus fiablement 😊"
+      "body": "Le Scanner de code-barres a été nettement amélioré et reconnaît maintenant les codes de façon bien plus fiable 😊"
     },
     "publishedAt": "2024-07-29T15:53:40Z",
     "revision": 39
@@ -1645,15 +1729,15 @@
     },
     "de": {
       "title": "% vom Zielwert",
-      "body": "Im Phe Log gibt es jetzt einen Prozentwert der die Abweichung vom optimalen Phe-Wert zeigt. Das hilft beim Einschätzen und beim Annähern an die Phe-Toleranz."
+      "body": "Im Phe Protokoll gibt es jetzt einen Prozentwert, der die Abweichung vom optimalen Phe-Wert zeigt. Das hilft beim Einschätzen und beim Annähern an die Phe-Toleranz."
     },
     "es": {
       "title": "% del valor objetivo",
-      "body": "En Phe Log hay ahora un porcentaje que muestra la desviación respecto al valor óptimo de Phe. Ayuda a estimar y a acercarse a la tolerancia de Phe."
+      "body": "En el Protocolo Phe hay ahora un porcentaje que muestra la desviación respecto al valor óptimo de Phe. Ayuda a estimar y a acercarse a la tolerancia de Phe."
     },
     "fr": {
       "title": "% de la valeur cible",
-      "body": "Dans Phe Log il y a maintenant un pourcentage qui montre l'écart par rapport à la valeur optimale de Phe. Cela aide à estimer et à approcher la tolérance en Phe."
+      "body": "Dans le Protocole Phe, il y a maintenant un pourcentage qui montre l'écart par rapport à la valeur optimale de Phe. Cela aide à estimer la tolérance en Phe et à s'en approcher."
     },
     "publishedAt": "2024-07-26T09:27:53Z",
     "revision": 38
@@ -1665,16 +1749,16 @@
       "body": "Now you can set the date when you finish the Phe Log. This makes it much easier when you finish it a day later."
     },
     "de": {
-      "title": "Datum beim Abschließen des Phe Log",
-      "body": "Du kannst jetzt beim Abschließen des Phe Log das Datum setzen. Das hilft wenn du erst am nächsten Tag abschließt."
+      "title": "Datum beim Abschließen des Phe Protokolls",
+      "body": "Du kannst jetzt beim Abschließen des Phe Protokolls das Datum setzen. Das macht es deutlich einfacher, wenn du erst am nächsten Tag abschließt."
     },
     "es": {
-      "title": "Fecha al cerrar el Phe Log",
-      "body": "Ahora puedes fijar la fecha al cerrar el Phe Log. Es mucho más cómodo si lo cierras al día siguiente."
+      "title": "Fecha al cerrar el Protocolo Phe",
+      "body": "Ahora puedes fijar la fecha al cerrar el Protocolo Phe. Es mucho más cómodo si lo cierras al día siguiente."
     },
     "fr": {
-      "title": "Date à la clôture du Phe Log",
-      "body": "Tu peux maintenant définir la date en clôturant le Phe Log. C'est bien plus pratique si tu le clôtures le lendemain."
+      "title": "Date à la clôture du Protocole Phe",
+      "body": "Tu peux maintenant définir la date en clôturant le Protocole Phe. C'est bien plus pratique si tu le clôtures le lendemain."
     },
     "publishedAt": "2024-07-24T15:47:20Z",
     "revision": 37
@@ -1729,15 +1813,15 @@
     },
     "de": {
       "title": "„Mit Facebook anmelden“ entfernt",
-      "body": "Facebook hat die Anforderungen für sein Login-System geändert. Wir können es leider nicht mehr unterstützen. Betroffene wurden vorab informiert. Bei Fragen schreib mir eine E-Mail."
+      "body": "Facebook hat die Anforderungen für sein Login-System geändert. Wir können es leider nicht mehr unterstützen. Betroffene wurden vorab informiert. Bei weiteren Fragen schreib mir eine E-Mail."
     },
     "es": {
       "title": "Se ha quitado «Iniciar sesión con Facebook»",
-      "body": "Facebook ha cambiado los requisitos de su sistema de acceso y por desgracia ya no podemos mantenerlo. Se avisó de antemano a las personas afectadas. Si tienes dudas, escríbeme por correo."
+      "body": "Facebook ha cambiado los requisitos de su sistema de acceso y por desgracia ya no podemos mantenerlo. Se avisó de antemano a las personas afectadas. Si tienes más preguntas, escríbeme por correo."
     },
     "fr": {
       "title": "« Connexion avec Facebook » retirée",
-      "body": "Facebook a modifié les exigences de son système de connexion et nous ne pouvons malheureusement plus le prendre en charge. Les personnes concernées ont été prévenues à l'avance. Pour toute question, écris-moi par e-mail."
+      "body": "Facebook a modifié les exigences de son système de connexion et nous ne pouvons malheureusement plus le prendre en charge. Les personnes concernées ont été prévenues à l'avance. Pour toute autre question, écris-moi par e-mail."
     },
     "publishedAt": "2024-05-11T15:06:38Z",
     "revision": 34
@@ -1813,7 +1897,7 @@
     },
     "de": {
       "title": "Direkter Zugriff auf Unterseiten",
-      "body": "Ein Fehler wurde behoben bei dem der direkte Zugriff auf Unterseiten nicht funktionierte."
+      "body": "Ein Fehler wurde behoben, bei dem der direkte Zugriff auf Unterseiten nicht funktionierte."
     },
     "es": {
       "title": "Acceso directo a subpáginas",
@@ -1834,15 +1918,15 @@
     },
     "de": {
       "title": "Wie eine normale Website",
-      "body": "PKU Tools funktioniert jetzt wie eine normale Website und nicht mehr offline. Das ist eine Verbesserung. Die Installation auf dem Startbildschirm bleibt möglich. Du hast immer die neueste Version ohne in einem Popup auf „Aktualisieren“ zu klicken."
+      "body": "PKU Tools funktioniert jetzt wie eine normale Website und nicht mehr offline. Das ist eine Verbesserung. Es lässt sich weiterhin wie eine App auf dem Startbildschirm installieren. Du hast jetzt immer die neueste Version, ohne in einem Popup auf „Aktualisieren“ klicken zu müssen, wie du es von einer normalen Website erwartest."
     },
     "es": {
       "title": "Experiencia de sitio web",
-      "body": "PKU Tools ahora funciona como un sitio web normal y ya no sin conexión. Es una mejora. Se sigue pudiendo instalar en la pantalla de inicio. Siempre tienes la última versión sin pulsar «Actualizar» en un aviso."
+      "body": "PKU Tools ahora funciona como un sitio web normal y ya no sin conexión. Es una mejora. Se sigue pudiendo instalar como una app en la pantalla de inicio. Siempre tienes la última versión sin tener que pulsar «Actualizar» en un aviso, como esperarías de un sitio web normal."
     },
     "fr": {
       "title": "Expérience de site web",
-      "body": "PKU Tools fonctionne maintenant comme un site web normal et non plus hors ligne. C'est une amélioration. L'installation sur l'écran d'accueil reste possible. Tu as toujours la dernière version sans cliquer sur « Actualiser » dans une popup."
+      "body": "PKU Tools fonctionne maintenant comme un site web normal et non plus hors ligne. C'est une amélioration. L'installation comme une app sur l'écran d'accueil reste possible. Tu disposes toujours de la dernière version sans devoir cliquer sur « Actualiser » dans une fenêtre contextuelle, comme tu peux l'attendre d'un site web normal."
     },
     "publishedAt": "2024-03-27T13:57:00Z",
     "revision": 29
@@ -1855,7 +1939,7 @@
     },
     "de": {
       "title": "Eigene Lebensmittel in der Suche",
-      "body": "Ein Fehler wurde behoben bei dem sich eigene Lebensmittel nicht über die Suche eintragen ließen."
+      "body": "Ein Fehler wurde behoben, bei dem sich eigene Lebensmittel nicht über die Suche eintragen ließen."
     },
     "es": {
       "title": "Corrección de alimentos propios en la búsqueda",
@@ -1880,11 +1964,11 @@
     },
     "es": {
       "title": "Limpieza y correcciones",
-      "body": "Se ha ordenado la navegación y otras partes. Ahora puedes exportar tus alimentos propios. Se han corregido errores de registro, inicio y cierre de sesión y borrado de cuentas."
+      "body": "Se han ordenado la navegación y otras partes de la app. Ahora también puedes exportar tus alimentos propios. Se han corregido errores de registro, inicio y cierre de sesión y borrado de cuentas."
     },
     "fr": {
       "title": "Nettoyage et corrections",
-      "body": "La navigation et d'autres endroits ont été nettoyés. Tu peux maintenant exporter tes aliments personnels. Des bugs d'inscription, de connexion, de déconnexion et de suppression de compte ont été corrigés."
+      "body": "La navigation et d'autres parties de l'app ont été nettoyées. Tu peux maintenant aussi exporter tes aliments personnels. Des bugs d'inscription, de connexion, de déconnexion et de suppression de compte ont été corrigés."
     },
     "publishedAt": "2024-02-15T13:57:00Z",
     "revision": 27
@@ -1897,15 +1981,15 @@
     },
     "de": {
       "title": "App neu geschrieben",
-      "body": "Dieses Update hat bisher die umfangreichsten Änderungen. Das gesamte Framework musste neu geschrieben werden damit die verwendeten Bibliotheken auf den aktuellen Stand kommen. Fast jeder Teil des Codes hat sich geändert. Dazu kamen Verbesserungen und Korrekturen: Der Barcode Scanner arbeitet zuverlässiger. Zwei verschiedene Datenansichten lassen sich exportieren. Das Design passt sich automatisch dem Gerät an. Die Suche findet jetzt auch eigene Lebensmittel. Behoben: „Erneut hinzufügen“ funktioniert auch bei Lebensmitteln mit eigenem Icon. Und vieles mehr."
+      "body": "Dieses Update hat wahrscheinlich die bisher umfangreichsten Änderungen. Das gesamte Framework musste neu geschrieben werden, damit die verwendeten Bibliotheken auf den aktuellen Stand kommen. Fast jeder Teil des Codes musste geändert werden. Dazu kamen Verbesserungen und Korrekturen: Der Barcode Scanner arbeitet zuverlässiger. Zwei verschiedene Datenansichten lassen sich exportieren. Das Design lässt sich automatisch an das Gerät anpassen. Die Suche findet jetzt auch eigene Lebensmittel. Behoben: „Erneut hinzufügen“ funktioniert auch bei Lebensmitteln mit eigenem Icon. Und vieles mehr."
     },
     "es": {
       "title": "Reescritura de la app",
-      "body": "Esta actualización tiene seguramente los cambios más amplios hasta la fecha. Hubo que reescribir todo el framework para poner al día las librerías usadas y casi cada parte del código cambió. También incluye mejoras y correcciones: el Escáner de código de barras funciona de forma más fiable. Se pueden exportar dos vistas de datos distintas. El diseño se adapta automáticamente al dispositivo. La búsqueda también encuentra tus alimentos propios. Corregido: «Añadir de nuevo» funciona también con alimentos que tienen icono propio. Y mucho más."
+      "body": "Esta actualización probablemente incluye los cambios más amplios hasta la fecha. Hubo que reescribir todo el framework para actualizar las bibliotecas usadas y cambiar casi todo el código. También incluye mejoras y correcciones: el Escáner de código de barras funciona de forma más fiable. Se pueden exportar dos vistas de datos distintas. El diseño se puede adaptar automáticamente al dispositivo. La búsqueda también encuentra tus alimentos propios. Corregido: «Añadir de nuevo» funciona también con alimentos que tienen iconos personalizados. Y mucho más."
     },
     "fr": {
       "title": "Réécriture de l'app",
-      "body": "Cette mise à jour comporte sans doute les changements les plus vastes à ce jour. Tout le framework a dû être réécrit pour mettre à jour les bibliothèques utilisées, et presque chaque partie du code a changé. Elle apporte aussi des améliorations et des corrections : le Scanner de code-barres est plus fiable. Deux vues de données différentes peuvent être exportées. Le design s'adapte automatiquement à l'appareil. La recherche trouve aussi tes aliments personnels. Corrigé : « Ajouter à nouveau » fonctionne aussi pour les aliments avec une icône personnalisée. Et bien plus encore."
+      "body": "Cette mise à jour comporte probablement les changements les plus vastes à ce jour. Tout le framework a dû être réécrit pour actualiser les bibliothèques utilisées. Presque tout le code a dû changer. Elle apporte aussi des améliorations et corrections : le Scanner de code-barres est plus fiable. Deux vues de données différentes peuvent être exportées. Le design peut s'adapter automatiquement à l'appareil. La recherche trouve aussi tes aliments personnels. Corrigé : « Ajouter à nouveau » fonctionne aussi pour les aliments avec une icône personnalisée. Et bien plus encore."
     },
     "publishedAt": "2024-02-07T13:57:00Z",
     "revision": 26
@@ -1939,7 +2023,7 @@
     },
     "de": {
       "title": "Bessere Installationsanleitung",
-      "body": "Auf der Hilfeseite gibt es jetzt auch Bilder zur Installationsanleitung damit sie verständlicher ist."
+      "body": "Auf der Hilfeseite gibt es jetzt auch Bilder zur Installationsanleitung, damit sie verständlicher ist."
     },
     "es": {
       "title": "Mejores instrucciones de instalación",
@@ -1960,15 +2044,15 @@
     },
     "de": {
       "title": "Zuletzt eingetragene Lebensmittel",
-      "body": "Du kannst die zuletzt eingetragenen Lebensmittel der letzten 3 Tage jetzt mit einem Klick erneut eintragen 🙂"
+      "body": "Du kannst die zuletzt eingetragenen Lebensmittel der letzten 3 Tage jetzt auch mit einem Klick erneut eintragen 🙂"
     },
     "es": {
       "title": "Alimentos añadidos recientemente",
-      "body": "Ahora puedes volver a añadir con un clic los alimentos de los últimos 3 días 🙂"
+      "body": "Ahora también puedes volver a añadir con un clic los alimentos añadidos más recientemente, de los últimos 3 días 🙂"
     },
     "fr": {
       "title": "Aliments ajoutés récemment",
-      "body": "Tu peux maintenant réajouter en un clic les aliments des 3 derniers jours 🙂"
+      "body": "Tu peux maintenant aussi ajouter à nouveau en un clic les aliments ajoutés le plus récemment, au cours des 3 derniers jours 🙂"
     },
     "publishedAt": "2023-04-16T12:57:00Z",
     "revision": 23
@@ -1981,15 +2065,15 @@
     },
     "de": {
       "title": "Standard-Lebensmittel mit Icons in 4 Sprachen",
-      "body": "Die Lebensmittel wurden vereinheitlicht und basieren jetzt auf der Datenquelle die auch Google für Nährwerte in der Seitenleiste nutzt. Icons werden soweit möglich zugeordnet und alles gibt es in 4 Sprachen."
+      "body": "Die Lebensmittel wurden vereinheitlicht und basieren jetzt auf der Datenquelle, die auch Google für Nährwerte in der Seitenleiste nutzt. Icons werden soweit möglich zugeordnet und alles gibt es in 4 Sprachen."
     },
     "es": {
       "title": "Alimentos estándar con iconos en 4 idiomas",
-      "body": "Los alimentos se han estandarizado y se basan ahora en la misma fuente de datos que usa Google para la información nutricional. También se asignan iconos donde es posible y todo está en 4 idiomas."
+      "body": "Los alimentos se han estandarizado y se basan ahora en la misma fuente de datos que usa Google para la información nutricional de la barra lateral. También se asignan iconos donde es posible y todo está en 4 idiomas."
     },
     "fr": {
       "title": "Aliments standards avec icônes en 4 langues",
-      "body": "Les aliments ont été normalisés et reposent maintenant sur la source de données que Google utilise aussi pour les valeurs nutritionnelles. Des icônes sont attribuées quand c'est possible et tout est disponible en 4 langues."
+      "body": "Les aliments ont été normalisés et reposent maintenant sur la source de données que Google utilise aussi pour les valeurs nutritionnelles dans la barre latérale. Des icônes sont attribuées quand c'est possible et tout est disponible en 4 langues."
     },
     "publishedAt": "2023-04-05T12:57:00Z",
     "revision": 22
@@ -2044,15 +2128,15 @@
     },
     "de": {
       "title": "Vorschau der Berechnung",
-      "body": "PKU Tools zeigt jetzt überall wo etwas berechnet werden kann eine Vorschau für den Phe Log 😊"
+      "body": "PKU Tools zeigt jetzt überall, wo etwas berechnet werden kann, eine Vorschau für das Phe Protokoll 😊"
     },
     "es": {
       "title": "Vista previa del cálculo",
-      "body": "PKU Tools muestra ahora una vista previa para el Phe Log allí donde se puede calcular algo 😊"
+      "body": "PKU Tools muestra ahora una vista previa para el Protocolo Phe allí donde se puede calcular algo 😊"
     },
     "fr": {
       "title": "Aperçu du calcul",
-      "body": "PKU Tools affiche maintenant un aperçu pour le Phe Log partout où quelque chose peut être calculé 😊"
+      "body": "PKU Tools affiche maintenant un aperçu pour le Protocole Phe partout où quelque chose peut être calculé 😊"
     },
     "publishedAt": "2023-03-26T12:57:00Z",
     "revision": 20
@@ -2065,7 +2149,7 @@
     },
     "de": {
       "title": "Barcode Scanner",
-      "body": "PKU Tools ist soweit ich weiß die erste PKU-App mit einem Barcode Scanner 😃 🎉"
+      "body": "PKU Tools ist, soweit ich weiß, die erste PKU-App mit einem Barcode Scanner 😃 🎉"
     },
     "es": {
       "title": "Escáner de código de barras",
@@ -2086,15 +2170,15 @@
     },
     "de": {
       "title": "Neue Startseite",
-      "body": "Der Phe Log steht jetzt zusammen mit der Suche auf der Startseite. Das gibt schneller Überblick und Zugriff auf die Funktionen."
+      "body": "Das Phe Protokoll steht jetzt zusammen mit der Suche auf der Startseite. Das ermöglicht einen schnelleren Überblick und Zugriff auf die Funktionen."
     },
     "es": {
       "title": "Nueva página de inicio",
-      "body": "El Phe Log está ahora en la página de inicio junto a la búsqueda, para tener antes una visión general y acceso a las funciones."
+      "body": "El Protocolo Phe está ahora en la página de inicio junto a la búsqueda, para ofrecer una visión general y un acceso a las funciones más rápidos."
     },
     "fr": {
       "title": "Nouvelle page d'accueil",
-      "body": "Le Phe Log est maintenant sur la page d'accueil avec la recherche, pour une vue d'ensemble et un accès aux fonctions plus rapides."
+      "body": "Le Protocole Phe est maintenant sur la page d'accueil avec la recherche, pour une vue d'ensemble et un accès aux fonctions plus rapides."
     },
     "publishedAt": "2022-11-18T13:57:00Z",
     "revision": 18
@@ -2107,15 +2191,15 @@
     },
     "de": {
       "title": "Eigene Lebensmittel finden",
-      "body": "Du findest deine eigenen Lebensmittel jetzt auch über die Phe Search 🙂"
+      "body": "Du findest deine eigenen Lebensmittel jetzt auch über die Phe Suche 🙂"
     },
     "es": {
       "title": "Encontrar alimentos propios",
-      "body": "Ahora también encuentras tus alimentos propios con Phe Search 🙂"
+      "body": "Ahora también encuentras tus alimentos propios con la Búsqueda de Phe 🙂"
     },
     "fr": {
       "title": "Trouver ses aliments personnels",
-      "body": "Tu trouves maintenant aussi tes aliments personnels via Phe Search 🙂"
+      "body": "Tu trouves maintenant aussi tes aliments personnels via la Recherche de Phe 🙂"
     },
     "publishedAt": "2021-07-26T12:57:00Z",
     "revision": 15
@@ -2128,15 +2212,15 @@
     },
     "de": {
       "title": "Einträge bearbeiten",
-      "body": "Du kannst Einträge im Phe Diary jetzt auch bearbeiten."
+      "body": "Du kannst Einträge im Phe Tagebuch jetzt auch bearbeiten."
     },
     "es": {
       "title": "Editar registros",
-      "body": "Ahora también puedes editar los registros en Phe Diary."
+      "body": "Ahora también puedes editar los registros en el Diario de Phe."
     },
     "fr": {
       "title": "Modifier les entrées",
-      "body": "Tu peux maintenant aussi modifier les entrées dans Phe Diary."
+      "body": "Tu peux maintenant aussi modifier les entrées dans le Journal de Phe."
     },
     "publishedAt": "2021-07-26T12:57:00Z",
     "revision": 16
@@ -2149,15 +2233,15 @@
     },
     "de": {
       "title": "Für iOS optimiert",
-      "body": "iOS wurde optimiert, was Notch und Navigationsleiste betrifft."
+      "body": "Die App wurde für iOS optimiert, was Notch und Navigationsleiste betrifft."
     },
     "es": {
       "title": "Optimizado para iOS",
-      "body": "Se ha optimizado iOS en lo relativo al notch y la barra de navegación."
+      "body": "Se ha optimizado la app para iOS en lo relativo al notch y la barra de navegación."
     },
     "fr": {
       "title": "Optimisé pour iOS",
-      "body": "iOS a été optimisé pour l'encoche et la barre de navigation."
+      "body": "L'app a été optimisée pour iOS concernant l'encoche et la barre de navigation."
     },
     "publishedAt": "2021-07-25T12:57:00Z",
     "revision": 14
@@ -2212,15 +2296,15 @@
     },
     "de": {
       "title": "Suche und Amino Counter",
-      "body": "Die Phe Search hat deutlich mehr Lebensmittel und der Amino Counter wurde ebenfalls aktualisiert 🙂"
+      "body": "Die Phe Suche hat deutlich mehr Lebensmittel und der Amino Counter wurde ebenfalls aktualisiert 🙂"
     },
     "es": {
       "title": "Búsqueda y Amino Counter",
-      "body": "Phe Search tiene bastantes más alimentos y el Amino Counter también se ha actualizado 🙂"
+      "body": "La Búsqueda de Phe tiene bastantes más alimentos y el Amino Counter también se ha actualizado 🙂"
     },
     "fr": {
       "title": "Recherche et Amino Counter",
-      "body": "Phe Search contient nettement plus d'aliments et l'Amino Counter a aussi été mis à jour 🙂"
+      "body": "La Recherche de Phe contient nettement plus d'aliments et l'Amino Counter a aussi été mis à jour 🙂"
     },
     "publishedAt": "2021-03-04T13:57:00Z",
     "revision": 11
@@ -2253,16 +2337,16 @@
       "body": "Phe Search has been improved again and now also copes with small spelling mistakes 🙂"
     },
     "de": {
-      "title": "Phe Search verbessert",
-      "body": "Die Phe Search wurde erneut verbessert und kommt jetzt auch mit kleinen Tippfehlern zurecht 🙂"
+      "title": "Phe Suche verbessert",
+      "body": "Die Phe Suche wurde erneut verbessert und kommt jetzt auch mit kleinen Tippfehlern zurecht 🙂"
     },
     "es": {
-      "title": "Phe Search mejorado",
-      "body": "Phe Search ha mejorado de nuevo y ahora también tolera pequeñas erratas 🙂"
+      "title": "Búsqueda de Phe mejorada",
+      "body": "La Búsqueda de Phe ha mejorado de nuevo y ahora también tolera pequeñas erratas 🙂"
     },
     "fr": {
-      "title": "Phe Search amélioré",
-      "body": "Phe Search a encore été amélioré et tolère maintenant les petites fautes de frappe 🙂"
+      "title": "Recherche de Phe améliorée",
+      "body": "La Recherche de Phe a encore été améliorée et tolère maintenant les petites fautes de frappe 🙂"
     },
     "publishedAt": "2021-02-03T13:57:00Z",
     "revision": 9
@@ -2338,15 +2422,15 @@
     },
     "de": {
       "title": "Export optimiert",
-      "body": "Die Exportfunktion wurde optimiert. Die Einträge aus dem Phe Diary werden jetzt ebenfalls exportiert, als einzelne Blätter in der Excel-Datei. Der Funktionsvergleich wurde übersichtlicher."
+      "body": "Die Exportfunktion wurde optimiert. Die Einträge aus dem Phe Tagebuch werden jetzt ebenfalls exportiert, als einzelne Blätter in der Excel-Datei. Der Funktionsvergleich wurde übersichtlicher."
     },
     "es": {
       "title": "Exportación optimizada",
-      "body": "Se ha optimizado la función de exportación. Los registros de Phe Diary también se exportan ahora, como hojas individuales del archivo de Excel. La comparativa de funciones es más clara."
+      "body": "Se ha optimizado la función de exportación. Los registros del Diario de Phe también se exportan ahora, como hojas individuales del archivo de Excel. La comparativa de funciones es más clara."
     },
     "fr": {
       "title": "Export optimisé",
-      "body": "La fonction d'export a été optimisée. Les entrées de Phe Diary sont maintenant aussi exportées, sous forme de feuilles distinctes dans le fichier Excel. Le comparatif des fonctions est plus clair."
+      "body": "La fonction d'export a été optimisée. Les entrées du Journal de Phe sont maintenant aussi exportées, sous forme de feuilles distinctes dans le fichier Excel. Le comparatif des fonctions est plus clair."
     },
     "publishedAt": "2021-01-24T13:57:00Z",
     "revision": 5
@@ -2401,15 +2485,15 @@
     },
     "de": {
       "title": "Exportfunktion",
-      "body": "Es gibt jetzt eine Exportfunktion für die Übersicht des Phe Diary 🙂"
+      "body": "Es gibt jetzt eine Exportfunktion für die Übersicht des Phe Tagebuchs 🙂"
     },
     "es": {
       "title": "Función de exportación",
-      "body": "Ahora hay una función de exportación para el resumen de Phe Diary 🙂"
+      "body": "Ahora hay una función de exportación para el resumen del Diario de Phe 🙂"
     },
     "fr": {
       "title": "Fonction d'export",
-      "body": "Il y a maintenant une fonction d'export pour l'aperçu du Phe Diary 🙂"
+      "body": "Il y a maintenant une fonction d'export pour l'aperçu du Journal de Phe 🙂"
     },
     "publishedAt": "2021-01-07T14:00:00Z",
     "revision": 2
@@ -2421,16 +2505,16 @@
       "body": "Phe Search has received a major update: It now opens much faster and the german database has been replaced 🙂"
     },
     "de": {
-      "title": "Phe Search Update",
-      "body": "Die Phe Search hat ein großes Update bekommen. Sie öffnet jetzt viel schneller und die deutsche Datenbank wurde ersetzt 🙂"
+      "title": "Update der Phe Suche",
+      "body": "Die Phe Suche hat ein großes Update bekommen. Sie öffnet jetzt viel schneller und die deutsche Datenbank wurde ersetzt 🙂"
     },
     "es": {
-      "title": "Actualización de Phe Search",
-      "body": "Phe Search ha recibido una gran actualización: ahora abre mucho más rápido y se ha sustituido la base de datos alemana 🙂"
+      "title": "Actualización de la Búsqueda de Phe",
+      "body": "La Búsqueda de Phe ha recibido una gran actualización: ahora abre mucho más rápido y se ha sustituido la base de datos alemana 🙂"
     },
     "fr": {
-      "title": "Mise à jour de Phe Search",
-      "body": "Phe Search a reçu une grande mise à jour : elle s'ouvre bien plus vite et la base de données allemande a été remplacée 🙂"
+      "title": "Mise à jour de la Recherche de Phe",
+      "body": "La Recherche de Phe a reçu une grande mise à jour : elle s'ouvre bien plus vite et la base de données allemande a été remplacée 🙂"
     },
     "publishedAt": "2021-01-06T14:00:00Z",
     "revision": 1
