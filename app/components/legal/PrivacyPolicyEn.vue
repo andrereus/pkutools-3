@@ -30,9 +30,7 @@
           <td>Performance of a contract (Art. 6(1)(b))</td>
         </tr>
         <tr>
-          <td>
-            Nutrition diary, blood values, custom foods and targets entered for you or a child
-          </td>
+          <td>Nutrition diary, blood values, own foods and targets entered for you or a child</td>
           <td>To provide the health features you choose to use</td>
           <td>
             Consent (Art. 6(1)(a)), and explicit consent for health data (Art. 9(2)(a)), given by
@@ -174,7 +172,7 @@
 
   <h2>Where your data is stored</h2>
   <p>
-    The database holding your diary, blood values and custom foods runs in the United States. AI
+    The database holding your diary, blood values and own foods runs in the United States. AI
     requests are processed by Google outside the European Union too. Both are covered by the
     European Commission's standard contractual clauses and by Google's certification under the EU-US
     Data Privacy Framework. PostHog is the exception and runs on European servers.
@@ -194,10 +192,10 @@
 
   <h2>Sharing a food with the community</h2>
   <p>
-    Custom foods are private. You can share one with the community by ticking the sharing option on
-    that food. Only that food is shared: what you entered about it, and the language you shared it
-    in. Comments you write on community foods are shared too. Your name and email are never part of
-    either, and nothing identifying you is shown in the app.
+    Your own foods are private. You can share one with the community by ticking the sharing option
+    on that food. Only that food is shared: what you entered about it, and the language you shared
+    it in. Comments you write on community foods are shared too. Your name and email are never part
+    of either, and nothing identifying you is shown in the app.
   </p>
   <p>
     A shared food carries your internal user ID. That is what links it to your own copy, so you can
