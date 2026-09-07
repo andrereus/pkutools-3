@@ -71,7 +71,7 @@ const commentButtonClass = computed(() => {
     return 'bg-sky-50 text-sky-700 ring-sky-400 dark:bg-sky-900/40 dark:text-sky-300 dark:ring-sky-700'
   }
   if (commentCount.value > 0) {
-    return 'bg-white text-sky-700 ring-sky-300 dark:bg-gray-900 dark:text-sky-300 dark:ring-sky-800'
+    return 'bg-white text-sky-700 ring-sky-400 dark:bg-gray-900 dark:text-sky-300 dark:ring-sky-700'
   }
   return 'bg-white text-gray-900 ring-gray-300 dark:bg-gray-900 dark:text-white dark:ring-gray-600'
 })
