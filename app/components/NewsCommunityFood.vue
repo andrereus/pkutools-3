@@ -65,6 +65,16 @@ const commentButtonLabel = computed(() =>
     : t('news.add-comment')
 )
 const visibleCommentCount = computed(() => (commentCount.value > 99 ? '99+' : commentCount.value))
+// Three states, so an existing conversation is visible before the card is opened.
+const commentButtonClass = computed(() => {
+  if (commentsExpanded.value) {
+    return 'bg-sky-50 text-sky-700 ring-sky-400 dark:bg-sky-900/40 dark:text-sky-300 dark:ring-sky-700'
+  }
+  if (commentCount.value > 0) {
+    return 'bg-white text-sky-700 ring-sky-300 dark:bg-gray-900 dark:text-sky-300 dark:ring-sky-800'
+  }
+  return 'bg-white text-gray-900 ring-gray-300 dark:bg-gray-900 dark:text-white dark:ring-gray-600'
+})
 const showCorrectionHint = computed(
   () =>
     !!props.currentUserId &&
@@ -209,12 +219,7 @@ const showCorrectionHint = computed(
       <button
         type="button"
         class="ml-auto flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2.5 text-sm font-normal ring-1 transition-colors hover:bg-sky-50 hover:text-sky-700 hover:ring-sky-400 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 dark:hover:ring-sky-600"
-        :class="[
-          canVote ? 'h-9' : 'min-h-8',
-          commentsExpanded
-            ? 'bg-sky-50 text-sky-700 ring-sky-400 dark:bg-sky-900/40 dark:text-sky-300 dark:ring-sky-700'
-            : 'bg-white text-gray-900 ring-gray-300 dark:bg-gray-900 dark:text-white dark:ring-gray-600'
-        ]"
+        :class="[canVote ? 'h-9' : 'min-h-8', commentButtonClass]"
         :aria-label="commentButtonLabel"
         :title="commentButtonLabel"
         :aria-expanded="commentsExpanded"
@@ -222,7 +227,7 @@ const showCorrectionHint = computed(
         @click="commentsExpanded = !commentsExpanded"
       >
         <LucideMessageCircle class="h-4 w-4" aria-hidden="true" />
-        <span v-if="commentCount > 0">{{ visibleCommentCount }}</span>
+        <span v-if="commentCount > 0" class="font-semibold">{{ visibleCommentCount }}</span>
       </button>
     </div>
 
