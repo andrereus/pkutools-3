@@ -1,5 +1,26 @@
 [
   {
+    "revision": 121,
+    "publishedAt": "2026-09-07T09:28:43.382Z",
+    "category": "tip",
+    "en": {
+      "title": "Reminder: Correct community foods",
+      "body": "Please regularly check the ratings and comments on your shared foods in News and correct any errors in Own Food. Poorly rated community foods are automatically hidden. By responding to feedback and making any necessary corrections, you help me avoid having to step in manually."
+    },
+    "de": {
+      "title": "Erinnerung: Community Lebensmittel korrigieren",
+      "body": "Bitte prüft regelmäßig die Bewertungen und Kommentare eurer geteilten Lebensmittel in den Neuigkeiten und korrigiert Fehler unter „Eigene Lebensmittel“. Schlecht bewertete Community Lebensmittel werden automatisch ausgeblendet. Wenn ihr auf Hinweise reagiert und nötige Korrekturen vornehmt, helft ihr mir, manuelle Eingriffe zu vermeiden."
+    },
+    "es": {
+      "title": "Recordatorio: corregir alimentos de la comunidad",
+      "body": "Por favor, revisad regularmente en Novedades las valoraciones y los comentarios de los alimentos que habéis compartido y corregid los errores en Alimentos propios. Los alimentos de la comunidad con malas valoraciones se ocultan automáticamente. Al responder a los comentarios y hacer las correcciones necesarias, me ayudáis a evitar tener que intervenir manualmente."
+    },
+    "fr": {
+      "title": "Rappel : corriger les aliments communautaires",
+      "body": "Merci de vérifier régulièrement dans les Actualités les évaluations et les commentaires sur les aliments que vous avez partagés et de corriger les erreurs dans Aliments personnels. Les aliments communautaires mal évalués sont automatiquement masqués. En réagissant aux remarques et en apportant les corrections nécessaires, vous m'aidez à éviter de devoir intervenir manuellement."
+    }
+  },
+  {
     "revision": 120,
     "publishedAt": "2026-09-04T08:58:52.179Z",
     "category": "new",
