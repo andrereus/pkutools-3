@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import type { NewsEntry, Notice } from '../app/composables/useNewsContext'
 import { useNewsBadge } from '../app/composables/useNewsBadge'
 import { streakMilestones } from '../app/utils/milestones'
+import { seenAfterVisit } from '../app/utils/news-grouping'
 
 const context = {
   foodEntries: ref<NewsEntry[]>([]),
@@ -41,6 +42,34 @@ const hiddenNotice: Notice = {
 }
 
 describe('News unread badge', () => {
+  it('notifies for a new content edit, clears on a visit and notifies for the next edit', () => {
+    context.foodEntries.value = [{ key: 'food1', kind: 'food-shared', createdAt: 100 }]
+    seen.lastReadAt.value = 150
+    const { hasUnread } = useNewsBadge()
+    expect(hasUnread.value).toBe(false)
+
+    context.foodEntries.value[0]!.contentUpdatedAt = 200
+    expect(hasUnread.value).toBe(true)
+
+    seen.lastReadAt.value = seenAfterVisit(context.foodEntries.value).lastReadAt
+    expect(seen.lastReadAt.value).toBe(200)
+    expect(hasUnread.value).toBe(false)
+
+    context.foodEntries.value[0]!.contentUpdatedAt = 300
+    expect(hasUnread.value).toBe(true)
+  })
+
+  it.each([{ isOwn: true }, { isHidden: true }])(
+    'does not notify for a content edit on an excluded food: %s',
+    (excluded) => {
+      context.foodEntries.value = [
+        { key: 'food1', kind: 'food-shared', createdAt: 100, contentUpdatedAt: 200, ...excluded }
+      ]
+      seen.lastReadAt.value = 150
+      expect(useNewsBadge().hasUnread.value).toBe(false)
+    }
+  )
+
   it('does not notify for a hidden food, its contributor notice, or both', () => {
     const { hasUnread } = useNewsBadge()
     context.foodEntries.value = [

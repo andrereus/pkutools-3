@@ -25,7 +25,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     if (!existing) {
       throw createError({ statusCode: 404, message: 'Comment not found' })
     }
-    if (existing.authorId !== userId) {
+    if (existing.type === 'content-update' || existing.authorId !== userId) {
       throw createError({
         statusCode: 403,
         message: 'Cannot edit another account’s comment',
@@ -64,6 +64,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   // ServerValue.increment is the same concurrency primitive used by votes.
   await db.ref().update({
     [`communityFoodComments/${communityFoodKey}/${newCommentRef.key}`]: {
+      type: 'comment',
       authorId: userId,
       text: comment,
       createdAt: now,

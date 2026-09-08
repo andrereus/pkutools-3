@@ -160,7 +160,7 @@
     "source-barcode": "Escaneo de código de barras",
     "source-ai-label": "Escaneo de etiqueta",
     "source-ai-estimate": "Estimación de IA",
-    "materially-edited": "modificado posteriormente",
+    "materially-edited": "nombre o valores modificados",
     "product-link": "Para productos con código de barras, utiliza el {tool}.",
     "not-found-link": "¿No lo encuentras? Estima cualquier cosa con la {ai} o añade tu {own} a la búsqueda.",
     "not-found-link-own": "propio alimento"
@@ -268,13 +268,13 @@
     "already-saved": "Guardado en el diario. Este alimento ya está en Alimentos propios.",
     "already-saved-share": "Guardado en el diario. Este alimento ya está en Alimentos propios. Puedes compartirlo desde ahí.",
     "delete-shared-title": "¿Eliminar alimento compartido?",
-    "delete-shared-warning": "Este alimento se comparte con la comunidad. Eliminarlo también lo eliminará para todos los usuarios de la comunidad y borrará permanentemente todos sus comentarios. Considera mantenerlo - los alimentos compartidos no cuentan para tu límite de almacenamiento y la comunidad seguirá beneficiándose de tu contribución.",
+    "delete-shared-warning": "Este alimento se comparte con la comunidad. Eliminarlo también lo eliminará para todos los usuarios de la comunidad y borrará permanentemente todos sus comentarios y su historial de cambios. Considera mantenerlo - los alimentos compartidos no cuentan para tu límite de almacenamiento y la comunidad seguirá beneficiándose de tu contribución.",
     "unshare-title": "¿Eliminar de la comunidad?",
-    "unshare-warning": "Esto eliminará el alimento de la base de datos de la comunidad. Todos los comentarios, me gusta, no me gusta y estadísticas de uso se perderán permanentemente.",
+    "unshare-warning": "Esto eliminará el alimento de la base de datos de la comunidad. Todos los comentarios, el historial de cambios, me gusta, no me gusta y estadísticas de uso se perderán permanentemente.",
     "unshare-confirm": "Eliminar de la comunidad",
     "share-hint": "Para compartir este alimento con la comunidad, abre {action}.",
     "reset-votes-title": "¿Actualizar el alimento compartido?",
-    "reset-votes-warning": "Los votos y comentarios se refieren a la información anterior del alimento. Al guardar estos cambios, se restablecerán los votos y se eliminarán permanentemente todos los comentarios."
+    "reset-votes-warning": "Los votos se refieren a la información anterior del alimento y se restablecerán. Los comentarios se conservan. Los cambios se registran en el historial y el alimento vuelve a aparecer arriba en el feed de noticias."
   },
   "diary": {
     "title": "Diario",
@@ -606,7 +606,7 @@
     "title-unread": "Novedades, actualizaciones sin leer",
     "unread-suffix": "actualizaciones sin leer",
     "description": "Qué hay de nuevo en PKU Tools y qué comparte la comunidad.",
-    "subtitle": "Novedades por idioma y fecha de publicación. Las actualizaciones también pueden aparecer más abajo. Aún no hay notificaciones de comentarios.",
+    "subtitle": "Novedades en tu idioma. Los alimentos editados vuelven a aparecer arriba. Aún no hay notificaciones de comentarios.",
     "subtitle-signed-out": "Novedades de PKU Tools.",
     "sign-in": "Inicia sesión para ver los alimentos que comparte la comunidad y compartir los tuyos.",
     "unread-item": "Sin leer",
@@ -658,7 +658,13 @@
     "food-correction-hint": "Corregir el nombre o los valores nutricionales en {ownFood} restablece las valoraciones.",
     "streak-title": "{days} días seguidos",
     "streak-text": "Hiciste una entrada en el diario cada día.",
-    "only-you": "Solo para ti"
+    "only-you": "Solo para ti",
+    "food-edited": "Alimento editado",
+    "food-history-note": "Nota",
+    "food-history-factor": "Factor de Phe",
+    "comments-history": "Comentarios e historial",
+    "food-history-changed": "Cambios: {fields}",
+    "food-history-phe": "Valor de Phe"
   },
   "errors": {
     "unexpected": "Se produjo un error inesperado. Por favor, inténtalo de nuevo.",

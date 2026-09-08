@@ -6,6 +6,7 @@ import { isCommunityFoodHidden, isShareableSource } from '../../utils/community-
 import { storedNumberEquals } from '../../utils/numeric'
 import { queueCommunityFoodCommentRemoval } from '../../utils/community-food-comment'
 import { hasMaterialFoodChange, normalizeFoodName } from '../../../shared/utils/material-food'
+import { changedFoodContentFields } from '../../../shared/utils/food-content'
 import type { H3Event } from 'h3'
 
 // Helper to get user's language from request body or Accept-Language header (fallback)
@@ -64,6 +65,7 @@ async function checkDuplicateCommunityFood(
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { entryKey, locale, data } = await validateBody(event, OwnFoodUpdateSchema)
+  const now = Date.now()
 
   const db = getAdminDatabase()
   const ownFoodRef = db.ref(`/${userId}/ownFood/${entryKey}`)
@@ -167,7 +169,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
 
     const newCommunityKey = db.ref('communityFoods').push().key!
-    const now = Date.now()
     communityKey = newCommunityKey
     writes[`communityFoods/${newCommunityKey}`] = {
       name: data.name,
@@ -182,6 +183,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       ownFoodKey: entryKey,
       createdAt: now,
       updatedAt: now,
+      contentUpdatedAt: now,
       likes: 0,
       dislikes: 0,
       score: 0,
@@ -243,6 +245,11 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       }
     }
 
+    const changedFields = changedFoodContentFields(existingCommunityFood, {
+      ...data,
+      nutrients,
+      factor
+    })
     const updateData: Record<string, unknown> = {
       name: data.name,
       icon: data.icon || null,
@@ -253,19 +260,26 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       // Original provenance remains attached; materiallyEdited says that the
       // current snapshot has subsequently diverged from it.
       ...provenance,
-      updatedAt: Date.now()
+      updatedAt: now
     }
 
     if (communityMaterialChange) {
-      // Votes and comments refer to the previous food identity/values. Reset
-      // both through the same material-change boundary so feedback never
-      // describes a version that is no longer visible.
+      // Votes endorse the previous identity/values. Comments remain as context
+      // for the correction, with the affected fields recorded below.
       updateData.likes = 0
       updateData.dislikes = 0
       updateData.score = 0
       updateData.voterIds = null // Clear all votes
-      updateData.commentCount = 0
-      queueCommunityFoodCommentRemoval(existingCommunityKey, writes)
+    }
+
+    if (changedFields.length > 0) {
+      updateData.contentUpdatedAt = now
+      const historyKey = db.ref(`communityFoodComments/${existingCommunityKey}`).push().key!
+      writes[`communityFoodComments/${existingCommunityKey}/${historyKey}`] = {
+        type: 'content-update',
+        changedFields,
+        createdAt: now
+      }
     }
 
     // Field by field rather than as a whole node: the votes, the usage count
@@ -284,7 +298,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     ...provenance,
     communityKey,
     ...(ownFood.createdAt != null && { createdAt: ownFood.createdAt }),
-    updatedAt: Date.now()
+    updatedAt: now
   }
   for (const [field, value] of Object.entries(ownFoodUpdate)) {
     // An absent optional field is not a field to clear

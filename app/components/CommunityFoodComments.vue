@@ -22,7 +22,10 @@ const statusMessage = ref('')
 let statusTimer: ReturnType<typeof setTimeout> | null = null
 
 const activeComment = computed(() =>
-  comments.value.find((comment) => comment['.key'] === editingCommentId.value)
+  comments.value.find(
+    (comment): comment is CommunityFoodComment =>
+      comment.type === 'comment' && comment['.key'] === editingCommentId.value
+  )
 )
 const trimmedDraft = computed(() => draft.value.trim())
 const trimmedEditDraft = computed(() => editDraft.value.trim())
@@ -188,98 +191,100 @@ onUnmounted(() => {
       </button>
     </div>
     <div v-else-if="comments.length > 0" class="space-y-2">
-      <div
-        v-for="comment in comments"
-        :key="comment['.key']"
-        :class="[
-          'relative rounded-lg bg-gray-50 p-3 dark:bg-gray-800/70',
-          isEditableComment(comment)
-            ? 'cursor-pointer transition-colors hover:bg-gray-100 dark:hover:bg-gray-800'
-            : ''
-        ]"
-      >
-        <button
-          v-if="isEditableComment(comment)"
-          type="button"
-          :disabled="mutating"
-          class="absolute inset-0 z-10 cursor-pointer rounded-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:cursor-not-allowed disabled:opacity-50"
-          @click="beginEdit(comment)"
+      <template v-for="comment in comments" :key="comment['.key']">
+        <CommunityFoodHistory v-if="comment.type === 'content-update'" :entry="comment" />
+        <div
+          v-else
+          :class="[
+            'relative rounded-lg bg-gray-50 p-3 dark:bg-gray-800/70',
+            isEditableComment(comment)
+              ? 'cursor-pointer transition-colors hover:bg-gray-100 dark:hover:bg-gray-800'
+              : ''
+          ]"
         >
-          <span class="sr-only">{{ $t('news.edit-comment') }}</span>
-        </button>
-        <div class="flex items-start justify-between gap-3">
-          <p class="text-xs leading-4 font-semibold text-gray-500 dark:text-gray-400">
-            {{ authorLabel(comment.authorId) }}
-          </p>
-          <span class="flex shrink-0 items-center gap-1 text-gray-400 dark:text-gray-500">
-            <LucidePencil
-              v-if="comment.authorId === currentUserId"
-              class="h-3.5 w-3.5"
-              aria-hidden="true"
-            />
-            <time class="text-xs leading-4" :datetime="new Date(comment.createdAt).toISOString()">
-              {{ formatCommentDate(comment.createdAt) }}
-            </time>
-          </span>
-        </div>
-
-        <div v-if="editingCommentId !== comment['.key']" class="mt-1 flex items-start gap-3">
-          <p
-            class="min-w-0 flex-1 text-sm break-words whitespace-pre-wrap text-gray-700 dark:text-gray-300"
+          <button
+            v-if="isEditableComment(comment)"
+            type="button"
+            :disabled="mutating"
+            class="absolute inset-0 z-10 cursor-pointer rounded-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 disabled:cursor-not-allowed disabled:opacity-50"
+            @click="beginEdit(comment)"
           >
-            {{ comment.text }}
-          </p>
-        </div>
-
-        <form v-if="editingCommentId === comment['.key']" class="mt-2" @submit.prevent="saveEdit">
-          <label :for="`community-comment-edit-${comment['.key']}`" class="sr-only">
-            {{ $t('news.edit-comment') }}
-          </label>
-          <textarea
-            :id="`community-comment-edit-${comment['.key']}`"
-            v-model="editDraft"
-            v-auto-grow
-            maxlength="300"
-            rows="1"
-            class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
-            :placeholder="$t('news.comment-placeholder')"
-          />
-          <div class="mt-2 flex flex-wrap items-center justify-end gap-2">
-            <span class="text-xs text-gray-400 dark:text-gray-500">
-              {{ editDraft.length }}/300
+            <span class="sr-only">{{ $t('news.edit-comment') }}</span>
+          </button>
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-xs leading-4 font-semibold text-gray-500 dark:text-gray-400">
+              {{ authorLabel(comment.authorId) }}
+            </p>
+            <span class="flex shrink-0 items-center gap-1 text-gray-400 dark:text-gray-500">
+              <LucidePencil
+                v-if="comment.authorId === currentUserId"
+                class="h-3.5 w-3.5"
+                aria-hidden="true"
+              />
+              <time class="text-xs leading-4" :datetime="new Date(comment.createdAt).toISOString()">
+                {{ formatCommentDate(comment.createdAt) }}
+              </time>
             </span>
-            <div class="flex flex-wrap items-center justify-end gap-2">
-              <button
-                type="button"
-                :disabled="mutating"
-                class="inline-flex cursor-pointer items-center rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:ring-white/5 dark:hover:bg-white/20 dark:focus-visible:outline-gray-400"
-                @click="cancelEdit"
-              >
-                {{ $t('common.cancel') }}
-              </button>
-              <button
-                type="button"
-                :disabled="mutating"
-                class="inline-flex cursor-pointer items-center rounded-full bg-red-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-red-500 dark:shadow-none dark:hover:bg-red-400 dark:focus-visible:outline-red-500"
-                @click="remove(comment)"
-              >
-                {{
-                  deletingCommentId === comment['.key']
-                    ? $t('news.comment-deleting')
-                    : $t('common.delete')
-                }}
-              </button>
-              <button
-                type="submit"
-                :disabled="!canSaveEdit"
-                class="inline-flex cursor-pointer items-center rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500"
-              >
-                {{ savingEdit ? $t('news.comment-saving') : $t('common.save') }}
-              </button>
-            </div>
           </div>
-        </form>
-      </div>
+
+          <div v-if="editingCommentId !== comment['.key']" class="mt-1 flex items-start gap-3">
+            <p
+              class="min-w-0 flex-1 text-sm break-words whitespace-pre-wrap text-gray-700 dark:text-gray-300"
+            >
+              {{ comment.text }}
+            </p>
+          </div>
+
+          <form v-if="editingCommentId === comment['.key']" class="mt-2" @submit.prevent="saveEdit">
+            <label :for="`community-comment-edit-${comment['.key']}`" class="sr-only">
+              {{ $t('news.edit-comment') }}
+            </label>
+            <textarea
+              :id="`community-comment-edit-${comment['.key']}`"
+              v-model="editDraft"
+              v-auto-grow
+              maxlength="300"
+              rows="1"
+              class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+              :placeholder="$t('news.comment-placeholder')"
+            />
+            <div class="mt-2 flex flex-wrap items-center justify-end gap-2">
+              <span class="text-xs text-gray-400 dark:text-gray-500">
+                {{ editDraft.length }}/300
+              </span>
+              <div class="flex flex-wrap items-center justify-end gap-2">
+                <button
+                  type="button"
+                  :disabled="mutating"
+                  class="inline-flex cursor-pointer items-center rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:ring-white/5 dark:hover:bg-white/20 dark:focus-visible:outline-gray-400"
+                  @click="cancelEdit"
+                >
+                  {{ $t('common.cancel') }}
+                </button>
+                <button
+                  type="button"
+                  :disabled="mutating"
+                  class="inline-flex cursor-pointer items-center rounded-full bg-red-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-red-500 dark:shadow-none dark:hover:bg-red-400 dark:focus-visible:outline-red-500"
+                  @click="remove(comment)"
+                >
+                  {{
+                    deletingCommentId === comment['.key']
+                      ? $t('news.comment-deleting')
+                      : $t('common.delete')
+                  }}
+                </button>
+                <button
+                  type="submit"
+                  :disabled="!canSaveEdit"
+                  class="inline-flex cursor-pointer items-center rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500"
+                >
+                  {{ savingEdit ? $t('news.comment-saving') : $t('common.save') }}
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </template>
     </div>
 
     <form

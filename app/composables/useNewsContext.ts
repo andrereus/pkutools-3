@@ -77,6 +77,8 @@ export interface NewsEntry {
   key: string
   kind: 'note' | 'food-shared' | 'streak'
   createdAt: number
+  /** Latest content edit, used for feed order, displayed dates and read state. */
+  contentUpdatedAt?: number
   category?: string
   title?: string
   body?: string
@@ -130,6 +132,9 @@ export const useNewsContext = () => {
           // communityFoodAppearsInNews rejects an invalid timestamp before the
           // record can reach rendering or the maximum read-cursor calculation.
           createdAt: food.createdAt as number,
+          ...(isNewsTimestamp(food.contentUpdatedAt) && {
+            contentUpdatedAt: food.contentUpdatedAt
+          }),
           food,
           isOwn: !!user.value?.id && food.contributorId === user.value.id,
           isHidden: isCommunityFoodHidden(communityFoodScore(food))

@@ -188,6 +188,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       ownFoodKey,
       createdAt: now,
       updatedAt: now,
+      contentUpdatedAt: now,
       likes: 0,
       dislikes: 0,
       score: 0,

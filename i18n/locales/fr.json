@@ -160,7 +160,7 @@
     "source-barcode": "Scan de code-barres",
     "source-ai-label": "Scan d'étiquette",
     "source-ai-estimate": "Estimation par IA",
-    "materially-edited": "modifié ultérieurement",
+    "materially-edited": "nom ou valeurs modifiés",
     "product-link": "Pour les produits avec code-barres, utilise le {tool}.",
     "not-found-link": "Tu ne trouves pas l'aliment ? Estime ses valeurs avec le {ai} ou ajoute ton {own} à la recherche.",
     "not-found-link-own": "aliment personnel"
@@ -268,13 +268,13 @@
     "already-saved": "Enregistré dans le journal. Cet aliment est déjà dans Aliments personnels.",
     "already-saved-share": "Enregistré dans le journal. Cet aliment est déjà dans Aliments personnels. Tu peux le partager depuis cette rubrique.",
     "delete-shared-title": "Supprimer l'aliment partagé ?",
-    "delete-shared-warning": "Cet aliment est partagé avec la communauté. Le supprimer le supprimera également pour tous les utilisateurs de la communauté et effacera définitivement tous ses commentaires. Pense à le conserver - les aliments partagés ne comptent pas dans ta limite de stockage et la communauté continuera à bénéficier de ta contribution.",
+    "delete-shared-warning": "Cet aliment est partagé avec la communauté. Le supprimer le supprimera également pour tous les utilisateurs de la communauté et effacera définitivement tous ses commentaires et son historique de modifications. Pense à le conserver - les aliments partagés ne comptent pas dans ta limite de stockage et la communauté continuera à bénéficier de ta contribution.",
     "unshare-title": "Retirer de la communauté ?",
-    "unshare-warning": "Cela supprimera l'aliment de la base de données communautaire. Tous les commentaires, les j'aime, les je n'aime pas et les statistiques d'utilisation seront définitivement perdus.",
+    "unshare-warning": "Cela supprimera l'aliment de la base de données communautaire. Tous les commentaires, l’historique de modifications, les j'aime, les je n'aime pas et les statistiques d'utilisation seront définitivement perdus.",
     "unshare-confirm": "Retirer de la communauté",
     "share-hint": "Pour partager cet aliment avec la communauté, ouvre {action}.",
     "reset-votes-title": "Mettre à jour l'aliment partagé ?",
-    "reset-votes-warning": "Les votes et les commentaires portent sur les informations précédentes de l'aliment. Enregistrer ces modifications réinitialisera les votes et supprimera définitivement tous les commentaires."
+    "reset-votes-warning": "Les votes concernent les anciennes informations de l’aliment et seront réinitialisés. Les commentaires sont conservés. Les modifications sont enregistrées dans l’historique et l’aliment remonte en tête du fil d’actualités."
   },
   "diary": {
     "title": "Journal",
@@ -606,7 +606,7 @@
     "title-unread": "Actualités, mises à jour non lues",
     "unread-suffix": "mises à jour non lues",
     "description": "Les nouveautés de PKU Tools et ce que la communauté partage.",
-    "subtitle": "Actualités par langue et date de publication. Les mises à jour peuvent aussi apparaître plus bas. Les notifications de commentaires ne sont pas encore disponibles.",
+    "subtitle": "Actualités dans ta langue. Les aliments modifiés remontent en tête du fil. Les notifications de commentaires ne sont pas encore disponibles.",
     "subtitle-signed-out": "Nouveautés de PKU Tools.",
     "sign-in": "Connecte-toi pour voir les aliments partagés par la communauté et partager les tiens.",
     "unread-item": "Non lu",
@@ -658,7 +658,13 @@
     "food-correction-hint": "Corriger le nom ou les valeurs nutritionnelles dans {ownFood} réinitialise les votes.",
     "streak-title": "{days} jours d'affilée",
     "streak-text": "Tu as rempli ton journal chaque jour.",
-    "only-you": "Rien que pour toi"
+    "only-you": "Rien que pour toi",
+    "food-edited": "Aliment modifié",
+    "food-history-note": "Note",
+    "food-history-factor": "Facteur de Phe",
+    "comments-history": "Commentaires et historique",
+    "food-history-changed": "Modifications : {fields}",
+    "food-history-phe": "Valeur de Phe"
   },
   "errors": {
     "unexpected": "Une erreur inattendue est survenue. Réessaie.",

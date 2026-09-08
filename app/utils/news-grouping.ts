@@ -1,11 +1,12 @@
-// Ordering and unread state are deliberately separate. Every item is ordered by
-// `createdAt`; release notes additionally carry a monotonic revision so a note
-// deployed after its displayed date can still be new without moving it out of
-// chronological position.
+// Feed order, displayed dates and read state use the latest food content edit,
+// falling back to publication time. Release notes also carry a revision so a
+// note deployed after its displayed date can still be new without moving it out
+// of chronological position.
 
 export interface SeenEntry {
   key: string
   createdAt: number
+  contentUpdatedAt?: number
   revision?: number
   /** A food shared by the current reader. */
   isOwn?: boolean
@@ -40,6 +41,21 @@ export const emptySeen = (): SeenState => ({ lastReadAt: null, lastSeenRevision:
 export const isNewsTimestamp = (value: unknown): value is number =>
   typeof value === 'number' && Number.isSafeInteger(value) && value > 0
 
+/** Shared by feed placement and the button that indicates an existing history. */
+export const hasContentUpdate = (entry: {
+  createdAt?: unknown
+  contentUpdatedAt?: unknown
+}): entry is { createdAt: number; contentUpdatedAt: number } =>
+  isNewsTimestamp(entry.createdAt) &&
+  isNewsTimestamp(entry.contentUpdatedAt) &&
+  entry.contentUpdatedAt > entry.createdAt
+
+/** One timestamp for feed order, the date on each card and read state. */
+export const newsEntryTimestamp = (entry: {
+  createdAt: number
+  contentUpdatedAt?: unknown
+}): number => (hasContentUpdate(entry) ? entry.contentUpdatedAt : entry.createdAt)
+
 /**
  * A timestamp covers ordinary chronological events. A release-note revision is
  * a second, independent check for a note that first appears behind that time.
@@ -48,9 +64,9 @@ export const isUnread = (entry: SeenEntry, seen: SeenState): boolean => {
   // Own shares and rating-hidden foods should not get unread decoration or
   // trigger the badge. Contributor feedback warnings stay on the News page.
   if (entry.isOwn || entry.isHidden) return false
+  const timestamp = newsEntryTimestamp(entry)
   const newerThanTime =
-    isNewsTimestamp(entry.createdAt) &&
-    (seen.lastReadAt === null || entry.createdAt > seen.lastReadAt)
+    isNewsTimestamp(timestamp) && (seen.lastReadAt === null || timestamp > seen.lastReadAt)
   const newerRevision =
     isNewsTimestamp(entry.revision) &&
     (seen.lastSeenRevision === null || entry.revision > seen.lastSeenRevision)
@@ -62,9 +78,9 @@ export const isUnread = (entry: SeenEntry, seen: SeenState): boolean => {
 export const seenAfterVisit = (items: SeenEntry[]): SeenState => {
   const seen = emptySeen()
   for (const item of items) {
-    if (isNewsTimestamp(item.createdAt)) {
-      seen.lastReadAt =
-        seen.lastReadAt === null ? item.createdAt : Math.max(seen.lastReadAt, item.createdAt)
+    const timestamp = newsEntryTimestamp(item)
+    if (isNewsTimestamp(timestamp)) {
+      seen.lastReadAt = seen.lastReadAt === null ? timestamp : Math.max(seen.lastReadAt, timestamp)
     }
     if (isNewsTimestamp(item.revision)) {
       seen.lastSeenRevision =

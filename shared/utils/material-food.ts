@@ -2,7 +2,7 @@
 // matters when a diary snapshot is edited. Keeping this comparison in shared/
 // gives the client confirmation and the server write exactly the same boundary.
 
-const NUTRIENT_KEYS = ['protein', 'fat', 'carbs', 'sugar', 'fiber', 'salt'] as const
+export const NUTRIENT_KEYS = ['protein', 'fat', 'carbs', 'sugar', 'fiber', 'salt'] as const
 
 export interface MaterialFoodValues {
   name?: unknown
@@ -15,7 +15,7 @@ export interface MaterialFoodValues {
 export const normalizeFoodName = (value: unknown): string =>
   typeof value === 'string' ? value.trim().toLowerCase() : ''
 
-const comparableNumber = (value: unknown): number | null | undefined => {
+export const comparableFoodNumber = (value: unknown): number | null | undefined => {
   if (value === null || value === undefined || value === '') return null
   if (typeof value === 'number') return Number.isFinite(value) ? value : undefined
   if (typeof value === 'string' && value.trim() !== '') {
@@ -26,8 +26,8 @@ const comparableNumber = (value: unknown): number | null | undefined => {
 }
 
 const numbersEqual = (left: unknown, right: unknown): boolean => {
-  const comparableLeft = comparableNumber(left)
-  const comparableRight = comparableNumber(right)
+  const comparableLeft = comparableFoodNumber(left)
+  const comparableRight = comparableFoodNumber(right)
   if (comparableLeft !== undefined || comparableRight !== undefined) {
     return comparableLeft === comparableRight
   }

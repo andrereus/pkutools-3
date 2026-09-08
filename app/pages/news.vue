@@ -8,6 +8,7 @@ import {
   hasEnoughCommunityItemsForFilter,
   isUnread,
   newsCountToReveal,
+  newsEntryTimestamp,
   NEWS_PAGE_SIZE,
   seenAfterVisit,
   utcDayForLocalFormatting,
@@ -208,7 +209,7 @@ onMounted(() => {
 onUnmounted(() => clearInterval(clock))
 
 // Milestones are calendar dates; notes and food shares are instants.
-const entryDate = (item) => (item.date ? parseISO(item.date) : new Date(item.createdAt))
+const entryDate = (item) => (item.date ? parseISO(item.date) : new Date(newsEntryTimestamp(item)))
 
 const formatDate = (item) => {
   const value = entryDate(item)
@@ -413,7 +414,7 @@ defineOgImage('Default', {
               </span>
               <time
                 class="text-xs leading-4 text-gray-400 dark:text-gray-500"
-                :datetime="item.date || new Date(item.createdAt).toISOString()"
+                :datetime="item.date || new Date(newsEntryTimestamp(item)).toISOString()"
               >
                 {{ formatDate(item) }}
               </time>

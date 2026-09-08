@@ -1,4 +1,5 @@
 import { getAuth } from 'firebase/auth'
+import type { FoodContentField } from '#shared/utils/food-content'
 
 // Common nutrients per 100 g, at the precision the source publishes them.
 // Consumed amounts are derived from `weight` on display, never stored.
@@ -23,11 +24,21 @@ export type AddedFrom = 'own-food' | 'community'
 
 export interface CommunityFoodComment {
   '.key': string
+  type: 'comment'
   authorId: string
   text: string
   createdAt: number
   updatedAt: number
 }
+
+export interface CommunityFoodContentUpdate {
+  '.key': string
+  type: 'content-update'
+  changedFields: FoodContentField[]
+  createdAt: number
+}
+
+export type CommunityFoodThreadEntry = CommunityFoodComment | CommunityFoodContentUpdate
 
 type DiaryItemLocator = { itemId: string; logIndex?: never } | { itemId?: never; logIndex: number }
 

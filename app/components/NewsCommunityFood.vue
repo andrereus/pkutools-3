@@ -2,6 +2,7 @@
 import { foodSourceLabel } from '../utils/food-source-label'
 import { nutrientRows, PHE_FACTORS } from '../utils/nutrition'
 import { COMMUNITY_FOOD_FLAG_SCORE, communityFoodScore } from '../utils/community-food'
+import { hasContentUpdate } from '../utils/news-grouping'
 
 // Renders a community-food record inside a News card.
 const props = defineProps({
@@ -59,10 +60,13 @@ const commentCount = computed(() => {
   const value = Number(props.food?.commentCount)
   return Number.isSafeInteger(value) && value >= 0 ? value : 0
 })
+const hasHistory = computed(() => hasContentUpdate(props.food))
 const commentButtonLabel = computed(() =>
   commentCount.value > 0
     ? t('news.comments-count', { count: commentCount.value })
-    : t('news.add-comment')
+    : hasHistory.value
+      ? t('news.comments-history')
+      : t('news.add-comment')
 )
 const visibleCommentCount = computed(() => (commentCount.value > 99 ? '99+' : commentCount.value))
 // Three states, so an existing conversation is visible before the card is opened.
@@ -70,7 +74,7 @@ const commentButtonClass = computed(() => {
   if (commentsExpanded.value) {
     return 'bg-sky-50 text-sky-700 ring-sky-400 dark:bg-sky-900/40 dark:text-sky-300 dark:ring-sky-700'
   }
-  if (commentCount.value > 0) {
+  if (commentCount.value > 0 || hasHistory.value) {
     return 'bg-white text-sky-700 ring-sky-400 dark:bg-gray-900 dark:text-sky-300 dark:ring-sky-700'
   }
   return 'bg-white text-gray-900 ring-gray-300 dark:bg-gray-900 dark:text-white dark:ring-gray-600'

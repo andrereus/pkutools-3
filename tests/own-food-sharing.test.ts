@@ -57,6 +57,8 @@ beforeEach(() => {
 
 describe('sharing an own food', () => {
   it('publishes a community entry with zeroed votes', async () => {
+    let clock = 200
+    vi.spyOn(Date, 'now').mockImplementation(() => clock++)
     const result = await updateOwnFood(request({ shared: true }))
 
     const [publishedKey, published] = Object.entries(community())[0]!
@@ -76,6 +78,10 @@ describe('sharing an own food', () => {
     // The own food keeps a pointer back, so a later edit finds the same entry.
     expect(storedOwnFood().communityKey).toBe(publishedKey)
     expect(result.communityKey).toBe(publishedKey)
+    expect(published.contentUpdatedAt).toBe(published.createdAt)
+    expect(published.updatedAt).toBe(published.createdAt)
+    expect(storedOwnFood().updatedAt).toBe(published.updatedAt)
+    expect(fake.data.communityFoodComments).toBeUndefined()
   })
 
   it('refuses to publish a duplicate of an existing community food', async () => {
@@ -308,7 +314,7 @@ describe('unsharing an own food', () => {
     expect(storedOwnFood()).not.toHaveProperty('communityKey')
   })
 
-  it('removes comments with the community entry', async () => {
+  it('removes comments and history with the community entry', async () => {
     seed(
       { ...OWN_FOOD, shared: true, communityKey: 'community1' },
       {
@@ -329,6 +335,11 @@ describe('unsharing an own food', () => {
           updatedAt: 100
         }
       }
+    }
+    communityComments().community1!.history = {
+      type: 'content-update',
+      createdAt: 200,
+      changedFields: ['phe']
     }
     await updateOwnFood(request({ shared: false }))
 
@@ -455,6 +466,9 @@ describe('editing an already shared food', () => {
           likes: 5,
           dislikes: 1,
           score: 4,
+          createdAt: 50,
+          updatedAt: 50,
+          contentUpdatedAt: 50,
           voterIds: { 'voter-1': 1 }
         }
       }
@@ -476,9 +490,11 @@ describe('editing an already shared food', () => {
 
   // Votes endorse a specific set of numbers. Once those change the endorsement
   // no longer applies, so the score has to start over.
-  it('resets the votes when the phe value changes', async () => {
+  it('resets votes but keeps feedback and appends history when Phe changes', async () => {
     seedShared()
     seedComment()
+    let clock = 200
+    vi.spyOn(Date, 'now').mockImplementation(() => clock++)
 
     await updateOwnFood(request({ shared: true, phe: 20 }))
 
@@ -487,10 +503,18 @@ describe('editing an already shared food', () => {
       likes: 0,
       dislikes: 0,
       score: 0,
-      commentCount: 0
+      commentCount: 1
     })
     expect(community().community1!.voterIds).toBeUndefined()
-    expect(fake.data.communityFoodComments).toBeUndefined()
+    expect(communityComments().community1).toHaveProperty('comment1')
+    expect(Object.values(communityComments().community1!)).toContainEqual({
+      type: 'content-update',
+      changedFields: ['phe'],
+      createdAt: community().community1!.contentUpdatedAt
+    })
+    expect(community().community1!.createdAt).toBe(50)
+    expect(community().community1!.contentUpdatedAt).toBeGreaterThan(50)
+    expect(storedOwnFood().updatedAt).toBe(community().community1!.contentUpdatedAt)
   })
 
   it('resets the votes when the name or kcal changes', async () => {
@@ -576,6 +600,123 @@ describe('editing an already shared food', () => {
     expect(community().community1!.voterIds).toEqual({ 'voter-1': 1 })
     expect(communityComments().community1).toHaveProperty('comment1')
     expect(storedOwnFood()).not.toHaveProperty('materiallyEdited')
+    expect(Object.values(communityComments().community1!)).toContainEqual({
+      type: 'content-update',
+      changedFields: ['note'],
+      createdAt: community().community1!.contentUpdatedAt
+    })
+  })
+
+  it('records each successive note edit, including removal, without losing earlier history', async () => {
+    seedShared()
+    seedComment()
+    const clock = vi.spyOn(Date, 'now').mockReturnValue(200)
+    await updateOwnFood(request({ shared: true, note: 'With water' }))
+    clock.mockReturnValue(300)
+    await updateOwnFood(request({ shared: true, note: 'With milk' }))
+    clock.mockReturnValue(400)
+    await updateOwnFood(request({ shared: true, note: null }))
+
+    expect(Object.values(communityComments().community1!)).toEqual([
+      expect.objectContaining({ text: 'Check the serving size', createdAt: 100 }),
+      {
+        type: 'content-update',
+        createdAt: 200,
+        changedFields: ['note']
+      },
+      {
+        type: 'content-update',
+        createdAt: 300,
+        changedFields: ['note']
+      },
+      {
+        type: 'content-update',
+        createdAt: 400,
+        changedFields: ['note']
+      }
+    ])
+    expect(community().community1).toMatchObject({
+      commentCount: 1,
+      likes: 5,
+      dislikes: 1,
+      createdAt: 50,
+      contentUpdatedAt: 400
+    })
+    expect(storedOwnFood()).not.toHaveProperty('materiallyEdited')
+  })
+
+  it('records multiple changed fields in one system entry without counting it as a comment', async () => {
+    seedShared()
+    await updateOwnFood(
+      request({ shared: true, name: 'New shake', phe: 20, note: 'Corrected label' })
+    )
+
+    expect(Object.values(communityComments().community1!)).toEqual([
+      {
+        type: 'content-update',
+        createdAt: community().community1!.contentUpdatedAt,
+        changedFields: ['name', 'phe', 'note']
+      }
+    ])
+    expect(community().community1!.commentCount ?? 0).toBe(0)
+  })
+
+  it.each(['protein', 'fat', 'carbs', 'sugar', 'fiber', 'salt', 'factor', 'kcal'])(
+    'records a %s correction and resets votes',
+    async (field) => {
+      seedShared()
+      const change =
+        field === 'factor' || field === 'kcal' ? { [field]: 2 } : { nutrients: { [field]: 2 } }
+      await updateOwnFood(request({ shared: true, ...change }))
+
+      expect(Object.values(communityComments().community1!)).toEqual([
+        {
+          type: 'content-update',
+          createdAt: community().community1!.contentUpdatedAt,
+          changedFields: [field]
+        }
+      ])
+      expect(community().community1).toMatchObject({ likes: 0, dislikes: 0, score: 0 })
+    }
+  )
+
+  it('does not bump content or append history for unchanged or cosmetic saves', async () => {
+    seedShared()
+    seedComment()
+    vi.spyOn(Date, 'now').mockReturnValue(200)
+    const threadBefore = structuredClone(communityComments())
+    await updateOwnFood(request({ shared: true }))
+    await updateOwnFood(request({ shared: true, emoji: '🥤', icon: 'shake' }))
+    await updateOwnFood(request({ shared: true, name: ' Protein shake ', note: '  ' }))
+
+    expect(community().community1).toMatchObject({
+      createdAt: 50,
+      contentUpdatedAt: 50,
+      updatedAt: 200,
+      likes: 5,
+      commentCount: 1
+    })
+    expect(communityComments()).toEqual(threadBefore)
+  })
+
+  it('ignores equivalent legacy number formats and missing optional values', async () => {
+    seedShared()
+    Object.assign(community().community1!, {
+      phe: '12.00',
+      kcal: '90',
+      factor: null,
+      nutrients: {}
+    })
+    await updateOwnFood(request({ shared: true, nutrients: { protein: null }, factor: null }))
+    expect(community().community1!.contentUpdatedAt).toBe(50)
+    expect(fake.data.communityFoodComments).toBeUndefined()
+  })
+
+  it('does not trust a client-supplied content timestamp', async () => {
+    seedShared()
+    await updateOwnFood(request({ shared: true, contentUpdatedAt: 9999999999999 }))
+    expect(community().community1!.contentUpdatedAt).toBe(50)
+    expect(storedOwnFood()).not.toHaveProperty('contentUpdatedAt')
   })
 
   it('keeps votes when unchanged legacy values are stored as strings', async () => {
@@ -667,6 +808,8 @@ describe('when the database write fails', () => {
 
     expect(community().community1).toMatchObject({ phe: 12, likes: 5, score: 5 })
     expect(storedOwnFood().phe).toBe(12)
+    expect(community().community1).not.toHaveProperty('contentUpdatedAt')
+    expect(fake.data.communityFoodComments).toBeUndefined()
   })
 })
 

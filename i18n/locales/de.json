@@ -160,7 +160,7 @@
     "source-barcode": "Barcode-Scan",
     "source-ai-label": "Etikett-Scan",
     "source-ai-estimate": "KI-Schätzung",
-    "materially-edited": "nachträglich bearbeitet",
+    "materially-edited": "Name oder Werte bearbeitet",
     "product-link": "Verwende für Produkte mit Barcode den {tool}.",
     "not-found-link": "Nicht gefunden? Schätze alles mit dem {ai} oder füge dein {own} zur Suche hinzu.",
     "not-found-link-own": "eigenes Lebensmittel"
@@ -268,13 +268,13 @@
     "already-saved": "Im Tagebuch gespeichert. Dieses Lebensmittel ist bereits unter „Eigene Lebensmittel“ vorhanden.",
     "already-saved-share": "Im Tagebuch gespeichert. Dieses Lebensmittel ist bereits unter „Eigene Lebensmittel“ vorhanden. Dort kannst du es teilen.",
     "delete-shared-title": "Geteiltes Lebensmittel löschen?",
-    "delete-shared-warning": "Dieses Lebensmittel wird mit der Community geteilt. Das Löschen entfernt es auch für alle Community-Nutzer und löscht alle zugehörigen Kommentare dauerhaft. Erwäge, es zu behalten - geteilte Lebensmittel zählen nicht zum Speicherlimit und die Community profitiert weiterhin von deinem Beitrag.",
+    "delete-shared-warning": "Dieses Lebensmittel wird mit der Community geteilt. Das Löschen entfernt es auch für alle Community-Nutzer und löscht alle zugehörigen Kommentare und den Verlauf dauerhaft. Erwäge, es zu behalten - geteilte Lebensmittel zählen nicht zum Speicherlimit und die Community profitiert weiterhin von deinem Beitrag.",
     "unshare-title": "Aus der Community entfernen?",
-    "unshare-warning": "Dies entfernt das Lebensmittel aus der Community-Datenbank. Alle Kommentare, Likes, Dislikes und Nutzungsstatistiken gehen dauerhaft verloren.",
+    "unshare-warning": "Dies entfernt das Lebensmittel aus der Community-Datenbank. Alle Kommentare, der Verlauf, Likes, Dislikes und Nutzungsstatistiken gehen dauerhaft verloren.",
     "unshare-confirm": "Aus Community entfernen",
     "share-hint": "Zum Teilen mit der Community öffne {action}.",
     "reset-votes-title": "Geteiltes Lebensmittel aktualisieren?",
-    "reset-votes-warning": "Stimmen und Kommentare beziehen sich auf die bisherigen Angaben zum Lebensmittel. Beim Speichern dieser Änderungen werden die Stimmen zurückgesetzt und alle Kommentare dauerhaft gelöscht."
+    "reset-votes-warning": "Die Bewertungen beziehen sich auf die bisherigen Angaben und werden zurückgesetzt. Kommentare bleiben erhalten. Die Änderungen werden im Verlauf dokumentiert und das Lebensmittel rückt im Newsfeed nach oben."
   },
   "diary": {
     "title": "Tagebuch",
@@ -606,7 +606,7 @@
     "title-unread": "Neuigkeiten, ungelesene Updates",
     "unread-suffix": "ungelesene Updates",
     "description": "Was es Neues bei PKU Tools gibt und was die Community teilt.",
-    "subtitle": "Neuigkeiten nach Sprache und Beitragsdatum. Updates können auch weiter unten auftauchen. Aktuell noch keine Benachrichtigungen für Kommentare.",
+    "subtitle": "Neuigkeiten in deiner Sprache. Bearbeitete Lebensmittel rücken nach oben. Für Kommentare gibt es noch keine Benachrichtigungen.",
     "subtitle-signed-out": "Neuigkeiten zu PKU Tools.",
     "sign-in": "Melde dich an, um Lebensmittel der Community zu sehen und eigene zu teilen.",
     "unread-item": "Ungelesen",
@@ -658,7 +658,13 @@
     "food-correction-hint": "Korrekturen am Namen oder an den Nährwerten unter {ownFood} setzen die Bewertungen zurück.",
     "streak-title": "{days} Tage in Folge",
     "streak-text": "Du hast jeden Tag etwas ins Tagebuch eingetragen.",
-    "only-you": "Nur für dich"
+    "only-you": "Nur für dich",
+    "food-edited": "Lebensmittel bearbeitet",
+    "food-history-note": "Notiz",
+    "food-history-factor": "Phe-Faktor",
+    "comments-history": "Kommentare und Verlauf",
+    "food-history-changed": "{fields} geändert",
+    "food-history-phe": "Phe-Wert"
   },
   "errors": {
     "unexpected": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",

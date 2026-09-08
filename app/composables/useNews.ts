@@ -1,5 +1,6 @@
 import changelog from '../../content/changelog.json'
 import { useNewsContext, type NewsEntry } from './useNewsContext'
+import { newsEntryTimestamp } from '../utils/news-grouping'
 
 // Merges the authored changelog with community-food and diary-derived entries.
 // Only the News page imports this module, keeping changelog content out of the
@@ -59,7 +60,7 @@ export const useNews = () => {
   /** Everything this reader can see, newest first. */
   const items = computed<NewsEntry[]>(() =>
     [...noteEntries.value, ...foodEntries.value, ...milestoneEntries.value].sort(
-      (left, right) => right.createdAt - left.createdAt
+      (left, right) => newsEntryTimestamp(right) - newsEntryTimestamp(left)
     )
   )
 

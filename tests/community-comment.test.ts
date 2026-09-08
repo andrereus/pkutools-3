@@ -76,11 +76,80 @@ const seedThread = (count: number, contributorId = 'author-1') => {
 }
 
 describe('community food comments', () => {
+  it('does not let the contributor edit or delete system history', async () => {
+    seed({
+      communityFoods: {
+        food1: { contributorId: 'commenter-1', commentCount: 0, contentUpdatedAt: 200 }
+      },
+      communityFoodComments: {
+        food1: {
+          history: {
+            type: 'content-update',
+            authorId: 'commenter-1',
+            createdAt: 200,
+            changedFields: ['phe']
+          }
+        }
+      }
+    })
+    const before = structuredClone(fake.data)
+    await expect(saveComment(saveRequest('Changed history', 'history'))).rejects.toMatchObject({
+      statusCode: 403
+    })
+    await expect(deleteComment(deleteRequest('history'))).rejects.toMatchObject({ statusCode: 403 })
+    expect(fake.data).toEqual(before)
+  })
+
+  it('counts only human comments, preserves history and never advances food content time', async () => {
+    seed({
+      communityFoods: {
+        food1: { contributorId: 'author-1', commentCount: 0, contentUpdatedAt: 200 }
+      },
+      communityFoodComments: {
+        food1: {
+          history: {
+            type: 'content-update',
+            createdAt: 200,
+            changedFields: ['phe']
+          }
+        }
+      }
+    })
+    const history = structuredClone(comments().history)
+    await saveComment(saveRequest('Thanks for fixing it'))
+    expect(food()).toMatchObject({ commentCount: 1, contentUpdatedAt: 200 })
+    const [id] = Object.keys(comments()).filter((key) => key !== 'history')
+    await saveComment(saveRequest('Looks right now', id))
+    expect(food()).toMatchObject({ commentCount: 1, contentUpdatedAt: 200 })
+    await deleteComment(deleteRequest(id))
+    expect(food()).toMatchObject({ commentCount: 0, contentUpdatedAt: 200 })
+    expect(comments()).toEqual({ history })
+  })
+
+  it('does not allow comment payloads to create system history', async () => {
+    await saveComment(
+      requestEvent({
+        communityFoodKey: 'food1',
+        comment: 'A normal comment',
+        type: 'content-update',
+        changedFields: ['phe'],
+        contentUpdatedAt: 900
+      })
+    )
+    expect(Object.values(comments())).toEqual([
+      expect.objectContaining({ text: 'A normal comment' })
+    ])
+    expect(Object.values(comments())[0]).toHaveProperty('type', 'comment')
+    expect(Object.values(comments())[0]).not.toHaveProperty('changedFields')
+    expect(food()).not.toHaveProperty('contentUpdatedAt')
+  })
+
   it('appends a public comment and increments the summary count', async () => {
     const result = await saveComment(saveRequest('  Check the serving size.  '))
 
     const [commentId, stored] = Object.entries(comments())[0]!
     expect(stored).toMatchObject({
+      type: 'comment',
       authorId: 'commenter-1',
       text: 'Check the serving size.'
     })

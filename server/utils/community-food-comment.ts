@@ -2,8 +2,8 @@ export const MAX_COMMUNITY_FOOD_COMMENTS = 100
 
 /**
  * Adds the comment-side deletion for a community food to an existing atomic
- * root update. Public comments must disappear with the food, or a later write
- * could leave feedback referring to a version that is no longer visible.
+ * root update. Comments and edit history disappear when the food is withdrawn
+ * or deleted, while ordinary content edits preserve the whole thread.
  */
 export function queueCommunityFoodCommentRemoval(
   communityFoodKey: string,

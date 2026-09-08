@@ -1,5 +1,26 @@
 [
   {
+    "revision": 122,
+    "publishedAt": "2026-09-08T15:31:20.113Z",
+    "category": "improved",
+    "en": {
+      "title": "Feed order, comments and changes",
+      "body": "Edited community foods now return to the top of News. Comments are preserved, and the history shows which information was changed."
+    },
+    "de": {
+      "title": "Reihenfolge, Kommentare und Änderungen",
+      "body": "Bearbeitete Community Lebensmittel erscheinen jetzt wieder oben in den Neuigkeiten. Kommentare bleiben erhalten und der Verlauf zeigt, welche Angaben geändert wurden."
+    },
+    "es": {
+      "title": "Orden del feed, comentarios y cambios",
+      "body": "Los alimentos de la comunidad editados vuelven ahora a aparecer al principio de Novedades. Los comentarios se conservan y el historial muestra qué datos se han modificado."
+    },
+    "fr": {
+      "title": "Ordre du fil, commentaires et modifications",
+      "body": "Les aliments communautaires modifiés réapparaissent désormais en haut des Actualités. Les commentaires sont conservés et l'historique indique quelles informations ont été modifiées."
+    }
+  },
+  {
     "revision": 121,
     "publishedAt": "2026-09-07T09:28:43.382Z",
     "category": "tip",

@@ -18,7 +18,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   const existing = commentSnapshot.val() as Record<string, unknown> | null
 
   if (!existing) return { success: true }
-  if (existing.authorId !== userId) {
+  if (existing.type === 'content-update' || existing.authorId !== userId) {
     throw createError({
       statusCode: 403,
       message: 'Cannot delete another account’s comment',

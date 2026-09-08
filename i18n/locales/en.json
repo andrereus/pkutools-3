@@ -160,7 +160,7 @@
     "source-barcode": "Barcode scan",
     "source-ai-label": "Label scan",
     "source-ai-estimate": "AI estimate",
-    "materially-edited": "subsequently edited",
+    "materially-edited": "name or values edited",
     "product-link": "For products with a barcode, use the {tool}.",
     "not-found-link": "Not found? Estimate anything with the {ai} or add your {own} to the search.",
     "not-found-link-own": "own food"
@@ -268,13 +268,13 @@
     "already-saved": "Saved to the diary. This food is already in Own Food.",
     "already-saved-share": "Saved to the diary. This food is already in Own Food. You can share it from there.",
     "delete-shared-title": "Delete shared food?",
-    "delete-shared-warning": "This food is shared with the community. Deleting it will also remove it for all community users and permanently delete all its comments. Consider keeping this food instead - shared foods don't count towards your storage limit, and keeping it allows the community to continue benefiting from your contribution.",
+    "delete-shared-warning": "This food is shared with the community. Deleting it will also remove it for all community users and permanently delete all its comments and edit history. Consider keeping this food instead - shared foods don't count towards your storage limit, and keeping it allows the community to continue benefiting from your contribution.",
     "unshare-title": "Remove from community?",
-    "unshare-warning": "This will remove the food from the community database. All comments, likes, dislikes, and usage statistics will be permanently lost.",
+    "unshare-warning": "This will remove the food from the community database. All comments, edit history, likes, dislikes, and usage statistics will be permanently lost.",
     "unshare-confirm": "Remove from community",
     "share-hint": "To share this food with the community, open {action}.",
     "reset-votes-title": "Update the shared food?",
-    "reset-votes-warning": "Votes and comments refer to the previous food information. Saving these changes resets the votes and permanently deletes all comments."
+    "reset-votes-warning": "Votes refer to the previous food information and will be reset. Comments are kept. The changes are recorded in the history and the food moves back to the top of the newsfeed."
   },
   "diary": {
     "title": "Diary",
@@ -606,7 +606,7 @@
     "title-unread": "News, unread updates",
     "unread-suffix": "unread updates",
     "description": "What is new in PKU Tools and what the community is sharing.",
-    "subtitle": "News by language and post date. Updates can also appear further down. Comment notifications are not available yet.",
+    "subtitle": "News in your language. Edited foods move back to the top. Comment notifications are not available yet.",
     "subtitle-signed-out": "Updates to PKU Tools.",
     "sign-in": "Sign in to see foods shared by the community and share your own.",
     "unread-item": "Unread",
@@ -658,7 +658,13 @@
     "food-correction-hint": "Correcting the name or nutritional values in {ownFood} resets the ratings.",
     "streak-title": "{days} days in a row",
     "streak-text": "You made an entry in your diary every day.",
-    "only-you": "Just for you"
+    "only-you": "Just for you",
+    "food-edited": "Food edited",
+    "food-history-note": "Note",
+    "food-history-factor": "Phe factor",
+    "comments-history": "Comments and history",
+    "food-history-changed": "{fields} changed",
+    "food-history-phe": "Phe value"
   },
   "errors": {
     "unexpected": "An unexpected error occurred. Please try again.",

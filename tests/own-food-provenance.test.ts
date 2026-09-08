@@ -78,6 +78,8 @@ describe('saving a calculated food as an own food', () => {
       commentCount: 0
     })
     expect(published.nutrients).toEqual({ protein: 1, fat: 1.5, salt: 0.09 })
+    expect(published.contentUpdatedAt).toBe(published.createdAt)
+    expect(fake.data.communityFoodComments).toBeUndefined()
   })
 
   // Nothing forces a tool to send provenance, and the own-food form doesn't.
