@@ -206,16 +206,6 @@ const showCorrectionHint = computed(
               <span>{{ food.dislikes || 0 }}</span>
               <span class="sr-only">{{ $t('community.dislike') }}</span>
             </span>
-            <span
-              class="-ml-0.5 flex min-h-8 items-center gap-1 bg-white text-sky-700 dark:bg-gray-900 dark:text-sky-300"
-              :title="$t('community.usageCount', { count: food.usageCount || 0 })"
-            >
-              <LucidePlus class="h-4 w-4" aria-hidden="true" />
-              <span aria-hidden="true">{{ food.usageCount || 0 }}</span>
-              <span class="sr-only">
-                {{ $t('community.usageCount', { count: food.usageCount || 0 }) }}
-              </span>
-            </span>
           </div>
         </div>
       </template>
