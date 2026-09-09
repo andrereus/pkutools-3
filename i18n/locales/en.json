@@ -606,7 +606,7 @@
     "title-unread": "News, unread updates",
     "unread-suffix": "unread updates",
     "description": "What is new in PKU Tools and what the community is sharing.",
-    "subtitle": "News in your language. Edited foods move back to the top. Comment notifications are not available yet.",
+    "subtitle": "News by language and post date. Updates can also appear further down. Comment notifications are not available yet.",
     "subtitle-signed-out": "Updates to PKU Tools.",
     "sign-in": "Sign in to see foods shared by the community and share your own.",
     "unread-item": "Unread",
