@@ -881,11 +881,14 @@ defineOgImage('Default', {
         {{ result.explanation }}
       </div>
 
+      <!-- A printed Phe value is used as it is, so protein is only shown when it
+           is what the Phe is converted from. Everything else the label carries
+           is in the nutrient grid below. -->
       <div v-if="isLabelResult" class="flex gap-4 text-gray-600 dark:text-gray-400 mb-4">
         <span v-if="result.phePer100g !== null" class="flex-1"
           >{{ result.phePer100g }} {{ $t('common.mg-phe-per-100g') }}</span
         >
-        <span v-if="result.proteinPer100g !== null" class="flex-1"
+        <span v-else-if="result.proteinPer100g !== null" class="flex-1"
           >{{ result.proteinPer100g }} {{ $t('common.g-protein-per-100g') }}</span
         >
         <span v-if="kcalReference" class="flex-1"
