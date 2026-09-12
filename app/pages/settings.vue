@@ -34,56 +34,23 @@ const username = ref('')
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
 const settings = computed(() => store.settings)
-
-const themeOptions = computed(() => [
-  { title: t('settings.theme-system'), value: 'system' },
-  { title: t('settings.theme-light'), value: 'light' },
-  { title: t('settings.theme-dark'), value: 'dark' }
-])
+const {
+  appSettings,
+  save,
+  savingAppSettings,
+  customization,
+  saveCustomization,
+  savingCustomization,
+  customizationFailed
+} = useSettingsForm()
 
 const unitOptions = computed(() => [
   { title: 'mg/dL', value: 'mgdl' },
   { title: 'µmol/L', value: 'umoll' }
 ])
 
-const progressStyleOptions = computed(() => [
-  { title: t('settings.progress-style-circles'), value: 'circles' },
-  { title: t('settings.progress-style-bars'), value: 'bars' }
-])
-
-const preferredToolOptions = computed(() => [
-  { title: t('food-search.title'), value: 'food-search' },
-  { title: t('barcode-scanner.title'), value: 'barcode-scanner' },
-  { title: t('ai-calculator.title'), value: 'ai-calculator' },
-  { title: t('phe-calculator.title'), value: 'phe-calculator' }
-])
-
 // Methods
 const { handleError } = useErrorHandler()
-
-const save = async () => {
-  if (!store.user || store.settings.healthDataConsent !== true) {
-    notifications.error(t('health-consent.no-consent'))
-    return
-  }
-
-  try {
-    await updateSettings({
-      maxPhe: settings.value.maxPhe || null,
-      maxKcal: settings.value.maxKcal || null,
-      bloodPheMin: settings.value.bloodPheMin || null,
-      bloodPheMax: settings.value.bloodPheMax || null,
-      bloodTyrMin: settings.value.bloodTyrMin || null,
-      bloodTyrMax: settings.value.bloodTyrMax || null,
-      labUnit: settings.value.labUnit,
-      progressStyle: settings.value.progressStyle,
-      preferredTool: settings.value.preferredTool
-    })
-    notifications.success(t('settings.saved'))
-  } catch (error) {
-    console.error('Save settings error:', error)
-  }
-}
 
 const saveLicense = async () => {
   try {
@@ -93,11 +60,11 @@ const saveLicense = async () => {
     // Clear cache before validating to ensure fresh validation
     clearCache()
 
-    const validation = await validateLicense(settings.value.license || '')
+    const validation = await validateLicense(appSettings.license || '')
 
     // Then save to Firebase via server API
     await updateSettings({
-      license: settings.value.license || ''
+      license: appSettings.license || ''
     })
 
     if (validation.valid) {
@@ -327,29 +294,13 @@ defineOgImage('Default', {
 
     <div v-if="!userIsAuthenticated">
       <p class="text-gray-600 dark:text-gray-400 mb-6">{{ $t('settings.description') }}</p>
-      <div
-        class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
+      <NuxtLink
+        type="button"
+        :to="$localePath('sign-in')"
+        class="inline-block rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400 mr-3 mb-6"
       >
-        <NuxtLink
-          type="button"
-          :to="$localePath('sign-in')"
-          class="rounded-full bg-black/5 dark:bg-white/15 px-3 py-1.5 text-sm font-semibold text-gray-900 dark:text-gray-300 shadow-xs hover:bg-black/10 dark:hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400 mr-3 mb-6"
-        >
-          {{ $t('sign-in.title') }}
-        </NuxtLink>
-        <SelectMenu
-          v-model="selectedTheme"
-          id-name="theme-select"
-          :label="$t('settings.theme')"
-          class="mt-6"
-          @change="handleThemeChange"
-        >
-          <option v-for="option in themeOptions" :key="option.value" :value="option.value">
-            {{ option.title }}
-          </option>
-        </SelectMenu>
-        <ColorThemePicker class="mt-6" />
-      </div>
+        {{ $t('sign-in.title') }}
+      </NuxtLink>
     </div>
 
     <div v-if="userIsAuthenticated">
@@ -388,30 +339,83 @@ defineOgImage('Default', {
         </p>
         <SecondaryButton :text="$t('health-consent.reopen-onboarding')" @click="reopenOnboarding" />
       </div>
+    </div>
 
+    <!-- App Customization Section -->
+    <section
+      aria-labelledby="app-customization-heading"
+      class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
+    >
+      <h3
+        id="app-customization-heading"
+        class="text-lg font-semibold text-gray-900 dark:text-white mb-2"
+      >
+        {{ $t('settings.app-customization') }}
+      </h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6" role="status">
+        {{
+          savingCustomization
+            ? $t('common.saving')
+            : customizationFailed
+              ? $t('settings.customization-save-error')
+              : $t('settings.customization-autosave')
+        }}
+      </p>
+
+      <fieldset
+        v-if="userIsAuthenticated"
+        :disabled="savingCustomization || !store.settingsLoaded"
+        :aria-busy="savingCustomization"
+        class="disabled:opacity-60"
+      >
+        <legend class="sr-only">{{ $t('settings.account-preferences') }}</legend>
+        <ProgressStylePicker
+          :model-value="customization.progressStyle"
+          class="mb-6"
+          @update:model-value="saveCustomization('progressStyle', $event)"
+        />
+        <PreferredToolPicker
+          :model-value="customization.preferredTool"
+          class="mb-6"
+          @update:model-value="saveCustomization('preferredTool', $event)"
+        />
+      </fieldset>
+
+      <ThemeModePicker
+        v-model="selectedTheme"
+        class="mb-6"
+        @update:model-value="handleThemeChange"
+      />
+      <ColorThemePicker />
+    </section>
+
+    <div v-if="userIsAuthenticated">
       <!-- App Settings Section -->
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
           {{ $t('settings.app-settings') }}
         </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+          {{ $t('settings.app-settings-save') }}
+        </p>
         <div class="grid grid-cols-2 gap-4">
           <NumberInput
-            v-model.number="settings.maxPhe"
+            v-model.number="appSettings.maxPhe"
             id-name="max-phe"
             :label="$t('settings.max-phe')"
           />
 
           <NumberInput
-            v-model.number="settings.maxKcal"
+            v-model.number="appSettings.maxKcal"
             id-name="max-kcal"
             :label="$t('settings.max-kcal')"
           />
         </div>
 
         <SelectMenu
-          v-model="settings.labUnit"
+          v-model="appSettings.labUnit"
           id-name="unit"
           :label="$t('blood-values.unit')"
           class="mb-4"
@@ -423,81 +427,50 @@ defineOgImage('Default', {
 
         <div class="grid grid-cols-2 gap-4">
           <NumberInput
-            v-model.number="settings.bloodPheMin"
+            v-model.number="appSettings.bloodPheMin"
             id-name="blood-phe-min"
             :label="
               $t('settings.blood-phe-min') +
-              (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
+              (appSettings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
             "
           />
 
           <NumberInput
-            v-model.number="settings.bloodPheMax"
+            v-model.number="appSettings.bloodPheMax"
             id-name="blood-phe-max"
             :label="
               $t('settings.blood-phe-max') +
-              (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
+              (appSettings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
             "
           />
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <NumberInput
-            v-model.number="settings.bloodTyrMin"
+            v-model.number="appSettings.bloodTyrMin"
             id-name="blood-tyr-min"
             :label="
               $t('settings.blood-tyr-min') +
-              (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
+              (appSettings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
             "
           />
 
           <NumberInput
-            v-model.number="settings.bloodTyrMax"
+            v-model.number="appSettings.bloodTyrMax"
             id-name="blood-tyr-max"
             :label="
               $t('settings.blood-tyr-max') +
-              (settings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
+              (appSettings.labUnit === 'mgdl' ? ' (mg/dL)' : ' (µmol/L)')
             "
           />
         </div>
 
-        <SelectMenu
-          v-model="settings.progressStyle"
-          id-name="progress-style"
-          :label="$t('settings.progress-style')"
-          class="mb-4"
-        >
-          <option v-for="option in progressStyleOptions" :key="option.value" :value="option.value">
-            {{ option.title }}
-          </option>
-        </SelectMenu>
-
-        <SelectMenu
-          v-model="settings.preferredTool"
-          id-name="preferred-tool"
-          :label="$t('settings.preferred-tool')"
-          class="mb-4"
-        >
-          <option v-for="option in preferredToolOptions" :key="option.value" :value="option.value">
-            {{ option.title }}
-          </option>
-        </SelectMenu>
-
-        <SelectMenu
-          v-model="selectedTheme"
-          id-name="theme-select"
-          :label="$t('settings.theme')"
-          class="mb-6"
-          @change="handleThemeChange"
-        >
-          <option v-for="option in themeOptions" :key="option.value" :value="option.value">
-            {{ option.title }}
-          </option>
-        </SelectMenu>
-
-        <ColorThemePicker class="mb-6" />
-
-        <PrimaryButton :text="$t('common.save')" @click="save" />
+        <PrimaryButton
+          :text="$t('common.save')"
+          :loading="savingAppSettings"
+          :loading-text="$t('common.saving')"
+          @click="save"
+        />
       </div>
 
       <!-- Consent Section -->
@@ -559,7 +532,7 @@ defineOgImage('Default', {
           {{ $t('settings.license-heading') }}
         </h3>
         <TextInput
-          v-model="settings.license"
+          v-model="appSettings.license"
           id-name="license"
           :label="$t('settings.license-key')"
           class="mb-6"
