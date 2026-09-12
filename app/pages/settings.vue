@@ -30,6 +30,7 @@ const formatConsentDate = (dateString) => {
 // Reactive state
 const selectedTheme = ref('system')
 const username = ref('')
+const customizationControls = ref(null)
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
@@ -51,6 +52,24 @@ const unitOptions = computed(() => [
 
 // Methods
 const { handleError } = useErrorHandler()
+
+const handleCustomizationChange = async (key, value) => {
+  const focusedControl = document.activeElement
+  await saveCustomization(key, value)
+  await nextTick()
+
+  // Disabling the group during a save moves keyboard focus to the page. Return
+  // it to the confirmed choice unless the user has focused another control.
+  if (
+    document.activeElement === document.body &&
+    customizationControls.value?.contains(focusedControl)
+  ) {
+    focusedControl
+      .closest('fieldset')
+      ?.querySelector('input:checked')
+      ?.focus({ preventScroll: true })
+  }
+}
 
 const saveLicense = async () => {
   try {
@@ -364,6 +383,7 @@ defineOgImage('Default', {
 
       <fieldset
         v-if="userIsAuthenticated"
+        ref="customizationControls"
         :disabled="savingCustomization || !store.settingsLoaded"
         :aria-busy="savingCustomization"
         class="disabled:opacity-60"
@@ -372,12 +392,12 @@ defineOgImage('Default', {
         <ProgressStylePicker
           :model-value="customization.progressStyle"
           class="mb-6"
-          @update:model-value="saveCustomization('progressStyle', $event)"
+          @update:model-value="handleCustomizationChange('progressStyle', $event)"
         />
         <PreferredToolPicker
           :model-value="customization.preferredTool"
           class="mb-6"
-          @update:model-value="saveCustomization('preferredTool', $event)"
+          @update:model-value="handleCustomizationChange('preferredTool', $event)"
         />
       </fieldset>
 

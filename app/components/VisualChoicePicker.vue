@@ -37,7 +37,10 @@ const name = useId()
           >
             <slot name="visual" :option="option" />
           </span>
-          <span class="min-w-0 break-words sm:hidden" :class="stacked ? 'text-center' : ''">
+          <span
+            class="min-w-0 max-w-full break-words sm:hidden"
+            :class="stacked ? 'text-center' : ''"
+          >
             {{ option.shortTitle || option.title }}
           </span>
           <span class="hidden sm:inline">{{ option.title }}</span>
