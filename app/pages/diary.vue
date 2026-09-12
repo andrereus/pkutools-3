@@ -20,6 +20,7 @@ import {
 import { hasMaterialFoodChange } from '#shared/utils/material-food'
 
 const store = useStore()
+const { accentColor, accentPalette } = useAccentColor()
 const { t, locale } = useI18n()
 const dialog2 = ref(null)
 const localePath = useLocalePath()
@@ -252,17 +253,17 @@ const isDark = ref(
 )
 
 // Radial bar options shared by both circles, themed for the current color mode.
-// When over budget the track shows the full sky ring (100% reached) and the
-// overage continues on top in a darker sky, conveying how far past the limit.
+// When over budget the track shows the full sky-colored ring (100% reached) and the
+// overage continues on top in a darker shade, conveying how far past the limit.
 const buildCircleOptions = (label, percent, size) => {
   const dark = isDark.value
   const over = percent > 100
   const small = size < 96
-  const sky = '#0ea5e9'
-  // Over-budget overage colour: a darker shade of the same sky, used in both
-  // light and dark mode. The full sky ring + darker overage on top reads as
+  const accent = accentPalette.value.primary
+  // Over-budget overage colour: a darker shade of the same accent, used in both
+  // light and dark mode. The full sky-colored ring + darker overage on top reads as
   // "over budget" consistently.
-  const overColor = '#0369a1'
+  const overColor = accentPalette.value.strong
   return {
     chart: {
       type: 'radialBar',
@@ -273,7 +274,7 @@ const buildCircleOptions = (label, percent, size) => {
       radialBar: {
         // Smaller hollow on phones keeps the ring band thick on the small circle.
         hollow: { size: small ? '46%' : '56%' },
-        track: { background: over ? sky : dark ? '#374151' : '#e5e7eb' },
+        track: { background: over ? accent : dark ? '#374151' : '#e5e7eb' },
         dataLabels: {
           // Metric name comes from the caption below the chart, so only the
           // percentage is shown in the centre (vertically centred).
@@ -289,8 +290,8 @@ const buildCircleOptions = (label, percent, size) => {
       }
     },
     labels: [label],
-    colors: [over ? overColor : sky],
-    // Solid fill so the ring matches the app's sky exactly (radialBar otherwise
+    colors: [over ? overColor : accent],
+    // Solid fill so the ring matches the selected accent (radialBar otherwise
     // applies a subtle gradient that darkens the colour).
     fill: { type: 'solid' },
     stroke: { lineCap: 'round' },
@@ -299,7 +300,7 @@ const buildCircleOptions = (label, percent, size) => {
 }
 
 // Arc length to draw: under budget shows the actual %, over budget shows just
-// the overage (0–100) layered on top of the full sky track.
+// the overage (0–100) layered on top of the full sky-colored track.
 const circleSeries = (percent) => (percent > 100 ? Math.min(percent - 100, 100) : percent)
 
 const pheCircleOptions = computed(() =>
@@ -763,7 +764,7 @@ defineOgImage('Default', {
             <template v-if="settings?.maxPhe">
               <ClientOnly>
                 <apexchart
-                  :key="`phe-${phePercent}-${circleSize}-${isDark}`"
+                  :key="`phe-${phePercent}-${circleSize}-${isDark}-${accentColor}`"
                   type="radialBar"
                   :width="circleSize"
                   :height="circleSize"
@@ -794,7 +795,7 @@ defineOgImage('Default', {
             <template v-if="settings?.maxKcal">
               <ClientOnly>
                 <apexchart
-                  :key="`kcal-${kcalPercent}-${circleSize}-${isDark}`"
+                  :key="`kcal-${kcalPercent}-${circleSize}-${isDark}-${accentColor}`"
                   type="radialBar"
                   :width="circleSize"
                   :height="circleSize"

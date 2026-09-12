@@ -348,6 +348,7 @@ defineOgImage('Default', {
             {{ option.title }}
           </option>
         </SelectMenu>
+        <ColorThemePicker class="mt-6" />
       </div>
     </div>
 
@@ -493,6 +494,8 @@ defineOgImage('Default', {
             {{ option.title }}
           </option>
         </SelectMenu>
+
+        <ColorThemePicker class="mb-6" />
 
         <PrimaryButton :text="$t('common.save')" @click="save" />
       </div>

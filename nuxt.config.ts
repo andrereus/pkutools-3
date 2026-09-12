@@ -1,6 +1,7 @@
 import tailwindcss from '@tailwindcss/vite'
 import { defineOrganization } from 'nuxt-schema-org/schema'
 import changelog from './content/changelog.json'
+import { accentColorInitScript } from './shared/utils/accent-color'
 
 // The two release-note facts the header needs, resolved once at build time.
 //
@@ -40,6 +41,10 @@ export default defineNuxtConfig({
         { rel: 'apple-touch-icon', href: '/apple-touch-icon-180x180.png', sizes: '180x180' }
       ],
       script: [
+        {
+          textContent: accentColorInitScript,
+          type: 'text/javascript'
+        },
         {
           textContent: `
             function updateTheme() {

@@ -771,4 +771,45 @@ const handleCookieConsent = (consent) => {
 :is(.dark *) .bottom-nav-add:hover {
   background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(56, 189, 248, 0.12) 100%);
 }
+
+/* Alternative color themes recolor the nav on top of the rules above. Sky, and
+   a page without the attribute, never reach these. */
+:root[data-accent]:not([data-accent='sky']) .liquid-glass-active {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--theme-nav-tint) 12%, transparent) 0%,
+    color-mix(in oklab, var(--theme-nav-tint) 6%, transparent) 100%
+  );
+}
+
+:root.dark[data-accent]:not([data-accent='sky']) .liquid-glass-active {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--theme-nav-tint) 15%, transparent) 0%,
+    color-mix(in oklab, var(--theme-nav-tint) 8%, transparent) 100%
+  );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--theme-nav-tint) 50%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+:root[data-accent]:not([data-accent='sky']) .bottom-nav-add {
+  border: 1px solid color-mix(in oklab, var(--theme-nav-border) 55%, transparent);
+}
+
+:root.dark[data-accent]:not([data-accent='sky']) .bottom-nav-add {
+  border: 1px solid color-mix(in oklab, var(--theme-nav-tint) 65%, transparent);
+}
+
+:root[data-accent]:not([data-accent='sky']) .bottom-nav-add:hover {
+  background-color: color-mix(in oklab, var(--theme-nav-hover-light) 40%, transparent);
+}
+
+:root.dark[data-accent]:not([data-accent='sky']) .bottom-nav-add:hover {
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--theme-nav-tint) 22%, transparent) 0%,
+    color-mix(in oklab, var(--theme-nav-tint) 12%, transparent) 100%
+  );
+}
 </style>

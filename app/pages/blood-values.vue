@@ -20,6 +20,7 @@ import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
 
 const store = useStore()
+const { accentColor, accentPalette } = useAccentColor()
 const { t, locale: i18nLocale } = useI18n()
 const dialog = ref(null)
 const notifications = useNotifications()
@@ -284,7 +285,7 @@ const graphTyrosine = computed(() => {
 const pheRangeAnnotations = computed(() => {
   const min = settings.value.bloodPheMin
   const max = settings.value.bloodPheMax
-  const color = '#0ea5e9'
+  const color = accentPalette.value.primary
   const dottedLine = (y) => ({ y, borderWidth: 2, borderColor: color, strokeDashArray: 6 })
   const annotations = []
   if (min != null && max != null) {
@@ -306,11 +307,11 @@ const pheYAxisMax = computed(() => {
 })
 
 // Tyrosine target range — same treatment as Phe (shaded band + dotted boundary
-// lines), in the tyrosine chart's amber color.
+// lines), in the second series color that stays distinct from the accent.
 const tyrosineRangeAnnotations = computed(() => {
   const min = settings.value.bloodTyrMin
   const max = settings.value.bloodTyrMax
-  const color = '#d97706'
+  const color = accentPalette.value.secondary
   const dottedLine = (y) => ({ y, borderWidth: 2, borderColor: color, strokeDashArray: 6 })
   const annotations = []
   if (min != null && max != null) {
@@ -378,13 +379,13 @@ const setChartPeriod = (period) => {
 // so without this the chart keeps the old scale and target band until refresh.
 const pheChartKey = computed(
   () =>
-    `phe-${isDark.value}-${settings.value.bloodPheMin}-${settings.value.bloodPheMax}-` +
+    `phe-${isDark.value}-${accentColor.value}-${settings.value.bloodPheMin}-${settings.value.bloodPheMax}-` +
     labValues.value.map((o) => `${o.date}:${o.phe}`).join(',')
 )
 
 const tyrosineChartKey = computed(
   () =>
-    `tyrosine-${isDark.value}-${settings.value.bloodTyrMin}-${settings.value.bloodTyrMax}-` +
+    `tyrosine-${isDark.value}-${accentColor.value}-${settings.value.bloodTyrMin}-${settings.value.bloodTyrMax}-` +
     labValues.value.map((o) => `${o.date}:${o.tyrosine}`).join(',')
 )
 
@@ -450,7 +451,7 @@ const chartOptions = computed(() => {
     theme: {
       mode: isDark.value ? 'dark' : 'light'
     },
-    colors: ['#0ea5e9']
+    colors: [accentPalette.value.primary]
   }
 })
 
@@ -516,7 +517,7 @@ const chartOptionsTyrosine = computed(() => {
     theme: {
       mode: isDark.value ? 'dark' : 'light'
     },
-    colors: ['#d97706']
+    colors: [accentPalette.value.secondary]
   }
 })
 

@@ -1,0 +1,159 @@
+/* The app already uses sky as its accent, and Sky renders exactly as it did
+   before: every rule here needs a data-accent of its own to take effect, so a
+   missing attribute or the default theme falls through to the original styles. */
+@layer accent;
+
+@theme {
+  --color-theme-ink: #0369a1;
+}
+
+:root,
+[data-accent] {
+  --color-theme-ink: var(--color-sky-700);
+  /* Fallback for a palette that sets no page tint of its own. */
+  --theme-page-light: var(--color-gray-50);
+  --theme-control-bg: initial;
+  --theme-control-hover: initial;
+  --theme-control-fg: initial;
+  --theme-control-ink: initial;
+}
+
+/* Explicit defaults also let a sky preview reset an inherited custom palette.
+   These are the original Tailwind sky shades, without any recoloring. */
+[data-accent='sky'] {
+  --color-sky-50: oklch(97.7% 0.013 236.62);
+  --color-sky-100: oklch(95.1% 0.026 236.824);
+  --color-sky-200: oklch(90.1% 0.058 230.902);
+  --color-sky-300: oklch(82.8% 0.111 230.318);
+  --color-sky-400: oklch(74.6% 0.16 232.661);
+  --color-sky-500: oklch(68.5% 0.169 237.323);
+  --color-sky-600: oklch(58.8% 0.158 241.966);
+  --color-sky-700: oklch(50% 0.134 242.749);
+  --color-sky-800: oklch(44.3% 0.11 240.79);
+  --color-sky-900: oklch(39.1% 0.09 240.876);
+  --color-sky-950: oklch(29.3% 0.066 243.157);
+}
+
+[data-accent='blue'] {
+  --color-sky-50: var(--color-blue-50);
+  --color-sky-100: var(--color-blue-100);
+  --color-sky-200: var(--color-blue-200);
+  --color-sky-300: var(--color-blue-300);
+  --color-sky-400: var(--color-blue-400);
+  --color-sky-500: var(--color-blue-500);
+  --color-sky-600: var(--color-blue-600);
+  --color-sky-700: var(--color-blue-700);
+  --color-sky-800: var(--color-blue-800);
+  --color-sky-900: var(--color-blue-900);
+  --color-sky-950: var(--color-blue-950);
+  --theme-page-light: color-mix(in oklab, var(--color-blue-100) 25%, var(--color-gray-50));
+}
+
+[data-accent='violet'] {
+  --color-sky-50: var(--color-violet-50);
+  --color-sky-100: var(--color-violet-100);
+  --color-sky-200: var(--color-violet-200);
+  --color-sky-300: var(--color-violet-300);
+  --color-sky-400: var(--color-violet-400);
+  --color-sky-500: var(--color-violet-500);
+  --color-sky-600: var(--color-violet-600);
+  --color-sky-700: var(--color-violet-700);
+  --color-sky-800: var(--color-violet-800);
+  --color-sky-900: var(--color-violet-900);
+  --color-sky-950: var(--color-violet-950);
+  --theme-page-light: color-mix(in oklab, var(--color-violet-100) 25%, var(--color-gray-50));
+}
+
+[data-accent='teal'] {
+  --color-sky-50: var(--color-teal-50);
+  --color-sky-100: var(--color-teal-100);
+  --color-sky-200: var(--color-teal-200);
+  --color-sky-300: var(--color-teal-300);
+  --color-sky-400: var(--color-teal-400);
+  --color-sky-500: var(--color-teal-500);
+  --color-sky-600: var(--color-teal-600);
+  --color-sky-700: var(--color-teal-700);
+  --color-sky-800: var(--color-teal-800);
+  --color-sky-900: var(--color-teal-900);
+  --color-sky-950: var(--color-teal-950);
+  --theme-page-light: color-mix(in oklab, var(--color-teal-100) 25%, var(--color-gray-50));
+}
+
+[data-accent='orange'] {
+  --color-sky-50: var(--color-orange-50);
+  --color-sky-100: var(--color-orange-100);
+  --color-sky-200: var(--color-orange-200);
+  --color-sky-300: var(--color-orange-300);
+  --color-sky-400: var(--color-orange-400);
+  --color-sky-500: var(--color-orange-500);
+  --color-sky-600: var(--color-orange-600);
+  --color-sky-700: var(--color-orange-700);
+  --color-sky-800: var(--color-orange-800);
+  --color-sky-900: var(--color-orange-900);
+  --color-sky-950: var(--color-orange-950);
+  --theme-page-light: color-mix(in oklab, var(--color-orange-100) 25%, var(--color-gray-50));
+}
+
+[data-accent='red'] {
+  --color-sky-50: var(--color-red-50);
+  --color-sky-100: var(--color-red-100);
+  --color-sky-200: var(--color-red-200);
+  --color-sky-300: var(--color-red-300);
+  --color-sky-400: var(--color-red-400);
+  --color-sky-500: var(--color-red-500);
+  --color-sky-600: var(--color-red-600);
+  --color-sky-700: var(--color-red-700);
+  --color-sky-800: var(--color-red-800);
+  --color-sky-900: var(--color-red-900);
+  --color-sky-950: var(--color-red-950);
+  --theme-page-light: color-mix(in oklab, var(--color-red-100) 25%, var(--color-gray-50));
+}
+
+:root.dark,
+.dark [data-accent] {
+  --color-theme-ink: var(--color-sky-300);
+}
+
+/* Only alternative palettes adjust control contrast. Sky keeps the original
+   utility styles, including every light/dark and hover color. */
+[data-accent]:not([data-accent='sky']) {
+  --theme-control-bg: var(--color-sky-700);
+  --theme-control-hover: var(--color-sky-800);
+  --theme-control-fg: #ffffff;
+  --theme-control-ink: var(--color-sky-700);
+  --theme-nav-tint: var(--color-sky-400);
+  --theme-nav-border: var(--color-sky-500);
+  --theme-nav-hover-light: var(--color-sky-200);
+}
+
+:root.dark[data-accent]:not([data-accent='sky']),
+.dark [data-accent]:not([data-accent='sky']) {
+  --theme-control-bg: var(--color-sky-400);
+  --theme-control-hover: var(--color-sky-300);
+  --theme-control-fg: #030712;
+  --theme-control-ink: var(--color-sky-300);
+}
+
+/* Unset properties fall back to the existing Tailwind utility layer. A nested
+   Sky scope also restores brand artwork inside any selected color theme.
+   These rules need a layer of their own, ordered after Tailwind's: outside a
+   layer, revert-layer drops every author style instead of the utility value. */
+@layer accent {
+  /* Light mode only: dark mode keeps the original page color in every theme. */
+  :root[data-accent]:not([data-accent='sky']):not(.dark) body {
+    background-color: var(--theme-page-light);
+  }
+
+  :where(button, a).text-white:is(.bg-sky-500, .bg-sky-600) {
+    background-color: var(--theme-control-bg, revert-layer);
+    color: var(--theme-control-fg, revert-layer);
+  }
+
+  :where(button, a).text-white:is(.bg-sky-500, .bg-sky-600):hover {
+    background-color: var(--theme-control-hover, revert-layer);
+  }
+
+  :is(.text-sky-500, .text-sky-600):not(input) {
+    color: var(--theme-control-ink, revert-layer);
+  }
+}

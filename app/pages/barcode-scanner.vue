@@ -12,6 +12,7 @@ import {
 import { foodTypeFromCategories } from '../utils/food-category'
 
 const store = useStore()
+const { accentPalette } = useAccentColor()
 const { t } = useI18n()
 const dialog = ref(null)
 const localePath = useLocalePath()
@@ -175,7 +176,7 @@ const paintBoundingBox = (detectedCodes, ctx) => {
     } = detectedCode
 
     ctx.lineWidth = 2
-    ctx.strokeStyle = '#0ea5e9'
+    ctx.strokeStyle = accentPalette.value.primary
     ctx.strokeRect(x, y, width, height)
   }
 }

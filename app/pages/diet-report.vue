@@ -30,6 +30,7 @@ import {
 import { hasMaterialFoodChange } from '#shared/utils/material-food'
 
 const store = useStore()
+const { accentColor, accentPalette } = useAccentColor()
 const { t, locale: i18nLocale } = useI18n()
 const dialog = ref(null)
 const dialog2 = ref(null)
@@ -371,7 +372,7 @@ const chartOptions = computed(() => {
         {
           y: settings.value.maxPhe || 0,
           borderWidth: 2,
-          borderColor: '#0ea5e9',
+          borderColor: accentPalette.value.primary,
           strokeDashArray: 6
         }
       ]
@@ -380,7 +381,9 @@ const chartOptions = computed(() => {
       mode: isDark.value ? 'dark' : 'light'
     },
     // Trend mode: dots are the same colour as the line.
-    colors: showTrend.value ? ['#0ea5e9', '#0ea5e9'] : ['#0ea5e9']
+    colors: showTrend.value
+      ? [accentPalette.value.primary, accentPalette.value.primary]
+      : [accentPalette.value.primary]
   }
 })
 
@@ -487,7 +490,7 @@ const chartOptionsKcal = computed(() => {
         {
           y: settings.value.maxKcal || 0,
           borderWidth: 2,
-          borderColor: '#d97706',
+          borderColor: accentPalette.value.secondary,
           strokeDashArray: 6
         }
       ]
@@ -496,7 +499,9 @@ const chartOptionsKcal = computed(() => {
       mode: isDark.value ? 'dark' : 'light'
     },
     // Trend mode: dots are the same colour as the line.
-    colors: showTrend.value ? ['#d97706', '#d97706'] : ['#d97706']
+    colors: showTrend.value
+      ? [accentPalette.value.secondary, accentPalette.value.secondary]
+      : [accentPalette.value.secondary]
   }
 })
 
@@ -1204,7 +1209,7 @@ defineOgImage('Default', {
           </p>
           <apexchart
             ref="chartRef"
-            :key="`phe-${isDark}`"
+            :key="`phe-${isDark}-${accentColor}`"
             type="area"
             height="250"
             :options="chartOptions"
@@ -1216,7 +1221,7 @@ defineOgImage('Default', {
           </p>
           <apexchart
             ref="chartRefKcal"
-            :key="`kcal-${isDark}`"
+            :key="`kcal-${isDark}-${accentColor}`"
             type="area"
             height="250"
             :options="chartOptionsKcal"
