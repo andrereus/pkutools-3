@@ -4,27 +4,16 @@ import { computed, ref, type Ref } from 'vue'
 import {
   ACCENT_COLORS,
   ACCENT_COLOR_STORAGE_KEY,
+  ACCENT_PALETTES,
   RANDOM_ACCENT_STORAGE_KEY,
   accentColorInitScript
 } from '../shared/utils/accent-color'
 import { useAccentColor } from '../app/composables/useAccentColor'
-import { readThemeChartPalette } from '../app/utils/theme-colors'
-
-vi.mock('../app/utils/theme-colors', () => ({ readThemeChartPalette: vi.fn() }))
-
-// CSS resolution is covered by browser checks. Distinct fixtures here verify
-// that all consumers update from the resolved palette, rather than a hex table.
-const resolvedPalette = (color: string, dark: boolean) => ({
-  primary: `${color}-${dark ? 'dark' : 'light'}-primary`,
-  strong: `${color}-strong`,
-  secondary: `${dark ? 'dark' : 'light'}-secondary`
-})
 
 let attributes: Map<string, string>
 let stored: Map<string, string>
 let states: Map<string, Ref>
 let mounted: (() => void)[]
-let modeChanged: (() => void)[]
 let documentStub: {
   documentElement: {
     getAttribute: ReturnType<typeof vi.fn>
@@ -40,13 +29,9 @@ let storageStub: {
 
 beforeEach(() => {
   attributes = new Map([['class', 'dark']])
-  vi.mocked(readThemeChartPalette).mockImplementation(() =>
-    resolvedPalette(attributes.get('data-accent') ?? 'sky', attributes.get('class') === 'dark')
-  )
   stored = new Map()
   states = new Map()
   mounted = []
-  modeChanged = []
   documentStub = {
     documentElement: {
       getAttribute: vi.fn((key: string) => attributes.get(key) ?? null),
@@ -66,17 +51,6 @@ beforeEach(() => {
   vi.stubGlobal('computed', computed)
   vi.stubGlobal('ref', ref)
   vi.stubGlobal('onMounted', (callback: () => void) => mounted.push(callback))
-  vi.stubGlobal('onUnmounted', vi.fn())
-  vi.stubGlobal(
-    'MutationObserver',
-    class {
-      constructor(callback: () => void) {
-        modeChanged.push(callback)
-      }
-      observe() {}
-      disconnect() {}
-    }
-  )
   vi.stubGlobal('useState', (key: string, init: () => unknown) => {
     if (!states.has(key)) states.set(key, ref(init()))
     return states.get(key)
@@ -99,11 +73,14 @@ describe('accent preference before hydration', () => {
     }
   )
 
-  it.each([null, '', 'unknown', 'toString'])('falls back to sky for stored value %s', (color) => {
-    if (color !== null) stored.set(ACCENT_COLOR_STORAGE_KEY, color)
-    initialize()
-    expect(attributes.get('data-accent')).toBe('sky')
-  })
+  it.each([null, '', 'unknown', 'toString', 'rose'])(
+    'falls back to sky for stored value %s',
+    (color) => {
+      if (color !== null) stored.set(ACCENT_COLOR_STORAGE_KEY, color)
+      initialize()
+      expect(attributes.get('data-accent')).toBe('sky')
+    }
+  )
 
   it('does not interrupt startup when browser storage is blocked', () => {
     storageStub.getItem.mockImplementation(() => {
@@ -138,16 +115,6 @@ describe('accent preference before hydration', () => {
 })
 
 describe('accent selection', () => {
-  it('reads default Sky chart roles from CSS and refreshes them on a mode change', () => {
-    const { accentPalette } = useAccentColor()
-    expect(accentPalette.value).toEqual(resolvedPalette('sky', true))
-    mounted.forEach((callback) => callback())
-    expect(accentPalette.value).toEqual(resolvedPalette('sky', true))
-    attributes.set('class', '')
-    modeChanged.forEach((callback) => callback())
-    expect(accentPalette.value).toEqual(resolvedPalette('sky', false))
-  })
-
   it('hydrates with the default, then restores the saved choice for the picker and charts', () => {
     stored.set('accent_color', 'violet')
     initialize()
@@ -156,28 +123,23 @@ describe('accent selection', () => {
     expect(picker.accentPreference.value).toBe('sky')
     mounted.forEach((callback) => callback())
     expect(picker.accentPreference.value).toBe('violet')
-    expect(chart.accentPalette.value.primary).toBe(resolvedPalette('violet', true).primary)
-
-    attributes.set('class', '')
-    modeChanged.forEach((callback) => callback())
-    expect(chart.accentPalette.value.primary).toBe(resolvedPalette('violet', false).primary)
+    expect(chart.accentPalette.value).toEqual(ACCENT_PALETTES.violet)
   })
 
   it('applies a choice immediately, updates charts, persists across reload and can reset to sky', () => {
     const picker = useAccentColor()
     const chart = useAccentColor()
-    picker.accentPreference.value = 'red'
-    expect(attributes.get('data-accent')).toBe('red')
-    expect(chart.accentPalette.value).toEqual(resolvedPalette('red', true))
-    expect(stored.get('accent_color')).toBe('red')
+    picker.accentPreference.value = 'orange'
+    expect(attributes.get('data-accent')).toBe('orange')
+    expect(chart.accentPalette.value).toEqual(ACCENT_PALETTES.orange)
+    expect(stored.get('accent_color')).toBe('orange')
 
     attributes.delete('data-accent')
     states.clear()
     initialize()
     const reloaded = useAccentColor()
     mounted.at(-1)!()
-    expect(reloaded.accentColor.value).toBe('red')
-    expect(reloaded.accentPalette.value.primary).toBe(resolvedPalette('red', true).primary)
+    expect(reloaded.accentColor.value).toBe('orange')
     reloaded.accentPreference.value = 'sky'
     expect(attributes.get('data-accent')).toBe('sky')
     expect(stored.has(RANDOM_ACCENT_STORAGE_KEY)).toBe(false)
@@ -194,7 +156,7 @@ describe('accent selection', () => {
       picker.accentPreference.value = 'teal'
     }).not.toThrow()
     expect(attributes.get('data-accent')).toBe('teal')
-    expect(picker.accentPalette.value.primary).toBe(resolvedPalette('teal', true).primary)
+    expect(picker.accentPalette.value).toEqual(ACCENT_PALETTES.teal)
   })
 
   it('rolls immediately when random is chosen and remembers it as the preference', () => {
@@ -205,7 +167,7 @@ describe('accent selection', () => {
     expect(ACCENT_COLORS).toContain(color)
     expect(color).not.toBe('sky')
     expect(attributes.get('data-accent')).toBe(color)
-    expect(picker.accentPalette.value.primary).toBe(resolvedPalette(color, true).primary)
+    expect(picker.accentPalette.value).toEqual(ACCENT_PALETTES[color])
     expect(stored.get(ACCENT_COLOR_STORAGE_KEY)).toBe(color)
     expect(stored.get(RANDOM_ACCENT_STORAGE_KEY)).toBe('true')
 

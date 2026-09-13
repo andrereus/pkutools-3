@@ -212,7 +212,7 @@ onBeforeUnmount(() => {
                     {{ $t('ai-calculator.analyze-photo') }}
                   </span>
                   <span
-                    class="demo-estimate inline-flex items-center justify-center rounded-full bg-(--theme-button-bg) px-3 py-1.5 text-xs font-semibold text-white"
+                    class="demo-estimate inline-flex items-center justify-center rounded-full bg-sky-500 px-3 py-1.5 text-xs font-semibold text-white"
                   >
                     {{ $t('home.demo-calculate') }}
                   </span>
@@ -230,7 +230,7 @@ onBeforeUnmount(() => {
                     <p class="text-xs text-gray-500 dark:text-gray-400">180 g · 13 mg Phe</p>
                   </div>
                   <div
-                    class="demo-add flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-(--theme-button-bg) text-white"
+                    class="demo-add flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-500 text-white"
                   >
                     <LucidePlus class="h-4 w-4" aria-hidden="true" />
                   </div>
@@ -315,7 +315,7 @@ onBeforeUnmount(() => {
                     <div
                       v-for="(bar, i) in dietBars"
                       :key="i"
-                      class="demo-grow flex-1 rounded-sm bg-sky-500"
+                      class="demo-grow flex-1 rounded-sm bg-sky-400 dark:bg-sky-500"
                       :style="{
                         height: (bar / dietMax) * 100 + '%',
                         animationDelay: `${0.2 + i * 0.05}s`
@@ -337,21 +337,21 @@ onBeforeUnmount(() => {
                   </div>
                   <svg
                     viewBox="0 0 100 32"
-                    class="demo-chart mt-2 h-16 w-full"
+                    class="demo-chart mt-2 h-16 w-full text-sky-500"
                     preserveAspectRatio="none"
                     aria-hidden="true"
                   >
                     <defs>
                       <linearGradient id="demo-blood-grad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="rgb(14 165 233)" stop-opacity="0.25" />
-                        <stop offset="100%" stop-color="rgb(14 165 233)" stop-opacity="0" />
+                        <stop offset="0%" stop-color="currentColor" stop-opacity="0.25" />
+                        <stop offset="100%" stop-color="currentColor" stop-opacity="0" />
                       </linearGradient>
                     </defs>
                     <polygon :points.attr="bloodArea" fill="url(#demo-blood-grad)" />
                     <polyline
                       :points.attr="bloodLine"
                       fill="none"
-                      stroke="rgb(14 165 233)"
+                      stroke="currentColor"
                       stroke-width="1.5"
                       stroke-linecap="round"
                       stroke-linejoin="round"

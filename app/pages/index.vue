@@ -554,7 +554,7 @@ defineOgImage('Default', {
                     <div
                       v-for="(bar, i) in overviewDietBars"
                       :key="i"
-                      class="flex-1 rounded-sm bg-sky-500"
+                      class="flex-1 rounded-sm bg-sky-400 dark:bg-sky-500"
                       :style="{ height: (bar / overviewDietMax) * 100 + '%' }"
                     />
                   </div>
@@ -569,21 +569,21 @@ defineOgImage('Default', {
                   </span>
                   <svg
                     viewBox="0 0 100 28"
-                    class="h-7 flex-1"
+                    class="h-7 flex-1 text-sky-500"
                     preserveAspectRatio="none"
                     aria-hidden="true"
                   >
                     <defs>
                       <linearGradient id="overview-blood-grad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="rgb(14 165 233)" stop-opacity="0.25" />
-                        <stop offset="100%" stop-color="rgb(14 165 233)" stop-opacity="0" />
+                        <stop offset="0%" stop-color="currentColor" stop-opacity="0.25" />
+                        <stop offset="100%" stop-color="currentColor" stop-opacity="0" />
                       </linearGradient>
                     </defs>
                     <polygon :points.attr="overviewBloodArea" fill="url(#overview-blood-grad)" />
                     <polyline
                       :points.attr="overviewBloodPoints"
                       fill="none"
-                      stroke="rgb(14 165 233)"
+                      stroke="currentColor"
                       stroke-width="1.5"
                       stroke-linecap="round"
                       stroke-linejoin="round"

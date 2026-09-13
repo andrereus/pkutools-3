@@ -25,7 +25,7 @@ const name = useId()
           class="flex min-h-9 items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 peer-checked:ring-2 peer-checked:ring-sky-500 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-sky-500 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:peer-checked:ring-sky-500"
         >
           <span
-            class="flex h-5 shrink-0 items-center justify-center text-theme-ink"
+            class="flex h-5 shrink-0 items-center justify-center text-sky-600 dark:text-sky-300"
             aria-hidden="true"
           >
             <slot name="visual" :option="option" />

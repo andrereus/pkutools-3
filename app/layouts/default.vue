@@ -736,8 +736,8 @@ const handleCookieConsent = (consent) => {
 .liquid-glass-active {
   background: linear-gradient(
     180deg,
-    color-mix(in oklab, var(--theme-nav-tint) 12%, transparent) 0%,
-    color-mix(in oklab, var(--theme-nav-tint) 6%, transparent) 100%
+    color-mix(in oklab, var(--color-sky-400) 12%, transparent) 0%,
+    color-mix(in oklab, var(--color-sky-400) 6%, transparent) 100%
   );
   box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.06);
 }
@@ -745,38 +745,38 @@ const handleCookieConsent = (consent) => {
 :is(.dark *) .liquid-glass-active {
   background: linear-gradient(
     180deg,
-    color-mix(in oklab, var(--theme-nav-tint) 15%, transparent) 0%,
-    color-mix(in oklab, var(--theme-nav-tint) 8%, transparent) 100%
+    color-mix(in oklab, var(--color-sky-400) 15%, transparent) 0%,
+    color-mix(in oklab, var(--color-sky-400) 8%, transparent) 100%
   );
   box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--theme-nav-tint) 50%, transparent),
+    inset 0 0 0 1px color-mix(in oklab, var(--color-sky-400) 50%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .bottom-nav-add {
   background-color: transparent;
-  border: 1px solid color-mix(in oklab, var(--theme-nav-border) 55%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-sky-500) 55%, transparent);
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.06),
     0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 :is(.dark *) .bottom-nav-add {
-  border: 1px solid color-mix(in oklab, var(--theme-nav-tint) 65%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-sky-400) 65%, transparent);
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.25),
     0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 .bottom-nav-add:hover {
-  background-color: color-mix(in oklab, var(--theme-nav-hover-light) 40%, transparent);
+  background-color: color-mix(in oklab, var(--color-sky-200) 40%, transparent);
 }
 
 :is(.dark *) .bottom-nav-add:hover {
   background: linear-gradient(
     135deg,
-    color-mix(in oklab, var(--theme-nav-tint) 22%, transparent) 0%,
-    color-mix(in oklab, var(--theme-nav-tint) 12%, transparent) 100%
+    color-mix(in oklab, var(--color-sky-400) 22%, transparent) 0%,
+    color-mix(in oklab, var(--color-sky-400) 12%, transparent) 100%
   );
 }
 </style>
