@@ -554,7 +554,7 @@ defineOgImage('Default', {
                     <div
                       v-for="(bar, i) in overviewDietBars"
                       :key="i"
-                      class="flex-1 rounded-sm bg-sky-400 dark:bg-sky-500"
+                      class="flex-1 rounded-sm bg-sky-500"
                       :style="{ height: (bar / overviewDietMax) * 100 + '%' }"
                     />
                   </div>

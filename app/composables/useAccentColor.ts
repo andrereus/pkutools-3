@@ -1,6 +1,5 @@
 import {
   ACCENT_COLOR_STORAGE_KEY,
-  ACCENT_PALETTES,
   DEFAULT_ACCENT_COLOR,
   RANDOM_ACCENT,
   RANDOM_ACCENT_STORAGE_KEY,
@@ -10,12 +9,16 @@ import {
   type AccentColor,
   type AccentPreference
 } from '#shared/utils/accent-color'
+import { readThemeChartPalette } from '../utils/theme-colors'
 
 export const useAccentColor = () => {
   // What the picker shows, which can be "random", and the color it resolved to.
   const preference = useState<AccentPreference>('accent-preference', () => DEFAULT_ACCENT_COLOR)
   const applied = useState<AccentColor>('accent-color', () => DEFAULT_ACCENT_COLOR)
-  const isDark = ref(false)
+  const palette = useState('accent-palette', readThemeChartPalette)
+  const updatePalette = () => {
+    palette.value = readThemeChartPalette()
+  }
   let observer: MutationObserver | undefined
 
   // Keep SSR and hydration identical; the head script already colors the page.
@@ -28,11 +31,8 @@ export const useAccentColor = () => {
     } catch {
       preference.value = applied.value
     }
-    const updateMode = () => {
-      isDark.value = root.classList.contains('dark')
-    }
-    updateMode()
-    observer = new MutationObserver(updateMode)
+    updatePalette()
+    observer = new MutationObserver(updatePalette)
     observer.observe(root, { attributes: true, attributeFilter: ['class'] })
   })
 
@@ -46,6 +46,7 @@ export const useAccentColor = () => {
       // Rolling here shows the effect straight away, without waiting for a restart.
       applied.value = reroll ? pickRandomAccent(applied.value) : (preference.value as AccentColor)
       document.documentElement.setAttribute('data-accent', applied.value)
+      updatePalette()
       try {
         localStorage.setItem(ACCENT_COLOR_STORAGE_KEY, applied.value)
         if (reroll) localStorage.setItem(RANDOM_ACCENT_STORAGE_KEY, 'true')
@@ -58,15 +59,7 @@ export const useAccentColor = () => {
 
   const accentColor = computed(() => applied.value)
 
-  const accentPalette = computed(() => {
-    const palette = ACCENT_PALETTES[applied.value]
-    const dark = isDark.value
-    return {
-      primary: dark ? palette.dark : palette.light,
-      strong: palette.strong,
-      secondary: dark ? palette.secondary.dark : palette.secondary.light
-    }
-  })
+  const accentPalette = computed(() => palette.value)
 
   return { accentPreference, accentColor, accentPalette }
 }

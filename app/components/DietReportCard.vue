@@ -161,7 +161,7 @@ const showCard = computed(() => pheDiary.value.some((entry) => !entry.incomplete
 
             <div class="flex h-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700 my-2">
               <div class="bg-sky-500" :style="{ width: block.fillPct + '%' }"></div>
-              <div class="bg-sky-700" :style="{ width: block.overPct + '%' }"></div>
+              <div class="bg-sky-800" :style="{ width: block.overPct + '%' }"></div>
             </div>
 
             <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">

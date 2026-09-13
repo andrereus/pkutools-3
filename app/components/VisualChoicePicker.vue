@@ -19,7 +19,6 @@ const name = useId()
           type="radio"
           :name="name"
           :value="option.value"
-          :aria-label="option.title"
           class="peer sr-only"
         />
         <span

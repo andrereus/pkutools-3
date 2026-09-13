@@ -4,11 +4,21 @@ import { computed, ref, type Ref } from 'vue'
 import {
   ACCENT_COLORS,
   ACCENT_COLOR_STORAGE_KEY,
-  ACCENT_PALETTES,
   RANDOM_ACCENT_STORAGE_KEY,
   accentColorInitScript
 } from '../shared/utils/accent-color'
 import { useAccentColor } from '../app/composables/useAccentColor'
+import { readThemeChartPalette } from '../app/utils/theme-colors'
+
+vi.mock('../app/utils/theme-colors', () => ({ readThemeChartPalette: vi.fn() }))
+
+// CSS resolution is covered by browser checks. Distinct fixtures here verify
+// that all consumers update from the resolved palette, rather than a hex table.
+const resolvedPalette = (color: string, dark: boolean) => ({
+  primary: `${color}-${dark ? 'dark' : 'light'}-primary`,
+  strong: `${color}-strong`,
+  secondary: `${dark ? 'dark' : 'light'}-secondary`
+})
 
 let attributes: Map<string, string>
 let stored: Map<string, string>
@@ -30,6 +40,9 @@ let storageStub: {
 
 beforeEach(() => {
   attributes = new Map([['class', 'dark']])
+  vi.mocked(readThemeChartPalette).mockImplementation(() =>
+    resolvedPalette(attributes.get('data-accent') ?? 'sky', attributes.get('class') === 'dark')
+  )
   stored = new Map()
   states = new Map()
   mounted = []
@@ -125,15 +138,14 @@ describe('accent preference before hydration', () => {
 })
 
 describe('accent selection', () => {
-  it('keeps the original Sky chart and overage colors in both display modes', () => {
+  it('reads default Sky chart roles from CSS and refreshes them on a mode change', () => {
     const { accentPalette } = useAccentColor()
-    const original = { primary: '#0ea5e9', strong: '#0369a1', secondary: '#d97706' }
-    expect(accentPalette.value).toEqual(original)
+    expect(accentPalette.value).toEqual(resolvedPalette('sky', true))
     mounted.forEach((callback) => callback())
-    expect(accentPalette.value).toEqual(original)
+    expect(accentPalette.value).toEqual(resolvedPalette('sky', true))
     attributes.set('class', '')
     modeChanged.forEach((callback) => callback())
-    expect(accentPalette.value).toEqual(original)
+    expect(accentPalette.value).toEqual(resolvedPalette('sky', false))
   })
 
   it('hydrates with the default, then restores the saved choice for the picker and charts', () => {
@@ -144,11 +156,11 @@ describe('accent selection', () => {
     expect(picker.accentPreference.value).toBe('sky')
     mounted.forEach((callback) => callback())
     expect(picker.accentPreference.value).toBe('violet')
-    expect(chart.accentPalette.value.primary).toBe('#a78bfa')
+    expect(chart.accentPalette.value.primary).toBe(resolvedPalette('violet', true).primary)
 
     attributes.set('class', '')
     modeChanged.forEach((callback) => callback())
-    expect(chart.accentPalette.value.primary).toBe('#7c3aed')
+    expect(chart.accentPalette.value.primary).toBe(resolvedPalette('violet', false).primary)
   })
 
   it('applies a choice immediately, updates charts, persists across reload and can reset to sky', () => {
@@ -156,11 +168,7 @@ describe('accent selection', () => {
     const chart = useAccentColor()
     picker.accentPreference.value = 'red'
     expect(attributes.get('data-accent')).toBe('red')
-    expect(chart.accentPalette.value).toEqual({
-      primary: '#dc2626',
-      strong: '#b91c1c',
-      secondary: '#0d9488'
-    })
+    expect(chart.accentPalette.value).toEqual(resolvedPalette('red', true))
     expect(stored.get('accent_color')).toBe('red')
 
     attributes.delete('data-accent')
@@ -169,7 +177,7 @@ describe('accent selection', () => {
     const reloaded = useAccentColor()
     mounted.at(-1)!()
     expect(reloaded.accentColor.value).toBe('red')
-    expect(reloaded.accentPalette.value.primary).toBe('#f87171')
+    expect(reloaded.accentPalette.value.primary).toBe(resolvedPalette('red', true).primary)
     reloaded.accentPreference.value = 'sky'
     expect(attributes.get('data-accent')).toBe('sky')
     expect(stored.has(RANDOM_ACCENT_STORAGE_KEY)).toBe(false)
@@ -186,7 +194,7 @@ describe('accent selection', () => {
       picker.accentPreference.value = 'teal'
     }).not.toThrow()
     expect(attributes.get('data-accent')).toBe('teal')
-    expect(picker.accentPalette.value.primary).toBe('#0d9488')
+    expect(picker.accentPalette.value.primary).toBe(resolvedPalette('teal', true).primary)
   })
 
   it('rolls immediately when random is chosen and remembers it as the preference', () => {
@@ -197,7 +205,7 @@ describe('accent selection', () => {
     expect(ACCENT_COLORS).toContain(color)
     expect(color).not.toBe('sky')
     expect(attributes.get('data-accent')).toBe(color)
-    expect(picker.accentPalette.value.primary).toBe(ACCENT_PALETTES[color].dark)
+    expect(picker.accentPalette.value.primary).toBe(resolvedPalette(color, true).primary)
     expect(stored.get(ACCENT_COLOR_STORAGE_KEY)).toBe(color)
     expect(stored.get(RANDOM_ACCENT_STORAGE_KEY)).toBe('true')
 

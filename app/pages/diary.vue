@@ -291,9 +291,8 @@ const buildCircleOptions = (label, percent, size) => {
     },
     labels: [label],
     colors: [over ? overColor : accent],
-    // Solid fill so the ring matches the selected accent (radialBar otherwise
-    // applies a subtle gradient that darkens the colour).
-    fill: { type: 'solid' },
+    // Match the progress bars: neither a gradient nor the default 85% opacity.
+    fill: { type: 'solid', opacity: 1 },
     stroke: { lineCap: 'round' },
     theme: { mode: dark ? 'dark' : 'light' }
   }

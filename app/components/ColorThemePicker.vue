@@ -1,6 +1,6 @@
 <script setup>
 const { t } = useI18n()
-const { accentPreference } = useAccentColor()
+const { accentPreference, accentColor } = useAccentColor()
 const options = computed(() => [
   { value: 'sky', label: t('settings.accent-sky'), shortLabel: t('settings.accent-sky-short') },
   { value: 'random', label: t('settings.accent-random') },
@@ -21,7 +21,7 @@ const options = computed(() => [
       <label
         v-for="option in options"
         :key="option.value"
-        :data-accent="option.value"
+        :data-accent="option.value === 'random' ? accentColor : option.value"
         class="min-w-0 cursor-pointer"
       >
         <input
@@ -29,7 +29,6 @@ const options = computed(() => [
           type="radio"
           name="color-theme"
           :value="option.value"
-          :aria-label="option.label"
           class="peer sr-only"
         />
         <span

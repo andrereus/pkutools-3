@@ -334,7 +334,7 @@ const chartOptions = computed(() => {
     // Trend mode: keep the gradient area under the curve (series 0), but give the
     // daily dots (series 1) a solid fill — otherwise the markers inherit the area's
     // gradient and the dot colour looks washed out / unchanged.
-    ...(showTrend.value && { fill: { type: ['gradient', 'solid'] } }),
+    fill: { opacity: 1, ...(showTrend.value && { type: ['gradient', 'solid'] }) },
     grid: {
       show: false
     },
@@ -452,7 +452,7 @@ const chartOptionsKcal = computed(() => {
     // Trend mode: keep the gradient area under the curve (series 0), but give the
     // daily dots (series 1) a solid fill — otherwise the markers inherit the area's
     // gradient and the dot colour looks washed out / unchanged.
-    ...(showTrend.value && { fill: { type: ['gradient', 'solid'] } }),
+    fill: { opacity: 1, ...(showTrend.value && { type: ['gradient', 'solid'] }) },
     grid: {
       show: false
     },

@@ -100,7 +100,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="relative mx-auto w-full max-w-66 md:max-w-180" data-accent="sky" aria-hidden="true">
+  <div class="relative mx-auto w-full max-w-66 md:max-w-180" aria-hidden="true">
     <!-- soft gradient backdrop for depth -->
     <div
       class="absolute -inset-2 -z-10 rounded-[2.5rem] bg-linear-to-br from-sky-500/8 to-teal-500/8 blur-lg dark:from-sky-400/8 dark:to-teal-400/8"
@@ -212,7 +212,7 @@ onBeforeUnmount(() => {
                     {{ $t('ai-calculator.analyze-photo') }}
                   </span>
                   <span
-                    class="demo-estimate inline-flex items-center justify-center rounded-full bg-sky-500 px-3 py-1.5 text-xs font-semibold text-white"
+                    class="demo-estimate inline-flex items-center justify-center rounded-full bg-(--theme-button-bg) px-3 py-1.5 text-xs font-semibold text-white"
                   >
                     {{ $t('home.demo-calculate') }}
                   </span>
@@ -230,7 +230,7 @@ onBeforeUnmount(() => {
                     <p class="text-xs text-gray-500 dark:text-gray-400">180 g · 13 mg Phe</p>
                   </div>
                   <div
-                    class="demo-add flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-500 text-white"
+                    class="demo-add flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-(--theme-button-bg) text-white"
                   >
                     <LucidePlus class="h-4 w-4" aria-hidden="true" />
                   </div>
@@ -315,7 +315,7 @@ onBeforeUnmount(() => {
                     <div
                       v-for="(bar, i) in dietBars"
                       :key="i"
-                      class="demo-grow flex-1 rounded-sm bg-sky-400 dark:bg-sky-500"
+                      class="demo-grow flex-1 rounded-sm bg-sky-500"
                       :style="{
                         height: (bar / dietMax) * 100 + '%',
                         animationDelay: `${0.2 + i * 0.05}s`
@@ -487,18 +487,18 @@ onBeforeUnmount(() => {
 @keyframes demo-tap {
   0% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.6);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-sky-500) 60%, transparent);
   }
   22% {
     transform: scale(0.82);
-    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.6);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-sky-500) 60%, transparent);
   }
   55% {
     transform: scale(1.15);
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 16px rgba(14, 165, 233, 0);
+    box-shadow: 0 0 0 16px transparent;
   }
 }
 

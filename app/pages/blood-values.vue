@@ -451,6 +451,7 @@ const chartOptions = computed(() => {
     theme: {
       mode: isDark.value ? 'dark' : 'light'
     },
+    fill: { opacity: 1 },
     colors: [accentPalette.value.primary]
   }
 })
@@ -517,6 +518,7 @@ const chartOptionsTyrosine = computed(() => {
     theme: {
       mode: isDark.value ? 'dark' : 'light'
     },
+    fill: { opacity: 1 },
     colors: [accentPalette.value.secondary]
   }
 })

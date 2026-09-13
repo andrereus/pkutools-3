@@ -1,10 +1,9 @@
-/* The app already uses sky as its accent, and Sky renders exactly as it did
-   before: every rule here needs a data-accent of its own to take effect, so a
-   missing attribute or the default theme falls through to the original styles. */
+/* Remap the existing Sky utilities to the selected palette. Controls, charts and
+   previews share the same accent roles, including default Sky. */
 @layer accent;
 
 @theme {
-  --color-theme-ink: var(--color-sky-700);
+  --color-theme-ink: var(--color-sky-600);
   --color-theme-companion-50: var(--color-teal-50);
   --color-theme-companion-100: var(--color-teal-100);
   --color-theme-companion-200: var(--color-teal-200);
@@ -14,7 +13,7 @@
 
 :root,
 [data-accent] {
-  --color-theme-ink: var(--color-sky-700);
+  --color-theme-ink: var(--color-sky-600);
   /* A second informational surface, independent of the chart series colors.
      Preserve the original teal privacy card except where it matches the accent. */
   --color-theme-companion-50: var(--color-teal-50);
@@ -24,9 +23,28 @@
   --color-theme-companion-900: var(--color-teal-900);
   /* Fallback for a palette that sets no page tint of its own. */
   --theme-page-light: var(--color-gray-50);
-  --theme-control-ink: initial;
-  --theme-button-bg: initial;
-  --theme-button-hover: initial;
+  --theme-control-ink: var(--color-sky-600);
+  /* Blend existing Tailwind shades only as far as needed for white labels
+     (at least 4.6:1, allowing a little margin above 4.5:1). Reset the blend in
+     each accent scope so nested Sky previews keep their own palette. */
+  --theme-accent-base-weight: 29%;
+  --theme-accent-source-500: --theme(--color-sky-500 inline);
+  --theme-accent-source-700: --theme(--color-sky-700 inline);
+  --theme-accent: color-mix(
+    in oklab,
+    var(--theme-accent-source-500) var(--theme-accent-base-weight),
+    var(--theme-accent-source-700)
+  );
+  --color-sky-500: var(--theme-accent);
+  --color-sky-600: color-mix(in oklab, var(--theme-accent) 96%, black);
+  --theme-button-bg: var(--theme-accent);
+  --theme-button-hover: var(--color-sky-600);
+  --theme-chart-primary: var(--color-sky-500);
+  --theme-chart-strong: var(--color-sky-800);
+  --theme-chart-secondary: var(--color-amber-600);
+  --theme-nav-tint: var(--color-sky-500);
+  --theme-nav-border: var(--color-sky-500);
+  --theme-nav-hover-light: var(--color-sky-200);
 }
 
 /* Reset nested Sky previews using Tailwind defaults at build time. A runtime
@@ -38,8 +56,6 @@
   --color-sky-200: --theme(--color-sky-200 inline);
   --color-sky-300: --theme(--color-sky-300 inline);
   --color-sky-400: --theme(--color-sky-400 inline);
-  --color-sky-500: --theme(--color-sky-500 inline);
-  --color-sky-600: --theme(--color-sky-600 inline);
   --color-sky-700: --theme(--color-sky-700 inline);
   --color-sky-800: --theme(--color-sky-800 inline);
   --color-sky-900: --theme(--color-sky-900 inline);
@@ -47,13 +63,14 @@
 }
 
 [data-accent='blue'] {
+  --theme-accent-source-500: var(--color-blue-500);
+  --theme-accent-source-700: var(--color-blue-700);
+  --theme-accent-base-weight: 63%;
   --color-sky-50: var(--color-blue-50);
   --color-sky-100: var(--color-blue-100);
   --color-sky-200: var(--color-blue-200);
   --color-sky-300: var(--color-blue-300);
   --color-sky-400: var(--color-blue-400);
-  --color-sky-500: var(--color-blue-500);
-  --color-sky-600: var(--color-blue-600);
   --color-sky-700: var(--color-blue-700);
   --color-sky-800: var(--color-blue-800);
   --color-sky-900: var(--color-blue-900);
@@ -62,13 +79,14 @@
 }
 
 [data-accent='violet'] {
+  --theme-accent-source-500: var(--color-violet-500);
+  --theme-accent-source-700: var(--color-violet-700);
+  --theme-accent-base-weight: 89%;
   --color-sky-50: var(--color-violet-50);
   --color-sky-100: var(--color-violet-100);
   --color-sky-200: var(--color-violet-200);
   --color-sky-300: var(--color-violet-300);
   --color-sky-400: var(--color-violet-400);
-  --color-sky-500: var(--color-violet-500);
-  --color-sky-600: var(--color-violet-600);
   --color-sky-700: var(--color-violet-700);
   --color-sky-800: var(--color-violet-800);
   --color-sky-900: var(--color-violet-900);
@@ -77,6 +95,9 @@
 }
 
 [data-accent='teal'] {
+  --theme-accent-source-500: var(--color-teal-500);
+  --theme-accent-source-700: var(--color-teal-700);
+  --theme-accent-base-weight: 18%;
   --color-theme-companion-50: var(--color-violet-50);
   --color-theme-companion-100: var(--color-violet-100);
   --color-theme-companion-200: var(--color-violet-200);
@@ -87,8 +108,6 @@
   --color-sky-200: var(--color-teal-200);
   --color-sky-300: var(--color-teal-300);
   --color-sky-400: var(--color-teal-400);
-  --color-sky-500: var(--color-teal-500);
-  --color-sky-600: var(--color-teal-600);
   --color-sky-700: var(--color-teal-700);
   --color-sky-800: var(--color-teal-800);
   --color-sky-900: var(--color-teal-900);
@@ -97,13 +116,14 @@
 }
 
 [data-accent='orange'] {
+  --theme-accent-source-500: var(--color-orange-500);
+  --theme-accent-source-700: var(--color-orange-700);
+  --theme-accent-base-weight: 19%;
   --color-sky-50: var(--color-orange-50);
   --color-sky-100: var(--color-orange-100);
   --color-sky-200: var(--color-orange-200);
   --color-sky-300: var(--color-orange-300);
   --color-sky-400: var(--color-orange-400);
-  --color-sky-500: var(--color-orange-500);
-  --color-sky-600: var(--color-orange-600);
   --color-sky-700: var(--color-orange-700);
   --color-sky-800: var(--color-orange-800);
   --color-sky-900: var(--color-orange-900);
@@ -111,51 +131,48 @@
   --theme-page-light: color-mix(in oklab, var(--color-orange-100) 25%, var(--color-gray-50));
 }
 
-/* Keep the original Red surfaces, borders and text. Only filled action
-   buttons use deeper red shades than destructive buttons. */
 [data-accent='red'] {
+  --theme-accent-source-500: var(--color-red-500);
+  --theme-accent-source-700: var(--color-red-700);
   --color-sky-50: var(--color-red-50);
   --color-sky-100: var(--color-red-100);
   --color-sky-200: var(--color-red-200);
   --color-sky-300: var(--color-red-300);
   --color-sky-400: var(--color-red-400);
-  --color-sky-500: var(--color-red-500);
-  --color-sky-600: var(--color-red-600);
   --color-sky-700: var(--color-red-700);
   --color-sky-800: var(--color-red-800);
   --color-sky-900: var(--color-red-900);
   --color-sky-950: var(--color-red-950);
   --theme-page-light: color-mix(in oklab, var(--color-red-100) 25%, var(--color-gray-50));
-  --theme-button-bg: var(--color-red-700);
-  --theme-button-hover: var(--color-red-800);
+  /* A stable deeper red distinguishes actions from destructive controls. */
+  --theme-accent: var(--color-red-700);
 }
 
 :root.dark[data-accent='red'],
 .dark [data-accent='red'] {
-  --theme-button-bg: var(--color-red-600);
-  --theme-button-hover: var(--color-red-500);
+  /* Thin indicators need more contrast against dark input/card surfaces.
+     Keep filled buttons on the stable primary red in both display modes. */
+  --color-sky-500: var(--color-red-600);
 }
 
+/* Text needs a lighter shade on dark surfaces; fills retain the same accent. */
 :root.dark,
 .dark [data-accent] {
   --color-theme-ink: var(--color-sky-300);
-}
-
-/* Alternative palettes use stronger text colors for readable links. */
-[data-accent]:not([data-accent='sky']) {
-  --theme-control-ink: var(--color-sky-700);
-  --theme-nav-tint: var(--color-sky-400);
-  --theme-nav-border: var(--color-sky-500);
-  --theme-nav-hover-light: var(--color-sky-200);
-}
-
-:root.dark[data-accent]:not([data-accent='sky']),
-.dark [data-accent]:not([data-accent='sky']) {
   --theme-control-ink: var(--color-sky-300);
 }
 
-/* Unset properties fall back to the existing Tailwind utility layer. A nested
-   Sky scope also restores brand artwork inside any selected color theme.
+[data-accent='orange'],
+[data-accent='red'] {
+  --theme-chart-secondary: var(--color-teal-600);
+}
+
+:root.dark:is([data-accent='orange'], [data-accent='red']),
+.dark :is([data-accent='orange'], [data-accent='red']) {
+  --theme-chart-secondary: var(--color-teal-400);
+}
+
+/* A nested Sky scope keeps the default color preview independent of the theme.
    These rules need a layer of their own, ordered after Tailwind's: outside a
    layer, revert-layer drops every author style instead of the utility value. */
 @layer accent {

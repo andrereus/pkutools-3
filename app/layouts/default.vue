@@ -734,55 +734,15 @@ const handleCookieConsent = (consent) => {
 }
 
 .liquid-glass-active {
-  background: linear-gradient(180deg, rgba(56, 189, 248, 0.12) 0%, rgba(56, 189, 248, 0.06) 100%);
-  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.06);
-}
-
-:is(.dark *) .liquid-glass-active {
-  background: linear-gradient(180deg, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0.08) 100%);
-  box-shadow:
-    inset 0 0 0 1px rgba(56, 189, 248, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-}
-
-.bottom-nav-add {
-  background-color: transparent;
-  border: 1px solid rgba(14, 165, 233, 0.55);
-  box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.06),
-    0 1px 2px rgba(0, 0, 0, 0.04);
-}
-
-:is(.dark *) .bottom-nav-add {
-  border: 1px solid rgba(56, 189, 248, 0.65);
-  box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.25),
-    0 1px 2px rgba(0, 0, 0, 0.15);
-}
-
-.bottom-nav-add:hover {
-  background-color: rgba(186, 230, 253, 0.4);
-}
-
-:is(.dark *) .bottom-nav-add:hover {
-  background-color: rgba(12, 74, 110, 0.4);
-}
-
-:is(.dark *) .bottom-nav-add:hover {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(56, 189, 248, 0.12) 100%);
-}
-
-/* Alternative color themes recolor the nav on top of the rules above. Sky, and
-   a page without the attribute, never reach these. */
-:root[data-accent]:not([data-accent='sky']) .liquid-glass-active {
   background: linear-gradient(
     180deg,
     color-mix(in oklab, var(--theme-nav-tint) 12%, transparent) 0%,
     color-mix(in oklab, var(--theme-nav-tint) 6%, transparent) 100%
   );
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.06);
 }
 
-:root.dark[data-accent]:not([data-accent='sky']) .liquid-glass-active {
+:is(.dark *) .liquid-glass-active {
   background: linear-gradient(
     180deg,
     color-mix(in oklab, var(--theme-nav-tint) 15%, transparent) 0%,
@@ -793,19 +753,26 @@ const handleCookieConsent = (consent) => {
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-:root[data-accent]:not([data-accent='sky']) .bottom-nav-add {
+.bottom-nav-add {
+  background-color: transparent;
   border: 1px solid color-mix(in oklab, var(--theme-nav-border) 55%, transparent);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-:root.dark[data-accent]:not([data-accent='sky']) .bottom-nav-add {
+:is(.dark *) .bottom-nav-add {
   border: 1px solid color-mix(in oklab, var(--theme-nav-tint) 65%, transparent);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
-:root[data-accent]:not([data-accent='sky']) .bottom-nav-add:hover {
+.bottom-nav-add:hover {
   background-color: color-mix(in oklab, var(--theme-nav-hover-light) 40%, transparent);
 }
 
-:root.dark[data-accent]:not([data-accent='sky']) .bottom-nav-add:hover {
+:is(.dark *) .bottom-nav-add:hover {
   background: linear-gradient(
     135deg,
     color-mix(in oklab, var(--theme-nav-tint) 22%, transparent) 0%,
