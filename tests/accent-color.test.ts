@@ -169,6 +169,7 @@ describe('accent selection', () => {
     const reloaded = useAccentColor()
     mounted.at(-1)!()
     expect(reloaded.accentColor.value).toBe('red')
+    expect(reloaded.accentPalette.value.primary).toBe('#f87171')
     reloaded.accentPreference.value = 'sky'
     expect(attributes.get('data-accent')).toBe('sky')
     expect(stored.has(RANDOM_ACCENT_STORAGE_KEY)).toBe(false)

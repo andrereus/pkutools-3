@@ -3,11 +3,7 @@ const { t } = useI18n()
 const { accentPreference } = useAccentColor()
 const options = computed(() => [
   { value: 'sky', label: t('settings.accent-sky'), shortLabel: t('settings.accent-sky-short') },
-  {
-    value: 'random',
-    label: t('settings.accent-random'),
-    shortLabel: t('settings.accent-random-short')
-  },
+  { value: 'random', label: t('settings.accent-random') },
   { value: 'blue', label: t('settings.accent-blue') },
   { value: 'violet', label: t('settings.accent-violet') },
   { value: 'teal', label: t('settings.accent-teal') },
@@ -21,7 +17,7 @@ const options = computed(() => [
     <legend class="text-sm font-medium leading-6 text-gray-900 dark:text-gray-300">
       {{ $t('settings.color-theme') }}
     </legend>
-    <div class="mt-2 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+    <div class="mt-2 flex flex-wrap gap-2">
       <label
         v-for="option in options"
         :key="option.value"
@@ -37,25 +33,12 @@ const options = computed(() => [
           class="peer sr-only"
         />
         <span
-          class="flex h-full min-h-9 items-center gap-1 rounded-lg bg-white px-2 py-1.5 text-sm text-gray-900 ring-1 ring-gray-300 peer-checked:ring-theme-ink peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-theme-ink dark:bg-gray-900 dark:text-gray-100 dark:ring-gray-600 dark:peer-checked:ring-theme-ink sm:gap-2 sm:px-3"
+          class="flex min-h-9 items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 peer-checked:ring-2 peer-checked:ring-sky-500 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-sky-500 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:peer-checked:ring-sky-500"
         >
-          <span class="h-3 w-3 shrink-0 rounded-full bg-sky-500 sm:h-4 sm:w-4" aria-hidden="true" />
-          <span class="min-w-0 break-words sm:hidden">{{ option.shortLabel || option.label }}</span>
-          <span class="hidden sm:inline">{{ option.label }}</span>
-          <span
-            class="ml-auto flex h-3 w-3 shrink-0 items-center justify-center sm:ml-0 sm:h-4 sm:w-4"
-            aria-hidden="true"
-          >
-            <LucideCheck v-if="accentPreference === option.value" class="h-4 w-4 text-theme-ink" />
-          </span>
+          <span class="h-4 w-4 shrink-0 rounded-full bg-sky-500" aria-hidden="true" />
+          <span class="min-w-0 break-words">{{ option.shortLabel || option.label }}</span>
         </span>
       </label>
     </div>
-    <p
-      v-if="accentPreference === 'random'"
-      class="mt-2 text-xs text-gray-600 dark:text-gray-400 sm:hidden"
-    >
-      {{ $t('settings.accent-random') }}
-    </p>
   </fieldset>
 </template>

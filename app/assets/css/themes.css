@@ -4,34 +4,46 @@
 @layer accent;
 
 @theme {
-  --color-theme-ink: #0369a1;
+  --color-theme-ink: var(--color-sky-700);
+  --color-theme-companion-50: var(--color-teal-50);
+  --color-theme-companion-100: var(--color-teal-100);
+  --color-theme-companion-200: var(--color-teal-200);
+  --color-theme-companion-800: var(--color-teal-800);
+  --color-theme-companion-900: var(--color-teal-900);
 }
 
 :root,
 [data-accent] {
   --color-theme-ink: var(--color-sky-700);
+  /* A second informational surface, independent of the chart series colors.
+     Preserve the original teal privacy card except where it matches the accent. */
+  --color-theme-companion-50: var(--color-teal-50);
+  --color-theme-companion-100: var(--color-teal-100);
+  --color-theme-companion-200: var(--color-teal-200);
+  --color-theme-companion-800: var(--color-teal-800);
+  --color-theme-companion-900: var(--color-teal-900);
   /* Fallback for a palette that sets no page tint of its own. */
   --theme-page-light: var(--color-gray-50);
-  --theme-control-bg: initial;
-  --theme-control-hover: initial;
-  --theme-control-fg: initial;
   --theme-control-ink: initial;
+  --theme-button-bg: initial;
+  --theme-button-hover: initial;
 }
 
-/* Explicit defaults also let a sky preview reset an inherited custom palette.
-   These are the original Tailwind sky shades, without any recoloring. */
+/* Reset nested Sky previews using Tailwind defaults at build time. A runtime
+   var(--color-sky-*) would refer to the same overridden property and form a
+   cycle; inline resolution keeps Tailwind as the source of the actual shades. */
 [data-accent='sky'] {
-  --color-sky-50: oklch(97.7% 0.013 236.62);
-  --color-sky-100: oklch(95.1% 0.026 236.824);
-  --color-sky-200: oklch(90.1% 0.058 230.902);
-  --color-sky-300: oklch(82.8% 0.111 230.318);
-  --color-sky-400: oklch(74.6% 0.16 232.661);
-  --color-sky-500: oklch(68.5% 0.169 237.323);
-  --color-sky-600: oklch(58.8% 0.158 241.966);
-  --color-sky-700: oklch(50% 0.134 242.749);
-  --color-sky-800: oklch(44.3% 0.11 240.79);
-  --color-sky-900: oklch(39.1% 0.09 240.876);
-  --color-sky-950: oklch(29.3% 0.066 243.157);
+  --color-sky-50: --theme(--color-sky-50 inline);
+  --color-sky-100: --theme(--color-sky-100 inline);
+  --color-sky-200: --theme(--color-sky-200 inline);
+  --color-sky-300: --theme(--color-sky-300 inline);
+  --color-sky-400: --theme(--color-sky-400 inline);
+  --color-sky-500: --theme(--color-sky-500 inline);
+  --color-sky-600: --theme(--color-sky-600 inline);
+  --color-sky-700: --theme(--color-sky-700 inline);
+  --color-sky-800: --theme(--color-sky-800 inline);
+  --color-sky-900: --theme(--color-sky-900 inline);
+  --color-sky-950: --theme(--color-sky-950 inline);
 }
 
 [data-accent='blue'] {
@@ -65,6 +77,11 @@
 }
 
 [data-accent='teal'] {
+  --color-theme-companion-50: var(--color-violet-50);
+  --color-theme-companion-100: var(--color-violet-100);
+  --color-theme-companion-200: var(--color-violet-200);
+  --color-theme-companion-800: var(--color-violet-800);
+  --color-theme-companion-900: var(--color-violet-900);
   --color-sky-50: var(--color-teal-50);
   --color-sky-100: var(--color-teal-100);
   --color-sky-200: var(--color-teal-200);
@@ -94,6 +111,8 @@
   --theme-page-light: color-mix(in oklab, var(--color-orange-100) 25%, var(--color-gray-50));
 }
 
+/* Keep the original Red surfaces, borders and text. Only filled action
+   buttons use deeper red shades than destructive buttons. */
 [data-accent='red'] {
   --color-sky-50: var(--color-red-50);
   --color-sky-100: var(--color-red-100);
@@ -107,6 +126,14 @@
   --color-sky-900: var(--color-red-900);
   --color-sky-950: var(--color-red-950);
   --theme-page-light: color-mix(in oklab, var(--color-red-100) 25%, var(--color-gray-50));
+  --theme-button-bg: var(--color-red-700);
+  --theme-button-hover: var(--color-red-800);
+}
+
+:root.dark[data-accent='red'],
+.dark [data-accent='red'] {
+  --theme-button-bg: var(--color-red-600);
+  --theme-button-hover: var(--color-red-500);
 }
 
 :root.dark,
@@ -114,12 +141,8 @@
   --color-theme-ink: var(--color-sky-300);
 }
 
-/* Only alternative palettes adjust control contrast. Sky keeps the original
-   utility styles, including every light/dark and hover color. */
+/* Alternative palettes use stronger text colors for readable links. */
 [data-accent]:not([data-accent='sky']) {
-  --theme-control-bg: var(--color-sky-700);
-  --theme-control-hover: var(--color-sky-800);
-  --theme-control-fg: #ffffff;
   --theme-control-ink: var(--color-sky-700);
   --theme-nav-tint: var(--color-sky-400);
   --theme-nav-border: var(--color-sky-500);
@@ -128,9 +151,6 @@
 
 :root.dark[data-accent]:not([data-accent='sky']),
 .dark [data-accent]:not([data-accent='sky']) {
-  --theme-control-bg: var(--color-sky-400);
-  --theme-control-hover: var(--color-sky-300);
-  --theme-control-fg: #030712;
   --theme-control-ink: var(--color-sky-300);
 }
 
@@ -145,12 +165,11 @@
   }
 
   :where(button, a).text-white:is(.bg-sky-500, .bg-sky-600) {
-    background-color: var(--theme-control-bg, revert-layer);
-    color: var(--theme-control-fg, revert-layer);
+    background-color: var(--theme-button-bg, revert-layer);
   }
 
   :where(button, a).text-white:is(.bg-sky-500, .bg-sky-600):hover {
-    background-color: var(--theme-control-hover, revert-layer);
+    background-color: var(--theme-button-hover, revert-layer);
   }
 
   :is(.text-sky-500, .text-sky-600):not(input) {

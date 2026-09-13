@@ -239,11 +239,11 @@ defineOgImage('Default', {
           </p>
         </div>
 
-        <div class="rounded-lg bg-teal-50 p-4 dark:bg-teal-900/20">
-          <h3 class="font-medium text-teal-900 dark:text-teal-100 mb-2">
+        <div class="rounded-lg bg-theme-companion-50 p-4 dark:bg-theme-companion-900/20">
+          <h3 class="font-medium text-theme-companion-900 dark:text-theme-companion-100 mb-2">
             {{ $t('health-consent.privacy') }}
           </h3>
-          <p class="text-sm text-teal-800 dark:text-teal-200">
+          <p class="text-sm text-theme-companion-800 dark:text-theme-companion-200">
             {{ $t('health-consent.privacy-summary') }}
           </p>
           <NuxtLink

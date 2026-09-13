@@ -13,13 +13,7 @@ const options = computed(() => [
 </script>
 
 <template>
-  <VisualChoicePicker
-    v-model="model"
-    :label="$t('settings.theme')"
-    :options="options"
-    stacked
-    :columns="3"
-  >
+  <VisualChoicePicker v-model="model" :label="$t('settings.theme')" :options="options">
     <template #visual="{ option }">
       <LucideMonitor v-if="option.value === 'system'" class="h-5 w-5" />
       <LucideSun v-else-if="option.value === 'light'" class="h-5 w-5" />
