@@ -1,5 +1,26 @@
 [
   {
+    "revision": 123,
+    "publishedAt": "2026-09-14T07:31:36.338Z",
+    "category": "new",
+    "en": {
+      "title": "Color themes",
+      "body": "PKU Tools now has color themes and also an option for a random color on start. A tribute to the earlier apps Phe Rechner, with a color for each page, and PKU Manager, with violet as its accent color."
+    },
+    "de": {
+      "title": "Farbdesigns",
+      "body": "PKU Tools hat jetzt Farbdesigns und auch eine Option für eine zufällige Farbe beim Start. Eine Hommage an die früheren Apps Phe Rechner mit einer Farbe pro Seite und PKU Manager mit Violett als Akzentfarbe."
+    },
+    "es": {
+      "title": "Temas de color",
+      "body": "PKU Tools ahora tiene temas de color y también una opción para un color aleatorio al iniciar. Un homenaje a las apps anteriores Phe Rechner, con un color por página, y PKU Manager, con violeta como color de acento."
+    },
+    "fr": {
+      "title": "Thèmes de couleur",
+      "body": "PKU Tools a maintenant des thèmes de couleur et aussi une option pour une couleur aléatoire au démarrage. Un hommage aux anciennes apps Phe Rechner, avec une couleur par page, et PKU Manager, avec le violet comme couleur d'accent."
+    }
+  },
+  {
     "revision": 122,
     "publishedAt": "2026-09-08T15:31:20.113Z",
     "category": "improved",
