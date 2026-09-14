@@ -133,6 +133,18 @@
   --theme-page-light: color-mix(in oklab, var(--color-orange-100) 25%, var(--color-gray-50));
 }
 
+/* Orange glows on dark surfaces, so in dark mode its accent shades use the
+   next darker one. */
+:root.dark[data-accent='orange'],
+.dark [data-accent='orange'] {
+  --color-sky-400: var(--color-orange-500);
+  --color-sky-500: var(--color-orange-600);
+  --color-sky-600: var(--color-orange-700);
+  --color-sky-700: var(--color-orange-800);
+  --color-sky-800: var(--color-orange-900);
+  --color-sky-900: var(--color-orange-950);
+}
+
 /* Red's accent shades (400 to 900) sit halfway to the next darker one. */
 [data-accent='red'] {
   --color-sky-50: var(--color-red-50);
