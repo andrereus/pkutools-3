@@ -87,6 +87,7 @@ describe('accent preference before hydration', () => {
       throw new Error('Storage is unavailable')
     })
     expect(initialize).not.toThrow()
+    expect(attributes.get('data-accent')).toBe('sky')
     expect(attributes.get('class')).toBe('dark')
   })
 

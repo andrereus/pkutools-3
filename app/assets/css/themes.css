@@ -1,5 +1,5 @@
 /* A color theme remaps the Sky utilities the app uses to another Tailwind
-   palette, shade for shade, so every theme keeps the look of the default. */
+   palette. Where a palette's accent shades shift, its block says so. */
 @theme inline {
   /* A second informational color that never matches the accent. */
   --color-theme-companion-50: var(--theme-companion-50);
@@ -109,6 +109,12 @@
   --color-sky-900: var(--color-teal-950);
   --color-sky-950: var(--color-teal-950);
   --theme-page-light: color-mix(in oklab, var(--color-teal-100) 25%, var(--color-gray-50));
+  /* Keeps the companion color apart from the teal accent. */
+  --theme-companion-50: var(--color-violet-50);
+  --theme-companion-100: var(--color-violet-100);
+  --theme-companion-200: var(--color-violet-200);
+  --theme-companion-800: var(--color-violet-800);
+  --theme-companion-900: var(--color-violet-900);
 }
 
 /* Orange's accent shades (400 to 900) sit halfway to the next darker one. */
@@ -141,14 +147,6 @@
   --color-sky-900: color-mix(in oklab, var(--color-red-900), var(--color-red-950));
   --color-sky-950: var(--color-red-950);
   --theme-page-light: color-mix(in oklab, var(--color-red-100) 25%, var(--color-gray-50));
-}
-
-[data-accent='teal'] {
-  --theme-companion-50: var(--color-violet-50);
-  --theme-companion-100: var(--color-violet-100);
-  --theme-companion-200: var(--color-violet-200);
-  --theme-companion-800: var(--color-violet-800);
-  --theme-companion-900: var(--color-violet-900);
 }
 
 /* Delete buttons use bg-red-500 or bg-red-600, which a red accent would match,

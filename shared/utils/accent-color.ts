@@ -42,6 +42,7 @@ export const pickRandomAccent = (previous: unknown): AccentColor => {
 // Apply before the first paint, independently of hydration and Firebase.
 // Storage may be unavailable in restricted browsers; sky remains the default.
 export const accentColorInitScript = `
+  document.documentElement.setAttribute('data-accent', '${DEFAULT_ACCENT_COLOR}')
   try {
     const colors = ${JSON.stringify(ACCENT_COLORS)}
     const stored = localStorage.getItem('${ACCENT_COLOR_STORAGE_KEY}')

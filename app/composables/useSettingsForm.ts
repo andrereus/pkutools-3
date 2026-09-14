@@ -29,6 +29,8 @@ const appSettingsFields = [
 
 export const useSettingsForm = () => {
   const store = useStore()
+  // The store is plain JavaScript, so TypeScript would infer the user as null.
+  const user = () => store.user as { id: string } | null
   const { updateSettings } = useApi()
   const notifications = useNotifications()
   const { t } = useI18n()
@@ -42,7 +44,7 @@ export const useSettingsForm = () => {
   // Firebase replaces the settings object after every write. Refresh untouched
   // inputs, but preserve unfinished edits when a customization is saved.
   watch(
-    [() => store.user?.id, () => store.settings],
+    [() => user()?.id, () => store.settings],
     ([userId, current], [previousUserId, previous]) => {
       for (const key of appSettingsFields) {
         if (userId !== previousUserId || appSettings[key] === previous[key]) {
@@ -68,16 +70,16 @@ export const useSettingsForm = () => {
     key: K,
     value: Customization[K]
   ) => {
-    if (!store.user || !store.settingsLoaded || pending.value) return
+    if (!user() || !store.settingsLoaded || pending.value) return
     if (value === store.settings[key]) return
 
-    const request = { userId: store.user.id, changes: { [key]: value } }
+    const request = { userId: user()!.id, changes: { [key]: value } }
     pending.value = request
     customizationFailed.value = false
     try {
       // Only the selected preference is sent; unfinished form fields stay local.
       await updateSettings(request.changes)
-      if (pending.value === request && store.user?.id === request.userId) {
+      if (pending.value === request && user()?.id === request.userId) {
         Object.assign(store.settings, request.changes)
       }
     } catch {
@@ -91,12 +93,12 @@ export const useSettingsForm = () => {
 
   const save = async () => {
     if (savingAppSettings.value) return
-    if (!store.user || store.settings.healthDataConsent !== true) {
+    if (!user() || store.settings.healthDataConsent !== true) {
       notifications.error(t('health-consent.no-consent'))
       return
     }
 
-    const userId = store.user.id
+    const userId = user()!.id
     savingAppSettings.value = true
     try {
       await updateSettings({
@@ -108,7 +110,7 @@ export const useSettingsForm = () => {
         bloodTyrMax: appSettings.bloodTyrMax || null,
         labUnit: appSettings.labUnit
       })
-      if (store.user?.id === userId) notifications.success(t('settings.saved'))
+      if (user()?.id === userId) notifications.success(t('settings.saved'))
     } catch {
       // useApi reports the error; keep the draft available for another attempt.
     } finally {

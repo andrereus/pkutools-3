@@ -2,7 +2,7 @@
 const { t } = useI18n()
 const { accentPreference, accentColor } = useAccentColor()
 const options = computed(() => [
-  { value: 'sky', label: t('settings.accent-sky'), shortLabel: t('settings.accent-sky-short') },
+  { value: 'sky', label: t('settings.accent-sky') },
   { value: 'random', label: t('settings.accent-random') },
   { value: 'blue', label: t('settings.accent-blue') },
   { value: 'violet', label: t('settings.accent-violet') },
@@ -35,7 +35,7 @@ const options = computed(() => [
           class="flex min-h-9 items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 peer-checked:ring-2 peer-checked:ring-sky-500 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-sky-500 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:peer-checked:ring-sky-500"
         >
           <span class="h-4 w-4 shrink-0 rounded-full bg-sky-500" aria-hidden="true" />
-          <span class="min-w-0 break-words">{{ option.shortLabel || option.label }}</span>
+          <span class="min-w-0 break-words">{{ option.label }}</span>
         </span>
       </label>
     </div>
