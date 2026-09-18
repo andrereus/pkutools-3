@@ -13,6 +13,8 @@ const props = defineProps({
   canVote: { type: Boolean, default: false },
   /** Only the contributor sees the aggregate activity on their shared food. */
   showStatistics: { type: Boolean, default: false },
+  /** Whether this contributor has a pending comment notice for the food. */
+  hasPendingFeedback: { type: Boolean, default: false },
   /** Signed-in reader; community comments remain unavailable without an account. */
   currentUserId: { type: String, default: null },
   busy: { type: Boolean, default: false }
@@ -228,6 +230,23 @@ const showCorrectionHint = computed(
     <i18n-t
       v-if="showCorrectionHint"
       keypath="news.food-correction-hint"
+      tag="p"
+      scope="global"
+      class="mt-3 text-xs text-gray-500 sm:text-sm dark:text-gray-400"
+    >
+      <template #ownFood>
+        <NuxtLink
+          :to="localePath('own-food')"
+          class="text-sky-600 hover:underline dark:text-sky-400"
+        >
+          {{ $t('own-food.title') }}
+        </NuxtLink>
+      </template>
+    </i18n-t>
+
+    <i18n-t
+      v-if="hasPendingFeedback"
+      keypath="news.comment-notice-hint"
       tag="p"
       scope="global"
       class="mt-3 text-xs text-gray-500 sm:text-sm dark:text-gray-400"

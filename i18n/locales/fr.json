@@ -675,6 +675,7 @@
     "notice-own-flag-hidden": "Masqué par défaut.",
     "notice-own-flag-action": "Voir l'aliment",
     "food-correction-hint": "Corriger le nom ou les valeurs nutritionnelles dans {ownFood} réinitialise les votes.",
+    "comment-notice-hint": "La notification de commentaires disparaît lorsque tu réponds ou modifies l’aliment dans {ownFood}.",
     "streak-title": "{days} jours d'affilée",
     "streak-text": "Tu as rempli ton journal chaque jour.",
     "only-you": "Rien que pour toi",

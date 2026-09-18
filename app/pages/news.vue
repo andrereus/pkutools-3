@@ -486,6 +486,7 @@ defineOgImage('Default', {
         :vote="voteFor(item)"
         :can-vote="canVote(item)"
         :show-statistics="item.isOwn"
+        :has-pending-feedback="!!foodNoticeFor(item.key)?.pendingCommentAt"
         :current-user-id="userId"
         :busy="votingKey === item.key"
         @vote="(value) => vote(item, value)"

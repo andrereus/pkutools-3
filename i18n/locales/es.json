@@ -675,6 +675,7 @@
     "notice-own-flag-hidden": "Oculto por defecto.",
     "notice-own-flag-action": "Ver alimento",
     "food-correction-hint": "Corregir el nombre o los valores nutricionales en {ownFood} restablece las valoraciones.",
+    "comment-notice-hint": "El aviso de comentarios desaparece cuando respondes o editas el alimento en {ownFood}.",
     "streak-title": "{days} días seguidos",
     "streak-text": "Hiciste una entrada en el diario cada día.",
     "only-you": "Solo para ti",

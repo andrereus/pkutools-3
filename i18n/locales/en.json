@@ -675,6 +675,7 @@
     "notice-own-flag-hidden": "Hidden by default.",
     "notice-own-flag-action": "View food",
     "food-correction-hint": "Correcting the name or nutritional values in {ownFood} resets the ratings.",
+    "comment-notice-hint": "The comment notice disappears when you reply or edit the food in {ownFood}.",
     "streak-title": "{days} days in a row",
     "streak-text": "You made an entry in your diary every day.",
     "only-you": "Just for you",

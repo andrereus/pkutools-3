@@ -675,6 +675,7 @@
     "notice-own-flag-hidden": "Standardmäßig ausgeblendet.",
     "notice-own-flag-action": "Lebensmittel ansehen",
     "food-correction-hint": "Korrekturen am Namen oder an den Nährwerten unter {ownFood} setzen die Bewertungen zurück.",
+    "comment-notice-hint": "Der Kommentarhinweis verschwindet, sobald du antwortest oder das Lebensmittel unter {ownFood} bearbeitest.",
     "streak-title": "{days} Tage in Folge",
     "streak-text": "Du hast jeden Tag etwas ins Tagebuch eingetragen.",
     "only-you": "Nur für dich",
