@@ -19,37 +19,37 @@
     "changelog:new": "node scripts/changelog-new.mjs"
   },
   "dependencies": {
-    "@lucide/vue": "^1.31.0",
+    "@lucide/vue": "^1.47.0",
     "@nuxt/fonts": "^0.14.0",
     "@nuxtjs/i18n": "^10.6.0",
-    "@nuxtjs/seo": "^5.3.12",
+    "@nuxtjs/seo": "^5.3.16",
     "@pinia/nuxt": "^1.0.2",
-    "@takumi-rs/core": "^2.9.0",
+    "@takumi-rs/core": "^2.14.0",
     "@tanstack/vue-table": "^8.21.3",
-    "apexcharts": "^6.8.0",
+    "apexcharts": "^6.10.0",
     "date-fns": "^4.4.0",
-    "firebase": "^12.17.1",
+    "firebase": "^12.19.0",
     "firebase-admin": "^13.10.0",
     "fuse.js": "^7.5.0",
     "nuxt": "^4.5.2",
     "nuxt-headlessui": "^1.2.2",
     "nuxt-lucide-icons": "^2.1.0",
     "pinia": "^4.0.3",
-    "vue": "^3.5.41",
+    "vue": "^3.5.43",
     "vue-qrcode-reader": "^5.7.3",
-    "vue-router": "^5.2.0",
+    "vue-router": "^5.3.1",
     "vue3-apexcharts": "^1.11.1",
-    "zod": "^4.4.3"
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.17.0",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
-    "eslint": "^10.8.1",
-    "prettier": "^3.9.6",
+    "eslint": "^10.10.0",
+    "prettier": "^3.9.7",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   }
 }
