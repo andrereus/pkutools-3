@@ -30,6 +30,21 @@ const userId = computed(() => store.user?.id ?? null)
 const votingKey = ref(null)
 const expandedComments = ref({})
 
+// Keep the notice preview compact. Expanding lasts only for this page visit.
+const NOTICE_PREVIEW_COUNT = 3
+const showAllNotices = ref(false)
+const sortedNotices = computed(() =>
+  [...notices.value].sort(
+    (left, right) => (right.pendingCommentAt ?? 0) - (left.pendingCommentAt ?? 0)
+  )
+)
+const visibleNotices = computed(() =>
+  showAllNotices.value ? sortedNotices.value : sortedNotices.value.slice(0, NOTICE_PREVIEW_COUNT)
+)
+const additionalNoticeCount = computed(() =>
+  Math.max(0, notices.value.length - NOTICE_PREVIEW_COUNT)
+)
+
 // The API also rejects votes on the contributor's own food.
 const canVote = (item) => userIsAuthenticated.value && !!item.food && !item.isOwn
 const voteFor = (item) => (userId.value ? (item.food?.voterIds?.[userId.value] ?? null) : null)
@@ -319,7 +334,7 @@ defineOgImage('Default', {
     <!-- Derived account notices appear above chronological entries. -->
     <div v-if="notices.length" class="mb-4 space-y-2">
       <NuxtLink
-        v-for="notice in notices"
+        v-for="notice in visibleNotices"
         :key="notice.key"
         :to="localePath({ name: 'news', hash: `#food-${notice.foodKey}` }, notice.language)"
         class="block rounded-lg bg-amber-50 px-3 py-2 text-sm text-gray-700 ring-1 ring-amber-200 hover:ring-amber-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:bg-amber-950/30 dark:text-gray-300 dark:ring-amber-900"
@@ -337,6 +352,19 @@ defineOgImage('Default', {
           {{ $t('news.notice-own-flag-action') }} →
         </span>
       </NuxtLink>
+      <button
+        v-if="additionalNoticeCount > 0"
+        type="button"
+        :aria-expanded="showAllNotices"
+        class="cursor-pointer rounded px-1 py-2 text-sm font-medium text-sky-600 hover:text-sky-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:text-sky-400 dark:hover:text-sky-300"
+        @click="showAllNotices = !showAllNotices"
+      >
+        {{
+          showAllNotices
+            ? $t('news.fewer-notices')
+            : $t('news.more-notices', { count: notices.length })
+        }}
+      </button>
     </div>
 
     <div
