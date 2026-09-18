@@ -22,7 +22,8 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const { voteCommunityFood } = useApi()
-const { items, notices, showHiddenFoods, hasHiddenFoods, userIsAuthenticated } = useNews()
+const { items, notices, commentEntries, showHiddenFoods, hasHiddenFoods, userIsAuthenticated } =
+  useNews()
 const seenState = useNewsSeen()
 
 const userId = computed(() => store.user?.id ?? null)
@@ -258,8 +259,8 @@ const vote = async (item, value) => {
 const captured = ref(false)
 
 watch(
-  [items, seenState.ready],
-  ([list, ready]) => {
+  [items, commentEntries, seenState.ready],
+  ([list, comments, ready]) => {
     if (!ready) return
     const stored = {
       lastReadAt: seenState.lastReadAt.value,
@@ -271,7 +272,7 @@ watch(
       seen.value = stored
     }
 
-    const covered = seenAfterVisit(list)
+    const covered = seenAfterVisit([...list, ...comments])
     if (covered.lastReadAt !== null) seenState.markReadAt(covered.lastReadAt)
     if (covered.lastSeenRevision !== null) seenState.markRevision(covered.lastSeenRevision)
   },
@@ -327,7 +328,10 @@ defineOgImage('Default', {
         <span class="font-medium break-words text-gray-900 dark:text-white"
           >{{ notice.name }}:</span
         >
-        {{ $t('news.notice-own-flag-text', { count: notice.netDislikes }) }}
+        <span v-if="notice.pendingCommentAt">{{ $t('news.notice-own-comment-text') }}</span>
+        <span v-if="notice.hasNegativeFeedback">
+          {{ $t('news.notice-own-flag-text', { count: notice.netDislikes }) }}
+        </span>
         <span v-if="notice.isHidden">{{ $t('news.notice-own-flag-hidden') }}</span>
         <span class="ml-1 inline-block font-medium text-sky-600 dark:text-sky-400">
           {{ $t('news.notice-own-flag-action') }} →

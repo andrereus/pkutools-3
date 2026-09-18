@@ -32,6 +32,7 @@ export const useNews = () => {
     foodEntries,
     milestoneEntries,
     notices,
+    commentEntries,
     showHiddenFoods,
     hasHiddenFoods,
     userIsAuthenticated
@@ -64,5 +65,5 @@ export const useNews = () => {
     )
   )
 
-  return { items, notices, showHiddenFoods, hasHiddenFoods, userIsAuthenticated }
+  return { items, notices, commentEntries, showHiddenFoods, hasHiddenFoods, userIsAuthenticated }
 }

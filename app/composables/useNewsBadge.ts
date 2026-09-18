@@ -8,10 +8,10 @@ import { isUnread } from '../utils/news-grouping'
  * time rather than being imported here, so a file that only grows is not
  * shipped to someone looking at their diary.
  *
- * Contributor feedback warnings stay on the News page without triggering a dot.
+ * Rating warnings do not trigger a dot; new comments on the reader's food do.
  */
 export const useNewsBadge = () => {
-  const { foodEntries, milestoneEntries } = useNewsContext()
+  const { foodEntries, milestoneEntries, commentEntries } = useNewsContext()
   const seenState = useNewsSeen()
   const config = useRuntimeConfig().public
   const newestNoteAt = Number(config.changelogLatestAt ?? 0)
@@ -33,7 +33,9 @@ export const useNewsBadge = () => {
 
     return (
       (newestNoteAt > 0 && isUnread(newestNote, seen)) ||
-      [...foodEntries.value, ...milestoneEntries.value].some((entry) => isUnread(entry, seen))
+      [...foodEntries.value, ...milestoneEntries.value, ...commentEntries.value].some((entry) =>
+        isUnread(entry, seen)
+      )
     )
   })
 

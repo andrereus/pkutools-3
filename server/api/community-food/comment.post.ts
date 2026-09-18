@@ -70,7 +70,9 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       createdAt: now,
       updatedAt: now
     },
-    [`communityFoods/${communityFoodKey}/commentCount`]: ServerValue.increment(1)
+    [`communityFoods/${communityFoodKey}/commentCount`]: ServerValue.increment(1),
+    [`communityFoods/${communityFoodKey}/${storedFood.contributorId === userId ? 'lastContributorCommentAt' : 'lastCommunityCommentAt'}`]:
+      now
   })
 
   return { success: true }

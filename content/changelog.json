@@ -1,5 +1,26 @@
 [
   {
+    "revision": 124,
+    "publishedAt": "2026-09-18T13:28:35.159Z",
+    "category": "improved",
+    "en": {
+      "title": "Comment notifications",
+      "body": "Contributors now receive notifications about new comments on their shared foods. The notice remains until they reply or edit the food. I recommend going through previously shared foods to check for older comments."
+    },
+    "de": {
+      "title": "Benachrichtigungen für Kommentare",
+      "body": "Beitragsersteller werden ab jetzt über neue Kommentare zu ihren geteilten Lebensmitteln benachrichtigt. Der Hinweis bleibt bestehen, bis sie antworten oder das Lebensmittel bearbeiten. Ich empfehle, bereits geteilte Lebensmittel einmal auf ältere Kommentare zu prüfen."
+    },
+    "es": {
+      "title": "Notificaciones de comentarios",
+      "body": "Los autores reciben ahora notificaciones sobre nuevos comentarios en los alimentos que han compartido. El aviso permanece hasta que respondan o editen el alimento. Recomiendo revisar una vez los alimentos ya compartidos para comprobar si hay comentarios anteriores."
+    },
+    "fr": {
+      "title": "Notifications de commentaires",
+      "body": "Les personnes qui partagent des aliments reçoivent désormais des notifications pour les nouveaux commentaires sur leurs aliments. L’avis reste visible jusqu’à ce qu’elles répondent ou modifient l’aliment. Je recommande de passer en revue les aliments déjà partagés pour vérifier s’il y a d’anciens commentaires."
+    }
+  },
+  {
     "revision": 123,
     "publishedAt": "2026-09-14T07:31:36.338Z",
     "category": "new",

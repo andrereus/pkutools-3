@@ -668,6 +668,7 @@
     "comment-author-you": "Tú",
     "comment-author-contributor": "Autor del alimento",
     "comment-author-community": "Miembro de la comunidad",
+    "notice-own-comment-text": "Nuevos comentarios sobre tu alimento.",
     "notice-own-flag-text": "{count} votos negativos más que positivos.",
     "notice-own-flag-hidden": "Oculto por defecto.",
     "notice-own-flag-action": "Ver alimento",

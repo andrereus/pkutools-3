@@ -208,7 +208,8 @@ describe('contributor feedback notices', () => {
         language: 'en',
         name: 'Rice cakes',
         netDislikes: 2,
-        isHidden: false
+        isHidden: false,
+        hasNegativeFeedback: true
       }
     ])
     expect(communityFoodNotices([{ ...food, dislikes: 5 }], 'owner-1')[0]).toMatchObject({

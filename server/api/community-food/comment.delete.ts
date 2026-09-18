@@ -3,6 +3,7 @@ import { getAdminDatabase } from '../../utils/firebase-admin'
 import { CommunityFoodCommentDeleteSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
+import { communityFoodCommentActivity } from '../../utils/community-food-comment'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { communityFoodKey, commentId } = await validateBody(
@@ -29,6 +30,15 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   const writes: Record<string, unknown> = { [commentPath]: null }
   if (foodSnapshot.exists()) {
     writes[`communityFoods/${communityFoodKey}/commentCount`] = ServerValue.increment(-1)
+    const thread = await db.ref(`communityFoodComments/${communityFoodKey}`).once('value')
+    const activity = communityFoodCommentActivity(
+      thread.val() ?? {},
+      foodSnapshot.val().contributorId,
+      commentId
+    )
+    for (const [field, value] of Object.entries(activity)) {
+      writes[`communityFoods/${communityFoodKey}/${field}`] = value
+    }
   }
 
   await db.ref().update(writes)

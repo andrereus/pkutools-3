@@ -39,6 +39,9 @@ export interface Notice {
   name: string
   netDislikes: number
   isHidden: boolean
+  hasNegativeFeedback: boolean
+  /** Community feedback newer than the contributor's last reply or food edit. */
+  pendingCommentAt?: number
 }
 
 /** Notices include their target language so foods remain reachable across locales. */
@@ -48,9 +51,21 @@ export const communityFoodNotices = (foods: Food[], currentUserId?: string | nul
     const score = communityFoodScore(food)
     const foodKey = food['.key']
     const language = food.language
+    const lastReply = isNewsTimestamp(food.lastContributorCommentAt)
+      ? food.lastContributorCommentAt
+      : 0
+    const lastEdit = isNewsTimestamp(food.contentUpdatedAt) ? food.contentUpdatedAt : 0
+    const pendingCommentAt =
+      typeof food.commentCount === 'number' &&
+      food.commentCount > 0 &&
+      isNewsTimestamp(food.lastCommunityCommentAt) &&
+      food.lastCommunityCommentAt > Math.max(lastReply, lastEdit)
+        ? food.lastCommunityCommentAt
+        : undefined
+    const hasNegativeFeedback = score <= COMMUNITY_FOOD_FLAG_SCORE
     if (
       food.contributorId !== currentUserId ||
-      score > COMMUNITY_FOOD_FLAG_SCORE ||
+      (!hasNegativeFeedback && pendingCommentAt === undefined) ||
       typeof foodKey !== 'string' ||
       !foodKey ||
       typeof food.name !== 'string' ||
@@ -67,7 +82,9 @@ export const communityFoodNotices = (foods: Food[], currentUserId?: string | nul
         language,
         name: food.name,
         netDislikes: -score,
-        isHidden: isCommunityFoodHidden(score)
+        isHidden: isCommunityFoodHidden(score),
+        hasNegativeFeedback,
+        ...(pendingCommentAt !== undefined && { pendingCommentAt })
       }
     ]
   })
@@ -180,9 +197,16 @@ export const useNewsContext = () => {
     }))
   })
 
-  // Derived from the current score, so the notice clears when the score or food
-  // changes rather than requiring separate persisted state.
+  // Pending feedback is independent of browser-local read state. Visiting News
+  // clears its bell dot; replying or editing the food clears the comment notice.
   const notices = computed(() => communityFoodNotices(foods.value, user.value?.id))
+  const commentEntries = computed(() =>
+    notices.value.flatMap((notice) =>
+      notice.pendingCommentAt === undefined
+        ? []
+        : [{ key: `comment-${notice.foodKey}`, createdAt: notice.pendingCommentAt }]
+    )
+  )
 
   return {
     store,
@@ -190,6 +214,7 @@ export const useNewsContext = () => {
     foodEntries,
     milestoneEntries,
     notices,
+    commentEntries,
     showHiddenFoods,
     hasHiddenFoods,
     userIsAuthenticated

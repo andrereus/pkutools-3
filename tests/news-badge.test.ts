@@ -8,7 +8,8 @@ import { seenAfterVisit } from '../app/utils/news-grouping'
 const context = {
   foodEntries: ref<NewsEntry[]>([]),
   milestoneEntries: ref<NewsEntry[]>([]),
-  notices: ref<Notice[]>([])
+  notices: ref<Notice[]>([]),
+  commentEntries: ref<{ key: string; createdAt: number }[]>([])
 }
 const seen = {
   ready: ref(true),
@@ -22,6 +23,7 @@ beforeEach(() => {
   context.foodEntries.value = []
   context.milestoneEntries.value = []
   context.notices.value = []
+  context.commentEntries.value = []
   seen.ready.value = true
   seen.lastReadAt.value = null
   seen.lastSeenRevision.value = null
@@ -38,7 +40,8 @@ const hiddenNotice: Notice = {
   language: 'en',
   name: 'Rice cakes',
   netDislikes: 3,
-  isHidden: true
+  isHidden: true,
+  hasNegativeFeedback: true
 }
 
 describe('News unread badge', () => {

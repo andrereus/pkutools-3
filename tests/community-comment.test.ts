@@ -155,7 +155,8 @@ describe('community food comments', () => {
     })
     expect(stored.createdAt).toEqual(expect.any(Number))
     expect(stored.updatedAt).toBe(stored.createdAt)
-    expect(food()).toMatchObject({ commentCount: 1 })
+    expect(food()).toMatchObject({ commentCount: 1, lastCommunityCommentAt: stored.createdAt })
+    expect(food()).not.toHaveProperty('lastContributorCommentAt')
     expect(result).toEqual({ success: true })
     expect(commentId).toMatch(/^-Nfake/)
   })
@@ -333,7 +334,11 @@ describe('community food comments', () => {
       expect.objectContaining({ text: 'The package states that it is per 100 g.' }),
       expect.objectContaining({ text: 'I can add a package photo as well.' })
     ])
-    expect(food()).toMatchObject({ commentCount: 3 })
+    expect(food()).toMatchObject({
+      commentCount: 3,
+      lastContributorCommentAt: Object.values(comments()).at(-1)!.createdAt
+    })
+    expect(food()).not.toHaveProperty('lastCommunityCommentAt')
   })
 
   it('deletes only the selected own comment and decrements once', async () => {
@@ -458,5 +463,95 @@ describe('community food comments', () => {
     await expect(deleteComment(deleteRequest('orphan'))).resolves.toEqual({ success: true })
     expect(fake.data.communityFoods).toEqual({})
     expect(fake.data.communityFoodComments).toBeUndefined()
+  })
+})
+
+describe('comment activity summaries', () => {
+  it('does not advance activity when editing a comment', async () => {
+    vi.spyOn(Date, 'now').mockReturnValue(100)
+    await saveComment(saveRequest('First comment'))
+    const id = Object.keys(comments())[0]!
+    vi.spyOn(Date, 'now').mockReturnValue(200)
+    await saveComment(saveRequest('Fixed a typo', id))
+    expect(comments()[id]).toMatchObject({ createdAt: 100, updatedAt: 200 })
+    expect(food()).toMatchObject({ lastCommunityCommentAt: 100, commentCount: 1 })
+  })
+
+  it('recomputes surviving comment times atomically and ignores newer edits and history', async () => {
+    seed({
+      communityFoods: {
+        food1: {
+          name: 'Rice cake',
+          contributorId: 'author-1',
+          commentCount: 3,
+          lastCommunityCommentAt: 300,
+          lastContributorCommentAt: 200
+        }
+      },
+      communityFoodComments: {
+        food1: {
+          first: { authorId: 'commenter-1', text: 'First', createdAt: 100, updatedAt: 900 },
+          reply: { authorId: 'author-1', text: 'Reply', createdAt: 200, updatedAt: 200 },
+          last: { authorId: 'commenter-1', text: 'Follow-up', createdAt: 300, updatedAt: 300 },
+          history: { type: 'content-update', createdAt: 1000, changedFields: ['phe'] }
+        }
+      }
+    })
+    await deleteComment(deleteRequest('last'))
+    expect(food()).toMatchObject({
+      commentCount: 2,
+      lastCommunityCommentAt: 100,
+      lastContributorCommentAt: 200
+    })
+    await deleteComment(deleteRequest('first'))
+    expect(food()).not.toHaveProperty('lastCommunityCommentAt')
+    expect(food()).toMatchObject({ commentCount: 1, lastContributorCommentAt: 200 })
+    await deleteComment(deleteRequest('first'))
+    expect(food()).toMatchObject({ commentCount: 1, lastContributorCommentAt: 200 })
+    expect(comments()).toHaveProperty('history')
+  })
+
+  it('clears the reply summary when its last comment is deleted', async () => {
+    seed({
+      communityFoods: {
+        food1: {
+          contributorId: 'commenter-1',
+          commentCount: 1,
+          lastContributorCommentAt: 200
+        }
+      },
+      communityFoodComments: {
+        food1: {
+          reply: { authorId: 'commenter-1', text: 'Reply', createdAt: 200 }
+        }
+      }
+    })
+    await deleteComment(deleteRequest('reply'))
+    expect(food()).toMatchObject({ commentCount: 0 })
+    expect(food()).not.toHaveProperty('lastContributorCommentAt')
+    expect(food()).not.toHaveProperty('lastCommunityCommentAt')
+  })
+
+  it('leaves the summary and comment together when deletion fails', async () => {
+    seed(
+      {
+        communityFoods: {
+          food1: {
+            contributorId: 'author-1',
+            commentCount: 1,
+            lastCommunityCommentAt: 200
+          }
+        },
+        communityFoodComments: {
+          food1: {
+            comment: { authorId: 'commenter-1', text: 'Feedback', createdAt: 200 }
+          }
+        }
+      },
+      (operation, path) => operation === 'update' && path === ''
+    )
+    const before = structuredClone(fake.data)
+    await expect(deleteComment(deleteRequest('comment'))).rejects.toMatchObject({ statusCode: 500 })
+    expect(fake.data).toEqual(before)
   })
 })

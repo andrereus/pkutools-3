@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { computed, reactive, ref } from 'vue'
+import { useNewsBadge } from '../app/composables/useNewsBadge'
 import { useNews } from '../app/composables/useNews'
 import {
   hasContentUpdate,
@@ -119,5 +120,138 @@ describe('food content updates in News', () => {
     const entry = useNews().items.value.find((item) => item.key === 'food-food1')!
     expect(newsEntryTimestamp(entry)).toBe(200)
     expect(isUnread(entry, { lastReadAt: null, lastSeenRevision: null })).toBe(false)
+  })
+})
+
+describe('contributor feedback in News', () => {
+  it('keeps feedback pending after reading, clears after action, and notifies for later comments', () => {
+    const food = reactive({
+      '.key': 'food1',
+      name: 'Rice cake',
+      language: 'en',
+      createdAt: 100,
+      contributorId: 'reader',
+      commentCount: 1,
+      lastCommunityCommentAt: 200,
+      lastContributorCommentAt: 0,
+      contentUpdatedAt: 100,
+      likes: 0,
+      dislikes: 0
+    })
+    store.current.communityFoods = [food]
+    const seen = {
+      ready: ref(true),
+      lastReadAt: ref<number | null>(150),
+      lastSeenRevision: ref(999)
+    }
+    vi.stubGlobal('useNewsSeen', () => seen)
+    vi.stubGlobal('useRuntimeConfig', () => ({ public: {} }))
+    const { notices, commentEntries, items } = useNews()
+    const { hasUnread } = useNewsBadge()
+    expect(notices.value).toHaveLength(1)
+    expect(notices.value[0]).toMatchObject({ pendingCommentAt: 200, hasNegativeFeedback: false })
+    expect(hasUnread.value).toBe(true)
+    expect(newsEntryTimestamp(items.value.find((item) => item.key === 'food-food1')!)).toBe(100)
+
+    seen.lastReadAt.value = seenAfterVisit(commentEntries.value).lastReadAt
+    expect(hasUnread.value).toBe(false)
+    expect(notices.value).toHaveLength(1)
+
+    food.lastContributorCommentAt = 300
+    expect(notices.value).toEqual([])
+    expect(hasUnread.value).toBe(false)
+    food.lastCommunityCommentAt = 400
+    expect(hasUnread.value).toBe(true)
+    food.contentUpdatedAt = 500
+    expect(notices.value).toEqual([])
+    expect(hasUnread.value).toBe(false)
+    food.lastCommunityCommentAt = 600
+    expect(hasUnread.value).toBe(true)
+
+    // A community comment edit or a technical food write is not new feedback.
+    seen.lastReadAt.value = 600
+    Object.assign(food, { updatedAt: 700 })
+    expect(hasUnread.value).toBe(false)
+  })
+
+  it('combines comments with rating warnings, including hidden foods in another language', () => {
+    const food = reactive({
+      '.key': 'food1',
+      name: 'Reiswaffel',
+      language: 'de',
+      createdAt: 100,
+      contributorId: 'reader',
+      commentCount: 1,
+      lastCommunityCommentAt: 200,
+      lastContributorCommentAt: 0,
+      likes: 0,
+      dislikes: 3
+    })
+    store.current.communityFoods = [food]
+    const { notices, items, commentEntries } = useNews()
+    expect(notices.value).toHaveLength(1)
+    expect(notices.value[0]).toMatchObject({
+      language: 'de',
+      isHidden: true,
+      hasNegativeFeedback: true,
+      pendingCommentAt: 200
+    })
+    expect(items.value.some((item) => item.key === 'food-food1')).toBe(false)
+    expect(isUnread(commentEntries.value[0]!, { lastReadAt: 150, lastSeenRevision: null })).toBe(
+      true
+    )
+    food.lastContributorCommentAt = 300
+    expect(notices.value).toHaveLength(1)
+    expect(notices.value[0]).not.toHaveProperty('pendingCommentAt')
+    expect(commentEntries.value).toEqual([])
+    food.dislikes = 1
+    expect(notices.value).toEqual([])
+  })
+
+  it.each([
+    { contributorId: 'someone-else' },
+    { commentCount: 0 },
+    { lastCommunityCommentAt: undefined },
+    { lastCommunityCommentAt: '200' },
+    { lastCommunityCommentAt: Number.NaN },
+    { lastCommunityCommentAt: 1.5 },
+    { lastCommunityCommentAt: -1 },
+    { lastContributorCommentAt: 200 },
+    { contentUpdatedAt: 200 }
+  ])('does not create pending feedback for %s', (overrides) => {
+    store.current.communityFoods = [
+      {
+        '.key': 'food1',
+        name: 'Rice cake',
+        language: 'en',
+        createdAt: 100,
+        contributorId: 'reader',
+        commentCount: 1,
+        lastCommunityCommentAt: 200,
+        ...overrides
+      }
+    ]
+    const { notices, commentEntries } = useNews()
+    expect(notices.value).toEqual([])
+    expect(commentEntries.value).toEqual([])
+  })
+
+  it('removes private notices when signed out', () => {
+    store.current.communityFoods = [
+      {
+        '.key': 'food1',
+        name: 'Rice cake',
+        language: 'en',
+        createdAt: 100,
+        contributorId: 'reader',
+        commentCount: 1,
+        lastCommunityCommentAt: 200
+      }
+    ]
+    const { notices, commentEntries } = useNews()
+    expect(notices.value).toHaveLength(1)
+    store.current.user = null
+    expect(notices.value).toEqual([])
+    expect(commentEntries.value).toEqual([])
   })
 })

@@ -668,6 +668,7 @@
     "comment-author-you": "You",
     "comment-author-contributor": "Contributor",
     "comment-author-community": "Community member",
+    "notice-own-comment-text": "New feedback on your food.",
     "notice-own-flag-text": "{count} more dislikes than likes.",
     "notice-own-flag-hidden": "Hidden by default.",
     "notice-own-flag-action": "View food",
