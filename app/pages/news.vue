@@ -343,12 +343,13 @@ defineOgImage('Default', {
         <span class="font-medium break-words text-gray-900 dark:text-white"
           >{{ notice.name }}:</span
         >
-        <span v-if="notice.pendingCommentAt">{{ $t('news.notice-own-comment-text') }}</span>
+        <span v-if="notice.pendingCommentAt">{{ ' ' + $t('news.notice-own-comment-text') }}</span>
         <span v-if="notice.hasNegativeFeedback">
-          {{ $t('news.notice-own-flag-text', { count: notice.netDislikes }) }}
+          {{ ' ' + $t('news.notice-own-flag-text', { count: notice.netDislikes }) }}
         </span>
-        <span v-if="notice.isHidden">{{ $t('news.notice-own-flag-hidden') }}</span>
-        <span class="ml-1 inline-block font-medium text-sky-600 dark:text-sky-400">
+        <span v-if="notice.isHidden">{{ ' ' + $t('news.notice-own-flag-hidden') }}</span>
+        {{ ' ' }}
+        <span class="inline-block font-medium text-sky-600 dark:text-sky-400">
           {{ $t('news.notice-own-flag-action') }} →
         </span>
       </NuxtLink>
