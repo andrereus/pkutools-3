@@ -214,20 +214,12 @@ const showCorrectionHint = computed(
               <span class="sr-only">{{ $t('community.dislike') }}</span>
             </span>
           </div>
-          <NuxtLink
-            v-if="editFoodPath"
-            :to="editFoodPath"
-            class="inline-flex min-h-8 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-white px-2.5 text-sm text-gray-900 ring-1 ring-gray-300 transition-colors hover:bg-sky-50 hover:text-sky-700 hover:ring-sky-400 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 dark:bg-gray-900 dark:text-white dark:ring-gray-600 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 dark:hover:ring-sky-600"
-          >
-            <LucidePencil class="h-4 w-4" aria-hidden="true" />
-            {{ $t('common.edit') }}
-          </NuxtLink>
         </div>
       </template>
 
       <button
         type="button"
-        class="ml-auto flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2.5 text-sm font-normal ring-1 transition-colors hover:bg-sky-50 hover:text-sky-700 hover:ring-sky-400 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 dark:hover:ring-sky-600"
+        class="flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg px-2.5 text-sm font-normal ring-1 transition-colors hover:bg-sky-50 hover:text-sky-700 hover:ring-sky-400 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 dark:hover:ring-sky-600"
         :class="[canVote ? 'h-9' : 'min-h-8', commentButtonClass]"
         :aria-label="commentButtonLabel"
         :title="commentButtonLabel"
@@ -238,6 +230,16 @@ const showCorrectionHint = computed(
         <LucideMessageCircle class="h-4 w-4" aria-hidden="true" />
         <span v-if="commentCount > 0" class="font-semibold">{{ visibleCommentCount }}</span>
       </button>
+
+      <NuxtLink
+        v-if="!canVote && showStatistics && editFoodPath"
+        :to="editFoodPath"
+        :aria-label="$t('common.edit')"
+        :title="$t('common.edit')"
+        class="inline-flex min-h-8 shrink-0 items-center justify-center rounded-lg bg-white px-2.5 text-sm text-gray-900 ring-1 ring-gray-300 transition-colors hover:bg-sky-50 hover:text-sky-700 hover:ring-sky-400 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 dark:bg-gray-900 dark:text-white dark:ring-gray-600 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 dark:hover:ring-sky-600"
+      >
+        <LucidePencil class="h-4 w-4" aria-hidden="true" />
+      </NuxtLink>
     </div>
 
     <i18n-t
