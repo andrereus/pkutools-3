@@ -24,12 +24,7 @@ export default defineNuxtConfig({
     head: {
       title: 'PKU Tools',
       meta: [
-        { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0, viewport-fit=cover' },
-        {
-          name: 'description',
-          content: 'All-in-One Nutrition App for PKU'
-        },
         // Media-scoped entries must come first: the browser uses the first match.
         { name: 'theme-color', content: '#030712', media: '(prefers-color-scheme: dark)' },
         { name: 'theme-color', content: '#f9fafb' },
