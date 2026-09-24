@@ -23,6 +23,11 @@ const props = defineProps({
 const emit = defineEmits(['vote'])
 const { t } = useI18n()
 const localePath = useLocalePath()
+const editFoodPath = computed(() =>
+  props.currentUserId && props.food.contributorId === props.currentUserId && props.food.ownFoodKey
+    ? `${localePath('own-food')}?edit=${encodeURIComponent(props.food.ownFoodKey)}`
+    : null
+)
 const showNutrients = ref(false)
 const commentsExpanded = defineModel('commentsExpanded', { type: Boolean, default: false })
 
@@ -209,6 +214,14 @@ const showCorrectionHint = computed(
               <span class="sr-only">{{ $t('community.dislike') }}</span>
             </span>
           </div>
+          <NuxtLink
+            v-if="editFoodPath"
+            :to="editFoodPath"
+            class="inline-flex min-h-8 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-white px-2.5 text-sm text-gray-900 ring-1 ring-gray-300 transition-colors hover:bg-sky-50 hover:text-sky-700 hover:ring-sky-400 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 dark:bg-gray-900 dark:text-white dark:ring-gray-600 dark:hover:bg-sky-900/40 dark:hover:text-sky-300 dark:hover:ring-sky-600"
+          >
+            <LucidePencil class="h-4 w-4" aria-hidden="true" />
+            {{ $t('common.edit') }}
+          </NuxtLink>
         </div>
       </template>
 
