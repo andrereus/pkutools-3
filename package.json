@@ -29,7 +29,7 @@
     "apexcharts": "^7.8.0",
     "date-fns": "^4.4.0",
     "firebase": "^12.19.0",
-    "firebase-admin": "^14.5.0",
+    "firebase-admin": "^13.10.0",
     "fuse.js": "^7.5.0",
     "nuxt": "^4.5.2",
     "nuxt-headlessui": "^1.2.2",
