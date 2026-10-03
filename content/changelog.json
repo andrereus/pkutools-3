@@ -5,19 +5,19 @@
     "category": "new",
     "en": {
       "title": "Phe share per food",
-      "body": "A line under each food in the diary now shows its share of Phe. Row by row, the lines add up to the Phe total."
+      "body": "In the diary, a line under each food now shows its share of Phe. Row by row, the lines add up to the Phe total."
     },
     "de": {
       "title": "Phe-Anteil pro Lebensmittel",
-      "body": "Eine Linie unter jedem Lebensmittel im Tagebuch zeigt jetzt seinen Anteil an Phe. Zeile für Zeile ergeben die Linien die Gesamt-Phe."
+      "body": "Im Tagebuch zeigt jetzt eine Linie unter jedem Lebensmittel seinen Anteil an Phe. Zeile für Zeile ergeben die Linien die Gesamt-Phe."
     },
     "es": {
       "title": "Phe por alimento",
-      "body": "Una línea bajo cada alimento del diario muestra ahora su parte de Phe. Fila a fila, las líneas suman la Phe total."
+      "body": "En el diario, una línea bajo cada alimento muestra ahora su parte de Phe. Fila a fila, las líneas suman la Phe total."
     },
     "fr": {
       "title": "Phe par aliment",
-      "body": "Une ligne sous chaque aliment du journal montre désormais sa part de Phe. Rangée après rangée, les lignes donnent la Phe totale."
+      "body": "Dans le journal, une ligne sous chaque aliment montre désormais sa part de Phe. Rangée après rangée, les lignes donnent la Phe totale."
     }
   },
   {
