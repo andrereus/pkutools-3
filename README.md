@@ -26,7 +26,7 @@ PKU Tools is an All-in-One Nutrition App for PKU — a Progressive Web App (PWA)
 
 **Frontend**: [Nuxt 4](https://nuxt.com/) with Vue 3, [Tailwind CSS](https://tailwindcss.com/) (via Vite plugin), [Headless UI](https://headlessui.com/), [TanStack Vue Table](https://tanstack.com/table), [ApexCharts](https://apexcharts.com/), [Lucide Icons](https://lucide.dev/) (via [nuxt-lucide-icons](https://nuxt.com/modules/lucide-icons))
 
-**Backend**: Firebase (Realtime Database, Authentication), Nuxt server routes with Firebase Admin SDK
+**Backend**: Firebase (Realtime Database, Authentication, AI Logic with Gemini, App Check), Nuxt server routes with Firebase Admin SDK
 
 **State & Data**: [Pinia](https://pinia.vuejs.org/), [Fuse.js](https://fusejs.io/) for fuzzy search, [Zod](https://zod.dev/) for server-side validation
 
@@ -68,7 +68,7 @@ pkutools-3/
 
 ### Prerequisites
 
-- Node.js 20+ (required by Nuxt 4 / Vite 8)
+- Node.js 22.12+
 - pnpm 11+
 - Infisical CLI
 
@@ -144,7 +144,7 @@ Vitest, no emulator or network needed. `tests/helpers/server-harness.ts` stands 
 - Test on multiple devices/browsers (including PWA installation)
 - Add translations for new strings in all locale files (en, de, es, fr)
 - Analytics: PostHog (respects cookie consent), Umami (privacy analytics)
-- Dependency management: Dependabot notifications, manual updates via `pnpm outdated`, `pnpm update`, `pnpm audit`
+- Dependency management: Dependabot notifications, manual updates via `pnpm outdated`, `pnpm update`, `pnpm audit` and rebuild lockfile from time to time (nested dependencies)
 
 ## Production
 
@@ -161,6 +161,8 @@ pnpm build
 - Realtime Database enabled
 - Authentication (Google + Email/Password)
 - Database rules configured (`database.rules.json`)
+- AI Logic enabled (Gemini Developer API)
+- App Check with reCAPTCHA Enterprise: site key in `FIREBASE_APP_CHECK_SITE_KEY`
 
 **Firebase Admin SDK** (for server-side operations):
 
