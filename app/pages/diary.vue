@@ -227,6 +227,22 @@ const kcalResult = computed(() => {
   return selectedDayLog.value.reduce((sum, item) => sum + (Number(item.kcal) || 0), 0)
 })
 
+// Each row's share bar is measured against the Phe target, or against the day's
+// total once that is higher (or no target is set), so bars never overflow. A
+// segment starts where the previous rows' shares end, so the rows add up to the
+// day's progress.
+const pheShareSegments = computed(() => {
+  const base = Math.max(settings.value?.maxPhe || 0, pheResult.value)
+  let start = 0
+  return selectedDayLog.value.map((item) => {
+    const phe = Number(item.phe) || 0
+    const width = phe > 0 && base > 0 ? (phe * 100) / base : 0
+    const segment = { start, width }
+    start += width
+    return segment
+  })
+})
+
 // Progress display style. `viewStyle` is a transient per-visit override that can
 // be toggled freely without changing the saved preference; while it's null the
 // view follows the saved default (settings.progressStyle), which is set in
@@ -895,65 +911,75 @@ defineOgImage('Default', {
       </div>
 
       <DataTable v-else :headers="tableHeaders" class="mb-6">
-        <tr
-          v-for="(item, index) in selectedDayLog"
-          :key="index"
-          class="cursor-pointer"
-          @click="editItem(item, index)"
-        >
-          <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
-            <span class="flex items-center gap-1">
-              <img
-                v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
-                :src="'/images/food-icons/' + item.icon + '.svg'"
-                onerror="this.src = '/images/food-icons/organic-food.svg'"
-                width="25"
-                class="food-icon"
-                alt="Food Icon"
-              />
-              <img
-                v-if="
-                  (item.icon === undefined || item.icon === null || item.icon === '') &&
-                  (item.emoji === undefined || item.emoji === null)
-                "
-                :src="'/images/food-icons/organic-food.svg'"
-                width="25"
-                class="food-icon"
-                alt="Food Icon"
-              />
-              <span
-                v-if="
-                  (item.icon === undefined || item.icon === null || item.icon === '') &&
-                  item.emoji !== undefined &&
-                  item.emoji !== null
-                "
-                class="ml-0.5 mr-1 text-xl inline-block align-middle leading-none"
-              >
-                {{ item.emoji }}
-              </span>
-              <!-- Name and badge share one inline block, so the badge wraps with the text -->
-              <span class="wrap-anywhere">
-                {{ item.name }}
+        <template v-for="(item, index) in selectedDayLog" :key="index">
+          <tr class="cursor-pointer border-b-0" @click="editItem(item, index)">
+            <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
+              <span class="flex items-center gap-1">
+                <img
+                  v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
+                  :src="'/images/food-icons/' + item.icon + '.svg'"
+                  onerror="this.src = '/images/food-icons/organic-food.svg'"
+                  width="25"
+                  class="food-icon"
+                  alt="Food Icon"
+                />
+                <img
+                  v-if="
+                    (item.icon === undefined || item.icon === null || item.icon === '') &&
+                    (item.emoji === undefined || item.emoji === null)
+                  "
+                  :src="'/images/food-icons/organic-food.svg'"
+                  width="25"
+                  class="food-icon"
+                  alt="Food Icon"
+                />
                 <span
-                  v-if="item.note"
-                  class="inline-flex items-center align-middle rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
-                  :title="item.note"
+                  v-if="
+                    (item.icon === undefined || item.icon === null || item.icon === '') &&
+                    item.emoji !== undefined &&
+                    item.emoji !== null
+                  "
+                  class="ml-0.5 mr-1 text-xl inline-block align-middle leading-none"
                 >
-                  <LucideStickyNote class="h-3.5 w-3.5" />
+                  {{ item.emoji }}
+                </span>
+                <!-- Name and badge share one inline block, so the badge wraps with the text -->
+                <span class="wrap-anywhere">
+                  {{ item.name }}
+                  <span
+                    v-if="item.note"
+                    class="inline-flex items-center align-middle rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
+                    :title="item.note"
+                  >
+                    <LucideStickyNote class="h-3.5 w-3.5" />
+                  </span>
                 </span>
               </span>
-            </span>
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-            {{ item.weight }}
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-            {{ item.phe }}
-          </td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-            {{ item.kcal }}
-          </td>
-        </tr>
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
+              {{ item.weight }}
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
+              {{ item.phe }}
+            </td>
+            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
+              {{ item.kcal }}
+            </td>
+          </tr>
+          <!-- Share of the day's Phe across the full row; a small share stays a short dash -->
+          <tr aria-hidden="true">
+            <td colspan="4" class="p-0">
+              <div
+                class="h-0.5 rounded-full bg-sky-500 transition-[width,margin-left] duration-500 ease-out"
+                :class="{ 'min-w-1.5': pheShareSegments[index].width > 0 }"
+                :style="{
+                  marginLeft: `${pheShareSegments[index].start}%`,
+                  width: `${pheShareSegments[index].width}%`
+                }"
+              />
+            </td>
+          </tr>
+        </template>
       </DataTable>
 
       <ModalDialog

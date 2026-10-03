@@ -1,5 +1,26 @@
 [
   {
+    "revision": 125,
+    "publishedAt": "2026-10-03T19:57:51.244Z",
+    "category": "new",
+    "en": {
+      "title": "Phe share per food",
+      "body": "A line under each food in the diary now shows its share of Phe. Row by row, the lines add up to the Phe total."
+    },
+    "de": {
+      "title": "Phe-Anteil pro Lebensmittel",
+      "body": "Eine Linie unter jedem Lebensmittel im Tagebuch zeigt jetzt seinen Anteil an Phe. Zeile für Zeile ergeben die Linien die Gesamt-Phe."
+    },
+    "es": {
+      "title": "Phe por alimento",
+      "body": "Una línea bajo cada alimento del diario muestra ahora su parte de Phe. Fila a fila, las líneas suman la Phe total."
+    },
+    "fr": {
+      "title": "Phe par aliment",
+      "body": "Une ligne sous chaque aliment du journal montre désormais sa part de Phe. Rangée après rangée, les lignes donnent la Phe totale."
+    }
+  },
+  {
     "revision": 124,
     "publishedAt": "2026-09-18T13:28:35.159Z",
     "category": "improved",
