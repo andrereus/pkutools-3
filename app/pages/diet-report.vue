@@ -6,16 +6,9 @@ import enChart from 'apexcharts/dist/locales/en.json'
 import deChart from 'apexcharts/dist/locales/de.json'
 import frChart from 'apexcharts/dist/locales/fr.json'
 import esChart from 'apexcharts/dist/locales/es.json'
-import {
-  FlexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useVueTable
-} from '@tanstack/vue-table'
+import { FlexRender, useTable } from '@tanstack/vue-table'
 import { h, ref, computed, watch } from 'vue'
-import { valueUpdater } from '@/lib/table-utils'
+import { dataTableFeatures, valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
 import { LucideStickyNote, LucideEyeOff } from '@lucide/vue'
@@ -125,7 +118,7 @@ const columns = [
       }
       return h('div', children)
     },
-    sortingFn: (rowA, rowB) => {
+    sortFn: (rowA, rowB) => {
       const dateA = parseISO(rowA.original.date)
       const dateB = parseISO(rowB.original.date)
       return dateA.getTime() - dateB.getTime()
@@ -142,7 +135,7 @@ const columns = [
     cell: ({ row }) => {
       return h('div', row.getValue('phe'))
     },
-    sortingFn: (rowA, rowB) => {
+    sortFn: (rowA, rowB) => {
       const pheA = rowA.original.phe ?? 0
       const pheB = rowB.original.phe ?? 0
       return pheA - pheB
@@ -159,7 +152,7 @@ const columns = [
     cell: ({ row }) => {
       return h('div', row.getValue('kcal'))
     },
-    sortingFn: (rowA, rowB) => {
+    sortFn: (rowA, rowB) => {
       const kcalA = rowA.original.kcal ?? 0
       const kcalB = rowB.original.kcal ?? 0
       return kcalA - kcalB
@@ -168,11 +161,10 @@ const columns = [
 ]
 
 // Table instance
-const table = useVueTable({
+const table = useTable({
+  features: dataTableFeatures,
   data: pheDiary,
   columns,
-  getCoreRowModel: getCoreRowModel(),
-  getPaginationRowModel: getPaginationRowModel(),
   initialState: {
     pagination: {
       pageSize: 20
@@ -181,8 +173,6 @@ const table = useVueTable({
   onSortingChange: (updaterOrValue) => valueUpdater(updaterOrValue, sorting),
   onColumnFiltersChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnFilters),
   onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
-  getSortedRowModel: getSortedRowModel(),
-  getFilteredRowModel: getFilteredRowModel(),
   state: {
     get sorting() {
       return sorting.value
@@ -1249,11 +1239,7 @@ defineOgImage('Default', {
                           index === 0 ? 'pl-4 pr-3 sm:pl-6' : 'px-3'
                         ]"
                       >
-                        <FlexRender
-                          v-if="!header.isPlaceholder"
-                          :render="header.column.columnDef.header"
-                          :props="header.getContext()"
-                        />
+                        <FlexRender v-if="!header.isPlaceholder" :header="header" />
                       </th>
                     </tr>
                   </thead>
@@ -1277,10 +1263,7 @@ defineOgImage('Default', {
                               : 'px-3 font-normal text-gray-500 dark:text-gray-400'
                           ]"
                         >
-                          <FlexRender
-                            :render="cell.column.columnDef.cell"
-                            :props="cell.getContext()"
-                          />
+                          <FlexRender :cell="cell" />
                         </td>
                       </tr>
                     </template>

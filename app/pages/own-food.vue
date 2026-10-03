@@ -2,16 +2,9 @@
 import { useStore } from '../../stores/index'
 import Fuse from 'fuse.js'
 import { format } from 'date-fns'
-import {
-  FlexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useVueTable
-} from '@tanstack/vue-table'
+import { FlexRender, useTable } from '@tanstack/vue-table'
 import { h, ref, computed, watch, onMounted } from 'vue'
-import { valueUpdater } from '@/lib/table-utils'
+import { dataTableFeatures, valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
 import { LucideStickyNote, LucideUsers, LucideThumbsUp, LucideThumbsDown } from '@lucide/vue'
@@ -239,11 +232,10 @@ const columns = [
 ]
 
 // Table instance
-const table = useVueTable({
+const table = useTable({
+  features: dataTableFeatures,
   data: filteredOwnFood,
   columns,
-  getCoreRowModel: getCoreRowModel(),
-  getPaginationRowModel: getPaginationRowModel(),
   initialState: {
     pagination: {
       pageSize: 20
@@ -252,8 +244,6 @@ const table = useVueTable({
   onSortingChange: (updaterOrValue) => valueUpdater(updaterOrValue, sorting),
   onColumnFiltersChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnFilters),
   onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
-  getSortedRowModel: getSortedRowModel(),
-  getFilteredRowModel: getFilteredRowModel(),
   state: {
     get sorting() {
       return sorting.value
@@ -803,11 +793,7 @@ defineOgImage('Default', {
                           index === 0 ? 'pl-4 pr-3 sm:pl-6' : 'px-3 whitespace-nowrap'
                         ]"
                       >
-                        <FlexRender
-                          v-if="!header.isPlaceholder"
-                          :render="header.column.columnDef.header"
-                          :props="header.getContext()"
-                        />
+                        <FlexRender v-if="!header.isPlaceholder" :header="header" />
                       </th>
                     </tr>
                   </thead>
@@ -831,10 +817,7 @@ defineOgImage('Default', {
                               : 'px-3 font-normal text-gray-500 dark:text-gray-400 whitespace-nowrap'
                           ]"
                         >
-                          <FlexRender
-                            :render="cell.column.columnDef.cell"
-                            :props="cell.getContext()"
-                          />
+                          <FlexRender :cell="cell" />
                         </td>
                       </tr>
                     </template>

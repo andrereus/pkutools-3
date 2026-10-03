@@ -10,7 +10,7 @@ const props = defineProps({
 
 const { t } = useI18n()
 
-const currentPage = computed(() => props.table.getState().pagination.pageIndex + 1)
+const currentPage = computed(() => props.table.atoms.pagination.get().pageIndex + 1)
 // Treat an empty table as one (empty) page so the label never reads "of 0".
 const totalPages = computed(() => Math.max(props.table.getPageCount(), 1))
 </script>
