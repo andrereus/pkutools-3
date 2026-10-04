@@ -1,5 +1,26 @@
 [
   {
+    "revision": 126,
+    "publishedAt": "2026-10-04T11:27:32.318Z",
+    "category": "improved",
+    "en": {
+      "title": "Diary display",
+      "body": "Circles now show the total, the bars mark exceeded limits and the log can be switched between Phe and Kcal."
+    },
+    "de": {
+      "title": "Darstellung im Tagebuch",
+      "body": "Kreise zeigen jetzt die Gesamtmenge, bei den Balken ist ein Überschreiten sichtbar und im Protokoll lässt sich zwischen Phe und Kcal wechseln."
+    },
+    "es": {
+      "title": "Visualización en el diario",
+      "body": "Los círculos muestran ahora el total, las barras marcan cuando se supera el límite y en el registro se puede cambiar entre Phe y Kcal."
+    },
+    "fr": {
+      "title": "Affichage dans le journal",
+      "body": "Les cercles affichent désormais le total, les barres signalent un dépassement et l’historique permet de basculer entre Phe et Kcal."
+    }
+  },
+  {
     "revision": 125,
     "publishedAt": "2026-10-03T19:57:51.244Z",
     "category": "new",

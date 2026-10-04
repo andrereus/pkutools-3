@@ -78,11 +78,11 @@ const settings = computed(() => store.settings)
 
 const license = computed(() => isPremium.value)
 
+// The last column follows the Phe/Kcal toggle above the table
 const tableHeaders = computed(() => [
   { key: 'food', title: t('common.food') },
   { key: 'weight', title: t('common.weight') },
-  { key: 'phe', title: t('common.phe') },
-  { key: 'kcal', title: t('common.kcal') }
+  { key: shareMetric.value, title: t(`common.${shareMetric.value}`) }
 ])
 
 const formTitle = computed(() => {
@@ -227,21 +227,42 @@ const kcalResult = computed(() => {
   return selectedDayLog.value.reduce((sum, item) => sum + (Number(item.kcal) || 0), 0)
 })
 
-// Each row's share bar is measured against the Phe target, or against the day's
-// total once that is higher (or no target is set), so bars never overflow. A
-// segment starts where the previous rows' shares end, so the rows add up to the
+// Which value the table's last column and the share bars show, Phe or Kcal.
+// Transient per visit like `viewStyle`, so the diary always opens on Phe.
+const shareMetric = ref('phe')
+
+// Each row's share bar is measured against the metric's target, or against the
+// day's total once that is higher (or no target is set), so bars never overflow.
+// A segment starts where the previous rows' shares end, so the rows add up to the
 // day's progress.
-const pheShareSegments = computed(() => {
-  const base = Math.max(settings.value?.maxPhe || 0, pheResult.value)
+const shareSegments = computed(() => {
+  const isPhe = shareMetric.value === 'phe'
+  const target = (isPhe ? settings.value?.maxPhe : settings.value?.maxKcal) || 0
+  const base = Math.max(target, isPhe ? pheResult.value : kcalResult.value)
+  // Where the target sits on the row. Past it, a piece uses the darker over shade,
+  // like the circles; a piece that crosses the target is split there.
+  const limit = target > 0 ? (target * 100) / base : 100
   let start = 0
   return selectedDayLog.value.map((item) => {
-    const phe = Number(item.phe) || 0
-    const width = phe > 0 && base > 0 ? (phe * 100) / base : 0
-    const segment = { start, width }
+    const value = Number(item[shareMetric.value]) || 0
+    const width = value > 0 && base > 0 ? (value * 100) / base : 0
+    const under = Math.max(0, Math.min(start + width, limit) - start)
+    const segment = { start, under, over: width - under }
     start += width
     return segment
   })
 })
+
+// Over the target, a linear progress bar fills with the accent like the circles,
+// and the overage takes the right end in the darker shade. The bar then stands for
+// the day's total, so the overage starts where the food bars turn dark.
+const progressBar = (result, max) => {
+  const over = !!max && result > max
+  const width = over ? ((result - max) * 100) / result : (result * 100) / (max || 1)
+  return { over, width }
+}
+const pheBar = computed(() => progressBar(pheResult.value, settings.value?.maxPhe))
+const kcalBar = computed(() => progressBar(kcalResult.value, settings.value?.maxKcal))
 
 // Progress display style. `viewStyle` is a transient per-visit override that can
 // be toggled freely without changing the saved preference; while it's null the
@@ -271,7 +292,7 @@ const isDark = ref(
 // Radial bar options shared by both circles, themed for the current color mode.
 // When over budget the track shows the full sky-colored ring (100% reached) and the
 // overage continues on top in a darker shade, conveying how far past the limit.
-const buildCircleOptions = (label, percent, size) => {
+const buildCircleOptions = (label, percent, total, size) => {
   const dark = isDark.value
   const over = percent > 100
   const small = size < 96
@@ -292,15 +313,16 @@ const buildCircleOptions = (label, percent, size) => {
         hollow: { size: small ? '46%' : '56%' },
         track: { background: over ? accent : dark ? '#374151' : '#e5e7eb' },
         dataLabels: {
-          // Metric name comes from the caption below the chart, so only the
-          // percentage is shown in the centre (vertically centred).
+          // Metric name comes from the caption beside the chart, so only the
+          // day's total is shown in the centre (vertically centred); the ring
+          // itself already shows the share of the target.
           name: { show: false },
           value: {
             offsetY: small ? 5 : 6,
             fontSize: small ? '14px' : '17px',
             fontWeight: 600,
             color: dark ? '#f3f4f6' : '#111827',
-            formatter: () => `${percent}%`
+            formatter: () => `${total}`
           }
         }
       }
@@ -319,10 +341,10 @@ const buildCircleOptions = (label, percent, size) => {
 const circleSeries = (percent) => (percent > 100 ? Math.min(percent - 100, 100) : percent)
 
 const pheCircleOptions = computed(() =>
-  buildCircleOptions(t('common.phe'), phePercent.value, circleSize.value)
+  buildCircleOptions(t('common.phe'), phePercent.value, pheResult.value, circleSize.value)
 )
 const kcalCircleOptions = computed(() =>
-  buildCircleOptions(t('common.kcal'), kcalPercent.value, circleSize.value)
+  buildCircleOptions(t('common.kcal'), kcalPercent.value, kcalResult.value, circleSize.value)
 )
 const pheCircleSeries = computed(() => circleSeries(phePercent.value))
 const kcalCircleSeries = computed(() => circleSeries(kcalPercent.value))
@@ -779,7 +801,7 @@ defineOgImage('Default', {
             <template v-if="settings?.maxPhe">
               <ClientOnly>
                 <apexchart
-                  :key="`phe-${phePercent}-${circleSize}-${isDark}-${accentColor}`"
+                  :key="`phe-${phePercent}-${pheResult}-${circleSize}-${isDark}-${accentColor}`"
                   type="radialBar"
                   :width="circleSize"
                   :height="circleSize"
@@ -807,35 +829,38 @@ defineOgImage('Default', {
             >
           </div>
           <div class="flex items-center gap-2 max-[400px]:gap-0 sm:justify-center sm:gap-6">
-            <template v-if="settings?.maxKcal">
-              <ClientOnly>
-                <apexchart
-                  :key="`kcal-${kcalPercent}-${circleSize}-${isDark}-${accentColor}`"
-                  type="radialBar"
-                  :width="circleSize"
-                  :height="circleSize"
-                  :options="kcalCircleOptions"
-                  :series="[kcalCircleSeries]"
-                />
-                <template #fallback>
-                  <div class="h-22 w-22 sm:h-23 sm:w-23" />
-                </template>
-              </ClientOnly>
-              <div class="min-w-0 sm:w-24">
+            <!-- Without a calorie requirement there is no ring, only the total -->
+            <ClientOnly v-if="settings?.maxKcal">
+              <apexchart
+                :key="`kcal-${kcalPercent}-${kcalResult}-${circleSize}-${isDark}-${accentColor}`"
+                type="radialBar"
+                :width="circleSize"
+                :height="circleSize"
+                :options="kcalCircleOptions"
+                :series="[kcalCircleSeries]"
+              />
+              <template #fallback>
+                <div class="h-22 w-22 sm:h-23 sm:w-23" />
+              </template>
+            </ClientOnly>
+            <div class="min-w-0 sm:w-24">
+              <template v-if="settings?.maxKcal">
                 <p class="text-sm font-medium leading-tight text-gray-900 dark:text-gray-300">
                   {{ Math.abs(kcalRemaining) }} {{ $t('common.kcal') }}
                 </p>
                 <p class="text-sm font-medium leading-tight text-gray-500 dark:text-gray-400">
                   {{ kcalRemaining < 0 ? $t('app.over') : $t('app.left') }}
                 </p>
-              </div>
-            </template>
-            <NuxtLink
-              v-else
-              class="text-xs font-medium text-sky-600 hover:underline dark:text-sky-400"
-              :to="$localePath('settings')"
-              >{{ $t('diary.set-kcal') }}</NuxtLink
-            >
+              </template>
+              <template v-else>
+                <p class="text-sm font-medium leading-tight text-gray-900 dark:text-gray-300">
+                  {{ kcalResult }} {{ $t('common.kcal') }}
+                </p>
+                <p class="text-sm font-medium leading-tight text-gray-500 dark:text-gray-400">
+                  {{ $t('app.total') }}
+                </p>
+              </template>
+            </div>
           </div>
         </div>
 
@@ -855,11 +880,13 @@ defineOgImage('Default', {
             >
           </div>
           <div
-            class="relative w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden h-1 mt-2"
+            class="relative w-full rounded-full overflow-hidden h-1 mt-2"
+            :class="pheBar.over ? 'bg-sky-500' : 'bg-gray-200 dark:bg-gray-700'"
           >
             <div
-              class="bg-sky-500 h-full rounded-full transition-[width] duration-500 ease-out"
-              :style="{ width: `${(pheResult * 100) / (settings?.maxPhe || 1)}%` }"
+              class="h-full rounded-full transition-[width] duration-500 ease-out"
+              :class="pheBar.over ? 'ml-auto bg-sky-700' : 'bg-sky-500'"
+              :style="{ width: `${pheBar.width}%` }"
             />
           </div>
           <div class="text-sm flex justify-between mt-2">
@@ -868,19 +895,17 @@ defineOgImage('Default', {
               >{{ Math.abs(kcalRemaining) }} {{ $t('common.kcal') }}
               {{ kcalRemaining < 0 ? $t('app.over') : $t('app.left') }}</span
             >
-            <NuxtLink
-              v-if="!settings?.maxKcal"
-              class="font-medium text-sky-600 hover:underline dark:text-sky-400"
-              :to="$localePath('settings')"
-              >{{ $t('diary.set-kcal') }}</NuxtLink
-            >
           </div>
+          <!-- Without a calorie requirement only the total shows; Settings is one tap away -->
           <div
-            class="relative w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden h-1 mt-2"
+            v-if="settings?.maxKcal"
+            class="relative w-full rounded-full overflow-hidden h-1 mt-2"
+            :class="kcalBar.over ? 'bg-sky-500' : 'bg-gray-200 dark:bg-gray-700'"
           >
             <div
-              class="bg-sky-500 h-full rounded-full transition-[width] duration-500 ease-out"
-              :style="{ width: `${(kcalResult * 100) / (settings?.maxKcal || 1)}%` }"
+              class="h-full rounded-full transition-[width] duration-500 ease-out"
+              :class="kcalBar.over ? 'ml-auto bg-sky-700' : 'bg-sky-500'"
+              :style="{ width: `${kcalBar.width}%` }"
             />
           </div>
         </div>
@@ -910,77 +935,130 @@ defineOgImage('Default', {
         </p>
       </div>
 
-      <DataTable v-else :headers="tableHeaders" class="mb-6">
-        <template v-for="(item, index) in selectedDayLog" :key="index">
-          <tr class="cursor-pointer border-b-0" @click="editItem(item, index)">
-            <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6">
-              <span class="flex items-center gap-1">
-                <img
-                  v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
-                  :src="'/images/food-icons/' + item.icon + '.svg'"
-                  onerror="this.src = '/images/food-icons/organic-food.svg'"
-                  width="25"
-                  class="food-icon"
-                  alt="Food Icon"
-                />
-                <img
-                  v-if="
-                    (item.icon === undefined || item.icon === null || item.icon === '') &&
-                    (item.emoji === undefined || item.emoji === null)
-                  "
-                  :src="'/images/food-icons/organic-food.svg'"
-                  width="25"
-                  class="food-icon"
-                  alt="Food Icon"
-                />
-                <span
-                  v-if="
-                    (item.icon === undefined || item.icon === null || item.icon === '') &&
-                    item.emoji !== undefined &&
-                    item.emoji !== null
-                  "
-                  class="ml-0.5 mr-1 text-xl inline-block align-middle leading-none"
-                >
-                  {{ item.emoji }}
-                </span>
-                <!-- Name and badge share one inline block, so the badge wraps with the text -->
-                <span class="wrap-anywhere">
-                  {{ item.name }}
+      <template v-else>
+        <!-- Heading, and the toggle for what the last column and the share bars show -->
+        <div class="flex items-center justify-between -mb-3">
+          <h2
+            class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-1"
+          >
+            {{ $t('diary.log') }}
+          </h2>
+          <div class="inline-flex rounded-lg bg-black/5 dark:bg-white/10 p-0.5">
+            <button
+              type="button"
+              :aria-pressed="shareMetric === 'phe'"
+              class="rounded-md px-2.5 py-1 text-xs font-semibold cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+              :class="
+                shareMetric === 'phe'
+                  ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+              "
+              @click="shareMetric = 'phe'"
+            >
+              {{ $t('common.phe') }}
+            </button>
+            <button
+              type="button"
+              :aria-pressed="shareMetric === 'kcal'"
+              class="rounded-md px-2.5 py-1 text-xs font-semibold cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+              :class="
+                shareMetric === 'kcal'
+                  ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+              "
+              @click="shareMetric = 'kcal'"
+            >
+              {{ $t('common.kcal') }}
+            </button>
+          </div>
+        </div>
+        <DataTable :headers="tableHeaders" class="mb-6">
+          <template v-for="(item, index) in selectedDayLog" :key="index">
+            <tr class="cursor-pointer border-b-0" @click="editItem(item, index)">
+              <td
+                class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6"
+              >
+                <span class="flex items-center gap-1">
+                  <img
+                    v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
+                    :src="'/images/food-icons/' + item.icon + '.svg'"
+                    onerror="this.src = '/images/food-icons/organic-food.svg'"
+                    width="25"
+                    class="food-icon"
+                    alt="Food Icon"
+                  />
+                  <img
+                    v-if="
+                      (item.icon === undefined || item.icon === null || item.icon === '') &&
+                      (item.emoji === undefined || item.emoji === null)
+                    "
+                    :src="'/images/food-icons/organic-food.svg'"
+                    width="25"
+                    class="food-icon"
+                    alt="Food Icon"
+                  />
                   <span
-                    v-if="item.note"
-                    class="inline-flex items-center align-middle rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
-                    :title="item.note"
+                    v-if="
+                      (item.icon === undefined || item.icon === null || item.icon === '') &&
+                      item.emoji !== undefined &&
+                      item.emoji !== null
+                    "
+                    class="ml-0.5 mr-1 text-xl inline-block align-middle leading-none"
                   >
-                    <LucideStickyNote class="h-3.5 w-3.5" />
+                    {{ item.emoji }}
+                  </span>
+                  <!-- Name and badge share one inline block, so the badge wraps with the text -->
+                  <span class="wrap-anywhere">
+                    {{ item.name }}
+                    <span
+                      v-if="item.note"
+                      class="inline-flex items-center align-middle rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
+                      :title="item.note"
+                    >
+                      <LucideStickyNote class="h-3.5 w-3.5" />
+                    </span>
                   </span>
                 </span>
-              </span>
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-              {{ item.weight }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-              {{ item.phe }}
-            </td>
-            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-              {{ item.kcal }}
-            </td>
-          </tr>
-          <!-- Share of the day's Phe across the full row; a small share stays a short dash -->
-          <tr aria-hidden="true">
-            <td colspan="4" class="p-0">
-              <div
-                class="h-0.5 rounded-full bg-sky-500 transition-[width,margin-left] duration-500 ease-out"
-                :class="{ 'min-w-1.5': pheShareSegments[index].width > 0 }"
-                :style="{
-                  marginLeft: `${pheShareSegments[index].start}%`,
-                  width: `${pheShareSegments[index].width}%`
-                }"
-              />
-            </td>
-          </tr>
-        </template>
-      </DataTable>
+              </td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
+                {{ item.weight }}
+              </td>
+              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
+                {{ item[shareMetric] }}
+              </td>
+            </tr>
+            <!-- Share of the day's Phe or Kcal across the full row; a small share stays a short dash -->
+            <tr aria-hidden="true">
+              <td colspan="3" class="h-0.5 p-0">
+                <!-- Rendered once settings have loaded, like the progress bar, so it
+                     appears at its final width instead of being scaled to the day's total first -->
+                <div v-if="store.settingsLoaded" class="flex h-0.5">
+                  <div
+                    class="shrink-0 transition-[width] duration-500 ease-out"
+                    :style="{ width: `${shareSegments[index].start}%` }"
+                  />
+                  <div
+                    class="shrink-0 rounded-l-full bg-sky-500 transition-[width] duration-500 ease-out"
+                    :class="{
+                      'rounded-r-full': !shareSegments[index].over,
+                      'min-w-1.5': shareSegments[index].under > 0 && !shareSegments[index].over
+                    }"
+                    :style="{ width: `${shareSegments[index].under}%` }"
+                  />
+                  <div
+                    class="shrink-0 rounded-r-full bg-sky-700 transition-[width] duration-500 ease-out"
+                    :class="{
+                      'rounded-l-full': !shareSegments[index].under,
+                      'min-w-1.5': shareSegments[index].over > 0 && !shareSegments[index].under
+                    }"
+                    :style="{ width: `${shareSegments[index].over}%` }"
+                  />
+                </div>
+              </td>
+            </tr>
+          </template>
+        </DataTable>
+      </template>
 
       <ModalDialog
         ref="dialog2"
