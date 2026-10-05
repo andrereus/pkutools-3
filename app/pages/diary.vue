@@ -1027,18 +1027,25 @@ defineOgImage('Default', {
                 {{ item[shareMetric] }}
               </td>
             </tr>
-            <!-- Share of the day's Phe or Kcal across the full row; a small share stays a short dash -->
-            <tr aria-hidden="true">
-              <td colspan="3" class="h-0.5 p-0">
+            <!-- Share of the day's Phe or Kcal across the full row: gray for the rows
+                 above, blue for this food; a small share stays a short dash. No dividers,
+                 so these lines separate the rows -->
+            <tr aria-hidden="true" class="border-b-0">
+              <!-- A gap under the last line keeps it off the table's bottom border -->
+              <td
+                colspan="3"
+                class="h-0.5"
+                :class="index === selectedDayLog.length - 1 ? 'px-0 pt-0 pb-1.5' : 'p-0'"
+              >
                 <!-- Rendered once settings have loaded, like the progress bar, so it
                      appears at its final width instead of being scaled to the day's total first -->
                 <div v-if="store.settingsLoaded" class="flex h-0.5">
                   <div
-                    class="shrink-0 transition-[width] duration-500 ease-out"
+                    class="shrink-0 bg-gray-200 dark:bg-gray-700 transition-[width] duration-500 ease-out"
                     :style="{ width: `${shareSegments[index].start}%` }"
                   />
                   <div
-                    class="shrink-0 rounded-l-full bg-sky-500 transition-[width] duration-500 ease-out"
+                    class="shrink-0 bg-sky-500 transition-[width] duration-500 ease-out"
                     :class="{
                       'rounded-r-full': !shareSegments[index].over,
                       'min-w-1.5': shareSegments[index].under > 0 && !shareSegments[index].over
@@ -1048,7 +1055,6 @@ defineOgImage('Default', {
                   <div
                     class="shrink-0 rounded-r-full bg-sky-700 transition-[width] duration-500 ease-out"
                     :class="{
-                      'rounded-l-full': !shareSegments[index].under,
                       'min-w-1.5': shareSegments[index].over > 0 && !shareSegments[index].under
                     }"
                     :style="{ width: `${shareSegments[index].over}%` }"
