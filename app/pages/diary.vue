@@ -246,8 +246,13 @@ const shareSegments = computed(() => {
   return selectedDayLog.value.map((item) => {
     const value = Number(item[shareMetric.value]) || 0
     const width = value > 0 && base > 0 ? (value * 100) / base : 0
-    const under = Math.max(0, Math.min(start + width, limit) - start)
-    const segment = { start, under, over: width - under }
+    const end = start + width
+    // Both parts are measured from the limit instead of subtracted from each other:
+    // a subtraction can round to a tiny negative width, which the browser rejects
+    // and keeps the previous value instead.
+    const under = Math.max(0, Math.min(end, limit) - start)
+    const over = Math.max(0, end - Math.max(start, limit))
+    const segment = { start, under, over }
     start += width
     return segment
   })
