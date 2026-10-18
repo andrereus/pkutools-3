@@ -1330,33 +1330,40 @@ defineOgImage('Default', {
 }
 
 /* On wide screens, like the pages, the days don't slide across the screen.
-   They shift a little and cross-fade. */
+   They cross-fade quickly while both shift a short way in the direction of
+   travel, the old day half as far. */
 @media (min-width: 1024px) {
   .day-enter-active {
     transition:
-      opacity 0.2s ease-out,
-      transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 0.15s ease-out,
+      transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
   }
 
   .day-leave-active {
-    transition: opacity 0.12s ease-out;
+    transition:
+      opacity 0.12s ease-out,
+      transform 0.12s ease-out;
   }
 
-  [data-day-direction] .day-enter-from {
+  [data-day-direction] .day-enter-from,
+  [data-day-direction] .day-leave-to {
     opacity: 0;
   }
 
   [data-day-direction='forward'] .day-enter-from {
-    transform: translateX(24px);
+    transform: translateX(32px);
   }
 
   [data-day-direction='back'] .day-enter-from {
-    transform: translateX(-24px);
+    transform: translateX(-32px);
   }
 
-  [data-day-direction] .day-leave-to {
-    opacity: 0;
-    transform: none;
+  [data-day-direction='forward'] .day-leave-to {
+    transform: translateX(-16px);
+  }
+
+  [data-day-direction='back'] .day-leave-to {
+    transform: translateX(16px);
   }
 }
 </style>

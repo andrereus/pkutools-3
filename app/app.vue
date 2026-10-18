@@ -42,7 +42,7 @@ const pageTransition = computed(() => ({
 .page-enter-active {
   transition:
     opacity 0.2s ease-out,
-    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.25s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 /* A leaving page still shows while it slides out, but no longer takes taps */
@@ -53,7 +53,7 @@ const pageTransition = computed(() => ({
 
 .page-enter-from {
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(16px);
 }
 
 .page-leave-to {
@@ -87,7 +87,7 @@ const pageTransition = computed(() => ({
   [data-page-direction] .page-enter-active {
     transition:
       opacity 0.2s ease-out,
-      transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      transform 0.25s cubic-bezier(0.33, 1, 0.68, 1);
   }
 
   [data-page-direction] .page-leave-active {
@@ -96,7 +96,7 @@ const pageTransition = computed(() => ({
 
   [data-page-direction] .page-enter-from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(16px);
   }
 
   [data-page-direction] .page-leave-to {
