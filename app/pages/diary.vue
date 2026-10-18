@@ -1304,7 +1304,7 @@ defineOgImage('Default', {
 }
 
 /* Between days the old day slides out one screen width while the new one slides
-   in from the other side, like the pages between tabs. The leaving day is taken
+   in from the other side, the way a swipe moves them. The leaving day is taken
    out of the flow where it is, so the new day takes its place, and taps go
    through it to the new day. */
 .day-enter-active,
@@ -1329,8 +1329,8 @@ defineOgImage('Default', {
   transform: translateX(-100vw);
 }
 
-/* On wide screens, like the pages, the days don't slide across the screen.
-   They cross-fade quickly while both shift a short way in the direction of
+/* On wide screens the days don't slide across the screen. Like the pages between
+   tabs, they cross-fade quickly while both shift a short way in the direction of
    travel, the old day half as far. */
 @media (min-width: 1024px) {
   .day-enter-active {

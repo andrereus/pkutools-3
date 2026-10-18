@@ -8,7 +8,7 @@ const getRouteBaseName = useRouteBaseName()
 const isToolRoute = () => toolPages.includes(getRouteBaseName(router.currentRoute.value))
 toolPageShown.value = isToolRoute()
 
-// Between tab pages both pages slide at the same time, side by side. Once the
+// Between tab pages both pages are on screen at the same time. Once the
 // new page is in, the direction is cleared, so a later change without a
 // navigation, such as the tool row leaving on sign-out, doesn't slide.
 let enteringNavigation = 0
@@ -45,7 +45,7 @@ const pageTransition = computed(() => ({
     transform 0.25s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
-/* A leaving page still shows while it slides out, but no longer takes taps */
+/* A leaving page can still show while it moves out, but no longer takes taps */
 .page-leave-active {
   transition: none;
   pointer-events: none;
@@ -61,47 +61,38 @@ const pageTransition = computed(() => ({
 }
 
 /* Between tab pages the page-direction middleware sets a direction on the root
-   element. Both pages then slide one screen width, the old page out toward one
-   side and the new page in from the other. */
-[data-page-direction] .page-enter-active,
+   element. Both pages then cross-fade quickly while they shift a short way
+   along the tab bar, the old page half as far. */
+[data-page-direction] .page-enter-active {
+  transition:
+    opacity 0.15s ease-out,
+    transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
 [data-page-direction] .page-leave-active {
-  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  transition:
+    opacity 0.12s ease-out,
+    transform 0.12s ease-out;
 }
 
-[data-page-direction='forward'] .page-enter-from,
-[data-page-direction='back'] .page-leave-to {
-  opacity: 1;
-  transform: translateX(100vw);
+[data-page-direction] .page-enter-from,
+[data-page-direction] .page-leave-to {
+  opacity: 0;
 }
 
-[data-page-direction='forward'] .page-leave-to,
+[data-page-direction='forward'] .page-enter-from {
+  transform: translateX(32px);
+}
+
 [data-page-direction='back'] .page-enter-from {
-  opacity: 1;
-  transform: translateX(-100vw);
+  transform: translateX(-32px);
 }
 
-/* On wide screens, where the tab bar sits at the top, the pages don't slide.
-   The new page rises in like on any other page change, while the old page
-   fades out faster, so the two hardly overlap. */
-@media (min-width: 1024px) {
-  [data-page-direction] .page-enter-active {
-    transition:
-      opacity 0.2s ease-out,
-      transform 0.25s cubic-bezier(0.33, 1, 0.68, 1);
-  }
+[data-page-direction='forward'] .page-leave-to {
+  transform: translateX(-16px);
+}
 
-  [data-page-direction] .page-leave-active {
-    transition: opacity 0.12s ease-out;
-  }
-
-  [data-page-direction] .page-enter-from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-
-  [data-page-direction] .page-leave-to {
-    opacity: 0;
-    transform: none;
-  }
+[data-page-direction='back'] .page-leave-to {
+  transform: translateX(16px);
 }
 </style>

@@ -18,9 +18,9 @@ export const useToolPageShown = () => useState<boolean>('tool-page-shown', () =>
 
 let scrollQueued = false
 
-// While pages slide side by side, a leaving element stays pinned where it is on
-// screen and the window jumps to the top for the new page. The jump waits until
-// every leaving element has been measured.
+// While two pages are on screen at once, a leaving element stays pinned where it
+// is on screen and the window jumps to the top for the new page. The jump waits
+// until every leaving element has been measured.
 export const pinLeavingElement = (el: HTMLElement) => {
   const { top, left, width } = el.getBoundingClientRect()
   Object.assign(el.style, {
