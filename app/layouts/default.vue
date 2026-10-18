@@ -358,8 +358,14 @@ const handleCookieConsent = (consent) => {
                 >
                   <span class="absolute -inset-1.5" />
                   <span class="sr-only">{{ $t('app.account-menu') }}</span>
+                  <!-- Placeholder until the sign-in state is known -->
+                  <span
+                    v-if="!store.authChecked"
+                    class="h-6 w-6 animate-pulse rounded-full bg-black/10 dark:bg-white/15"
+                    aria-hidden="true"
+                  />
                   <LucideCircleUser
-                    v-if="!userIsAuthenticated"
+                    v-else-if="!userIsAuthenticated"
                     class="h-6 w-6 dark:text-gray-300"
                     aria-hidden="true"
                   />
@@ -495,17 +501,26 @@ const handleCookieConsent = (consent) => {
               :aria-label="$t(item.name)"
               :class="[
                 'relative flex items-center justify-center h-12 w-14 rounded-xl transition-all duration-150 ease-out active:scale-95',
-                item.icon === 'LucidePlus'
-                  ? isTabActive(item)
-                    ? 'bottom-nav-add liquid-glass-active text-sky-600 dark:text-sky-300'
-                    : 'bottom-nav-add text-sky-600 dark:text-sky-300'
-                  : isTabActive(item)
-                    ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
-                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
+                !store.authChecked
+                  ? 'pointer-events-none'
+                  : item.icon === 'LucidePlus'
+                    ? isTabActive(item)
+                      ? 'bottom-nav-add liquid-glass-active text-sky-600 dark:text-sky-300'
+                      : 'bottom-nav-add text-sky-600 dark:text-sky-300'
+                    : isTabActive(item)
+                      ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
               ]"
             >
+              <!-- Placeholder until the sign-in state decides which tabs show -->
+              <span
+                v-if="!store.authChecked"
+                class="h-9 w-9 animate-pulse rounded-lg bg-black/5 dark:bg-white/10"
+                aria-hidden="true"
+              />
               <component
                 :is="iconMap[item.icon]"
+                v-else
                 :class="item.icon === 'LucidePlus' ? 'h-6 w-6' : 'h-5 w-5'"
                 :stroke-width="isTabActive(item) ? 2.5 : 2"
                 aria-hidden="true"
@@ -615,17 +630,26 @@ const handleCookieConsent = (consent) => {
             :aria-label="$t(item.name)"
             :class="[
               'relative flex items-center justify-center flex-1 h-full mx-0.5 rounded-xl transition-all duration-150 ease-out active:scale-95',
-              item.icon === 'LucidePlus'
-                ? isTabActive(item)
-                  ? 'bottom-nav-add liquid-glass-active text-sky-600 dark:text-sky-300'
-                  : 'bottom-nav-add text-sky-600 dark:text-sky-300'
-                : isTabActive(item)
-                  ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
-                  : 'text-gray-900 dark:text-white'
+              !store.authChecked
+                ? 'pointer-events-none'
+                : item.icon === 'LucidePlus'
+                  ? isTabActive(item)
+                    ? 'bottom-nav-add liquid-glass-active text-sky-600 dark:text-sky-300'
+                    : 'bottom-nav-add text-sky-600 dark:text-sky-300'
+                  : isTabActive(item)
+                    ? 'liquid-glass-active text-sky-600 dark:text-sky-400'
+                    : 'text-gray-900 dark:text-white'
             ]"
           >
+            <!-- Placeholder until the sign-in state decides which tabs show -->
+            <span
+              v-if="!store.authChecked"
+              class="h-9 w-9 animate-pulse rounded-lg bg-black/5 dark:bg-white/10"
+              aria-hidden="true"
+            />
             <component
               :is="iconMap[item.icon]"
+              v-else
               :class="item.icon === 'LucidePlus' ? 'h-6 w-6' : 'h-5 w-5'"
               :stroke-width="isTabActive(item) ? 2.5 : 2"
               aria-hidden="true"

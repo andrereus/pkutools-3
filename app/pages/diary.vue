@@ -73,6 +73,7 @@ const editedItem = ref({ ...defaultItem })
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
+const diaryLoading = useUserDataLoading(() => store.pheDiaryLoaded && store.settingsLoaded)
 const pheDiary = computed(() => store.pheDiary)
 const settings = computed(() => store.settings)
 
@@ -704,7 +705,20 @@ defineOgImage('Default', {
       <PageHeader :title="$t('diary.tab-title')" class="inline-block" />
     </header>
 
-    <div v-if="!userIsAuthenticated">
+    <!-- Placeholder in the shape of the date row, progress card and log -->
+    <div v-if="diaryLoading" aria-hidden="true" class="animate-pulse">
+      <div class="mb-6 h-9 rounded-lg bg-black/5 dark:bg-white/10" />
+      <div
+        class="mb-6 h-36 rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
+      />
+      <div class="space-y-3">
+        <div v-for="n in 3" :key="n" class="h-12 rounded-lg bg-black/5 dark:bg-white/10" />
+      </div>
+    </div>
+
+    <!-- Hidden rather than left out while loading, so the server-rendered page
+         keeps the intro -->
+    <div v-if="!userIsAuthenticated" v-show="!diaryLoading">
       <p class="text-gray-600 dark:text-gray-400 mb-6">{{ $t('diary.description') }}</p>
       <NuxtLink
         type="button"
@@ -715,7 +729,7 @@ defineOgImage('Default', {
       </NuxtLink>
     </div>
 
-    <div v-if="userIsAuthenticated">
+    <div v-else-if="!diaryLoading">
       <div class="flex justify-between items-center gap-4 mb-6">
         <button
           :aria-label="$t('common.previous')"

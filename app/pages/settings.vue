@@ -34,6 +34,7 @@ const customizationControls = ref(null)
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
+const settingsLoading = useUserDataLoading(() => store.settingsLoaded)
 const settings = computed(() => store.settings)
 const {
   appSettings,
@@ -311,7 +312,16 @@ defineOgImage('Default', {
       <PageHeader :title="$t('settings.title')" />
     </header>
 
-    <div v-if="!userIsAuthenticated">
+    <!-- Placeholder in the shape of the Getting Started card -->
+    <div
+      v-if="settingsLoading"
+      aria-hidden="true"
+      class="mb-8 h-44 animate-pulse rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
+    />
+
+    <!-- Hidden rather than left out while loading, so the server-rendered page
+         keeps the intro -->
+    <div v-if="!userIsAuthenticated" v-show="!settingsLoading">
       <p class="text-gray-600 dark:text-gray-400 mb-6">{{ $t('settings.description') }}</p>
       <NuxtLink
         type="button"
@@ -322,7 +332,7 @@ defineOgImage('Default', {
       </NuxtLink>
     </div>
 
-    <div v-if="userIsAuthenticated">
+    <div v-else-if="!settingsLoading">
       <!-- Missing Consent Warning -->
       <div
         v-if="settings.healthDataConsent !== true"
@@ -381,8 +391,16 @@ defineOgImage('Default', {
         }}
       </p>
 
+      <!-- Placeholder in the shape of the two account pickers -->
+      <div v-if="settingsLoading" aria-hidden="true" class="animate-pulse">
+        <div v-for="n in 2" :key="n" class="mb-6">
+          <div class="h-5 w-32 rounded-md bg-black/5 dark:bg-white/10" />
+          <div class="mt-3 h-9 rounded-lg bg-black/5 dark:bg-white/10" />
+        </div>
+      </div>
+
       <fieldset
-        v-if="userIsAuthenticated"
+        v-else-if="userIsAuthenticated"
         ref="customizationControls"
         :disabled="savingCustomization || !store.settingsLoaded"
         :aria-busy="savingCustomization"
@@ -409,7 +427,7 @@ defineOgImage('Default', {
       <ColorThemePicker />
     </section>
 
-    <div v-if="userIsAuthenticated">
+    <div v-if="userIsAuthenticated && !settingsLoading">
       <!-- App Settings Section -->
       <div
         class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700 mb-8"

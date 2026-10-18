@@ -77,6 +77,7 @@ const DAYS_THRESHOLD_TWO_WEEKS = 14
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
+const reportLoading = useUserDataLoading(() => store.pheDiaryLoaded && store.settingsLoaded)
 const pheDiary = computed(() => store.pheDiary)
 const settings = computed(() => store.settings)
 
@@ -1123,7 +1124,20 @@ defineOgImage('Default', {
       <PageHeader :title="$t('diet-report.tab-title')" class="inline-block" />
     </header>
 
-    <div v-if="!userIsAuthenticated">
+    <!-- Placeholder in the shape of the averages card, chart and table -->
+    <div v-if="reportLoading" aria-hidden="true" class="animate-pulse">
+      <div
+        class="mb-6 h-36 rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
+      />
+      <div class="mb-6 h-64 rounded-xl bg-black/5 dark:bg-white/10" />
+      <div class="space-y-3">
+        <div v-for="n in 3" :key="n" class="h-12 rounded-lg bg-black/5 dark:bg-white/10" />
+      </div>
+    </div>
+
+    <!-- Hidden rather than left out while loading, so the server-rendered page
+         keeps the intro -->
+    <div v-if="!userIsAuthenticated" v-show="!reportLoading">
       <p class="text-gray-600 dark:text-gray-400 mb-6">{{ $t('diet-report.description') }}</p>
       <NuxtLink
         type="button"
@@ -1134,7 +1148,7 @@ defineOgImage('Default', {
       </NuxtLink>
     </div>
 
-    <div v-if="userIsAuthenticated">
+    <div v-else-if="!reportLoading">
       <div class="mb-6">
         <DietReportCard />
       </div>

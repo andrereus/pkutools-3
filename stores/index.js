@@ -45,6 +45,19 @@ export const useStore = defineStore('main', {
     // that branches on settings (onboarding checks, post-sign-in routing) must
     // wait for this, otherwise it decides against the local defaults.
     settingsLoaded: false,
+    // False until Firebase has reported the restored sign-in state once. Until
+    // then user is null for signed-in users too, so views that differ by
+    // sign-in state wait for this instead of showing the signed-out version.
+    authChecked: false,
+    // False until the first snapshot of each list, so an empty list can be told
+    // apart from one that hasn't loaded yet.
+    pheDiaryLoaded: false,
+    labValuesLoaded: false,
+    ownFoodLoaded: false,
+    // True once a user data listener was refused. Views stop waiting then and
+    // show what they have; the loaded flags stay false, so nothing that checks
+    // settingsLoaded decides against the local defaults.
+    userDataFailed: false,
     communityFoods: [],
     unsubscribeFunctions: {}
   }),
@@ -107,6 +120,7 @@ export const useStore = defineStore('main', {
           this.user = null
           this.resetUserData()
         }
+        this.authChecked = true
       })
     },
     async signOut() {
@@ -145,32 +159,37 @@ export const useStore = defineStore('main', {
       }
 
       const bindRef = (key, dbRef) => {
-        const unsubscribe = onValue(dbRef, (snapshot) => {
-          const data = snapshot.val()
-          const isInitiallyArray = Array.isArray(initialState[key])
+        const unsubscribe = onValue(
+          dbRef,
+          (snapshot) => {
+            const data = snapshot.val()
+            const isInitiallyArray = Array.isArray(initialState[key])
 
-          if (data && typeof data === 'object') {
-            if (isInitiallyArray) {
-              this[key] = Object.entries(data).map(([key, value]) => ({ ...value, '.key': key }))
-            } else if (key === 'settings') {
-              this[key] = { ...defaultSettings, ...data }
+            if (data && typeof data === 'object') {
+              if (isInitiallyArray) {
+                this[key] = Object.entries(data).map(([key, value]) => ({ ...value, '.key': key }))
+              } else if (key === 'settings') {
+                this[key] = { ...defaultSettings, ...data }
+              } else {
+                this[key] = data
+              }
             } else {
-              this[key] = data
+              if (isInitiallyArray) {
+                this[key] = []
+              } else if (key === 'settings') {
+                this[key] = { ...defaultSettings }
+              } else {
+                this[key] = {}
+              }
             }
-          } else {
-            if (isInitiallyArray) {
-              this[key] = []
-            } else if (key === 'settings') {
-              this[key] = { ...defaultSettings }
-            } else {
-              this[key] = {}
-            }
-          }
 
-          if (key === 'settings') {
-            this.settingsLoaded = true
+            this[`${key}Loaded`] = true
+          },
+          (error) => {
+            console.error(`Failed to load ${key}:`, error)
+            this.userDataFailed = true
           }
-        })
+        )
         this.unsubscribeFunctions[key] = unsubscribe
       }
 
@@ -200,6 +219,10 @@ export const useStore = defineStore('main', {
       this.communityFoods = []
       this.settings = { ...defaultSettings }
       this.settingsLoaded = false
+      this.pheDiaryLoaded = false
+      this.labValuesLoaded = false
+      this.ownFoodLoaded = false
+      this.userDataFailed = false
     },
     unsubscribeAll() {
       Object.values(this.unsubscribeFunctions).forEach((unsubscribe) => {

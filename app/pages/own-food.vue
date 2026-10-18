@@ -65,6 +65,7 @@ const editedItem = ref({ ...defaultItem })
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
+const ownFoodLoading = useUserDataLoading(() => store.ownFoodLoaded && store.settingsLoaded)
 const ownFood = computed(() => store.ownFood)
 const communityFoods = computed(() => store.communityFoods)
 
@@ -548,18 +549,19 @@ onMounted(() => {
   if (editKey && typeof editKey === 'string') pendingEditKey.value = editKey
 })
 
-// When we have a pending edit key and ownFood has loaded, open the edit dialog
+// When we have a pending edit key and ownFood has loaded, open the edit dialog.
+// Runs after rendering, once the dialog exists.
 watch(
-  () => [pendingEditKey.value, ownFood.value.length],
-  ([key, len]) => {
-    if (!key || len === 0) return
+  () => [pendingEditKey.value, ownFoodLoading.value],
+  ([key, loading]) => {
+    if (!key || loading) return
     const opened = openEditDialogForEntryKey(key)
     pendingEditKey.value = null
     if (!opened && route.query.edit) {
       router.replace({ path: route.path, query: {} })
     }
   },
-  { immediate: true }
+  { immediate: true, flush: 'post' }
 )
 
 const calculatePhe = () => scaleToWeight(Number(editedItem.value.phe), weight.value)
@@ -745,7 +747,17 @@ defineOgImage('Default', {
       <PageHeader :title="$t('own-food.title')" />
     </header>
 
-    <div v-if="!userIsAuthenticated">
+    <!-- Placeholder in the shape of the search field and table -->
+    <div v-if="ownFoodLoading" aria-hidden="true" class="animate-pulse">
+      <div class="mb-6 h-9 rounded-lg bg-black/5 dark:bg-white/10" />
+      <div class="space-y-3">
+        <div v-for="n in 5" :key="n" class="h-12 rounded-lg bg-black/5 dark:bg-white/10" />
+      </div>
+    </div>
+
+    <!-- Hidden rather than left out while loading, so the server-rendered page
+         keeps the intro -->
+    <div v-if="!userIsAuthenticated" v-show="!ownFoodLoading">
       <p class="text-gray-600 dark:text-gray-400 mb-6">{{ $t('own-food.description') }}</p>
       <NuxtLink
         type="button"
@@ -756,7 +768,7 @@ defineOgImage('Default', {
       </NuxtLink>
     </div>
 
-    <div v-if="userIsAuthenticated">
+    <div v-else-if="!ownFoodLoading">
       <div class="w-full mb-6">
         <label for="search" class="sr-only">{{ $t('food-search.search') }}</label>
         <div class="relative">
