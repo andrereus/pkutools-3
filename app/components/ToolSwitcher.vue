@@ -4,6 +4,7 @@ import { LucideSearch, LucideScanBarcode, LucideSparkles, LucideCalculator } fro
 const route = useRoute()
 const getRouteBaseName = useRouteBaseName()
 
+// In the order of toolPages, which the page slides follow
 const tools = [
   { route: 'food-search', label: 'app.search', icon: LucideSearch },
   { route: 'barcode-scanner', label: 'app.scanner', icon: LucideScanBarcode },
@@ -14,8 +15,7 @@ const tools = [
 const currentTool = computed(() => getRouteBaseName(route))
 </script>
 
-<!-- Shown by the default layout above the tool pages. Its fixed height matches
-     the space the layout reserves for it. -->
+<!-- Its fixed height matches the space the default layout reserves for it -->
 <template>
   <nav class="flex h-11 gap-3 justify-center" aria-label="Tabs">
     <NuxtLink

@@ -541,10 +541,8 @@ const handleCookieConsent = (consent) => {
     <div class="pb-24 lg:pb-10 grow pt-20 lg:pt-16">
       <main>
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:py-8 lg:px-8">
-          <!-- The tool row sits above the tool pages, outside the page transition,
-               so it stays in place between tools. It comes and goes with the page
-               transition, and its space is reserved by padding instead of the row
-               itself, so it never pushes a page that is sliding. -->
+          <!-- Outside the page, so the tool row stays in place between tools. It
+               floats above its reserved space, so it never pushes a sliding page -->
           <div class="relative" :class="{ 'pt-17': showToolSwitcher }">
             <Transition name="page" @before-leave="pinToolSwitcher">
               <ToolSwitcher v-if="showToolSwitcher" class="absolute inset-x-0 top-0" />

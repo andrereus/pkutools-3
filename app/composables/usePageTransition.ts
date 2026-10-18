@@ -1,3 +1,7 @@
+// The tool pages, in the order of the tool row above them. ToolSwitcher lists
+// them in the same order.
+export const toolPages = ['food-search', 'barcode-scanner', 'ai-calculator', 'phe-calculator']
+
 // Direction of the current navigation between tab pages, set by the
 // page-direction middleware: 'forward' to a tab on the right, 'back' to one on
 // the left, null for any other navigation.
@@ -14,10 +18,9 @@ export const useToolPageShown = () => useState<boolean>('tool-page-shown', () =>
 
 let scrollQueued = false
 
-// While pages slide side by side, a leaving element is pinned where it is on
-// screen and the window jumps to the top, so the element slides out unchanged
-// while the new page slides in from its start. The jump waits until every
-// leaving element has been measured.
+// While pages slide side by side, a leaving element stays pinned where it is on
+// screen and the window jumps to the top for the new page. The jump waits until
+// every leaving element has been measured.
 export const pinLeavingElement = (el: HTMLElement) => {
   const { top, left, width } = el.getBoundingClientRect()
   Object.assign(el.style, {
