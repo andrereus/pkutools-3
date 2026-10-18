@@ -649,6 +649,59 @@ const goToday = () => {
   date.value = format(new Date(), 'yyyy-MM-dd')
 }
 
+// Swiping the day's content: left for the next day, right for the previous one.
+// A swipe is quick, mostly sideways and long enough to not be a tap or a scroll.
+const SWIPE_MIN_DISTANCE = 60
+const SWIPE_MAX_DURATION = 600
+// iOS uses swipes from the screen edges for back and forward
+const SWIPE_EDGE = 24
+let swipeStart = null
+
+// Sideways swipes on an element that scrolls sideways, such as the log on a
+// narrow screen, scroll it instead
+const scrollsSideways = (element, boundary) => {
+  for (let el = element; el && el !== boundary; el = el.parentElement) {
+    if (el.scrollWidth > el.clientWidth && /auto|scroll/.test(getComputedStyle(el).overflowX)) {
+      return true
+    }
+  }
+  return false
+}
+
+const onSwipeStart = (event) => {
+  swipeStart = null
+  if (event.touches.length !== 1) return
+  const touch = event.touches[0]
+  if (touch.clientX < SWIPE_EDGE || touch.clientX > window.innerWidth - SWIPE_EDGE) return
+  if (event.target.closest('input, textarea, select')) return
+  if (scrollsSideways(event.target, event.currentTarget)) return
+  swipeStart = { x: touch.clientX, y: touch.clientY, time: event.timeStamp }
+}
+
+const onSwipeEnd = (event) => {
+  if (!swipeStart) return
+  const touch = event.changedTouches[0]
+  const dx = touch.clientX - swipeStart.x
+  const dy = touch.clientY - swipeStart.y
+  const duration = event.timeStamp - swipeStart.time
+  swipeStart = null
+  if (duration > SWIPE_MAX_DURATION) return
+  if (Math.abs(dx) < SWIPE_MIN_DISTANCE || Math.abs(dx) < 2 * Math.abs(dy)) return
+  if (dx < 0) nextDay()
+  else prevDay()
+}
+
+const onSwipeCancel = () => {
+  swipeStart = null
+}
+
+// Which way the day moved, for the slide between days. Set before the render
+// that swaps the day, so the leaving day slides the same way.
+const dayDirection = ref('forward')
+watch(date, (newDate, oldDate) => {
+  dayDirection.value = newDate > oldDate ? 'forward' : 'back'
+})
+
 // Watchers
 watch(userIsAuthenticated, (newVal) => {
   if (!newVal) {
@@ -761,329 +814,354 @@ defineOgImage('Default', {
         </button>
       </div>
 
+      <!-- The day's progress and log. Swiping it left or right changes the day.
+           Keyed by the date, so on every day change the old day slides out while
+           the new one slides in -->
       <div
-        class="relative mb-6 py-3 px-3 rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
+        class="relative"
+        :data-day-direction="dayDirection"
+        @touchstart.passive="onSwipeStart"
+        @touchend.passive="onSwipeEnd"
+        @touchcancel.passive="onSwipeCancel"
       >
-        <!-- Header: label + view toggle (progress bars vs. circles) -->
-        <div class="flex items-center justify-between mb-2">
-          <h2
-            class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
-          >
-            {{ $t('diary.progress') }}
-          </h2>
-          <div class="flex items-center gap-2">
-            <div class="inline-flex rounded-lg bg-black/5 dark:bg-white/10 p-0.5">
-              <button
-                type="button"
-                :aria-label="$t('diary.progress-circles')"
-                :title="$t('diary.progress-circles')"
-                :aria-pressed="progressStyle === 'circles'"
-                class="rounded-md p-1.5 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
-                :class="
-                  progressStyle === 'circles'
-                    ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-                "
-                @click="setProgressStyle('circles')"
-              >
-                <LucideCircleGauge class="h-4 w-4" aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                :aria-label="$t('diary.progress-bars')"
-                :title="$t('diary.progress-bars')"
-                :aria-pressed="progressStyle === 'bars'"
-                class="rounded-md p-1.5 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
-                :class="
-                  progressStyle === 'bars'
-                    ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-                "
-                @click="setProgressStyle('bars')"
-              >
-                <LucideAlignJustify class="h-4 w-4" aria-hidden="true" />
-              </button>
-            </div>
-            <NuxtLink
-              :to="$localePath('settings')"
-              :aria-label="$t('settings.title')"
-              :title="$t('settings.title')"
-              class="rounded-md p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
-            >
-              <LucideSettings class="h-4 w-4" aria-hidden="true" />
-            </NuxtLink>
-          </div>
-        </div>
-
-        <div v-if="progressStyle === 'circles'" class="grid grid-cols-2 gap-2">
-          <div class="flex items-center gap-2 max-[400px]:gap-0 sm:justify-center sm:gap-6">
-            <template v-if="settings?.maxPhe">
-              <ClientOnly>
-                <apexchart
-                  :key="`phe-${phePercent}-${pheResult}-${circleSize}-${isDark}-${accentColor}`"
-                  type="radialBar"
-                  :width="circleSize"
-                  :height="circleSize"
-                  :options="pheCircleOptions"
-                  :series="[pheCircleSeries]"
-                />
-                <template #fallback>
-                  <div class="h-22 w-22 sm:h-23 sm:w-23" />
-                </template>
-              </ClientOnly>
-              <div class="min-w-0 sm:w-24">
-                <p class="text-sm font-medium leading-tight text-gray-900 dark:text-gray-300">
-                  {{ Math.abs(pheRemaining) }} Phe
-                </p>
-                <p class="text-sm font-medium leading-tight text-gray-500 dark:text-gray-400">
-                  {{ pheRemaining < 0 ? $t('app.over') : $t('app.left') }}
-                </p>
-              </div>
-            </template>
-            <NuxtLink
-              v-else
-              class="text-xs font-medium text-sky-600 hover:underline dark:text-sky-400"
-              :to="$localePath('settings')"
-              >{{ $t('diary.set-phe') }}</NuxtLink
-            >
-          </div>
-          <div class="flex items-center gap-2 max-[400px]:gap-0 sm:justify-center sm:gap-6">
-            <!-- Without a calorie requirement there is no ring, only the total -->
-            <ClientOnly v-if="settings?.maxKcal">
-              <apexchart
-                :key="`kcal-${kcalPercent}-${kcalResult}-${circleSize}-${isDark}-${accentColor}`"
-                type="radialBar"
-                :width="circleSize"
-                :height="circleSize"
-                :options="kcalCircleOptions"
-                :series="[kcalCircleSeries]"
-              />
-              <template #fallback>
-                <div class="h-22 w-22 sm:h-23 sm:w-23" />
-              </template>
-            </ClientOnly>
-            <div class="min-w-0 sm:w-24">
-              <template v-if="settings?.maxKcal">
-                <p class="text-sm font-medium leading-tight text-gray-900 dark:text-gray-300">
-                  {{ Math.abs(kcalRemaining) }} {{ $t('common.kcal') }}
-                </p>
-                <p class="text-sm font-medium leading-tight text-gray-500 dark:text-gray-400">
-                  {{ kcalRemaining < 0 ? $t('app.over') : $t('app.left') }}
-                </p>
-              </template>
-              <template v-else>
-                <p class="text-sm font-medium leading-tight text-gray-900 dark:text-gray-300">
-                  {{ kcalResult }} {{ $t('common.kcal') }}
-                </p>
-                <p class="text-sm font-medium leading-tight text-gray-500 dark:text-gray-400">
-                  {{ $t('app.total') }}
-                </p>
-              </template>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bars view -->
-        <div v-else class="py-2">
-          <div class="text-sm flex justify-between">
-            <span>{{ pheResult }} Phe {{ $t('app.total') }}</span>
-            <span v-if="settings?.maxPhe"
-              >{{ Math.abs(pheRemaining) }} Phe
-              {{ pheRemaining < 0 ? $t('app.over') : $t('app.left') }}</span
-            >
-            <NuxtLink
-              v-if="!settings?.maxPhe"
-              class="font-medium text-sky-600 hover:underline dark:text-sky-400"
-              :to="$localePath('settings')"
-              >{{ $t('diary.set-phe') }}</NuxtLink
-            >
-          </div>
-          <div
-            class="relative w-full rounded-full overflow-hidden h-1 mt-2"
-            :class="pheBar.over ? 'bg-sky-500' : 'bg-gray-200 dark:bg-gray-700'"
-          >
+        <Transition name="day">
+          <div :key="date">
             <div
-              class="h-full rounded-full transition-[width] duration-500 ease-out"
-              :class="pheBar.over ? 'ml-auto bg-sky-700' : 'bg-sky-500'"
-              :style="{ width: `${pheBar.width}%` }"
-            />
-          </div>
-          <div class="text-sm flex justify-between mt-2">
-            <span>{{ kcalResult }} {{ $t('common.kcal') }} {{ $t('app.total') }}</span>
-            <span v-if="settings?.maxKcal"
-              >{{ Math.abs(kcalRemaining) }} {{ $t('common.kcal') }}
-              {{ kcalRemaining < 0 ? $t('app.over') : $t('app.left') }}</span
+              class="relative mb-6 py-3 px-3 rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
             >
-          </div>
-          <!-- Without a calorie requirement only the total shows; Settings is one tap away -->
-          <div
-            v-if="settings?.maxKcal"
-            class="relative w-full rounded-full overflow-hidden h-1 mt-2"
-            :class="kcalBar.over ? 'bg-sky-500' : 'bg-gray-200 dark:bg-gray-700'"
-          >
-            <div
-              class="h-full rounded-full transition-[width] duration-500 ease-out"
-              :class="kcalBar.over ? 'ml-auto bg-sky-700' : 'bg-sky-500'"
-              :style="{ width: `${kcalBar.width}%` }"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div
-        v-if="selectedDayLog.length === 0"
-        class="mt-6 mb-6 flex flex-col items-center justify-center py-6 px-4 text-center"
-      >
-        <component
-          :is="selectedGreeting.icon"
-          class="h-8 w-8 text-sky-500 dark:text-sky-400 mb-4"
-          aria-hidden="true"
-        />
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-          <template v-if="userName">
-            <span class="ph-no-capture">
-              {{ $t(selectedGreeting.greeting, { name: userName }) }}
-            </span>
-          </template>
-          <template v-else>
-            {{ $t(selectedGreeting.greeting, { name: $t('diary.empty-state.friend') }) }}
-          </template>
-        </h2>
-        <p class="text-sm text-gray-600 dark:text-gray-400 max-w-md">
-          {{ $t(selectedGreeting.message) }}
-        </p>
-      </div>
-
-      <template v-else>
-        <!-- Heading, and the toggle for what the last column and the share bars show -->
-        <div class="flex items-center justify-between -mb-3">
-          <h2
-            class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-1"
-          >
-            {{ $t('diary.log') }}
-          </h2>
-          <div class="inline-flex rounded-lg bg-black/5 dark:bg-white/10 p-0.5">
-            <button
-              type="button"
-              :aria-pressed="shareMetric === 'phe'"
-              class="rounded-md px-2.5 py-1 text-xs font-semibold cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
-              :class="
-                shareMetric === 'phe'
-                  ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-              "
-              @click="shareMetric = 'phe'"
-            >
-              {{ $t('common.phe') }}
-            </button>
-            <button
-              type="button"
-              :aria-pressed="shareMetric === 'kcal'"
-              class="rounded-md px-2.5 py-1 text-xs font-semibold cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
-              :class="
-                shareMetric === 'kcal'
-                  ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-              "
-              @click="shareMetric = 'kcal'"
-            >
-              {{ $t('common.kcal') }}
-            </button>
-          </div>
-        </div>
-        <DataTable :headers="tableHeaders" class="mb-6">
-          <template v-for="(item, index) in selectedDayLog" :key="index">
-            <tr class="cursor-pointer border-b-0" @click="editItem(item, index)">
-              <td
-                class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6"
-              >
-                <span class="flex items-center gap-1">
-                  <img
-                    v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
-                    :src="'/images/food-icons/' + item.icon + '.svg'"
-                    onerror="this.src = '/images/food-icons/organic-food.svg'"
-                    width="25"
-                    class="food-icon"
-                    alt="Food Icon"
-                  />
-                  <img
-                    v-if="
-                      (item.icon === undefined || item.icon === null || item.icon === '') &&
-                      (item.emoji === undefined || item.emoji === null)
-                    "
-                    :src="'/images/food-icons/organic-food.svg'"
-                    width="25"
-                    class="food-icon"
-                    alt="Food Icon"
-                  />
-                  <span
-                    v-if="
-                      (item.icon === undefined || item.icon === null || item.icon === '') &&
-                      item.emoji !== undefined &&
-                      item.emoji !== null
-                    "
-                    class="ml-0.5 mr-1 text-xl inline-block align-middle leading-none"
-                  >
-                    {{ item.emoji }}
-                  </span>
-                  <!-- Name and badge share one inline block, so the badge wraps with the text -->
-                  <span class="wrap-anywhere">
-                    {{ item.name }}
-                    <span
-                      v-if="item.note"
-                      class="inline-flex items-center align-middle rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
-                      :title="item.note"
+              <!-- Header: label + view toggle (progress bars vs. circles) -->
+              <div class="flex items-center justify-between mb-2">
+                <h2
+                  class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                >
+                  {{ $t('diary.progress') }}
+                </h2>
+                <div class="flex items-center gap-2">
+                  <div class="inline-flex rounded-lg bg-black/5 dark:bg-white/10 p-0.5">
+                    <button
+                      type="button"
+                      :aria-label="$t('diary.progress-circles')"
+                      :title="$t('diary.progress-circles')"
+                      :aria-pressed="progressStyle === 'circles'"
+                      class="rounded-md p-1.5 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+                      :class="
+                        progressStyle === 'circles'
+                          ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
+                          : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                      "
+                      @click="setProgressStyle('circles')"
                     >
-                      <LucideStickyNote class="h-3.5 w-3.5" />
-                    </span>
-                  </span>
-                </span>
-              </td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-                {{ item.weight }}
-              </td>
-              <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
-                {{ item[shareMetric] }}
-              </td>
-            </tr>
-            <!-- Share of the day's Phe or Kcal across the full row: gray for the rows
-                 above, blue for this food; a small share stays a short dash. No dividers,
-                 so these lines separate the rows -->
-            <tr aria-hidden="true" class="border-b-0">
-              <!-- A gap under the last line keeps it off the table's bottom border -->
-              <td
-                colspan="3"
-                class="h-0.5"
-                :class="index === selectedDayLog.length - 1 ? 'px-0 pt-0 pb-1.5' : 'p-0'"
-              >
-                <!-- Rendered once settings have loaded, like the progress bar, so it
-                     appears at its final width instead of being scaled to the day's total first -->
-                <div v-if="store.settingsLoaded" class="flex h-0.5">
+                      <LucideCircleGauge class="h-4 w-4" aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      :aria-label="$t('diary.progress-bars')"
+                      :title="$t('diary.progress-bars')"
+                      :aria-pressed="progressStyle === 'bars'"
+                      class="rounded-md p-1.5 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+                      :class="
+                        progressStyle === 'bars'
+                          ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
+                          : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                      "
+                      @click="setProgressStyle('bars')"
+                    >
+                      <LucideAlignJustify class="h-4 w-4" aria-hidden="true" />
+                    </button>
+                  </div>
+                  <NuxtLink
+                    :to="$localePath('settings')"
+                    :aria-label="$t('settings.title')"
+                    :title="$t('settings.title')"
+                    class="rounded-md p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+                  >
+                    <LucideSettings class="h-4 w-4" aria-hidden="true" />
+                  </NuxtLink>
+                </div>
+              </div>
+
+              <div v-if="progressStyle === 'circles'" class="grid grid-cols-2 gap-2">
+                <div class="flex items-center gap-2 max-[400px]:gap-0 sm:justify-center sm:gap-6">
+                  <template v-if="settings?.maxPhe">
+                    <!-- Sized like the fallback before ApexCharts has drawn, so a new
+                         day doesn't start with a lower row -->
+                    <ClientOnly>
+                      <apexchart
+                        :key="`phe-${phePercent}-${pheResult}-${circleSize}-${isDark}-${accentColor}`"
+                        type="radialBar"
+                        :width="circleSize"
+                        :height="circleSize"
+                        :options="pheCircleOptions"
+                        :series="[pheCircleSeries]"
+                        class="h-22 w-22 shrink-0 sm:h-23 sm:w-23"
+                      />
+                      <template #fallback>
+                        <div class="h-22 w-22 sm:h-23 sm:w-23" />
+                      </template>
+                    </ClientOnly>
+                    <div class="min-w-0 sm:w-24">
+                      <p class="text-sm font-medium leading-tight text-gray-900 dark:text-gray-300">
+                        {{ Math.abs(pheRemaining) }} Phe
+                      </p>
+                      <p class="text-sm font-medium leading-tight text-gray-500 dark:text-gray-400">
+                        {{ pheRemaining < 0 ? $t('app.over') : $t('app.left') }}
+                      </p>
+                    </div>
+                  </template>
+                  <NuxtLink
+                    v-else
+                    class="text-xs font-medium text-sky-600 hover:underline dark:text-sky-400"
+                    :to="$localePath('settings')"
+                    >{{ $t('diary.set-phe') }}</NuxtLink
+                  >
+                </div>
+                <div class="flex items-center gap-2 max-[400px]:gap-0 sm:justify-center sm:gap-6">
+                  <!-- Without a calorie requirement there is no ring, only the total -->
+                  <ClientOnly v-if="settings?.maxKcal">
+                    <apexchart
+                      :key="`kcal-${kcalPercent}-${kcalResult}-${circleSize}-${isDark}-${accentColor}`"
+                      type="radialBar"
+                      :width="circleSize"
+                      :height="circleSize"
+                      :options="kcalCircleOptions"
+                      :series="[kcalCircleSeries]"
+                      class="h-22 w-22 shrink-0 sm:h-23 sm:w-23"
+                    />
+                    <template #fallback>
+                      <div class="h-22 w-22 sm:h-23 sm:w-23" />
+                    </template>
+                  </ClientOnly>
+                  <div class="min-w-0 sm:w-24">
+                    <template v-if="settings?.maxKcal">
+                      <p class="text-sm font-medium leading-tight text-gray-900 dark:text-gray-300">
+                        {{ Math.abs(kcalRemaining) }} {{ $t('common.kcal') }}
+                      </p>
+                      <p class="text-sm font-medium leading-tight text-gray-500 dark:text-gray-400">
+                        {{ kcalRemaining < 0 ? $t('app.over') : $t('app.left') }}
+                      </p>
+                    </template>
+                    <template v-else>
+                      <p class="text-sm font-medium leading-tight text-gray-900 dark:text-gray-300">
+                        {{ kcalResult }} {{ $t('common.kcal') }}
+                      </p>
+                      <p class="text-sm font-medium leading-tight text-gray-500 dark:text-gray-400">
+                        {{ $t('app.total') }}
+                      </p>
+                    </template>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bars view -->
+              <div v-else class="py-2">
+                <div class="text-sm flex justify-between">
+                  <span>{{ pheResult }} Phe {{ $t('app.total') }}</span>
+                  <span v-if="settings?.maxPhe"
+                    >{{ Math.abs(pheRemaining) }} Phe
+                    {{ pheRemaining < 0 ? $t('app.over') : $t('app.left') }}</span
+                  >
+                  <NuxtLink
+                    v-if="!settings?.maxPhe"
+                    class="font-medium text-sky-600 hover:underline dark:text-sky-400"
+                    :to="$localePath('settings')"
+                    >{{ $t('diary.set-phe') }}</NuxtLink
+                  >
+                </div>
+                <div
+                  class="relative w-full rounded-full overflow-hidden h-1 mt-2"
+                  :class="pheBar.over ? 'bg-sky-500' : 'bg-gray-200 dark:bg-gray-700'"
+                >
                   <div
-                    class="shrink-0 bg-gray-200 dark:bg-gray-700 transition-[width] duration-500 ease-out"
-                    :style="{ width: `${shareSegments[index].start}%` }"
-                  />
-                  <div
-                    class="shrink-0 bg-sky-500 transition-[width] duration-500 ease-out"
-                    :class="{
-                      'rounded-r-full': !shareSegments[index].over,
-                      'min-w-1.5': shareSegments[index].under > 0 && !shareSegments[index].over
-                    }"
-                    :style="{ width: `${shareSegments[index].under}%` }"
-                  />
-                  <div
-                    class="shrink-0 rounded-r-full bg-sky-700 transition-[width] duration-500 ease-out"
-                    :class="{
-                      'min-w-1.5': shareSegments[index].over > 0 && !shareSegments[index].under
-                    }"
-                    :style="{ width: `${shareSegments[index].over}%` }"
+                    class="h-full rounded-full transition-[width] duration-500 ease-out"
+                    :class="pheBar.over ? 'ml-auto bg-sky-700' : 'bg-sky-500'"
+                    :style="{ width: `${pheBar.width}%` }"
                   />
                 </div>
-              </td>
-            </tr>
-          </template>
-        </DataTable>
-      </template>
+                <div class="text-sm flex justify-between mt-2">
+                  <span>{{ kcalResult }} {{ $t('common.kcal') }} {{ $t('app.total') }}</span>
+                  <span v-if="settings?.maxKcal"
+                    >{{ Math.abs(kcalRemaining) }} {{ $t('common.kcal') }}
+                    {{ kcalRemaining < 0 ? $t('app.over') : $t('app.left') }}</span
+                  >
+                </div>
+                <!-- Without a calorie requirement only the total shows; Settings is one tap away -->
+                <div
+                  v-if="settings?.maxKcal"
+                  class="relative w-full rounded-full overflow-hidden h-1 mt-2"
+                  :class="kcalBar.over ? 'bg-sky-500' : 'bg-gray-200 dark:bg-gray-700'"
+                >
+                  <div
+                    class="h-full rounded-full transition-[width] duration-500 ease-out"
+                    :class="kcalBar.over ? 'ml-auto bg-sky-700' : 'bg-sky-500'"
+                    :style="{ width: `${kcalBar.width}%` }"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div
+              v-if="selectedDayLog.length === 0"
+              class="mt-6 mb-6 flex flex-col items-center justify-center py-6 px-4 text-center"
+            >
+              <component
+                :is="selectedGreeting.icon"
+                class="h-8 w-8 text-sky-500 dark:text-sky-400 mb-4"
+                aria-hidden="true"
+              />
+              <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                <template v-if="userName">
+                  <span class="ph-no-capture">
+                    {{ $t(selectedGreeting.greeting, { name: userName }) }}
+                  </span>
+                </template>
+                <template v-else>
+                  {{ $t(selectedGreeting.greeting, { name: $t('diary.empty-state.friend') }) }}
+                </template>
+              </h2>
+              <p class="text-sm text-gray-600 dark:text-gray-400 max-w-md">
+                {{ $t(selectedGreeting.message) }}
+              </p>
+            </div>
+
+            <template v-else>
+              <!-- Heading, and the toggle for what the last column and the share bars show -->
+              <div class="flex items-center justify-between -mb-3">
+                <h2
+                  class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-1"
+                >
+                  {{ $t('diary.log') }}
+                </h2>
+                <div class="inline-flex rounded-lg bg-black/5 dark:bg-white/10 p-0.5">
+                  <button
+                    type="button"
+                    :aria-pressed="shareMetric === 'phe'"
+                    class="rounded-md px-2.5 py-1 text-xs font-semibold cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+                    :class="
+                      shareMetric === 'phe'
+                        ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                    "
+                    @click="shareMetric = 'phe'"
+                  >
+                    {{ $t('common.phe') }}
+                  </button>
+                  <button
+                    type="button"
+                    :aria-pressed="shareMetric === 'kcal'"
+                    class="rounded-md px-2.5 py-1 text-xs font-semibold cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+                    :class="
+                      shareMetric === 'kcal'
+                        ? 'bg-white dark:bg-gray-700 text-sky-600 dark:text-sky-400 shadow-sm'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                    "
+                    @click="shareMetric = 'kcal'"
+                  >
+                    {{ $t('common.kcal') }}
+                  </button>
+                </div>
+              </div>
+              <DataTable :headers="tableHeaders" class="mb-6">
+                <template v-for="(item, index) in selectedDayLog" :key="index">
+                  <tr class="cursor-pointer border-b-0" @click="editItem(item, index)">
+                    <td
+                      class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-gray-300 sm:pl-6"
+                    >
+                      <span class="flex items-center gap-1">
+                        <img
+                          v-if="item.icon !== undefined && item.icon !== null && item.icon !== ''"
+                          :src="'/images/food-icons/' + item.icon + '.svg'"
+                          onerror="this.src = '/images/food-icons/organic-food.svg'"
+                          width="25"
+                          class="food-icon"
+                          alt="Food Icon"
+                        />
+                        <img
+                          v-if="
+                            (item.icon === undefined || item.icon === null || item.icon === '') &&
+                            (item.emoji === undefined || item.emoji === null)
+                          "
+                          :src="'/images/food-icons/organic-food.svg'"
+                          width="25"
+                          class="food-icon"
+                          alt="Food Icon"
+                        />
+                        <span
+                          v-if="
+                            (item.icon === undefined || item.icon === null || item.icon === '') &&
+                            item.emoji !== undefined &&
+                            item.emoji !== null
+                          "
+                          class="ml-0.5 mr-1 text-xl inline-block align-middle leading-none"
+                        >
+                          {{ item.emoji }}
+                        </span>
+                        <!-- Name and badge share one inline block, so the badge wraps with the text -->
+                        <span class="wrap-anywhere">
+                          {{ item.name }}
+                          <span
+                            v-if="item.note"
+                            class="inline-flex items-center align-middle rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
+                            :title="item.note"
+                          >
+                            <LucideStickyNote class="h-3.5 w-3.5" />
+                          </span>
+                        </span>
+                      </span>
+                    </td>
+                    <td
+                      class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400"
+                    >
+                      {{ item.weight }}
+                    </td>
+                    <td
+                      class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400"
+                    >
+                      {{ item[shareMetric] }}
+                    </td>
+                  </tr>
+                  <!-- Share of the day's Phe or Kcal across the full row: gray for the rows
+                 above, blue for this food; a small share stays a short dash. No dividers,
+                 so these lines separate the rows -->
+                  <tr aria-hidden="true" class="border-b-0">
+                    <!-- A gap under the last line keeps it off the table's bottom border -->
+                    <td
+                      colspan="3"
+                      class="h-0.5"
+                      :class="index === selectedDayLog.length - 1 ? 'px-0 pt-0 pb-1.5' : 'p-0'"
+                    >
+                      <!-- Rendered once settings have loaded, like the progress bar, so it
+                     appears at its final width instead of being scaled to the day's total first -->
+                      <div v-if="store.settingsLoaded" class="flex h-0.5">
+                        <div
+                          class="shrink-0 bg-gray-200 dark:bg-gray-700 transition-[width] duration-500 ease-out"
+                          :style="{ width: `${shareSegments[index].start}%` }"
+                        />
+                        <div
+                          class="shrink-0 bg-sky-500 transition-[width] duration-500 ease-out"
+                          :class="{
+                            'rounded-r-full': !shareSegments[index].over,
+                            'min-w-1.5':
+                              shareSegments[index].under > 0 && !shareSegments[index].over
+                          }"
+                          :style="{ width: `${shareSegments[index].under}%` }"
+                        />
+                        <div
+                          class="shrink-0 rounded-r-full bg-sky-700 transition-[width] duration-500 ease-out"
+                          :class="{
+                            'min-w-1.5':
+                              shareSegments[index].over > 0 && !shareSegments[index].under
+                          }"
+                          :style="{ width: `${shareSegments[index].over}%` }"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </DataTable>
+            </template>
+          </div>
+        </Transition>
+      </div>
 
       <ModalDialog
         ref="dialog2"
@@ -1223,5 +1301,60 @@ defineOgImage('Default', {
 .food-icon {
   vertical-align: bottom;
   display: inline-block;
+}
+
+/* Between days the old day slides out one screen width while the new one slides
+   in from the other side, like the pages between tabs. The leaving day is taken
+   out of the flow where it is, so the new day takes its place. */
+.day-enter-active,
+.day-leave-active {
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.day-leave-active {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+}
+
+[data-day-direction='forward'] .day-enter-from,
+[data-day-direction='back'] .day-leave-to {
+  transform: translateX(100vw);
+}
+
+[data-day-direction='forward'] .day-leave-to,
+[data-day-direction='back'] .day-enter-from {
+  transform: translateX(-100vw);
+}
+
+/* On wide screens, like the pages, the days don't slide across the screen.
+   They shift a little and cross-fade. */
+@media (min-width: 1024px) {
+  .day-enter-active {
+    transition:
+      opacity 0.2s ease-out,
+      transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .day-leave-active {
+    transition: opacity 0.12s ease-out;
+  }
+
+  [data-day-direction] .day-enter-from {
+    opacity: 0;
+  }
+
+  [data-day-direction='forward'] .day-enter-from {
+    transform: translateX(24px);
+  }
+
+  [data-day-direction='back'] .day-enter-from {
+    transform: translateX(-24px);
+  }
+
+  [data-day-direction] .day-leave-to {
+    opacity: 0;
+    transform: none;
+  }
 }
 </style>

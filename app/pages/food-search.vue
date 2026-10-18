@@ -451,44 +451,6 @@ defineOgImage('Default', {
 
 <template>
   <div>
-    <div v-if="userIsAuthenticated" class="block mb-6">
-      <nav class="flex gap-3 justify-center" aria-label="Tabs">
-        <NuxtLink
-          :to="$localePath('food-search')"
-          :title="$t('app.search')"
-          class="bg-black/5 dark:bg-white/15 text-gray-700 rounded-xl p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
-          aria-current="page"
-        >
-          <LucideSearch class="h-5 w-5" />
-          <span class="hidden sm:inline">{{ $t('app.search') }}</span>
-        </NuxtLink>
-        <NuxtLink
-          :to="$localePath('barcode-scanner')"
-          :title="$t('app.scanner')"
-          class="text-gray-500 hover:text-gray-700 rounded-xl p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
-        >
-          <LucideScanBarcode class="h-5 w-5" />
-          <span class="hidden sm:inline">{{ $t('app.scanner') }}</span>
-        </NuxtLink>
-        <NuxtLink
-          :to="$localePath('ai-calculator')"
-          :title="$t('app.ai-calculator')"
-          class="text-gray-500 hover:text-gray-700 rounded-xl p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
-        >
-          <LucideSparkles class="h-5 w-5" />
-          <span class="hidden sm:inline">{{ $t('app.ai-calculator') }}</span>
-        </NuxtLink>
-        <NuxtLink
-          :to="$localePath('phe-calculator')"
-          :title="$t('app.calculator')"
-          class="text-gray-500 hover:text-gray-700 rounded-xl p-3 dark:text-gray-300 inline-flex items-center gap-2 text-sm font-medium"
-        >
-          <LucideCalculator class="h-5 w-5" />
-          <span class="hidden sm:inline">{{ $t('app.calculator') }}</span>
-        </NuxtLink>
-      </nav>
-    </div>
-
     <header>
       <PageHeader :title="$t('food-search.title')" />
     </header>

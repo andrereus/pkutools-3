@@ -39,6 +39,13 @@ const userIsAuthenticated = computed(() => store.user !== null)
 const userPhotoUrl = computed(() => (store.user ? store.user.photoUrl : null))
 const user = computed(() => store.user)
 
+const pageDirection = usePageDirection()
+const toolPageShown = useToolPageShown()
+const showToolSwitcher = computed(() => userIsAuthenticated.value && toolPageShown.value)
+const pinToolSwitcher = (el) => {
+  if (pageDirection.value) pinLeavingElement(el)
+}
+
 const navigation = computed(() => {
   return [
     { name: 'app.start', icon: 'LucideHouse', route: 'index' },
@@ -534,7 +541,16 @@ const handleCookieConsent = (consent) => {
     <div class="pb-24 lg:pb-10 grow pt-20 lg:pt-16">
       <main>
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:py-8 lg:px-8">
-          <slot />
+          <!-- The tool row sits above the tool pages, outside the page transition,
+               so it stays in place between tools. It comes and goes with the page
+               transition, and its space is reserved by padding instead of the row
+               itself, so it never pushes a page that is sliding. -->
+          <div class="relative" :class="{ 'pt-17': showToolSwitcher }">
+            <Transition name="page" @before-leave="pinToolSwitcher">
+              <ToolSwitcher v-if="showToolSwitcher" class="absolute inset-x-0 top-0" />
+            </Transition>
+            <slot />
+          </div>
         </div>
       </main>
     </div>
