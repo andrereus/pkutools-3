@@ -45,8 +45,10 @@ const pageTransition = computed(() => ({
     transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* A leaving page still shows while it slides out, but no longer takes taps */
 .page-leave-active {
   transition: none;
+  pointer-events: none;
 }
 
 .page-enter-from {

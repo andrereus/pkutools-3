@@ -54,7 +54,8 @@ export const useStore = defineStore('main', {
     pheDiaryLoaded: false,
     labValuesLoaded: false,
     ownFoodLoaded: false,
-    // True once a user data listener was refused. Views stop waiting then and
+    // True once the user data listeners couldn't be set up or one was refused.
+    // Views stop waiting then and
     // show what they have; the loaded flags stay false, so nothing that checks
     // settingsLoaded decides against the local defaults.
     userDataFailed: false,
@@ -114,7 +115,12 @@ export const useStore = defineStore('main', {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           this.autoSignIn(user)
-          this.initRef()
+          try {
+            this.initRef()
+          } catch (error) {
+            console.error('Failed to load user data:', error)
+            this.userDataFailed = true
+          }
         } else {
           this.unsubscribeAll()
           this.user = null

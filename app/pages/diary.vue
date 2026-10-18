@@ -1305,7 +1305,8 @@ defineOgImage('Default', {
 
 /* Between days the old day slides out one screen width while the new one slides
    in from the other side, like the pages between tabs. The leaving day is taken
-   out of the flow where it is, so the new day takes its place. */
+   out of the flow where it is, so the new day takes its place, and taps go
+   through it to the new day. */
 .day-enter-active,
 .day-leave-active {
   transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
@@ -1315,6 +1316,7 @@ defineOgImage('Default', {
   position: absolute;
   inset-inline: 0;
   top: 0;
+  pointer-events: none;
 }
 
 [data-day-direction='forward'] .day-enter-from,

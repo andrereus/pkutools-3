@@ -555,6 +555,10 @@ watch(
   () => [pendingEditKey.value, ownFoodLoading.value],
   ([key, loading]) => {
     if (!key || loading) return
+    // The page arrives at the scroll position of the previous page and only goes
+    // to the top later. The dialog scrolls back on close (on iOS) to where it
+    // opened, so the page goes to the top first.
+    window.scrollTo({ top: 0, behavior: 'instant' })
     const opened = openEditDialogForEntryKey(key)
     pendingEditKey.value = null
     if (!opened && route.query.edit) {
