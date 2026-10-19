@@ -22,8 +22,16 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const route = useRoute()
 const { voteCommunityFood } = useApi()
-const { items, notices, commentEntries, showHiddenFoods, hasHiddenFoods, userIsAuthenticated } =
-  useNews()
+const { authorLabel, isOfficial } = useCommunityAuthor()
+const {
+  items,
+  notices,
+  postNotices,
+  commentEntries,
+  showHiddenFoods,
+  hasHiddenFoods,
+  userIsAuthenticated
+} = useNews()
 const seenState = useNewsSeen()
 
 const userId = computed(() => store.user?.id ?? null)
@@ -33,8 +41,16 @@ const expandedComments = ref({})
 // Keep the notice preview compact. Expanding lasts only for this page visit.
 const NOTICE_PREVIEW_COUNT = 3
 const showAllNotices = ref(false)
+// Food notices stay until the contributor acts. A post notice is a reply the
+// author has not seen yet, so it lasts for the visit in which it was unread.
+const unreadPostNotices = computed(() =>
+  postNotices.value.filter((notice) =>
+    isItemUnread({ key: notice.key, createdAt: notice.pendingCommentAt })
+  )
+)
+const allNotices = computed(() => [...notices.value, ...unreadPostNotices.value])
 const sortedNotices = computed(() =>
-  [...notices.value].sort(
+  [...allNotices.value].sort(
     (left, right) => (right.pendingCommentAt ?? 0) - (left.pendingCommentAt ?? 0)
   )
 )
@@ -42,8 +58,10 @@ const visibleNotices = computed(() =>
   showAllNotices.value ? sortedNotices.value : sortedNotices.value.slice(0, NOTICE_PREVIEW_COUNT)
 )
 const additionalNoticeCount = computed(() =>
-  Math.max(0, notices.value.length - NOTICE_PREVIEW_COUNT)
+  Math.max(0, allNotices.value.length - NOTICE_PREVIEW_COUNT)
 )
+const noticeTarget = (notice) =>
+  notice.postKey ? `post-${notice.postKey}` : `food-${notice.foodKey}`
 
 // The API also rejects votes on the contributor's own food.
 const canVote = (item) => userIsAuthenticated.value && !!item.food && !item.isOwn
@@ -57,7 +75,7 @@ const selectedFilter = ref('all')
 const filterDefinitions = [
   { key: 'all', label: 'news.filter-all' },
   { key: 'note', label: 'news.filter-app' },
-  { key: 'food-shared', label: 'news.filter-community' },
+  { key: 'community', label: 'news.filter-community' },
   { key: 'streak', label: 'news.filter-personal' }
 ]
 
@@ -68,9 +86,9 @@ const availableFilters = computed(() =>
   filterDefinitions.filter(
     (filter) =>
       filter.key === 'all' ||
-      (filter.key === 'food-shared'
-        ? showCommunityFilter.value && items.value.some((item) => item.kind === filter.key)
-        : items.value.some((item) => item.kind === filter.key))
+      (filter.key === 'community'
+        ? showCommunityFilter.value
+        : filterNewsItems(items.value, filter.key).length > 0)
   )
 )
 const filteredItems = computed(() =>
@@ -120,11 +138,13 @@ const foodNoticeFor = (key) =>
     (notice) => `food-${notice.foodKey}` === key && notice.language === locale.value
   )
 
-const revealFood = async (key) => {
+const isRevealable = (item) => !!(item.food || item.post)
+
+const revealCard = async (key) => {
   // A contributor notice remains accessible with the toggle off. Following
   // its link reveals the food and makes the toggle reflect that choice.
   if (foodNoticeFor(key)?.isHidden) showHiddenFoods.value = true
-  if (!items.value.some((item) => item.key === key && item.food)) return
+  if (!items.value.some((item) => item.key === key && isRevealable(item))) return
   selectedFilter.value = 'all'
   // Let the filter's pagination reset finish before extending the visible list.
   await nextTick()
@@ -143,7 +163,7 @@ const viewNotice = (event, notice) => {
   // clicks follow the localized link and are handled by the hash watcher.
   if (
     notice.language !== locale.value ||
-    route.hash !== `#food-${notice.foodKey}` ||
+    route.hash !== `#${noticeTarget(notice)}` ||
     event.button !== 0 ||
     event.metaKey ||
     event.ctrlKey ||
@@ -152,7 +172,7 @@ const viewNotice = (event, notice) => {
   )
     return
   event.preventDefault()
-  void revealFood(`food-${notice.foodKey}`)
+  void revealCard(noticeTarget(notice))
 }
 
 onMounted(() => {
@@ -164,15 +184,19 @@ onMounted(() => {
     }
   )
   // A localized link can arrive before authentication/data restoration. Wait
-  // for its food, then reveal it once; later votes must not steal focus again.
+  // for its card, then reveal it once; later votes must not steal focus again.
   watch(
     [() => route.hash, items, notices],
     ([hash]) => {
-      if (!hash.startsWith('#food-') || hash === revealedHash) return
+      if (!(hash.startsWith('#food-') || hash.startsWith('#post-')) || hash === revealedHash) return
       const key = hash.slice(1)
-      if (!items.value.some((item) => item.key === key && item.food) && !foodNoticeFor(key)) return
+      if (
+        !items.value.some((item) => item.key === key && isRevealable(item)) &&
+        !foodNoticeFor(key)
+      )
+        return
       revealedHash = hash
-      void revealFood(key)
+      void revealCard(key)
     },
     { immediate: true }
   )
@@ -181,6 +205,9 @@ onMounted(() => {
 const titleFor = (item) => {
   if (item.kind === 'note') return item.title
   if (item.kind === 'streak') return t('news.streak-title', { days: item.count })
+  if (item.kind === 'post') {
+    return authorLabel(item.post.authorId, userId.value)
+  }
   return item.food.name
 }
 const bodyFor = (item) => {
@@ -194,6 +221,7 @@ const metaLabelFor = (item) => {
   if (item.kind === 'food-shared') {
     return item.isOwn ? t('news.your-contribution') : t('news.community')
   }
+  if (item.kind === 'post') return t('news.post')
   return t('news.only-you')
 }
 // Render authored text without v-html while turning bare HTTPS URLs into links.
@@ -252,6 +280,7 @@ const formatDate = (item) => {
 const emojiFor = (item) => {
   if (item.kind === 'note') return { new: '✨', improved: '🔧', tip: '💡' }[item.category]
   if (item.kind === 'streak') return '🔥'
+  if (item.kind === 'post') return '💬'
   return item.food.emoji || '🌱'
 }
 
@@ -331,26 +360,32 @@ defineOgImage('Default', {
       <PrimaryButton :text="$t('sign-in.title')" @click="navigateTo(localePath('sign-in'))" />
     </div>
 
+    <NewsPostComposer v-if="userIsAuthenticated" @posted="selectedFilter = 'all'" />
+
     <!-- Derived account notices appear above chronological entries. -->
-    <div v-if="notices.length" class="mb-4 space-y-2">
+    <div v-if="allNotices.length" class="mb-4 space-y-2">
       <NuxtLink
         v-for="notice in visibleNotices"
         :key="notice.key"
-        :to="localePath({ name: 'news', hash: `#food-${notice.foodKey}` }, notice.language)"
+        :to="localePath({ name: 'news', hash: `#${noticeTarget(notice)}` }, notice.language)"
         class="block rounded-lg bg-amber-50 px-3 py-2 text-sm text-gray-700 ring-1 ring-amber-200 hover:ring-amber-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:bg-amber-950/30 dark:text-gray-300 dark:ring-amber-900"
         @click="viewNotice($event, notice)"
       >
         <span class="font-medium break-words text-gray-900 dark:text-white"
           >{{ notice.name }}:</span
         >
-        <span v-if="notice.pendingCommentAt">{{ ' ' + $t('news.notice-own-comment-text') }}</span>
+        <span v-if="notice.postKey">{{ ' ' + $t('news.notice-post-comment-text') }}</span>
+        <span v-else-if="notice.pendingCommentAt">
+          {{ ' ' + $t('news.notice-own-comment-text') }}
+        </span>
         <span v-if="notice.hasNegativeFeedback">
           {{ ' ' + $t('news.notice-own-flag-text', { count: notice.netDislikes }) }}
         </span>
         <span v-if="notice.isHidden">{{ ' ' + $t('news.notice-own-flag-hidden') }}</span>
         {{ ' ' }}
         <span class="inline-block font-medium text-sky-600 dark:text-sky-400">
-          {{ $t('news.notice-own-flag-action') }} →
+          {{ notice.postKey ? $t('news.notice-post-action') : $t('news.notice-own-flag-action') }}
+          →
         </span>
       </NuxtLink>
       <button
@@ -363,7 +398,7 @@ defineOgImage('Default', {
         {{
           showAllNotices
             ? $t('news.fewer-notices')
-            : $t('news.more-notices', { count: notices.length })
+            : $t('news.more-notices', { count: allNotices.length })
         }}
       </button>
     </div>
@@ -427,6 +462,11 @@ defineOgImage('Default', {
         <div class="flex min-h-9 min-w-0 flex-1 items-center gap-2">
           <div class="min-w-0 flex-1">
             <h3 class="text-sm leading-5 font-semibold break-words text-gray-900 dark:text-white">
+              <LucideBadgeCheck
+                v-if="item.post && isOfficial(item.post.authorId)"
+                class="mb-0.5 inline h-4 w-4 text-sky-600 dark:text-sky-400"
+                aria-hidden="true"
+              />
               {{ titleFor(item) }}
               <span
                 v-if="item.isHidden"
@@ -491,6 +531,14 @@ defineOgImage('Default', {
         :current-user-id="userId"
         :busy="votingKey === item.key"
         @vote="(value) => vote(item, value)"
+      />
+
+      <NewsCommunityPost
+        v-if="item.post"
+        v-model:comments-expanded="expandedComments[item.key]"
+        :post="item.post"
+        :is-own="item.isOwn"
+        :current-user-id="userId"
       />
     </article>
 

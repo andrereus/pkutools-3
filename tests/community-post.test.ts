@@ -1,0 +1,188 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createFakeDatabase, installServerGlobals, requestEvent } from './helpers/server-harness'
+
+// Posts, likes, post comments and community names, driven end to end through
+// their routes.
+
+installServerGlobals()
+
+let fake = createFakeDatabase()
+let currentUser = 'reader-1'
+const deleteUser = vi.fn()
+
+vi.mock(import('../server/utils/firebase-admin'), () => ({
+  getAdminDatabase: () => fake.db,
+  getAdminAuth: () => ({ deleteUser })
+}))
+vi.mock(import('../server/utils/auth'), () => ({
+  getAuthenticatedUser: async () => currentUser
+}))
+
+type Route = (event: unknown) => Promise<Record<string, unknown>>
+const createPost = (await import('../server/api/community-post/index.post'))
+  .default as unknown as Route
+const deletePost = (await import('../server/api/community-post/index.delete'))
+  .default as unknown as Route
+const likePost = (await import('../server/api/community-post/like.post'))
+  .default as unknown as Route
+const saveComment = (await import('../server/api/community-post/comment.post'))
+  .default as unknown as Route
+const deleteComment = (await import('../server/api/community-post/comment.delete'))
+  .default as unknown as Route
+const deleteAccount = (await import('../server/api/settings/delete-account.post'))
+  .default as unknown as Route
+const saveName = (await import('../server/api/community-profile.post')).default as unknown as Route
+
+type Node = Record<string, Record<string, unknown>>
+const posts = () => (fake.data.communityPosts ?? {}) as Node
+const thread = (postId: string) =>
+  ((fake.data.communityPostComments as Record<string, Node> | undefined)?.[postId] ?? {}) as Node
+
+beforeEach(() => {
+  currentUser = 'reader-1'
+  fake = createFakeDatabase({
+    communityPosts: {
+      post1: { authorId: 'author-1', text: 'Hello', language: 'en', createdAt: 100, likes: 0 }
+    }
+  })
+})
+
+describe('community posts', () => {
+  it('stores a trimmed post in the writer’s language', async () => {
+    const result = await createPost(requestEvent({ post: '  Any rice cake tips?  ', locale: 'de' }))
+
+    expect(posts()[result.key as string]).toMatchObject({
+      authorId: 'reader-1',
+      text: 'Any rice cake tips?',
+      language: 'de',
+      likes: 0,
+      commentCount: 0
+    })
+  })
+
+  it('lets only the author edit a post, without moving or counting it again', async () => {
+    await expect(
+      createPost(requestEvent({ postId: 'post1', post: 'Hijacked', locale: 'en' }))
+    ).rejects.toMatchObject({ statusCode: 403 })
+
+    currentUser = 'author-1'
+    await createPost(requestEvent({ postId: 'post1', post: 'Hello again', locale: 'de' }))
+    expect(posts().post1).toMatchObject({ text: 'Hello again', language: 'en', createdAt: 100 })
+    expect(Object.keys(posts())).toEqual(['post1'])
+  })
+
+  it('stops at the daily limit without writing', async () => {
+    const recent = Object.fromEntries(
+      Array.from({ length: 10 }, (_, index) => [
+        `own-${index}`,
+        { authorId: 'reader-1', text: 'x', language: 'en', createdAt: Date.now() - 1000 }
+      ])
+    )
+    fake = createFakeDatabase({ communityPosts: recent })
+
+    await expect(
+      createPost(requestEvent({ post: 'One more', locale: 'en' }))
+    ).rejects.toMatchObject({ statusCode: 429, data: { code: 'community-post-limit' } })
+    expect(Object.keys(posts())).toHaveLength(10)
+  })
+
+  it('likes once, ignores a repeat and unlikes', async () => {
+    await likePost(requestEvent({ postId: 'post1', liked: true }))
+    await likePost(requestEvent({ postId: 'post1', liked: true }))
+    expect(posts().post1).toMatchObject({ likes: 1, likerIds: { 'reader-1': true } })
+
+    await likePost(requestEvent({ postId: 'post1', liked: false }))
+    expect(posts().post1!.likes).toBe(0)
+    expect(posts().post1).not.toHaveProperty('likerIds')
+  })
+
+  it('does not let the author like their own post', async () => {
+    currentUser = 'author-1'
+    await expect(likePost(requestEvent({ postId: 'post1', liked: true }))).rejects.toMatchObject({
+      statusCode: 403
+    })
+    expect(posts().post1!.likes).toBe(0)
+  })
+
+  it('keeps the comment count and activity in step with the thread', async () => {
+    await saveComment(requestEvent({ postId: 'post1', comment: 'Try the plain ones' }))
+    const [commentId] = Object.keys(thread('post1'))
+    expect(posts().post1).toMatchObject({ commentCount: 1 })
+    expect(posts().post1!.lastCommunityCommentAt).toEqual(expect.any(Number))
+
+    currentUser = 'someone-else'
+    await expect(deleteComment(requestEvent({ postId: 'post1', commentId }))).rejects.toMatchObject(
+      { statusCode: 403 }
+    )
+
+    currentUser = 'reader-1'
+    await deleteComment(requestEvent({ postId: 'post1', commentId }))
+    expect(thread('post1')).toEqual({})
+    expect(posts().post1).toMatchObject({ commentCount: 0 })
+    expect(posts().post1).not.toHaveProperty('lastCommunityCommentAt')
+  })
+
+  it('lets only the author delete a post, together with its comments', async () => {
+    await saveComment(requestEvent({ postId: 'post1', comment: 'Nice' }))
+
+    await expect(deletePost(requestEvent({ postId: 'post1' }))).rejects.toMatchObject({
+      statusCode: 403
+    })
+
+    currentUser = 'author-1'
+    await deletePost(requestEvent({ postId: 'post1' }))
+    expect(fake.data.communityPosts).toBeUndefined()
+    expect(fake.data.communityPostComments).toBeUndefined()
+  })
+
+  it('removes the account’s posts, name and removed content on deletion, keeping its comments elsewhere', async () => {
+    await saveComment(requestEvent({ postId: 'post1', comment: 'Thanks' }))
+    currentUser = 'author-1'
+    await createPost(requestEvent({ post: 'Second post', locale: 'en' }))
+    await saveName(requestEvent({ nickname: 'Anna' }))
+
+    fake.data.admins = { 'author-1': true }
+    fake.data.removedContent = {
+      mine: { type: 'post', key: 'old', authorId: 'author-1', removedAt: 1 },
+      theirs: { type: 'post', key: 'other', authorId: 'reader-1', removedAt: 1 }
+    }
+
+    await deleteAccount(requestEvent(undefined))
+    expect(fake.data.communityPosts).toBeUndefined()
+    expect(fake.data.communityPostComments).toBeUndefined()
+    expect(fake.data.communityProfiles).toBeUndefined()
+    expect(Object.keys(fake.data.removedContent as object)).toEqual(['theirs'])
+    expect(fake.data.admins).toBeUndefined()
+    expect(deleteUser).toHaveBeenCalledWith('author-1')
+
+    fake = createFakeDatabase({
+      communityPosts: { post1: { authorId: 'author-1', text: 'Hello', createdAt: 100 } },
+      communityPostComments: {
+        post1: { c1: { authorId: 'reader-1', text: 'Thanks', createdAt: 200 } }
+      }
+    })
+    currentUser = 'reader-1'
+    await deleteAccount(requestEvent(undefined))
+    expect(Object.keys(posts())).toEqual(['post1'])
+    expect(Object.keys(thread('post1'))).toEqual(['c1'])
+  })
+})
+
+describe('community names', () => {
+  it('stores a trimmed name and removes it again', async () => {
+    await saveName(requestEvent({ nickname: '  Anna  ' }))
+    expect(fake.data.communityProfiles).toEqual({
+      'reader-1': { nickname: 'Anna', updatedAt: expect.any(Number) }
+    })
+
+    await saveName(requestEvent({ nickname: null }))
+    expect(fake.data.communityProfiles).toBeUndefined()
+  })
+
+  it('refuses names that pass for the app or are too short', async () => {
+    for (const nickname of ['PKU Tools', 'pku-tools team', 'Admin', 'A', '\u200B\u200B\u200B']) {
+      await expect(saveName(requestEvent({ nickname }))).rejects.toMatchObject({ statusCode: 400 })
+    }
+    expect(fake.data.communityProfiles).toBeUndefined()
+  })
+})

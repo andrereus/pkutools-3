@@ -161,6 +161,7 @@ pnpm build
 - Realtime Database enabled
 - Authentication (Google + Email/Password)
 - Database rules configured (`database.rules.json`)
+- Admins: add `admins/<uid>: true` in the Realtime Database to open the admin page for that account
 - AI Logic enabled (Gemini Developer API)
 - App Check with reCAPTCHA Enterprise: site key in `FIREBASE_APP_CHECK_SITE_KEY`
 

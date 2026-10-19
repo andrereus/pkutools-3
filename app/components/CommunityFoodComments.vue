@@ -153,11 +153,13 @@ const retry = () => {
   start()
 }
 
-const authorLabel = (authorId: string) => {
-  if (authorId === props.currentUserId) return t('news.comment-author-you')
-  if (authorId === props.contributorId) return t('news.comment-author-contributor')
-  return t('news.comment-author-community')
-}
+const { authorLabel: communityAuthorLabel, isOfficial } = useCommunityAuthor()
+const authorLabel = (comment: CommunityFoodComment) =>
+  communityAuthorLabel(
+    comment.authorId,
+    props.currentUserId,
+    comment.authorId === props.contributorId ? t('news.comment-author-contributor') : null
+  )
 
 const isEditableComment = (comment: CommunityFoodComment) =>
   comment.authorId === props.currentUserId && editingCommentId.value !== comment['.key']
@@ -173,11 +175,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div
-    v-if="expanded"
-    :id="`community-comments-${foodKey}`"
-    class="mt-3 border-t border-gray-100 pt-3 dark:border-gray-800"
-  >
+  <div v-if="expanded" :id="`community-comments-${foodKey}`" class="mt-3">
     <p v-if="loading" class="text-sm text-gray-500 dark:text-gray-400">
       {{ $t('news.comments-loading') }}
     </p>
@@ -212,8 +210,20 @@ onUnmounted(() => {
             <span class="sr-only">{{ $t('news.edit-comment') }}</span>
           </button>
           <div class="flex items-start justify-between gap-3">
-            <p class="text-xs leading-4 font-semibold text-gray-500 dark:text-gray-400">
-              {{ authorLabel(comment.authorId) }}
+            <p
+              :class="[
+                'flex items-center gap-1 text-xs leading-4 font-semibold',
+                isOfficial(comment.authorId)
+                  ? 'text-sky-700 dark:text-sky-300'
+                  : 'text-gray-500 dark:text-gray-400'
+              ]"
+            >
+              <LucideBadgeCheck
+                v-if="isOfficial(comment.authorId)"
+                class="h-3.5 w-3.5"
+                aria-hidden="true"
+              />
+              {{ authorLabel(comment) }}
             </p>
             <span class="flex shrink-0 items-center gap-1 text-gray-400 dark:text-gray-500">
               <LucidePencil

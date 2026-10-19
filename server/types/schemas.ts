@@ -197,6 +197,76 @@ export const CommunityFoodCommentDeleteSchema = z.object({
 })
 
 // ============================================================================
+// Community Post Schemas
+// ============================================================================
+
+const CommunityPostKeySchema = firebaseKeySchema('Post id')
+
+// A post is shown to readers of the language it was written in, like a shared food.
+// Passing an id edits one existing post; omitting it publishes a new one.
+export const CommunityPostSchema = z.object({
+  postId: CommunityPostKeySchema.optional(),
+  post: z.string().trim().min(1, 'Post is required').max(1000, 'Post is too long'),
+  locale: z.enum(['en', 'de', 'es', 'fr'])
+})
+
+export const CommunityPostDeleteSchema = z.object({
+  postId: CommunityPostKeySchema
+})
+
+// The desired state rather than a toggle, so a repeated request changes nothing.
+export const CommunityPostLikeSchema = z.object({
+  postId: CommunityPostKeySchema,
+  liked: z.boolean()
+})
+
+export const CommunityPostCommentSchema = z.object({
+  postId: CommunityPostKeySchema,
+  commentId: CommunityFoodCommentIdSchema.optional(),
+  comment: z.string().trim().min(1, 'Comment is required').max(300, 'Comment is too long')
+})
+
+export const CommunityPostCommentDeleteSchema = z.object({
+  postId: CommunityPostKeySchema,
+  commentId: CommunityFoodCommentIdSchema
+})
+
+// The optional name shown on someone's posts and comments. Null removes it.
+export const CommunityProfileSchema = z.object({
+  nickname: z
+    .string()
+    .trim()
+    .min(2, 'Name is too short')
+    .max(30, 'Name is too long')
+    .regex(/^[^\p{Cc}]+$/u, 'Name is invalid')
+    // Visible: a name of only invisible characters would read as no name at all.
+    .regex(/[\p{L}\p{N}]/u, 'Name is invalid')
+    .nullable()
+})
+
+// ============================================================================
+// Admin Request Schemas
+// ============================================================================
+
+export const AdminCommunityFoodDeleteSchema = z.object({
+  communityFoodKey: CommunityFoodKeySchema
+})
+
+export const AdminCommunityProfileDeleteSchema = z.object({
+  userId: firebaseKeySchema('User id')
+})
+
+export const RemovedContentSchema = z.object({
+  removedId: firebaseKeySchema('Removed id')
+})
+
+export const AdminCommentDeleteSchema = z.object({
+  target: z.enum(['food', 'post']),
+  parentKey: firebaseKeySchema('Parent key'),
+  commentId: CommunityFoodCommentIdSchema
+})
+
+// ============================================================================
 // Diary Request Schemas
 // ============================================================================
 

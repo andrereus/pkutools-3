@@ -30,6 +30,8 @@ const formatConsentDate = (dateString) => {
 // Reactive state
 const selectedTheme = ref('system')
 const username = ref('')
+const communityNameDraft = ref('')
+const { current: currentCommunityName, save: saveCommunityNameDraft } = useCommunityName()
 const customizationControls = ref(null)
 
 // Computed properties
@@ -233,6 +235,16 @@ const reopenOnboarding = async () => {
   }
 }
 
+// One button for both names. The username is private; the community name is
+// public and saved only when it changed.
+const saveNames = async () => {
+  const communityNameChanged =
+    (communityNameDraft.value.trim() || null) !== currentCommunityName.value
+  const usernameChanged = (username.value?.trim() || null) !== (store.user?.name || null)
+  if (usernameChanged || !communityNameChanged) await saveUsername()
+  if (communityNameChanged) await saveCommunityNameDraft(communityNameDraft.value)
+}
+
 const saveUsername = async () => {
   try {
     const auth = getAuth()
@@ -285,6 +297,15 @@ onMounted(() => {
   // Initialize username from store (handle null/undefined as empty string for input)
   username.value = store.user?.name || ''
 })
+
+// Names arrive with the realtime listener, possibly after mount.
+watch(
+  currentCommunityName,
+  (name) => {
+    communityNameDraft.value = name ?? ''
+  },
+  { immediate: true }
+)
 
 definePageMeta({
   i18n: {
@@ -594,7 +615,16 @@ defineOgImage('Default', {
           :label="$t('settings.username')"
           class="mb-4"
         />
-        <PrimaryButton :text="$t('common.save')" @click="saveUsername" />
+        <TextInput
+          v-model="communityNameDraft"
+          id-name="community-name"
+          :label="$t('community.name')"
+          class="mb-1"
+        />
+        <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+          {{ $t('community.name-help') }}
+        </p>
+        <PrimaryButton :text="$t('common.save')" @click="saveNames" />
       </div>
 
       <!-- Account Management Section -->

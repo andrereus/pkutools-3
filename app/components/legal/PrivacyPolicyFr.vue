@@ -1,6 +1,6 @@
 <template>
   <h1>Politique de confidentialité</h1>
-  <p>Dernière mise à jour : 4 septembre 2026</p>
+  <p>Dernière mise à jour : 19 octobre 2026</p>
 
   <h2>Qui est responsable</h2>
   <p>
@@ -211,7 +211,8 @@
     l'option de partage sur cet aliment. Seul cet aliment est partagé : ce que tu as saisi à son
     sujet et la langue dans laquelle tu l'as partagé. Les commentaires que tu écris sur les aliments
     de la communauté sont également partagés. Ton nom et ton e-mail n'en font jamais partie, et rien
-    qui t'identifie n'est affiché dans l'application.
+    qui t'identifie n'est affiché dans l'application, sauf un nom dans la communauté que tu choisis
+    toi-même.
   </p>
   <p>
     Un aliment partagé porte ton identifiant interne. C'est ce qui le relie à ta propre copie, pour
@@ -227,6 +228,24 @@
     Si tu préfères ne pas laisser un aliment partagé derrière toi, supprime-le depuis Aliments
     personnels avant de supprimer ton compte : cela retire aussi l'entrée de la communauté et ses
     commentaires. Tes commentaires et évaluations sur les aliments d'autres personnes restent en
+    place.
+  </p>
+
+  <h2>Publications dans Actualités</h2>
+  <p>
+    Les publications dans Actualités sont partagées avec la communauté. Elles apparaissent dans la
+    langue dans laquelle tu les écris. Il en va de même pour tes commentaires et tes « J’aime » sur
+    les publications. Comme un aliment partagé, elles portent ton identifiant interne. Ton nom de
+    compte et ton e-mail n'en font jamais partie.
+  </p>
+  <p>
+    Tu peux ajouter un nom dans la communauté dans Actualités ou dans Paramètres. Il apparaît alors
+    sur tes publications et commentaires, y compris les plus anciens et les commentaires sur les
+    aliments. Si tu le retires, ils s'affichent de nouveau sans nom.
+  </p>
+  <p>
+    Tes publications, leurs commentaires et ton nom dans la communauté sont supprimés avec ton
+    compte. Tes commentaires et tes « J’aime » sur les publications d'autres personnes restent en
     place.
   </p>
 
@@ -253,6 +272,10 @@
   <p>
     Les aliments partagés, les évaluations et les commentaires restent, car d'autres personnes
     peuvent les utiliser.
+  </p>
+  <p>
+    Le contenu qu'un administrateur retire de la communauté est conservé 30 jours pour pouvoir être
+    restauré, puis supprimé. La suppression de ton compte le supprime immédiatement.
   </p>
 
   <h2>Tes droits</h2>

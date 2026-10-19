@@ -1,6 +1,6 @@
 <template>
   <h1>Privacy Policy</h1>
-  <p>Last updated: September 4, 2026</p>
+  <p>Last updated: October 19, 2026</p>
 
   <h2>Who is responsible</h2>
   <p>
@@ -195,7 +195,7 @@
     Your own foods are private. You can share one with the community by ticking the sharing option
     on that food. Only that food is shared: what you entered about it, and the language you shared
     it in. Comments you write on community foods are shared too. Your name and email are never part
-    of either, and nothing identifying you is shown in the app.
+    of either, and nothing identifying you is shown in the app unless you choose a community name.
   </p>
   <p>
     A shared food carries your internal user ID. That is what links it to your own copy, so you can
@@ -210,6 +210,22 @@
     If you would rather not leave a shared food behind, delete it from Own Food before deleting your
     account: that removes the community entry and its comments as well. Your comments on other
     people's foods stay where they are, as do your ratings.
+  </p>
+
+  <h2>Posts in News</h2>
+  <p>
+    Posts in News are shared with the community. They appear in the language you write them in. The
+    same goes for your comments and likes on posts. Like a shared food, they carry your internal
+    user ID. Your account name and email are never part of them.
+  </p>
+  <p>
+    You can add a community name in News or in Settings. It is then shown on your posts and
+    comments, including earlier ones and comments on foods. If you remove it, they show without a
+    name again.
+  </p>
+  <p>
+    Your posts, their comments and your community name are deleted when you delete your account.
+    Your comments and likes on other people's posts stay.
   </p>
 
   <h2>Emails</h2>
@@ -230,6 +246,10 @@
     queues for the periods set out in their privacy policies.
   </p>
   <p>Shared foods, ratings and comments stay, because other people may be using them.</p>
+  <p>
+    Content an admin removes from the community is kept for 30 days so it can be restored, then
+    deleted. Deleting your account deletes it straight away.
+  </p>
 
   <h2>Your rights</h2>
   <p>Under the GDPR you can:</p>

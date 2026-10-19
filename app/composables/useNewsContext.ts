@@ -90,9 +90,70 @@ export const communityFoodNotices = (foods: Food[], currentUserId?: string | nul
   })
 }
 
+type Post = Record<string, unknown>
+
+/** The visibility rule for posts in the feed, like the one for foods. */
+export const communityPostAppearsInNews = (post: Post, locale: string): boolean =>
+  post.language === locale &&
+  isNewsTimestamp(post.createdAt) &&
+  typeof post.text === 'string' &&
+  post.text.trim() !== ''
+
+/** Comments by others on the reader's own post, newer than the author's last reply. */
+export interface PostNotice {
+  key: string
+  postKey: string
+  language: string
+  /** The start of the post, to recognise it by. */
+  name: string
+  pendingCommentAt: number
+}
+
+const POST_NOTICE_NAME_LENGTH = 60
+
+export const communityPostNotices = (
+  posts: Post[],
+  currentUserId?: string | null
+): PostNotice[] => {
+  if (!currentUserId) return []
+  return posts.flatMap((post) => {
+    const postKey = post['.key']
+    const language = post.language
+    const lastReply = isNewsTimestamp(post.lastAuthorCommentAt) ? post.lastAuthorCommentAt : 0
+    if (
+      post.authorId !== currentUserId ||
+      typeof postKey !== 'string' ||
+      !postKey ||
+      typeof post.text !== 'string' ||
+      typeof language !== 'string' ||
+      !['en', 'de', 'es', 'fr'].includes(language) ||
+      !isNewsTimestamp(post.createdAt) ||
+      typeof post.commentCount !== 'number' ||
+      post.commentCount <= 0 ||
+      !isNewsTimestamp(post.lastCommunityCommentAt) ||
+      post.lastCommunityCommentAt <= lastReply
+    ) {
+      return []
+    }
+    const firstLine = post.text.trim().split('\n')[0]!
+    return [
+      {
+        key: `own-post-${postKey}`,
+        postKey,
+        language,
+        name:
+          firstLine.length > POST_NOTICE_NAME_LENGTH
+            ? `${firstLine.slice(0, POST_NOTICE_NAME_LENGTH).trimEnd()}…`
+            : firstLine,
+        pendingCommentAt: post.lastCommunityCommentAt
+      }
+    ]
+  })
+}
+
 export interface NewsEntry {
   key: string
-  kind: 'note' | 'food-shared' | 'streak'
+  kind: 'note' | 'food-shared' | 'post' | 'streak'
   createdAt: number
   /** Latest content edit, used for feed order, displayed dates and read state. */
   contentUpdatedAt?: number
@@ -102,7 +163,8 @@ export interface NewsEntry {
   /** Monotonic publication order, present only on release notes. */
   revision?: number
   food?: Record<string, unknown>
-  /** Shared by the current reader. */
+  post?: Record<string, unknown>
+  /** Shared or written by the current reader. */
   isOwn?: boolean
   /** Hidden from Food Search; News readers can opt in to review feedback. */
   isHidden?: boolean
@@ -130,6 +192,7 @@ export const useNewsContext = () => {
   const user = computed(() => store.user as { id?: string } | null)
   const userIsAuthenticated = computed(() => user.value !== null)
   const foods = computed(() => store.communityFoods as Food[])
+  const posts = computed(() => store.communityPosts as Post[])
   // Local to this consumer, not a saved setting. The header badge keeps the
   // default exclusion even when the News page opts in to hidden foods.
   const showHiddenFoods = ref(false)
@@ -157,6 +220,19 @@ export const useNewsContext = () => {
           isHidden: isCommunityFoodHidden(communityFoodScore(food))
         }))
     )
+  })
+
+  const postEntries = computed<NewsEntry[]>(() => {
+    if (!userIsAuthenticated.value) return []
+    return posts.value
+      .filter((post) => communityPostAppearsInNews(post, locale.value))
+      .map((post) => ({
+        key: `post-${post['.key']}`,
+        kind: 'post' as const,
+        createdAt: post.createdAt as number,
+        post,
+        isOwn: !!user.value?.id && post.authorId === user.value.id
+      }))
   })
 
   // Streak dates are calendar days. Re-evaluating at local midnight prevents a
@@ -200,20 +276,28 @@ export const useNewsContext = () => {
   // Pending feedback is independent of browser-local read state. Visiting News
   // clears its bell dot; replying or editing the food clears the comment notice.
   const notices = computed(() => communityFoodNotices(foods.value, user.value?.id))
-  const commentEntries = computed(() =>
-    notices.value.flatMap((notice) =>
+  // Post notices are shown only while unread; the page applies that rule.
+  const postNotices = computed(() => communityPostNotices(posts.value, user.value?.id))
+  const commentEntries = computed(() => [
+    ...notices.value.flatMap((notice) =>
       notice.pendingCommentAt === undefined
         ? []
         : [{ key: `comment-${notice.foodKey}`, createdAt: notice.pendingCommentAt }]
-    )
-  )
+    ),
+    ...postNotices.value.map((notice) => ({
+      key: `comment-post-${notice.postKey}`,
+      createdAt: notice.pendingCommentAt
+    }))
+  ])
 
   return {
     store,
     locale,
     foodEntries,
+    postEntries,
     milestoneEntries,
     notices,
+    postNotices,
     commentEntries,
     showHiddenFoods,
     hasHiddenFoods,

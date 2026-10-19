@@ -1,6 +1,6 @@
 <template>
   <h1>Datenschutzerklärung</h1>
-  <p>Stand: 4. September 2026</p>
+  <p>Stand: 19. Oktober 2026</p>
 
   <h2>Wer ist verantwortlich</h2>
   <p>
@@ -203,7 +203,7 @@
     indem du die Option dafür setzt. Geteilt wird nur dieses Lebensmittel: was du dazu eingetragen
     hast und die Sprache, in der du es geteilt hast. Kommentare, die du zu Community-Lebensmitteln
     schreibst, werden ebenfalls geteilt. Name und E-Mail-Adresse gehören nie dazu. In der App wird
-    nichts angezeigt, was dich identifiziert.
+    nichts angezeigt, was dich identifiziert. Ausnahme ist ein Community-Name, den du selbst wählst.
   </p>
   <p>
     Ein geteiltes Lebensmittel trägt deine interne Nutzer-ID. Sie verbindet es mit deiner eigenen
@@ -219,6 +219,23 @@
     Wenn du kein geteiltes Lebensmittel zurücklassen möchtest, lösche es vor der Kontolöschung unter
     Eigene Lebensmittel. Damit werden auch der Community-Eintrag und seine Kommentare entfernt.
     Deine Kommentare und Bewertungen zu Lebensmitteln anderer bleiben bestehen.
+  </p>
+
+  <h2>Beiträge in den Neuigkeiten</h2>
+  <p>
+    Beiträge in den Neuigkeiten werden mit der Community geteilt. Sie erscheinen in der Sprache, in
+    der du sie schreibst. Das gilt auch für deine Kommentare und Likes zu Beiträgen. Wie ein
+    geteiltes Lebensmittel tragen sie deine interne Nutzer-ID. Kontoname und E-Mail-Adresse gehören
+    nie dazu.
+  </p>
+  <p>
+    Du kannst in den Neuigkeiten oder in den Einstellungen einen Community-Namen festlegen. Er
+    erscheint dann bei deinen Beiträgen und Kommentaren, auch bei früheren und bei Kommentaren zu
+    Lebensmitteln. Entfernst du ihn, erscheinen sie wieder ohne Namen.
+  </p>
+  <p>
+    Deine Beiträge, ihre Kommentare und dein Community-Name werden mit deinem Konto gelöscht. Deine
+    Kommentare und Likes zu Beiträgen anderer bleiben bestehen.
   </p>
 
   <h2>E-Mails</h2>
@@ -239,6 +256,10 @@
     oder Löschwarteschlangen halten, für die in ihren Datenschutzerklärungen genannten Zeiträume.
   </p>
   <p>Geteilte Lebensmittel, Bewertungen und Kommentare bleiben, weil andere sie nutzen können.</p>
+  <p>
+    Inhalte, die ein Admin aus der Community entfernt, werden 30 Tage aufbewahrt. So lassen sie sich
+    wiederherstellen. Danach werden sie gelöscht. Mit deinem Konto werden sie sofort gelöscht.
+  </p>
 
   <h2>Deine Rechte</h2>
   <p>Nach der DSGVO kannst du:</p>

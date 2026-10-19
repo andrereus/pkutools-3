@@ -503,6 +503,7 @@ describe('revealing a food from a notice', () => {
 
 describe('post-type filters', () => {
   const food = (key: number) => ({ key: `food-${key}`, kind: 'food-shared' as const })
+  const post = (key: number) => ({ key: `post-${key}`, kind: 'post' as const })
   const note = { key: 'note-1', kind: 'note' as const }
   const streak = { key: 'streak-3', kind: 'streak' as const }
 
@@ -511,15 +512,20 @@ describe('post-type filters', () => {
       hasEnoughCommunityItemsForFilter([note, ...Array.from({ length: 4 }, (_, i) => food(i))])
     ).toBe(false)
     expect(
-      hasEnoughCommunityItemsForFilter([note, ...Array.from({ length: 5 }, (_, i) => food(i))])
+      hasEnoughCommunityItemsForFilter([
+        note,
+        post(1),
+        ...Array.from({ length: 4 }, (_, i) => food(i))
+      ])
     ).toBe(true)
   })
 
   it('filters the real post kinds without changing their order', () => {
-    const items = [food(1), note, streak, food(2)]
+    const items = [food(1), note, post(1), streak, food(2)]
     expect(filterNewsItems(items, 'all')).toEqual(items)
-    expect(filterNewsItems(items, 'food-shared').map((item) => item.key)).toEqual([
+    expect(filterNewsItems(items, 'community').map((item) => item.key)).toEqual([
       'food-1',
+      'post-1',
       'food-2'
     ])
     expect(filterNewsItems(items, 'note')).toEqual([note])

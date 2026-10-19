@@ -1,6 +1,6 @@
 <template>
   <h1>Nutzungsbedingungen</h1>
-  <p>Stand: 4. September 2026</p>
+  <p>Stand: 19. Oktober 2026</p>
 
   <h2>Über PKU Tools</h2>
   <p>
@@ -118,18 +118,19 @@
     wichtig ist, und achte darauf, dass deine Zielwerte stimmen.
   </p>
 
-  <h2>Lebensmittel mit der Community teilen</h2>
+  <h2>Mit der Community teilen</h2>
   <p>
-    Teile nur Angaben und verfasse nur Kommentare, die du teilen darfst und für richtig hältst. Trag
-    dabei keine persönlichen Daten ein. Mit dem Teilen eines Lebensmittels oder dem Verfassen eines
-    Kommentars räumst du dem Betreiber ein einfaches, unentgeltliches Nutzungsrecht ein, diesen
-    Inhalt zu speichern, anzuzeigen und anzupassen, solange es für den Betrieb der
-    Community-Datenbank nötig ist, auch nach der Löschung deines Kontos.
+    Teile nur Angaben und verfasse nur Beiträge und Kommentare, die du teilen darfst und für richtig
+    hältst. Trag dabei keine persönlichen Daten ein. Mit dem Teilen eines Lebensmittels oder dem
+    Verfassen eines Beitrags oder Kommentars räumst du dem Betreiber ein einfaches, unentgeltliches
+    Nutzungsrecht ein, diesen Inhalt zu speichern, anzuzeigen und anzupassen, solange es für den
+    Betrieb der Community-Datenbank nötig ist, auch nach der Löschung deines Kontos.
   </p>
   <p>
     Geteilte Einträge und Kommentare können nach der Kontolöschung verfügbar bleiben, weil andere
-    sich darauf stützen. Nicht jeder Inhalt lässt sich prüfen. Melde deshalb bitte alles, was falsch
-    ist oder nicht dort stehen sollte.
+    sich darauf stützen. Deine Beiträge werden mit deinem Konto gelöscht. Nicht jeder Inhalt lässt
+    sich prüfen. Melde deshalb bitte alles, was falsch ist oder nicht dort stehen sollte. Inhalte
+    und Community-Namen, die gegen diese Bedingungen verstoßen, können entfernt werden.
   </p>
 
   <h2>Verfügbarkeit</h2>

@@ -7,6 +7,7 @@ import { seenAfterVisit } from '../app/utils/news-grouping'
 
 const context = {
   foodEntries: ref<NewsEntry[]>([]),
+  postEntries: ref<NewsEntry[]>([]),
   milestoneEntries: ref<NewsEntry[]>([]),
   notices: ref<Notice[]>([]),
   commentEntries: ref<{ key: string; createdAt: number }[]>([])
@@ -21,6 +22,7 @@ vi.mock('../app/composables/useNewsContext', () => ({ useNewsContext: () => cont
 
 beforeEach(() => {
   context.foodEntries.value = []
+  context.postEntries.value = []
   context.milestoneEntries.value = []
   context.notices.value = []
   context.commentEntries.value = []

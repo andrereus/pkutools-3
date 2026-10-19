@@ -1,6 +1,6 @@
 <template>
   <h1>Política de privacidad</h1>
-  <p>Última actualización: 4 de septiembre de 2026</p>
+  <p>Última actualización: 19 de octubre de 2026</p>
 
   <h2>Quién es responsable</h2>
   <p>
@@ -204,7 +204,7 @@
     correspondiente en ese alimento. Solo se comparte ese alimento: lo que introdujiste sobre él y
     el idioma en el que lo compartiste. Los comentarios que escribas sobre alimentos de la comunidad
     también se comparten. Tu nombre y tu correo nunca forman parte de esos datos, y en la aplicación
-    no se muestra nada que te identifique.
+    no se muestra nada que te identifique, salvo un nombre en la comunidad que elijas tú.
   </p>
   <p>
     Un alimento compartido lleva tu identificador interno. Eso es lo que lo enlaza con tu propia
@@ -220,6 +220,23 @@
     Si prefieres no dejar atrás un alimento compartido, bórralo desde Alimentos propios antes de
     borrar tu cuenta: eso elimina también la entrada de la comunidad y sus comentarios. Tus
     comentarios y valoraciones en alimentos de otras personas permanecen donde están.
+  </p>
+
+  <h2>Publicaciones en Novedades</h2>
+  <p>
+    Las publicaciones en Novedades se comparten con la comunidad. Aparecen en el idioma en el que
+    las escribes. Lo mismo ocurre con tus comentarios y tus «me gusta» en publicaciones. Como un
+    alimento compartido, llevan tu identificador interno. Tu nombre de cuenta y tu correo nunca
+    forman parte de ellas.
+  </p>
+  <p>
+    Puedes añadir un nombre en la comunidad en Novedades o en Configuración. Entonces aparece en tus
+    publicaciones y comentarios, también en los anteriores y en los comentarios sobre alimentos. Si
+    lo quitas, vuelven a mostrarse sin nombre.
+  </p>
+  <p>
+    Tus publicaciones, sus comentarios y tu nombre en la comunidad se borran al borrar tu cuenta.
+    Tus comentarios y tus «me gusta» en publicaciones de otras personas permanecen.
   </p>
 
   <h2>Correos electrónicos</h2>
@@ -243,6 +260,10 @@
   <p>
     Los alimentos compartidos, las valoraciones y los comentarios permanecen, porque otras personas
     pueden estar usándolos.
+  </p>
+  <p>
+    El contenido que un administrador retira de la comunidad se conserva 30 días para poder
+    restaurarlo y después se borra. Al borrar tu cuenta se borra de inmediato.
   </p>
 
   <h2>Tus derechos</h2>

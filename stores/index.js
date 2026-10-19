@@ -9,8 +9,11 @@ import {
   sendPasswordResetEmail,
   updateProfile
 } from 'firebase/auth'
-import { getDatabase, ref, onValue } from 'firebase/database'
+import { getDatabase, ref, onValue, query, orderByChild, limitToLast } from 'firebase/database'
 import { defineStore } from 'pinia'
+
+// The newest posts across all languages. Older ones drop out of the feed.
+export const COMMUNITY_POSTS_LIMIT = 200
 
 const defaultSettings = {
   maxPhe: null,
@@ -60,6 +63,14 @@ export const useStore = defineStore('main', {
     // settingsLoaded decides against the local defaults.
     userDataFailed: false,
     communityFoods: [],
+    communityPosts: [],
+    // Opt-in community names by user ID, shown on posts and comments.
+    communityNames: {},
+    // Accounts whose posts and comments show as PKU Tools, by user ID.
+    adminIds: {},
+    // Only decides whether admin pages are offered; the server checks again.
+    // Null until the admin list has loaded.
+    isAdmin: null,
     unsubscribeFunctions: {}
   }),
   actions: {
@@ -217,12 +228,63 @@ export const useStore = defineStore('main', {
         }
       })
       this.unsubscribeFunctions['communityFoods'] = communityFoodsUnsubscribe
+
+      this.unsubscribeFunctions['communityPosts'] = onValue(
+        query(
+          ref(db, 'communityPosts'),
+          orderByChild('createdAt'),
+          limitToLast(COMMUNITY_POSTS_LIMIT)
+        ),
+        (snapshot) => {
+          const data = snapshot.val()
+          this.communityPosts =
+            data && typeof data === 'object'
+              ? Object.entries(data).map(([key, value]) => ({ ...value, '.key': key }))
+              : []
+        }
+      )
+
+      this.unsubscribeFunctions['communityProfiles'] = onValue(
+        ref(db, 'communityProfiles'),
+        (snapshot) => {
+          const data = snapshot.val()
+          this.communityNames = Object.fromEntries(
+            Object.entries(data && typeof data === 'object' ? data : {}).flatMap(
+              ([userId, profile]) =>
+                typeof profile?.nickname === 'string' && profile.nickname.trim()
+                  ? [[userId, profile.nickname]]
+                  : []
+            )
+          )
+        }
+      )
+
+      this.unsubscribeFunctions['admins'] = onValue(
+        ref(db, 'admins'),
+        (snapshot) => {
+          const data = snapshot.val()
+          this.adminIds = Object.fromEntries(
+            Object.entries(data && typeof data === 'object' ? data : {}).filter(
+              ([, value]) => value === true
+            )
+          )
+          this.isAdmin = this.adminIds[userId] === true
+        },
+        () => {
+          this.adminIds = {}
+          this.isAdmin = false
+        }
+      )
     },
     resetUserData() {
       this.pheDiary = []
       this.labValues = []
       this.ownFood = []
       this.communityFoods = []
+      this.communityPosts = []
+      this.communityNames = {}
+      this.adminIds = {}
+      this.isAdmin = null
       this.settings = { ...defaultSettings }
       this.settingsLoaded = false
       this.pheDiaryLoaded = false

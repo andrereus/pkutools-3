@@ -18,22 +18,33 @@ export interface SeenState {
   lastSeenRevision: number | null
 }
 
-export type NewsPostFilter = 'all' | 'note' | 'food-shared' | 'streak'
+export type NewsPostFilter = 'all' | 'note' | 'community' | 'streak'
+
+type NewsKind = 'note' | 'food-shared' | 'post' | 'streak'
 
 interface FilterableNewsItem {
-  kind: Exclude<NewsPostFilter, 'all'>
+  kind: NewsKind
+}
+
+// Shared foods and posts are both the community's.
+const FILTER_KINDS: Record<Exclude<NewsPostFilter, 'all'>, readonly NewsKind[]> = {
+  note: ['note'],
+  community: ['food-shared', 'post'],
+  streak: ['streak']
 }
 
 export const NEWS_PAGE_SIZE = 20
 export const MIN_COMMUNITY_ITEMS_FOR_NEWS_FILTER = 5
 
 export const hasEnoughCommunityItemsForFilter = (items: readonly FilterableNewsItem[]): boolean =>
-  items.filter((item) => item.kind === 'food-shared').length >= MIN_COMMUNITY_ITEMS_FOR_NEWS_FILTER
+  items.filter((item) => FILTER_KINDS.community.includes(item.kind)).length >=
+  MIN_COMMUNITY_ITEMS_FOR_NEWS_FILTER
 
 export const filterNewsItems = <T extends FilterableNewsItem>(
   items: readonly T[],
   filter: NewsPostFilter
-): T[] => (filter === 'all' ? [...items] : items.filter((item) => item.kind === filter))
+): T[] =>
+  filter === 'all' ? [...items] : items.filter((item) => FILTER_KINDS[filter].includes(item.kind))
 
 export const emptySeen = (): SeenState => ({ lastReadAt: null, lastSeenRevision: null })
 

@@ -12,6 +12,10 @@ const unsubscribes = new Map<string, ReturnType<typeof vi.fn>>()
 vi.mock(import('firebase/database'), () => ({
   getDatabase: () => ({}),
   ref: (_db: unknown, path: string) => ({ path }),
+  // Queries keep the path of the ref they narrow.
+  query: (dbRef: { path: string }) => dbRef,
+  orderByChild: vi.fn(),
+  limitToLast: vi.fn(),
   onValue: (dbRef: { path: string }, callback: Listener) => {
     listeners.set(dbRef.path, callback)
     const unsubscribe = vi.fn()
@@ -138,7 +142,10 @@ describe('store account switching', () => {
 
     const firstRound = new Map(unsubscribes)
     expect([...firstRound.keys()].sort()).toEqual([
+      'admins',
       'communityFoods',
+      'communityPosts',
+      'communityProfiles',
       'user-1/labValues',
       'user-1/ownFood',
       'user-1/pheDiary',

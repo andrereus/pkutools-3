@@ -19,7 +19,8 @@ import {
   LucidePlus,
   LucideSparkles,
   LucideNewspaper,
-  LucideBell
+  LucideBell,
+  LucideShield
 } from '@lucide/vue'
 
 const store = useStore()
@@ -94,6 +95,9 @@ const userNavigation = computed(() => {
   return [
     { name: 'settings.title', icon: 'LucideSettings', route: 'settings' },
     { name: 'news.title', icon: 'LucideNewspaper', route: 'news' },
+    ...(store.isAdmin === true
+      ? [{ name: 'app.admin', icon: 'LucideShield', route: 'admin' }]
+      : []),
     { name: 'help.title', icon: 'LucideLifeBuoy', route: 'help' },
     { name: 'imprint.title', icon: 'LucideInfo', route: 'imprint' },
     { name: 'terms.title', icon: 'LucideInfo', route: 'terms-of-service' },
@@ -211,7 +215,8 @@ const iconMap = {
   LucideChartLine,
   LucidePlus,
   LucideSparkles,
-  LucideNewspaper
+  LucideNewspaper,
+  LucideShield
 }
 
 const handleCookieConsent = (consent) => {

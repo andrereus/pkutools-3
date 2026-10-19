@@ -7,8 +7,7 @@ import {
   isCommunityFoodHidden,
   isShareableSource
 } from '../utils/community-food'
-import { foodSourceLabel } from '../utils/food-source-label'
-import { roundReference, scaleToWeight, nutrientRows, isReported } from '../utils/nutrition'
+import { roundReference, scaleToWeight, isReported } from '../utils/nutrition'
 
 const store = useStore()
 const { t, locale } = useI18n()
@@ -54,6 +53,7 @@ const showCommunity = ref(true)
 const sourceRefs = { usda: showUsda, bls: showBls, own: showOwn, community: showCommunity }
 const isSaving = ref(false)
 const isVoting = ref(false)
+const commentsExpanded = ref(false)
 const kcalReference = ref(null)
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const note = ref(null)
@@ -93,6 +93,13 @@ const currentCommunityFood = computed(() => {
   if (!key) return null
   return communityFoods.value.find((f) => f['.key'] === key) || null
 })
+
+// The reader's own shared food is edited in Own Food
+const ownFoodEditPath = computed(() =>
+  isSharedOwnFood.value && selectedOwnFoodKey.value
+    ? `${localePath('own-food')}?edit=${encodeURIComponent(selectedOwnFoodKey.value)}`
+    : null
+)
 
 // Get user's vote for current community food (stored in voterIds on the community food)
 const currentUserVote = computed(() => {
@@ -137,6 +144,7 @@ const loadItem = (item) => {
   foodAddedFrom.value = item.isCommunityFood ? 'community' : item.isOwnFood ? 'own-food' : null
   note.value = item.note || null
   selectedDate.value = format(new Date(), 'yyyy-MM-dd')
+  commentsExpanded.value = false
   dialog.value.openDialog()
 }
 
@@ -144,23 +152,15 @@ const calculatePhe = () => scaleToWeight(Number(phe.value), weight.value)
 
 const calculateKcal = () => scaleToWeight(Number(kcalReference.value), weight.value)
 
-const foodNutrientRows = computed(() => nutrientRows(nutrients.value, weight.value, t))
-
-// Only own and community foods say where their values came from. A reference
-// database entry is badged in the list above and named in the search info
-// below it, so a label here would only repeat them.
-const valueSourceLabel = computed(() =>
-  isOwnFood.value || isCommunityFood.value
-    ? foodSourceLabel(
-        {
-          source: foodSource.value,
-          sourceId: foodSourceId.value,
-          materiallyEdited: foodMateriallyEdited.value
-        },
-        t
-      )
-    : null
-)
+// What the details rows describe. A reference database has no source row:
+// it is badged in the list above and named in the search info below it.
+const selectedFoodDetails = computed(() => ({
+  nutrients: nutrients.value,
+  source: foodSource.value,
+  sourceId: foodSourceId.value,
+  materiallyEdited: foodMateriallyEdited.value,
+  factor: foodFactor.value
+}))
 
 // An own food whose values came from an AI estimate is never offered to the
 // community, so neither is the shortcut that leads there
@@ -653,121 +653,53 @@ defineOgImage('Default', {
           :label="$t('common.date')"
         />
         <NumberInput v-model.number="weight" id-name="weight" :label="$t('common.weight-in-g')" />
-        <div class="flex gap-4 my-6">
+        <!-- The blocks below follow one order and spacing on every card and
+             dialog: values, details, note, actions, hint. -->
+        <div class="mt-4 flex gap-4 font-semibold text-gray-900 dark:text-white">
           <span class="flex-1">= {{ calculatePhe() }} mg Phe</span>
           <span class="flex-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
         </div>
 
-        <!-- Nutrient breakdown for the entered weight. Lists what the food
-             actually carries, so it renders the same here as in the diary
-             once the item is saved. -->
-        <div
-          v-if="foodNutrientRows.length > 0"
-          class="mb-4 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
-        >
-          <div v-for="row in foodNutrientRows" :key="row.key" class="flex justify-between">
-            <span>{{ row.label }}</span>
-            <span>{{ row.value }} g</span>
-          </div>
-        </div>
+        <!-- Nutrients for the entered weight, then source and Phe calculation:
+             the same rows as under More in News -->
+        <FoodDetails class="mt-3" :food="selectedFoodDetails" :weight="Number(weight) || 0" />
 
-        <!-- How the values were arrived at (own and community foods) -->
-        <p v-if="valueSourceLabel" class="mb-4 text-sm text-gray-500 dark:text-gray-400">
-          {{ $t('food-search.value-source', { source: valueSourceLabel }) }}
-        </p>
+        <FoodNote v-if="note" class="mt-3" :note="note" />
 
-        <!-- Note display -->
-        <div
-          v-if="note"
-          class="mb-4 p-3 bg-sky-50 dark:bg-sky-900/20 rounded-lg text-sm text-gray-700 dark:text-gray-300"
-        >
-          <div class="flex items-start gap-2">
-            <LucideStickyNote class="h-4 w-4 mt-0.5 text-sky-600 dark:text-sky-400 shrink-0" />
-            <span>{{ note }}</span>
-          </div>
-        </div>
+        <!-- Votes, or the figures on the reader's own shared food, and the
+             comment thread: the same row as in News -->
+        <CommunityFoodActions
+          v-if="(isCommunityFood || isSharedOwnFood) && currentCommunityFood && userIsAuthenticated"
+          v-model:comments-expanded="commentsExpanded"
+          :food="currentCommunityFood"
+          :current-user-id="userId"
+          :vote="currentUserVote"
+          :can-vote="isCommunityFood"
+          :busy="isVoting"
+          :edit-to="ownFoodEditPath"
+          @vote="vote"
+          @edit="dialog?.closeDialog()"
+        />
 
-        <!-- Community food voting section -->
-        <div
-          v-if="isCommunityFood && currentCommunityFood && userIsAuthenticated"
-          class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-2"
-        >
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
-              <!-- Like button -->
-              <button
-                type="button"
-                :disabled="isVoting"
-                :class="[
-                  'inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-full transition-colors',
-                  currentUserVote === 1
-                    ? 'bg-teal-100 text-teal-700 dark:bg-teal-900/50 dark:text-teal-300'
-                    : 'bg-gray-100 text-gray-600 hover:bg-teal-50 hover:text-teal-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-teal-900/30 dark:hover:text-teal-400'
-                ]"
-                @click="vote(1)"
-              >
-                <LucideThumbsUp class="h-4 w-4" />
-                {{ currentCommunityFood.likes || 0 }}
-              </button>
-
-              <!-- Dislike button -->
-              <button
-                type="button"
-                :disabled="isVoting"
-                :class="[
-                  'inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-full transition-colors',
-                  currentUserVote === -1
-                    ? 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300'
-                    : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-red-900/30 dark:hover:text-red-400'
-                ]"
-                @click="vote(-1)"
-              >
-                <LucideThumbsDown class="h-4 w-4" />
-                {{ currentCommunityFood.dislikes || 0 }}
-              </button>
-            </div>
-
-            <span class="text-sm text-gray-500 dark:text-gray-400">
-              {{ $t('community.usageCount', { count: currentCommunityFood.usageCount || 0 }) }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Share with community CTA when own food is not shared -->
-        <div
+        <!-- An own food that is not shared yet: the same hint as in Own Food,
+             with the way there as its link -->
+        <i18n-t
           v-if="isOwnFood && !isSharedOwnFood && userIsAuthenticated && canShareSelectedOwnFood"
-          class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700"
+          keypath="own-food.share-hint"
+          tag="p"
+          scope="global"
+          class="mt-3 text-xs text-gray-500 sm:text-sm dark:text-gray-400"
         >
-          <button
-            type="button"
-            class="inline-flex items-center gap-2 rounded-full bg-teal-50 dark:bg-teal-900/40 px-4 py-2 text-sm font-semibold text-teal-700 dark:text-teal-300 shadow-xs ring-1 ring-inset ring-teal-600/20 dark:ring-teal-400/20 hover:bg-teal-100 dark:hover:bg-teal-900/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-500 dark:focus-visible:outline-teal-400 cursor-pointer"
-            @click="goToShareWithCommunity"
-          >
-            <LucideUsers class="h-4 w-4" />
-            {{ $t('community.share') }}
-          </button>
-        </div>
-
-        <!-- Shared own food metrics section (display only, no voting) -->
-        <div
-          v-if="isSharedOwnFood && currentCommunityFood && userIsAuthenticated"
-          class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-2"
-        >
-          <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-            <span class="font-medium">{{ $t('community.statistics') }}</span>
-            <span class="flex items-center gap-1">
-              <LucideThumbsUp class="h-4 w-4 text-teal-600" />
-              {{ currentCommunityFood.likes || 0 }}
-            </span>
-            <span class="flex items-center gap-1">
-              <LucideThumbsDown class="h-4 w-4 text-red-500" />
-              {{ currentCommunityFood.dislikes || 0 }}
-            </span>
-            <span class="text-gray-400">
-              {{ $t('community.usageCount', { count: currentCommunityFood.usageCount || 0 }) }}
-            </span>
-          </div>
-        </div>
+          <template #action>
+            <button
+              type="button"
+              class="cursor-pointer text-sky-600 hover:underline dark:text-sky-400"
+              @click="goToShareWithCommunity"
+            >
+              {{ $t('own-food.title') }}
+            </button>
+          </template>
+        </i18n-t>
       </ModalDialog>
     </div>
   </div>

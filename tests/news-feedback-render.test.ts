@@ -62,9 +62,15 @@ const renderNews = async (locale: string, dislikes: number, pending: boolean) =>
     useLocalePath: () => localePath,
     useRoute: () => ({ hash: '' }),
     useApi: () => ({ voteCommunityFood: vi.fn() }),
+    useCommunityAuthor: () => ({
+      authorLabel: () => '',
+      nameOf: () => null,
+      isOfficial: () => false
+    }),
     useNews: () => ({
       items: Vue.ref([]),
       notices,
+      postNotices: Vue.ref([]),
       commentEntries: Vue.ref(pending ? [{ key: 'comment-food1', createdAt: 200 }] : []),
       showHiddenFoods: Vue.ref(false),
       hasHiddenFoods: Vue.ref(false),
@@ -82,7 +88,14 @@ const renderNews = async (locale: string, dislikes: number, pending: boolean) =>
     defineOgImage: vi.fn()
   })
   const app = Vue.createSSRApp(exports.default!)
-  for (const name of ['PageHeader', 'PrimaryButton', 'ToggleSwitch', 'NewsCommunityFood']) {
+  for (const name of [
+    'PageHeader',
+    'PrimaryButton',
+    'ToggleSwitch',
+    'NewsCommunityFood',
+    'NewsCommunityPost',
+    'NewsPostComposer'
+  ]) {
     app.component(name, { render: () => Vue.h('span') })
   }
   app.component('NuxtLink', {

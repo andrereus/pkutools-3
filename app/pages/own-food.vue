@@ -7,10 +7,9 @@ import { h, ref, computed, watch, onMounted } from 'vue'
 import { dataTableFeatures, valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
-import { LucideStickyNote, LucideUsers, LucideThumbsUp, LucideThumbsDown } from '@lucide/vue'
+import { LucideStickyNote, LucideUsers } from '@lucide/vue'
 import {
   scaleToWeight,
-  nutrientRows,
   isReported,
   pheContradictsConversion,
   foodTypeForFactor,
@@ -18,7 +17,6 @@ import {
   proteinPheReference
 } from '../utils/nutrition'
 import { isShareableSource } from '../utils/community-food'
-import { foodSourceLabel } from '../utils/food-source-label'
 import { hasMaterialFoodChange } from '#shared/utils/material-food'
 
 const store = useStore()
@@ -43,6 +41,7 @@ const weight = ref(100)
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isSaving = ref(false)
 const isGeneratingEmoji = ref(false)
+const commentsExpanded = ref(false)
 // The food name the current emoji was generated for; when the name is edited
 // away from this, an update button offers to regenerate the emoji
 const emojiBasisName = ref('')
@@ -262,6 +261,7 @@ const table = useTable({
 
 const editItem = () => {
   dialog2.value.closeDialog()
+  commentsExpanded.value = false
   dialog.value.openDialog()
 }
 
@@ -526,6 +526,7 @@ const addItem = (item) => {
   emojiBasisName.value = editedItem.value.name || ''
   hasRerolledIcon.value = false
   selectedDate.value = format(new Date(), 'yyyy-MM-dd')
+  commentsExpanded.value = false
   dialog2.value.openDialog()
 }
 
@@ -538,6 +539,7 @@ const openEditDialogForEntryKey = (entryKey) => {
   editedItem.value = { ...item }
   emojiBasisName.value = editedItem.value.name || ''
   hasRerolledIcon.value = false
+  commentsExpanded.value = false
   dialog.value.openDialog()
   return true
 }
@@ -572,13 +574,6 @@ const calculatePhe = () => scaleToWeight(Number(editedItem.value.phe), weight.va
 
 const calculateKcal = () => scaleToWeight(Number(editedItem.value.kcal), weight.value)
 
-// Own foods saved from the scanners and the calculators carry the nutrients
-// their source reported. They render here exactly as they do in food search and
-// in the tool the food came from, scaled to the weight being added.
-const ownFoodNutrientRows = computed(() =>
-  nutrientRows(editedItem.value.nutrients, weight.value, t)
-)
-
 // Own Food holds hand-entered values next to scanned products, read labels and
 // AI estimates, and months later they look alike. The origin is what separates
 // a printed value from a guess — and it is the same sentence food search shows
@@ -591,8 +586,6 @@ const editedItemContradictsConversion = computed(() =>
     editedItem.value.factor
   )
 )
-
-const editedItemSourceLabel = computed(() => foodSourceLabel(editedItem.value, t))
 
 const add = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
@@ -900,10 +893,7 @@ defineOgImage('Default', {
             v-model:factor="editedItem.factor"
           />
           <!-- Share with community -->
-          <div
-            v-if="canShareEditedItem || wasEditedItemShared"
-            class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4"
-          >
+          <div v-if="canShareEditedItem || wasEditedItemShared" class="mt-4">
             <div class="flex items-start">
               <div class="flex h-6 items-center">
                 <input
@@ -928,31 +918,17 @@ defineOgImage('Default', {
               </div>
             </div>
 
-            <!-- Vote counts for shared foods -->
-            <div
+            <!-- Figures and the comment thread of a shared food, as in News -->
+            <CommunityFoodActions
               v-if="editedItem.shared && editedCommunityFood"
-              class="mt-3 flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400"
-            >
-              <span class="font-medium">{{ $t('community.statistics') }}</span>
-              <span class="flex items-center gap-1">
-                <LucideThumbsUp class="h-4 w-4 text-teal-600" />
-                {{ editedCommunityFood.likes || 0 }}
-              </span>
-              <span class="flex items-center gap-1">
-                <LucideThumbsDown class="h-4 w-4 text-red-500" />
-                {{ editedCommunityFood.dislikes || 0 }}
-              </span>
-              <span class="text-gray-400">
-                {{ $t('community.usageCount', { count: editedCommunityFood.usageCount || 0 }) }}
-              </span>
-            </div>
+              v-model:comments-expanded="commentsExpanded"
+              :food="editedCommunityFood"
+              :current-user-id="store.user?.id"
+            />
           </div>
 
           <!-- Why the option above is missing for this food -->
-          <p
-            v-else
-            class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4 text-sm text-gray-500 dark:text-gray-400"
-          >
+          <p v-else class="mt-4 text-sm text-gray-500 dark:text-gray-400">
             {{ $t('community.notShareable') }}
           </p>
         </fieldset>
@@ -991,27 +967,18 @@ defineOgImage('Default', {
           :label="$t('common.date')"
         />
         <NumberInput v-model.number="weight" id-name="weight" :label="$t('common.weight-in-g')" />
-        <div class="flex gap-4 mt-4">
-          <span class="flex-1 ml-1">= {{ calculatePhe() }} mg Phe</span>
-          <span class="flex-1 ml-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
+        <!-- The blocks below follow one order and spacing on every card and
+             dialog: values, details, note, warning, actions, hint. -->
+        <div class="mt-4 flex gap-4 font-semibold text-gray-900 dark:text-white">
+          <span class="flex-1">= {{ calculatePhe() }} mg Phe</span>
+          <span class="flex-1">= {{ calculateKcal() }} {{ $t('common.kcal') }}</span>
         </div>
 
-        <!-- Nutrient breakdown for the entered weight, for the foods that carry
-             one. Same grid as food search and the tools the food came from. -->
-        <div
-          v-if="ownFoodNutrientRows.length > 0"
-          class="mt-4 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
-        >
-          <div v-for="row in ownFoodNutrientRows" :key="row.key" class="flex justify-between">
-            <span>{{ row.label }}</span>
-            <span>{{ row.value }} g</span>
-          </div>
-        </div>
+        <!-- Nutrients for the entered weight, then source and Phe calculation:
+             the same rows as in food search and under More in News -->
+        <FoodDetails class="mt-3" :food="editedItem" :weight="Number(weight) || 0" />
 
-        <!-- Where these values came from, worded as in food search -->
-        <p v-if="editedItemSourceLabel" class="mt-4 text-sm text-gray-500 dark:text-gray-400">
-          {{ $t('food-search.value-source', { source: editedItemSourceLabel }) }}
-        </p>
+        <FoodNote v-if="editedItem.note" class="mt-3" :note="editedItem.note" />
 
         <!-- What the edit form can settle about this food, told rather than
              offered: this dialog logs a portion, it does not change the food -->
@@ -1023,29 +990,18 @@ defineOgImage('Default', {
         </p>
         <p
           v-if="!editedItem.shared && canShareEditedItem"
-          class="mt-3 text-sm text-gray-500 dark:text-gray-400"
+          class="mt-3 text-xs text-gray-500 sm:text-sm dark:text-gray-400"
         >
           {{ $t('own-food.share-hint', { action: $t('common.edit') }) }}
         </p>
 
-        <!-- Community metrics for shared foods -->
-        <div
+        <!-- Figures and the comment thread of a shared food, as in News -->
+        <CommunityFoodActions
           v-if="editedItem.shared && editedCommunityFood"
-          class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400"
-        >
-          <span class="font-medium">{{ $t('community.statistics') }}</span>
-          <span class="flex items-center gap-1">
-            <LucideThumbsUp class="h-4 w-4 text-teal-600" />
-            {{ editedCommunityFood.likes || 0 }}
-          </span>
-          <span class="flex items-center gap-1">
-            <LucideThumbsDown class="h-4 w-4 text-red-500" />
-            {{ editedCommunityFood.dislikes || 0 }}
-          </span>
-          <span class="text-gray-400">
-            {{ $t('community.usageCount', { count: editedCommunityFood.usageCount || 0 }) }}
-          </span>
-        </div>
+          v-model:comments-expanded="commentsExpanded"
+          :food="editedCommunityFood"
+          :current-user-id="store.user?.id"
+        />
       </ModalDialog>
     </div>
   </div>

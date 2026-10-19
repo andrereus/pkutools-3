@@ -343,6 +343,78 @@ export const useApi = () => {
   }): Promise<{ success: boolean }> =>
     request('/api/community-food/comment', 'Delete community food comment', 'DELETE', data)
 
+  // ============================================================================
+  // Community Post Operations
+  // ============================================================================
+
+  // Passing a postId edits that post; omitting it publishes a new one.
+  const saveCommunityPost = (data: {
+    postId?: string
+    post: string
+  }): Promise<{ success: boolean; key?: string }> =>
+    request('/api/community-post', 'Save community post', 'POST', {
+      ...data,
+      locale: locale.value
+    })
+
+  const deleteCommunityPost = (postId: string): Promise<{ success: boolean }> =>
+    request('/api/community-post', 'Delete community post', 'DELETE', { postId })
+
+  const likeCommunityPost = (data: {
+    postId: string
+    liked: boolean
+  }): Promise<{ success: boolean; liked: boolean }> =>
+    request('/api/community-post/like', 'Like community post', 'POST', data)
+
+  const saveCommunityPostComment = (data: {
+    postId: string
+    commentId?: string
+    comment: string
+  }): Promise<{ success: boolean }> =>
+    request('/api/community-post/comment', 'Save community post comment', 'POST', data)
+
+  const deleteCommunityPostComment = (data: {
+    postId: string
+    commentId: string
+  }): Promise<{ success: boolean }> =>
+    request('/api/community-post/comment', 'Delete community post comment', 'DELETE', data)
+
+  // Null removes the name.
+  const saveCommunityName = (
+    nickname: string | null
+  ): Promise<{ success: boolean; nickname: string | null }> =>
+    request('/api/community-profile', 'Save community name', 'POST', { nickname })
+
+  // ============================================================================
+  // Admin Operations
+  // ============================================================================
+
+  const adminDeleteCommunityPost = (postId: string): Promise<{ success: boolean }> =>
+    request('/api/admin/community-post', 'Admin delete post', 'DELETE', { postId })
+
+  const adminDeleteCommunityFood = (communityFoodKey: string): Promise<{ success: boolean }> =>
+    request('/api/admin/community-food', 'Admin delete food', 'DELETE', { communityFoodKey })
+
+  const adminDeleteCommunityName = (userId: string): Promise<{ success: boolean }> =>
+    request('/api/admin/community-profile', 'Admin remove name', 'DELETE', { userId })
+
+  const adminRestoreRemoved = (removedId: string): Promise<{ success: boolean }> =>
+    request('/api/admin/removed/restore', 'Admin restore', 'POST', { removedId })
+
+  const adminDeleteRemoved = (removedId: string): Promise<{ success: boolean }> =>
+    request('/api/admin/removed', 'Admin delete permanently', 'DELETE', { removedId })
+
+  // Silent: clearing out expired entries is housekeeping, not something to report.
+  const adminPurgeRemoved = (): Promise<{ success: boolean; purged: number }> =>
+    request('/api/admin/removed/purge', 'Admin purge removed', 'POST', undefined, { silent: true })
+
+  const adminDeleteComment = (data: {
+    target: 'food' | 'post'
+    parentKey: string
+    commentId: string
+  }): Promise<{ success: boolean }> =>
+    request('/api/admin/comment', 'Admin delete comment', 'DELETE', data)
+
   return {
     // Diary
     createDiaryDay,
@@ -363,6 +435,21 @@ export const useApi = () => {
     voteCommunityFood,
     saveCommunityFoodComment,
     deleteCommunityFoodComment,
+    // Community Post
+    saveCommunityPost,
+    deleteCommunityPost,
+    likeCommunityPost,
+    saveCommunityPostComment,
+    deleteCommunityPostComment,
+    saveCommunityName,
+    // Admin
+    adminDeleteCommunityPost,
+    adminDeleteCommunityFood,
+    adminDeleteCommunityName,
+    adminDeleteComment,
+    adminRestoreRemoved,
+    adminDeleteRemoved,
+    adminPurgeRemoved,
     // Settings
     updateSettings,
     updateConsent,

@@ -13,7 +13,12 @@ const { store } = vi.hoisted(() => ({ store: { current: {} as Record<string, unk
 vi.mock('../stores/index', () => ({ useStore: () => store.current }))
 
 beforeEach(() => {
-  store.current = reactive({ user: { id: 'reader' }, communityFoods: [], pheDiary: [] })
+  store.current = reactive({
+    user: { id: 'reader' },
+    communityFoods: [],
+    communityPosts: [],
+    pheDiary: []
+  })
   vi.stubGlobal('computed', computed)
   vi.stubGlobal('ref', ref)
   vi.stubGlobal('onMounted', () => {})

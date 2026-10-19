@@ -1,6 +1,6 @@
 <template>
   <h1>Condiciones del servicio</h1>
-  <p>Última actualización: 4 de septiembre de 2026</p>
+  <p>Última actualización: 19 de octubre de 2026</p>
 
   <h2>Sobre PKU Tools</h2>
   <p>
@@ -118,18 +118,20 @@
     tu salud y asegúrate de que los objetivos que introduces son correctos.
   </p>
 
-  <h2>Compartir alimentos con la comunidad</h2>
+  <h2>Compartir con la comunidad</h2>
   <p>
-    Comparte solo información y escribe solo comentarios que tengas derecho a compartir y que
-    consideres razonablemente correctos. No incluyas datos personales. Al compartir un alimento o
-    escribir un comentario concedes al operador una licencia no exclusiva y gratuita para almacenar,
-    mostrar y adaptar ese contenido mientras sea necesario para el funcionamiento de la base de
-    datos de la comunidad, incluso después de que borres tu cuenta.
+    Comparte solo información y escribe solo publicaciones y comentarios que tengas derecho a
+    compartir y que consideres razonablemente correctos. No incluyas datos personales. Al compartir
+    un alimento o escribir una publicación o un comentario concedes al operador una licencia no
+    exclusiva y gratuita para almacenar, mostrar y adaptar ese contenido mientras sea necesario para
+    el funcionamiento de la base de datos de la comunidad, incluso después de que borres tu cuenta.
   </p>
   <p>
     Las entradas compartidas y los comentarios pueden seguir disponibles después de que borres tu
-    cuenta, porque otras personas pueden depender de ellos. No es posible revisar cada aportación,
-    así que informa de cualquier cosa incorrecta o que no debería estar ahí.
+    cuenta, porque otras personas pueden depender de ellos. Tus publicaciones se borran con tu
+    cuenta. No es posible revisar cada aportación, así que informa de cualquier cosa incorrecta o
+    que no debería estar ahí. Las aportaciones y los nombres en la comunidad que incumplan estas
+    condiciones pueden eliminarse.
   </p>
 
   <h2>Disponibilidad</h2>
