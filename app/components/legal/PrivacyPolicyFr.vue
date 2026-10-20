@@ -43,9 +43,13 @@
         </tr>
         <tr>
           <td>
-            Préférences de l'application, statut d'adhésion et part de ton quota d'IA déjà utilisée
+            Préférences de l'application, statut d'adhésion, part de ton quota d'IA déjà utilisée et
+            ce que tu as déjà vu dans Actualités
           </td>
-          <td>Pour mémoriser tes choix et appliquer les limites de ta formule</td>
+          <td>
+            Pour mémoriser tes choix, te montrer les nouveautés et appliquer les limites de ta
+            formule
+          </td>
           <td>Exécution d'un contrat (art. 6.1.b) RGPD)</td>
         </tr>
         <tr>
@@ -244,9 +248,9 @@
     aliments. Si tu le retires, ils s'affichent de nouveau sans nom.
   </p>
   <p>
-    Tes publications, leurs commentaires et ton nom dans la communauté sont supprimés avec ton
-    compte. Tes commentaires et tes « J’aime » sur les publications d'autres personnes restent en
-    place.
+    Tes publications avec leurs commentaires, tes commentaires sur les publications d'autres
+    personnes et ton nom dans la communauté sont supprimés avec ton compte. Tes « J’aime » restent
+    en place.
   </p>
 
   <h2>E-mails</h2>
@@ -270,7 +274,7 @@
     durées indiquées dans leurs politiques de confidentialité.
   </p>
   <p>
-    Les aliments partagés, les évaluations et les commentaires restent, car d'autres personnes
+    Les aliments partagés et leurs évaluations et commentaires restent, car d'autres personnes
     peuvent les utiliser.
   </p>
   <p>

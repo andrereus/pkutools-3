@@ -38,8 +38,11 @@
           </td>
         </tr>
         <tr>
-          <td>App preferences, plan status and how much of your AI allowance you have used</td>
-          <td>To remember your choices and apply the limits of your plan</td>
+          <td>
+            App preferences, plan status, how much of your AI allowance you have used and what you
+            have already seen in News
+          </td>
+          <td>To remember your choices, show you what is new and apply the limits of your plan</td>
           <td>Performance of a contract (Art. 6(1)(b))</td>
         </tr>
         <tr>
@@ -224,8 +227,8 @@
     name again.
   </p>
   <p>
-    Your posts, their comments and your community name are deleted when you delete your account.
-    Your comments and likes on other people's posts stay.
+    Your posts and their comments, your comments on other people's posts and your community name are
+    deleted when you delete your account. Your likes stay.
   </p>
 
   <h2>Emails</h2>
@@ -245,7 +248,7 @@
     still exist during that period. Providers may hold their own residual copies in logs or deletion
     queues for the periods set out in their privacy policies.
   </p>
-  <p>Shared foods, ratings and comments stay, because other people may be using them.</p>
+  <p>Shared foods and their ratings and comments stay, because other people may be using them.</p>
   <p>
     Content an admin removes from the community is kept for 30 days so it can be restored, then
     deleted. Deleting your account deletes it straight away.

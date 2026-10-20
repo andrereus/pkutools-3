@@ -9,11 +9,29 @@ import {
   sendPasswordResetEmail,
   updateProfile
 } from 'firebase/auth'
-import { getDatabase, ref, onValue, query, orderByChild, limitToLast } from 'firebase/database'
+import {
+  getDatabase,
+  ref,
+  onValue,
+  query,
+  orderByChild,
+  limitToLast,
+  equalTo
+} from 'firebase/database'
 import { defineStore } from 'pinia'
 
 // The newest posts across all languages. Older ones drop out of the feed.
 export const COMMUNITY_POSTS_LIMIT = 200
+
+const JOINED_POST_LISTENER = 'joinedPost:'
+
+const toList = (data) =>
+  data && typeof data === 'object'
+    ? Object.entries(data).map(([key, value]) => ({ ...value, '.key': key }))
+    : []
+
+const without = (record, key) =>
+  Object.fromEntries(Object.entries(record).filter(([entryKey]) => entryKey !== key))
 
 const defaultSettings = {
   maxPhe: null,
@@ -64,6 +82,10 @@ export const useStore = defineStore('main', {
     userDataFailed: false,
     communityFoods: [],
     communityPosts: [],
+    // The reader's own posts and the posts they commented on, whatever their
+    // age, so notifications about them always find their post.
+    ownCommunityPosts: [],
+    joinedCommunityPosts: {},
     // Opt-in community names by user ID, shown on posts and comments.
     communityNames: {},
     // When the reader last opened the comments of their own foods and posts,
@@ -72,6 +94,8 @@ export const useStore = defineStore('main', {
     // Others' foods and posts the reader commented on, with their last comment
     // there, so later comments by someone else can notify them.
     communityThreads: { foods: {}, posts: {} },
+    // What the account has seen in News, for the blue dots and the bell.
+    newsSeen: { loaded: false, lastReadAt: null, lastSeenRevision: null },
     // Accounts whose posts and comments show as PKU Tools, by user ID.
     adminIds: {},
     // Only decides whether admin pages are offered; the server checks again.
@@ -242,11 +266,14 @@ export const useStore = defineStore('main', {
           limitToLast(COMMUNITY_POSTS_LIMIT)
         ),
         (snapshot) => {
-          const data = snapshot.val()
-          this.communityPosts =
-            data && typeof data === 'object'
-              ? Object.entries(data).map(([key, value]) => ({ ...value, '.key': key }))
-              : []
+          this.communityPosts = toList(snapshot.val())
+        }
+      )
+
+      this.unsubscribeFunctions['ownCommunityPosts'] = onValue(
+        query(ref(db, 'communityPosts'), orderByChild('authorId'), equalTo(userId)),
+        (snapshot) => {
+          this.ownCommunityPosts = toList(snapshot.val())
         }
       )
 
@@ -284,6 +311,24 @@ export const useStore = defineStore('main', {
             foods: data?.foods && typeof data.foods === 'object' ? data.foods : {},
             posts: data?.posts && typeof data.posts === 'object' ? data.posts : {}
           }
+          this.syncJoinedPosts(db, Object.keys(this.communityThreads.posts))
+        }
+      )
+
+      const marker = (value) => (Number.isSafeInteger(value) && value > 0 ? value : null)
+      this.unsubscribeFunctions['newsSeen'] = onValue(
+        ref(db, `${userId}/newsSeen`),
+        (snapshot) => {
+          const data = snapshot.val()
+          this.newsSeen = {
+            loaded: true,
+            lastReadAt: marker(data?.lastReadAt),
+            lastSeenRevision: marker(data?.lastSeenRevision)
+          }
+        },
+        () => {
+          // The browser's marker stands in, as for a signed-out visitor.
+          this.newsSeen = { loaded: true, lastReadAt: null, lastSeenRevision: null }
         }
       )
 
@@ -304,15 +349,45 @@ export const useStore = defineStore('main', {
         }
       )
     },
+    // One listener per post the reader commented on, kept in step with the
+    // list of those posts. All foods are loaded anyway; posts are not.
+    syncJoinedPosts(db, postIds) {
+      for (const name of Object.keys(this.unsubscribeFunctions)) {
+        if (!name.startsWith(JOINED_POST_LISTENER)) continue
+        const postId = name.slice(JOINED_POST_LISTENER.length)
+        if (postIds.includes(postId)) continue
+        this.unsubscribeFunctions[name]()
+        delete this.unsubscribeFunctions[name]
+        this.joinedCommunityPosts = without(this.joinedCommunityPosts, postId)
+      }
+      for (const postId of postIds) {
+        const name = `${JOINED_POST_LISTENER}${postId}`
+        if (this.unsubscribeFunctions[name]) continue
+        this.unsubscribeFunctions[name] = onValue(
+          ref(db, `communityPosts/${postId}`),
+          (snapshot) => {
+            const data = snapshot.val()
+            const others = without(this.joinedCommunityPosts, postId)
+            this.joinedCommunityPosts =
+              data && typeof data === 'object'
+                ? { ...others, [postId]: { ...data, '.key': postId } }
+                : others
+          }
+        )
+      }
+    },
     resetUserData() {
       this.pheDiary = []
       this.labValues = []
       this.ownFood = []
       this.communityFoods = []
       this.communityPosts = []
+      this.ownCommunityPosts = []
+      this.joinedCommunityPosts = {}
       this.communityNames = {}
       this.communityReads = { foods: {}, posts: {} }
       this.communityThreads = { foods: {}, posts: {} }
+      this.newsSeen = { loaded: false, lastReadAt: null, lastSeenRevision: null }
       this.adminIds = {}
       this.isAdmin = null
       this.settings = { ...defaultSettings }

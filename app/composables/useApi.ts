@@ -380,6 +380,13 @@ export const useApi = () => {
     request('/api/community-post/comment', 'Delete community post comment', 'DELETE', data)
 
   // Silent: marking comments as read is housekeeping, not something to report.
+  // Silent: the marker is presentation, and the next News visit tries again.
+  const markNewsSeen = (data: {
+    lastReadAt?: number
+    lastSeenRevision?: number
+  }): Promise<{ success: boolean }> =>
+    request('/api/news-seen', 'Mark news seen', 'POST', data, { silent: true })
+
   const markCommunityCommentsRead = (data: {
     target: 'food' | 'post'
     key: string
@@ -449,6 +456,7 @@ export const useApi = () => {
     saveCommunityPostComment,
     deleteCommunityPostComment,
     markCommunityCommentsRead,
+    markNewsSeen,
     saveCommunityName,
     // Admin
     adminDeleteCommunityPost,

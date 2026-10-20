@@ -136,7 +136,7 @@ describe('community posts', () => {
     expect(fake.data.communityPostComments).toBeUndefined()
   })
 
-  it('removes the account’s posts, name and removed content on deletion, keeping its comments elsewhere', async () => {
+  it('removes the account’s posts, name, admin rights and removed content on deletion', async () => {
     await saveComment(requestEvent({ postId: 'post1', comment: 'Thanks' }))
     currentUser = 'author-1'
     await createPost(requestEvent({ post: 'Second post', locale: 'en' }))
@@ -155,17 +155,63 @@ describe('community posts', () => {
     expect(Object.keys(fake.data.removedContent as object)).toEqual(['theirs'])
     expect(fake.data.admins).toBeUndefined()
     expect(deleteUser).toHaveBeenCalledWith('author-1')
+  })
 
+  it('removes the account’s comments on other posts, also from removed copies, and keeps likes', async () => {
     fake = createFakeDatabase({
-      communityPosts: { post1: { authorId: 'author-1', text: 'Hello', createdAt: 100 } },
+      'reader-1': { communityThreads: { posts: { post1: 300, post2: 200 } } },
+      communityPosts: {
+        post1: {
+          authorId: 'author-1',
+          text: 'Hello',
+          createdAt: 100,
+          likes: 1,
+          likerIds: { 'reader-1': true },
+          commentCount: 3,
+          lastCommunityCommentAt: 300,
+          lastAuthorCommentAt: 250
+        }
+      },
       communityPostComments: {
-        post1: { c1: { authorId: 'reader-1', text: 'Thanks', createdAt: 200 } }
+        post1: {
+          c1: { type: 'comment', authorId: 'reader-1', text: 'Thanks', createdAt: 200 },
+          c2: { type: 'comment', authorId: 'author-1', text: 'Welcome', createdAt: 250 },
+          c3: { type: 'comment', authorId: 'reader-1', text: 'Again', createdAt: 300 }
+        }
+      },
+      removedContent: {
+        r1: {
+          type: 'post',
+          key: 'post2',
+          authorId: 'author-2',
+          removedAt: Date.now(),
+          record: {
+            authorId: 'author-2',
+            text: 'Gone',
+            commentCount: 2,
+            lastCommunityCommentAt: 200
+          },
+          thread: {
+            c4: { type: 'comment', authorId: 'reader-1', text: 'Hi', createdAt: 200 },
+            c5: { type: 'comment', authorId: 'someone', text: 'Hey', createdAt: 150 }
+          }
+        }
       }
     })
-    currentUser = 'reader-1'
+
     await deleteAccount(requestEvent(undefined))
-    expect(Object.keys(posts())).toEqual(['post1'])
-    expect(Object.keys(thread('post1'))).toEqual(['c1'])
+    expect(Object.keys(thread('post1'))).toEqual(['c2'])
+    expect(posts().post1).toMatchObject({
+      commentCount: 1,
+      lastAuthorCommentAt: 250,
+      likes: 1,
+      likerIds: { 'reader-1': true }
+    })
+    expect(posts().post1).not.toHaveProperty('lastCommunityCommentAt')
+    const removed = (fake.data.removedContent as Node).r1 as Record<string, Node>
+    expect(Object.keys(removed.thread!)).toEqual(['c5'])
+    expect(removed.record).toMatchObject({ commentCount: 1, lastCommunityCommentAt: 150 })
+    expect(fake.data['reader-1']).toBeUndefined()
   })
 })
 
@@ -217,6 +263,22 @@ describe('conversations a commenter joined', () => {
     expect(fake.data['reader-1']).toMatchObject({
       communityReads: { posts: { post1: expect.any(Number) } }
     })
+  })
+
+  it('leaves the conversation when the commenter deletes their last comment there', async () => {
+    await saveComment(requestEvent({ postId: 'post1', comment: 'First' }))
+    await saveComment(requestEvent({ postId: 'post1', comment: 'Second' }))
+    await markRead(requestEvent({ target: 'post', key: 'post1' }))
+    const [first, second] = Object.keys(thread('post1'))
+
+    await deleteComment(requestEvent({ postId: 'post1', commentId: first }))
+    expect(fake.data['reader-1']).toMatchObject({
+      communityThreads: { posts: { post1: expect.any(Number) } },
+      communityReads: { posts: { post1: expect.any(Number) } }
+    })
+
+    await deleteComment(requestEvent({ postId: 'post1', commentId: second }))
+    expect(fake.data['reader-1']).toBeUndefined()
   })
 
   it('does not record the author’s own thread', async () => {

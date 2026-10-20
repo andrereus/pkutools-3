@@ -20,6 +20,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  await removeThreadComment('post', postId, commentId)
+  await removeThreadComment('post', postId, commentId, { leave: true })
   return { success: true }
 })

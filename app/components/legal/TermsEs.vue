@@ -127,11 +127,11 @@
     el funcionamiento de la base de datos de la comunidad, incluso después de que borres tu cuenta.
   </p>
   <p>
-    Las entradas compartidas y los comentarios pueden seguir disponibles después de que borres tu
-    cuenta, porque otras personas pueden depender de ellos. Tus publicaciones se borran con tu
-    cuenta. No es posible revisar cada aportación, así que informa de cualquier cosa incorrecta o
-    que no debería estar ahí. Las aportaciones y los nombres en la comunidad que incumplan estas
-    condiciones pueden eliminarse.
+    Las entradas compartidas y sus comentarios pueden seguir disponibles después de que borres tu
+    cuenta, porque otras personas pueden depender de ellos. Tus publicaciones y tus comentarios en
+    publicaciones se borran con tu cuenta. No es posible revisar cada aportación, así que informa de
+    cualquier cosa incorrecta o que no debería estar ahí. Las aportaciones y los nombres en la
+    comunidad que incumplan estas condiciones pueden eliminarse.
   </p>
 
   <h2>Disponibilidad</h2>

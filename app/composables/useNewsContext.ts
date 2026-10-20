@@ -288,7 +288,19 @@ export const useNewsContext = () => {
   const user = computed(() => store.user as { id?: string } | null)
   const userIsAuthenticated = computed(() => user.value !== null)
   const foods = computed(() => store.communityFoods as Food[])
-  const posts = computed(() => store.communityPosts as Post[])
+  // The feed's newest posts, plus the reader's own and the ones they commented
+  // on whatever their age, so a notification always has its post to open.
+  const posts = computed(() => {
+    const byKey = new Map<unknown, Post>()
+    for (const post of [
+      ...(store.communityPosts as Post[]),
+      ...(store.ownCommunityPosts as Post[]),
+      ...Object.values(store.joinedCommunityPosts as Record<string, Post>)
+    ]) {
+      byKey.set(post['.key'], post)
+    }
+    return [...byKey.values()]
+  })
   // Local to this consumer, not a saved setting. The header badge keeps the
   // default exclusion even when the News page opts in to hidden foods.
   const showHiddenFoods = ref(false)

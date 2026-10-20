@@ -42,8 +42,11 @@
           </td>
         </tr>
         <tr>
-          <td>Preferencias de la aplicación, estado de membresía y tu uso de la cuota de IA</td>
-          <td>Para recordar tus decisiones y aplicar los límites de tu plan</td>
+          <td>
+            Preferencias de la aplicación, estado de membresía, tu uso de la cuota de IA y lo que ya
+            has visto en Novedades
+          </td>
+          <td>Para recordar tus decisiones, mostrarte lo nuevo y aplicar los límites de tu plan</td>
           <td>Ejecución de un contrato (art. 6.1.b) RGPD)</td>
         </tr>
         <tr>
@@ -235,8 +238,8 @@
     lo quitas, vuelven a mostrarse sin nombre.
   </p>
   <p>
-    Tus publicaciones, sus comentarios y tu nombre en la comunidad se borran al borrar tu cuenta.
-    Tus comentarios y tus «me gusta» en publicaciones de otras personas permanecen.
+    Tus publicaciones con sus comentarios, tus comentarios en publicaciones de otras personas y tu
+    nombre en la comunidad se borran al borrar tu cuenta. Tus «me gusta» permanecen.
   </p>
 
   <h2>Correos electrónicos</h2>
@@ -258,7 +261,7 @@
     privacidad.
   </p>
   <p>
-    Los alimentos compartidos, las valoraciones y los comentarios permanecen, porque otras personas
+    Los alimentos compartidos y sus valoraciones y comentarios permanecen, porque otras personas
     pueden estar usándolos.
   </p>
   <p>

@@ -42,8 +42,13 @@
           </td>
         </tr>
         <tr>
-          <td>Einstellungen, Mitgliedschaftsstatus und dein verbrauchtes KI-Kontingent</td>
-          <td>Um deine Auswahl zu merken und die Grenzen deines Tarifs anzuwenden</td>
+          <td>
+            Einstellungen, Mitgliedschaftsstatus, dein verbrauchtes KI-Kontingent und was du in den
+            Neuigkeiten schon gesehen hast
+          </td>
+          <td>
+            Um deine Auswahl zu merken, dir Neues zu zeigen und die Grenzen deines Tarifs anzuwenden
+          </td>
           <td>Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO)</td>
         </tr>
         <tr>
@@ -234,8 +239,8 @@
     Lebensmitteln. Entfernst du ihn, erscheinen sie wieder ohne Namen.
   </p>
   <p>
-    Deine Beiträge, ihre Kommentare und dein Community-Name werden mit deinem Konto gelöscht. Deine
-    Kommentare und Likes zu Beiträgen anderer bleiben bestehen.
+    Deine Beiträge mit ihren Kommentaren, deine Kommentare zu Beiträgen anderer und dein
+    Community-Name werden mit deinem Konto gelöscht. Deine Likes bleiben bestehen.
   </p>
 
   <h2>E-Mails</h2>
@@ -255,7 +260,10 @@
     Zeitraum kann also noch eine Kopie bestehen. Anbieter können eigene Restkopien in Protokollen
     oder Löschwarteschlangen halten, für die in ihren Datenschutzerklärungen genannten Zeiträume.
   </p>
-  <p>Geteilte Lebensmittel, Bewertungen und Kommentare bleiben, weil andere sie nutzen können.</p>
+  <p>
+    Geteilte Lebensmittel und ihre Bewertungen und Kommentare bleiben, weil andere sie nutzen
+    können.
+  </p>
   <p>
     Inhalte, die ein Admin aus der Community entfernt, werden 30 Tage aufbewahrt. So lassen sie sich
     wiederherstellen. Danach werden sie gelöscht. Mit deinem Konto werden sie sofort gelöscht.

@@ -132,11 +132,12 @@
     suppression de ton compte.
   </p>
   <p>
-    Les entrées partagées et les commentaires peuvent rester disponibles après la suppression de ton
-    compte, car d'autres personnes peuvent s'appuyer dessus. Tes publications sont supprimées avec
-    ton compte. Toutes les contributions ne peuvent pas être vérifiées : signale donc tout ce qui
-    est faux ou qui ne devrait pas s'y trouver. Les contributions et les noms dans la communauté qui
-    enfreignent ces conditions peuvent être retirés.
+    Les entrées partagées et leurs commentaires peuvent rester disponibles après la suppression de
+    ton compte, car d'autres personnes peuvent s'appuyer dessus. Tes publications et tes
+    commentaires sur les publications sont supprimés avec ton compte. Toutes les contributions ne
+    peuvent pas être vérifiées : signale donc tout ce qui est faux ou qui ne devrait pas s'y
+    trouver. Les contributions et les noms dans la communauté qui enfreignent ces conditions peuvent
+    être retirés.
   </p>
 
   <h2>Disponibilité</h2>

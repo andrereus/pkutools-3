@@ -17,6 +17,8 @@ beforeEach(() => {
     user: { id: 'reader' },
     communityFoods: [],
     communityPosts: [],
+    ownCommunityPosts: [],
+    joinedCommunityPosts: {},
     pheDiary: []
   })
   vi.stubGlobal('computed', computed)

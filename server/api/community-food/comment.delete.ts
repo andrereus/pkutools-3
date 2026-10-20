@@ -4,6 +4,7 @@ import { CommunityFoodCommentDeleteSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { communityFoodCommentActivity } from '../../utils/community-food-comment'
+import { queueThreadLeave } from '../../utils/community-post'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { communityFoodKey, commentId } = await validateBody(
@@ -31,14 +32,14 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   if (foodSnapshot.exists()) {
     writes[`communityFoods/${communityFoodKey}/commentCount`] = ServerValue.increment(-1)
     const thread = await db.ref(`communityFoodComments/${communityFoodKey}`).once('value')
-    const activity = communityFoodCommentActivity(
-      thread.val() ?? {},
-      foodSnapshot.val().contributorId,
-      commentId
-    )
+    const contributorId = foodSnapshot.val().contributorId
+    const activity = communityFoodCommentActivity(thread.val() ?? {}, contributorId, commentId)
     for (const [field, value] of Object.entries(activity)) {
       writes[`communityFoods/${communityFoodKey}/${field}`] = value
     }
+    queueThreadLeave(writes, 'food', communityFoodKey, thread.val() ?? {}, userId, contributorId, [
+      commentId
+    ])
   }
 
   await db.ref().update(writes)

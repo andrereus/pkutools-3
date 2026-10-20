@@ -238,6 +238,16 @@ export const CommunityReadSchema = z.object({
   key: firebaseKeySchema('Key')
 })
 
+// What a News visit covered: the newest time and release-note revision seen.
+export const NewsSeenSchema = z
+  .object({
+    lastReadAt: z.number().int().positive().optional(),
+    lastSeenRevision: z.number().int().positive().optional()
+  })
+  .refine((data) => data.lastReadAt !== undefined || data.lastSeenRevision !== undefined, {
+    message: 'Nothing seen'
+  })
+
 // The optional name shown on someone's posts and comments. Null removes it.
 export const CommunityProfileSchema = z.object({
   nickname: z

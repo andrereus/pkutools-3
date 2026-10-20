@@ -12,10 +12,14 @@ const unsubscribes = new Map<string, ReturnType<typeof vi.fn>>()
 vi.mock(import('firebase/database'), () => ({
   getDatabase: () => ({}),
   ref: (_db: unknown, path: string) => ({ path }),
-  // Queries keep the path of the ref they narrow.
-  query: (dbRef: { path: string }) => dbRef,
-  orderByChild: vi.fn(),
-  limitToLast: vi.fn(),
+  // A query is named by its ref's path and its constraints, so two queries on
+  // one path stay apart.
+  query: (dbRef: { path: string }, ...constraints: string[]) => ({
+    path: [dbRef.path, ...constraints].join('|')
+  }),
+  orderByChild: (child: string) => `orderByChild=${child}`,
+  limitToLast: (limit: number) => `limitToLast=${limit}`,
+  equalTo: (value: string) => `equalTo=${value}`,
   onValue: (dbRef: { path: string }, callback: Listener) => {
     listeners.set(dbRef.path, callback)
     const unsubscribe = vi.fn()
@@ -122,6 +126,25 @@ describe('store data binding', () => {
     expect(store.settings.labUnit).toBe('mgdl')
   })
 
+  it('follows the posts the reader commented on, whatever their age', () => {
+    const store = useStore()
+    store.user = { id: 'user-1' }
+    store.initRef()
+
+    emit('user-1/communityThreads', { posts: { old: 100, older: 50 } })
+    emit('communityPosts/old', { authorId: 'user-2', text: 'Old post' })
+    expect(store.joinedCommunityPosts).toEqual({
+      old: { authorId: 'user-2', text: 'Old post', '.key': 'old' }
+    })
+
+    const olderUnsubscribe = unsubscribes.get('communityPosts/older')
+    emit('user-1/communityThreads', { posts: { old: 100 } })
+    expect(olderUnsubscribe).toHaveBeenCalledTimes(1)
+
+    emit('communityPosts/old', null)
+    expect(store.joinedCommunityPosts).toEqual({})
+  })
+
   it('binds the community foods listener globally', () => {
     const store = useStore()
     store.user = { id: 'user-1' }
@@ -144,11 +167,13 @@ describe('store account switching', () => {
     expect([...firstRound.keys()].sort()).toEqual([
       'admins',
       'communityFoods',
-      'communityPosts',
+      'communityPosts|orderByChild=authorId|equalTo=user-1',
+      'communityPosts|orderByChild=createdAt|limitToLast=200',
       'communityProfiles',
       'user-1/communityReads',
       'user-1/communityThreads',
       'user-1/labValues',
+      'user-1/newsSeen',
       'user-1/ownFood',
       'user-1/pheDiary',
       'user-1/settings'
