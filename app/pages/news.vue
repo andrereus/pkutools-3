@@ -27,6 +27,7 @@ const {
   items,
   notices,
   postNotices,
+  threadNotices,
   commentEntries,
   showHiddenFoods,
   hasHiddenFoods,
@@ -41,14 +42,9 @@ const expandedComments = ref({})
 // Keep the notice preview compact. Expanding lasts only for this page visit.
 const NOTICE_PREVIEW_COUNT = 2
 const showAllNotices = ref(false)
-// Food notices stay until the contributor acts. A post notice is a reply the
-// author has not seen yet, so it lasts for the visit in which it was unread.
-const unreadPostNotices = computed(() =>
-  postNotices.value.filter((notice) =>
-    isItemUnread({ key: notice.key, createdAt: notice.pendingCommentAt })
-  )
-)
-const allNotices = computed(() => [...notices.value, ...unreadPostNotices.value])
+// Notices about the reader's own foods and posts, and about conversations they
+// joined, all last until the comments have been opened.
+const allNotices = computed(() => [...notices.value, ...postNotices.value, ...threadNotices.value])
 const sortedNotices = computed(() =>
   [...allNotices.value].sort(
     (left, right) => (right.pendingCommentAt ?? 0) - (left.pendingCommentAt ?? 0)
@@ -66,6 +62,9 @@ const noticeTarget = (notice) =>
 // does not, so only the first is amber.
 const isWarningNotice = (notice) =>
   !notice.postKey && (notice.hasNegativeFeedback || notice.isHidden)
+// The blue dot means new since the last visit, for notices as for cards. A
+// rating warning is a standing state with no moment to be new, so amber is
+// its only mark.
 const isNoticeUnread = (notice) =>
   !!notice.pendingCommentAt && isItemUnread({ key: notice.key, createdAt: notice.pendingCommentAt })
 
@@ -473,12 +472,12 @@ defineOgImage('Default', {
         <div class="flex min-h-9 min-w-0 flex-1 items-center gap-2">
           <div class="min-w-0 flex-1">
             <h3 class="text-sm leading-5 font-semibold break-words text-gray-900 dark:text-white">
+              {{ titleFor(item) }}
               <LucideBadgeCheck
                 v-if="item.post && isOfficial(item.post.authorId)"
                 class="mb-0.5 inline h-4 w-4 text-sky-600 dark:text-sky-400"
                 aria-hidden="true"
               />
-              {{ titleFor(item) }}
               <span
                 v-if="item.isHidden"
                 class="ml-1 inline-flex items-center rounded bg-amber-50 px-1.5 text-xs font-medium text-amber-700 dark:bg-amber-950/50 dark:text-amber-300"
@@ -538,7 +537,6 @@ defineOgImage('Default', {
         :vote="voteFor(item)"
         :can-vote="canVote(item)"
         :show-statistics="item.isOwn"
-        :has-pending-feedback="!!foodNoticeFor(item.key)?.pendingCommentAt"
         :current-user-id="userId"
         :busy="votingKey === item.key"
         @vote="(value) => vote(item, value)"

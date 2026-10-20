@@ -231,6 +231,13 @@ export const CommunityPostCommentDeleteSchema = z.object({
   commentId: CommunityFoodCommentIdSchema
 })
 
+// The owner of a food or post, or someone who commented on it, has read its
+// comments up to now.
+export const CommunityReadSchema = z.object({
+  target: z.enum(['food', 'post']),
+  key: firebaseKeySchema('Key')
+})
+
 // The optional name shown on someone's posts and comments. Null removes it.
 export const CommunityProfileSchema = z.object({
   nickname: z

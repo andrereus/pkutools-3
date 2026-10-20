@@ -45,7 +45,22 @@ export interface Notice {
 }
 
 /** Notices include their target language so foods remain reachable across locales. */
-export const communityFoodNotices = (foods: Food[], currentUserId?: string | null): Notice[] => {
+/**
+ * When the reader last opened the comments of each of their own foods or
+ * posts, by key. A comment up to then has been read.
+ */
+export type CommentReads = Record<string, unknown>
+
+const readAtOf = (reads: CommentReads | undefined, key: unknown): number => {
+  const value = typeof key === 'string' ? reads?.[key] : undefined
+  return isNewsTimestamp(value) ? value : 0
+}
+
+export const communityFoodNotices = (
+  foods: Food[],
+  currentUserId?: string | null,
+  reads?: CommentReads
+): Notice[] => {
   if (!currentUserId) return []
   return foods.flatMap((food) => {
     const score = communityFoodScore(food)
@@ -55,11 +70,12 @@ export const communityFoodNotices = (foods: Food[], currentUserId?: string | nul
       ? food.lastContributorCommentAt
       : 0
     const lastEdit = isNewsTimestamp(food.contentUpdatedAt) ? food.contentUpdatedAt : 0
+    // A reply, an edit or opening the comments all settle what came before.
     const pendingCommentAt =
       typeof food.commentCount === 'number' &&
       food.commentCount > 0 &&
       isNewsTimestamp(food.lastCommunityCommentAt) &&
-      food.lastCommunityCommentAt > Math.max(lastReply, lastEdit)
+      food.lastCommunityCommentAt > Math.max(lastReply, lastEdit, readAtOf(reads, foodKey))
         ? food.lastCommunityCommentAt
         : undefined
     const hasNegativeFeedback = score <= COMMUNITY_FOOD_FLAG_SCORE
@@ -99,7 +115,7 @@ export const communityPostAppearsInNews = (post: Post, locale: string): boolean 
   typeof post.text === 'string' &&
   post.text.trim() !== ''
 
-/** Comments by others on the reader's own post, newer than the author's last reply. */
+/** Comments by others on the reader's own post, newer than the author's last reply or read. */
 export interface PostNotice {
   key: string
   postKey: string
@@ -111,15 +127,27 @@ export interface PostNotice {
 
 const POST_NOTICE_NAME_LENGTH = 60
 
+/** The start of a post's first line, to recognise it by in a notice. */
+const postExcerpt = (text: string): string => {
+  const firstLine = text.trim().split('\n')[0]!
+  return firstLine.length > POST_NOTICE_NAME_LENGTH
+    ? `${firstLine.slice(0, POST_NOTICE_NAME_LENGTH).trimEnd()}…`
+    : firstLine
+}
+
 export const communityPostNotices = (
   posts: Post[],
-  currentUserId?: string | null
+  currentUserId?: string | null,
+  reads?: CommentReads
 ): PostNotice[] => {
   if (!currentUserId) return []
   return posts.flatMap((post) => {
     const postKey = post['.key']
     const language = post.language
-    const lastReply = isNewsTimestamp(post.lastAuthorCommentAt) ? post.lastAuthorCommentAt : 0
+    const lastReply = Math.max(
+      isNewsTimestamp(post.lastAuthorCommentAt) ? post.lastAuthorCommentAt : 0,
+      readAtOf(reads, postKey)
+    )
     if (
       post.authorId !== currentUserId ||
       typeof postKey !== 'string' ||
@@ -135,20 +163,88 @@ export const communityPostNotices = (
     ) {
       return []
     }
-    const firstLine = post.text.trim().split('\n')[0]!
     return [
       {
         key: `own-post-${postKey}`,
         postKey,
         language,
-        name:
-          firstLine.length > POST_NOTICE_NAME_LENGTH
-            ? `${firstLine.slice(0, POST_NOTICE_NAME_LENGTH).trimEnd()}…`
-            : firstLine,
+        name: postExcerpt(post.text),
         pendingCommentAt: post.lastCommunityCommentAt
       }
     ]
   })
+}
+
+/** A new comment in a conversation on someone else's food or post the reader joined. */
+export interface ThreadNotice {
+  key: string
+  foodKey?: string
+  postKey?: string
+  language: string
+  name: string
+  pendingCommentAt: number
+}
+
+/**
+ * The reader's last comment in each thread they joined, by key, written by the
+ * server along with the comment.
+ */
+export interface JoinedThreads {
+  foods?: Record<string, unknown>
+  posts?: Record<string, unknown>
+}
+
+export const communityThreadNotices = (
+  foods: Food[],
+  posts: Post[],
+  currentUserId?: string | null,
+  joined?: JoinedThreads,
+  reads?: { foods?: CommentReads; posts?: CommentReads }
+): ThreadNotice[] => {
+  if (!currentUserId) return []
+  const sources = [
+    { target: 'food', records: foods, joined: joined?.foods, reads: reads?.foods },
+    { target: 'post', records: posts, joined: joined?.posts, reads: reads?.posts }
+  ] as const
+  return sources.flatMap(({ target, records, joined: joinedOfTarget, reads: readsOfTarget }) =>
+    records.flatMap((record) => {
+      const key = record['.key']
+      const language = record.language
+      const name = target === 'food' ? record.name : record.text
+      if (
+        typeof key !== 'string' ||
+        !key ||
+        !joinedOfTarget ||
+        !(key in joinedOfTarget) ||
+        (target === 'food' ? record.contributorId : record.authorId) === currentUserId ||
+        typeof name !== 'string' ||
+        typeof language !== 'string' ||
+        !['en', 'de', 'es', 'fr'].includes(language) ||
+        !isNewsTimestamp(record.createdAt)
+      ) {
+        return []
+      }
+      // The newest comment by anyone. The reader's own last comment there and
+      // their last opening of the thread settle everything up to then.
+      const ownerLast =
+        target === 'food' ? record.lastContributorCommentAt : record.lastAuthorCommentAt
+      const latest = Math.max(
+        isNewsTimestamp(record.lastCommunityCommentAt) ? record.lastCommunityCommentAt : 0,
+        isNewsTimestamp(ownerLast) ? ownerLast : 0
+      )
+      const settled = Math.max(readAtOf(joinedOfTarget, key), readAtOf(readsOfTarget, key))
+      if (latest <= settled) return []
+      return [
+        {
+          key: `thread-${target}-${key}`,
+          ...(target === 'food' ? { foodKey: key } : { postKey: key }),
+          language,
+          name: target === 'food' ? name : postExcerpt(name),
+          pendingCommentAt: latest
+        }
+      ]
+    })
+  )
 }
 
 export interface NewsEntry {
@@ -274,10 +370,25 @@ export const useNewsContext = () => {
   })
 
   // Pending feedback is independent of browser-local read state. Visiting News
-  // clears its bell dot; replying or editing the food clears the comment notice.
-  const notices = computed(() => communityFoodNotices(foods.value, user.value?.id))
-  // Post notices are shown only while unread; the page applies that rule.
-  const postNotices = computed(() => communityPostNotices(posts.value, user.value?.id))
+  // clears its bell dot; opening the comments, replying or editing the food
+  // clears the comment notice, on every device.
+  const reads = computed(() => store.communityReads as { foods: CommentReads; posts: CommentReads })
+  const joinedThreads = computed(() => store.communityThreads as JoinedThreads)
+  const notices = computed(() =>
+    communityFoodNotices(foods.value, user.value?.id, reads.value?.foods)
+  )
+  const postNotices = computed(() =>
+    communityPostNotices(posts.value, user.value?.id, reads.value?.posts)
+  )
+  const threadNotices = computed(() =>
+    communityThreadNotices(
+      foods.value,
+      posts.value,
+      user.value?.id,
+      joinedThreads.value,
+      reads.value
+    )
+  )
   const commentEntries = computed(() => [
     ...notices.value.flatMap((notice) =>
       notice.pendingCommentAt === undefined
@@ -286,6 +397,10 @@ export const useNewsContext = () => {
     ),
     ...postNotices.value.map((notice) => ({
       key: `comment-post-${notice.postKey}`,
+      createdAt: notice.pendingCommentAt
+    })),
+    ...threadNotices.value.map((notice) => ({
+      key: `comment-${notice.key}`,
       createdAt: notice.pendingCommentAt
     }))
   ])
@@ -298,6 +413,7 @@ export const useNewsContext = () => {
     milestoneEntries,
     notices,
     postNotices,
+    threadNotices,
     commentEntries,
     showHiddenFoods,
     hasHiddenFoods,

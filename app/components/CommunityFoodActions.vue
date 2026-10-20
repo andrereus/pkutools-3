@@ -137,6 +137,8 @@ const commentButtonLabel = computed(() =>
         >
           <LucidePencil class="h-4 w-4" aria-hidden="true" />
         </ActionChip>
+        <!-- Further buttons of the screen that shows the food, such as admin ones -->
+        <slot name="actions" />
       </template>
     </ActionBar>
 

@@ -32,6 +32,7 @@ const deleteComment = (await import('../server/api/community-post/comment.delete
 const deleteAccount = (await import('../server/api/settings/delete-account.post'))
   .default as unknown as Route
 const saveName = (await import('../server/api/community-profile.post')).default as unknown as Route
+const markRead = (await import('../server/api/community-read.post')).default as unknown as Route
 
 type Node = Record<string, Record<string, unknown>>
 const posts = () => (fake.data.communityPosts ?? {}) as Node
@@ -184,5 +185,43 @@ describe('community names', () => {
       await expect(saveName(requestEvent({ nickname }))).rejects.toMatchObject({ statusCode: 400 })
     }
     expect(fake.data.communityProfiles).toBeUndefined()
+  })
+})
+
+describe('reading comments', () => {
+  it('records when the owner opened their post’s comments, and only for the owner', async () => {
+    await expect(markRead(requestEvent({ target: 'post', key: 'post1' }))).rejects.toMatchObject({
+      statusCode: 403
+    })
+    expect(fake.data['reader-1']).toBeUndefined()
+
+    currentUser = 'author-1'
+    await markRead(requestEvent({ target: 'post', key: 'post1' }))
+    expect(fake.data['author-1']).toEqual({
+      communityReads: { posts: { post1: expect.any(Number) } }
+    })
+
+    await deletePost(requestEvent({ postId: 'post1' }))
+    expect(fake.data['author-1']).toBeUndefined()
+  })
+})
+
+describe('conversations a commenter joined', () => {
+  it('records the thread with the comment and lets the commenter mark it read', async () => {
+    await saveComment(requestEvent({ postId: 'post1', comment: 'Try the plain ones' }))
+    expect(fake.data['reader-1']).toEqual({
+      communityThreads: { posts: { post1: expect.any(Number) } }
+    })
+
+    await markRead(requestEvent({ target: 'post', key: 'post1' }))
+    expect(fake.data['reader-1']).toMatchObject({
+      communityReads: { posts: { post1: expect.any(Number) } }
+    })
+  })
+
+  it('does not record the author’s own thread', async () => {
+    currentUser = 'author-1'
+    await saveComment(requestEvent({ postId: 'post1', comment: 'Thanks!' }))
+    expect(fake.data['author-1']).toBeUndefined()
   })
 })

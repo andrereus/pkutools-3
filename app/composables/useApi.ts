@@ -379,6 +379,13 @@ export const useApi = () => {
   }): Promise<{ success: boolean }> =>
     request('/api/community-post/comment', 'Delete community post comment', 'DELETE', data)
 
+  // Silent: marking comments as read is housekeeping, not something to report.
+  const markCommunityCommentsRead = (data: {
+    target: 'food' | 'post'
+    key: string
+  }): Promise<{ success: boolean }> =>
+    request('/api/community-read', 'Mark comments read', 'POST', data, { silent: true })
+
   // Null removes the name.
   const saveCommunityName = (
     nickname: string | null
@@ -441,6 +448,7 @@ export const useApi = () => {
     likeCommunityPost,
     saveCommunityPostComment,
     deleteCommunityPostComment,
+    markCommunityCommentsRead,
     saveCommunityName,
     // Admin
     adminDeleteCommunityPost,

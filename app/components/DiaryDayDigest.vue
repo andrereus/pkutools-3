@@ -18,8 +18,15 @@ const NOTE_EMOJI = { new: '✨', improved: '🔧', tip: '💡' }
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
-const { foodEntries, postEntries, milestoneEntries, notices, postNotices, userIsAuthenticated } =
-  useNewsContext()
+const {
+  foodEntries,
+  postEntries,
+  milestoneEntries,
+  notices,
+  postNotices,
+  threadNotices,
+  userIsAuthenticated
+} = useNewsContext()
 const seenState = useNewsSeen()
 const changelog = useChangelogNotes()
 
@@ -30,14 +37,10 @@ const seen = computed(() =>
     : null
 )
 
-// Food notices stay until the contributor acts; a post notice lasts until
-// News has been visited since the comment, as on the News page and the bell.
+// Notices last until the comments have been opened, as in News.
 const allNotices = computed(() => {
-  if (!props.isToday || !userIsAuthenticated.value || !seen.value) return []
-  const unreadPostNotices = postNotices.value.filter((notice) =>
-    isUnread({ key: notice.key, createdAt: notice.pendingCommentAt }, seen.value)
-  )
-  return [...notices.value, ...unreadPostNotices].sort(
+  if (!props.isToday || !userIsAuthenticated.value) return []
+  return [...notices.value, ...postNotices.value, ...threadNotices.value].sort(
     (left, right) => (right.pendingCommentAt ?? 0) - (left.pendingCommentAt ?? 0)
   )
 })
@@ -58,8 +61,9 @@ const noticeText = (notice) => {
 // does not.
 const isWarning = (notice) => !notice.postKey && (notice.hasNegativeFeedback || notice.isHidden)
 
-// Unread as in News and the bell: newer than the reader's last News visit.
-// Viewing the diary marks nothing as read.
+// Unread as in News and the bell: newer than the reader's last News visit,
+// for notices as for the day's items. Viewing the diary marks nothing as read.
+// A rating warning has no moment to be new, so amber is its only mark.
 const isNoticeUnread = (notice) =>
   !!seen.value &&
   !!notice.pendingCommentAt &&
@@ -189,7 +193,7 @@ const pillClass =
 
     <ul class="mt-2 flex flex-wrap gap-2">
       <!-- Notifications: amber only for a rating warning, otherwise the gray
-           of the other pills. The blue dot marks what is unread, as in News. -->
+           of the other pills -->
       <li v-for="notice in visibleNotices" :key="notice.key" class="max-w-full">
         <NuxtLink
           :to="noticeLink(notice)"

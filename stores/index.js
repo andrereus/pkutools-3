@@ -66,6 +66,12 @@ export const useStore = defineStore('main', {
     communityPosts: [],
     // Opt-in community names by user ID, shown on posts and comments.
     communityNames: {},
+    // When the reader last opened the comments of their own foods and posts,
+    // by key, so a read comment no longer counts as a notification.
+    communityReads: { foods: {}, posts: {} },
+    // Others' foods and posts the reader commented on, with their last comment
+    // there, so later comments by someone else can notify them.
+    communityThreads: { foods: {}, posts: {} },
     // Accounts whose posts and comments show as PKU Tools, by user ID.
     adminIds: {},
     // Only decides whether admin pages are offered; the server checks again.
@@ -259,6 +265,28 @@ export const useStore = defineStore('main', {
         }
       )
 
+      this.unsubscribeFunctions['communityReads'] = onValue(
+        ref(db, `${userId}/communityReads`),
+        (snapshot) => {
+          const data = snapshot.val()
+          this.communityReads = {
+            foods: data?.foods && typeof data.foods === 'object' ? data.foods : {},
+            posts: data?.posts && typeof data.posts === 'object' ? data.posts : {}
+          }
+        }
+      )
+
+      this.unsubscribeFunctions['communityThreads'] = onValue(
+        ref(db, `${userId}/communityThreads`),
+        (snapshot) => {
+          const data = snapshot.val()
+          this.communityThreads = {
+            foods: data?.foods && typeof data.foods === 'object' ? data.foods : {},
+            posts: data?.posts && typeof data.posts === 'object' ? data.posts : {}
+          }
+        }
+      )
+
       this.unsubscribeFunctions['admins'] = onValue(
         ref(db, 'admins'),
         (snapshot) => {
@@ -283,6 +311,8 @@ export const useStore = defineStore('main', {
       this.communityFoods = []
       this.communityPosts = []
       this.communityNames = {}
+      this.communityReads = { foods: {}, posts: {} }
+      this.communityThreads = { foods: {}, posts: {} }
       this.adminIds = {}
       this.isAdmin = null
       this.settings = { ...defaultSettings }

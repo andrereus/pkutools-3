@@ -7,6 +7,7 @@ import { format } from 'date-fns'
 import {
   communityFoodAppearsInNews,
   communityFoodNotices,
+  communityThreadNotices,
   hasHiddenFoodsInNews
 } from '../app/composables/useNewsContext'
 import {
@@ -217,6 +218,24 @@ describe('contributor feedback notices', () => {
       isHidden: true
     })
     expect(communityFoodNotices([{ ...food, dislikes: 3 }], 'owner-1')).toEqual([])
+  })
+
+  it('settles a comment notice once the comments were opened, keeping the rating warning', () => {
+    const commented = {
+      ...food,
+      commentCount: 1,
+      lastCommunityCommentAt: 300,
+      lastContributorCommentAt: 200
+    }
+    expect(communityFoodNotices([commented], 'owner-1')[0]).toMatchObject({
+      pendingCommentAt: 300
+    })
+    const [notice] = communityFoodNotices([commented], 'owner-1', { food1: 400 })
+    expect(notice).not.toHaveProperty('pendingCommentAt')
+    expect(notice).toMatchObject({ hasNegativeFeedback: true })
+    expect(
+      communityFoodNotices([{ ...commented, dislikes: 2 }], 'owner-1', { food1: 400 })
+    ).toEqual([])
   })
 
   it('only notifies the contributor while they are signed in', () => {
@@ -577,5 +596,40 @@ describe('timezone-free first render', () => {
       timeZone: 'Pacific/Kiritimati'
     })
     expect(local).toBe('2026-08-29')
+  })
+})
+
+describe('notices for conversations the reader joined', () => {
+  const post = {
+    '.key': 'post1',
+    authorId: 'author-1',
+    text: 'Any rice cake tips?',
+    language: 'en',
+    createdAt: 100,
+    lastCommunityCommentAt: 300,
+    lastAuthorCommentAt: 400
+  }
+
+  it('reports a comment by someone else after the reader’s own last comment', () => {
+    expect(
+      communityThreadNotices([], [post], 'reader-1', { posts: { post1: 300 } }, undefined)
+    ).toEqual([
+      {
+        key: 'thread-post-post1',
+        postKey: 'post1',
+        language: 'en',
+        name: 'Any rice cake tips?',
+        pendingCommentAt: 400
+      }
+    ])
+  })
+
+  it('stays quiet once the thread was opened, for threads not joined and for the owner', () => {
+    const joined = { posts: { post1: 300 } }
+    expect(
+      communityThreadNotices([], [post], 'reader-1', joined, { posts: { post1: 500 } })
+    ).toEqual([])
+    expect(communityThreadNotices([], [post], 'reader-1', {}, undefined)).toEqual([])
+    expect(communityThreadNotices([], [post], 'author-1', { posts: { post1: 300 } })).toEqual([])
   })
 })

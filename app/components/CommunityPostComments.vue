@@ -11,6 +11,17 @@ const props = defineProps<{
 const { t, locale } = useI18n()
 const { saveCommunityPostComment, deleteCommunityPostComment } = useApi()
 const { comments, loading, loadFailed, start, stop } = useCommunityPostComments(props.postId)
+const { markRead } = useCommentsRead('post', props.postId)
+
+// The author, or someone who commented here, opening the thread has read it,
+// which settles the notice.
+watch([() => props.expanded, comments], () => {
+  if (!props.expanded) return
+  const joined =
+    props.postAuthorId === props.currentUserId ||
+    comments.value.some((comment) => comment.authorId === props.currentUserId)
+  if (joined) markRead(comments.value, props.currentUserId)
+})
 
 const draft = ref('')
 const editDraft = ref('')
@@ -206,12 +217,12 @@ onUnmounted(() => {
                 : 'text-gray-500 dark:text-gray-400'
             ]"
           >
+            {{ authorLabel(comment) }}
             <LucideBadgeCheck
               v-if="isOfficial(comment.authorId)"
               class="h-3.5 w-3.5"
               aria-hidden="true"
             />
-            {{ authorLabel(comment) }}
           </p>
           <span class="flex shrink-0 items-center gap-1 text-gray-400 dark:text-gray-500">
             <LucidePencil

@@ -5,12 +5,14 @@ import { communityFoodScore, isCommunityFoodHidden } from '../utils/community-fo
 import { REMOVED_CONTENT_RETENTION_MS } from '#shared/utils/moderation'
 
 // Moderation: everything the community publishes, in all languages, newest
-// first, in cards built like the ones in News. Removing keeps the content
-// restorable for a while under Removed. Admin-only; the page's own wording is
-// English. Every action is checked server-side.
+// first, in cards built like the ones in News, with their votes, likes and
+// comments. Removing keeps the content restorable for a while under Removed.
+// Admin-only; the page's own wording is English. Every action is checked
+// server-side.
 
 const store = useStore()
 const {
+  voteCommunityFood,
   adminDeleteCommunityPost,
   adminDeleteCommunityFood,
   adminDeleteComment,
@@ -29,10 +31,15 @@ const RETENTION_DAYS = Math.round(REMOVED_CONTENT_RETENTION_MS / (24 * 60 * 60 *
 // 'live' for what the community sees, 'removed' for what can be restored.
 const view = ref('live')
 const search = ref('')
-// Null for everything, { kind: 'user', userId } or { kind: 'thread', target, parentKey }.
+// Null for everything, { kind: 'user', userId } for one account's content, or
+// { kind: 'thread', target, parentKey } for a post or food with its comments.
 const filter = ref(null)
 const visibleCount = ref(PAGE_SIZE)
 const busyKey = ref(null)
+const votingKey = ref(null)
+// Which cards have their comments open, as in News.
+const expanded = ref({})
+const userId = computed(() => store.user?.id ?? null)
 
 watch([view, search, filter], () => {
   visibleCount.value = PAGE_SIZE
@@ -105,8 +112,7 @@ const rows = computed(() => {
       at: latest(post.createdAt, post.updatedAt),
       edited: isEdited(post.createdAt, post.updatedAt),
       text: post.text,
-      likes: countOf(post.likes),
-      commentCount: countOf(post.commentCount)
+      post
     })
   }
 
@@ -123,8 +129,7 @@ const rows = computed(() => {
       text: food.name,
       note: food.note,
       food,
-      hidden: isCommunityFoodHidden(communityFoodScore(food)),
-      commentCount: countOf(food.commentCount)
+      hidden: isCommunityFoodHidden(communityFoodScore(food))
     })
   }
 
@@ -175,13 +180,8 @@ const removedRows = computed(() =>
         createdAt: latest(record.createdAt),
         at: latest(entry.removedAt)
       }
-      const threadCount = Object.values(entry.thread ?? {}).filter(
-        (comment) => comment?.type !== 'content-update'
-      ).length
       if (entry.type === 'post') {
-        return [
-          { ...base, text: record.text, likes: countOf(record.likes), commentCount: threadCount }
-        ]
+        return [{ ...base, text: record.text, likes: countOf(record.likes) }]
       }
       if (entry.type === 'food') {
         return [
@@ -190,8 +190,7 @@ const removedRows = computed(() =>
             text: record.name,
             note: record.note,
             food: { ...record, '.key': entry.key },
-            hidden: isCommunityFoodHidden(communityFoodScore(record)),
-            commentCount: threadCount
+            hidden: isCommunityFoodHidden(communityFoodScore(record))
           }
         ]
       }
@@ -244,16 +243,28 @@ const filteredRows = computed(() => {
 })
 const visibleRows = computed(() => filteredRows.value.slice(0, visibleCount.value))
 
-const showUser = (userId) => {
-  if (typeof userId === 'string' && userId) filter.value = { kind: 'user', userId }
+const showUser = (authorId) => {
+  if (typeof authorId === 'string' && authorId) filter.value = { kind: 'user', userId: authorId }
 }
+// Opened from a comment card: its post or food with every comment as a card,
+// each with its own remove button.
 const showThread = (target, parentKey) => {
   filter.value = { kind: 'thread', target, parentKey }
 }
-const isThreadShown = (row) =>
-  filter.value?.kind === 'thread' &&
-  filter.value.target === row.type &&
-  filter.value.parentKey === row.id
+
+// Admins vote like anyone else, except on their own foods.
+const voteOf = (food) => (userId.value ? (food.voterIds?.[userId.value] ?? null) : null)
+const vote = async (row, value) => {
+  if (votingKey.value) return
+  votingKey.value = row.key
+  try {
+    await voteCommunityFood({ communityFoodKey: row.id, vote: value })
+  } catch {
+    // useApi already reports the error; the listener keeps the card truthful.
+  } finally {
+    votingKey.value = null
+  }
+}
 
 const EMOJI = { post: '💬', comment: '💭' }
 const emojiFor = (row) => (row.type === 'food' ? row.food.emoji || '🌱' : EMOJI[row.type])
@@ -283,11 +294,11 @@ const translateUrl = (row) => {
 
 // Where a removed comment was written, as recorded when it was removed.
 const removedContext = (row) =>
-  row.parentTitle ? `${row.target} “${row.parentTitle}”` : `a ${row.target}`
+  row.parentTitle ? `the ${row.target} “${row.parentTitle}”` : `a ${row.target}`
 
+// What kind of content it is is in the action line under the author.
 const metaLabel = (row) =>
   [
-    { post: 'Post', food: 'Food', comment: 'Comment' }[row.type],
     (row.language ?? '—').toUpperCase(),
     row.edited ? 'edited' : null,
     row.removedId ? 'removed' : null
@@ -502,42 +513,60 @@ useSeoMeta({ title: 'Admin' })
         :key="row.key"
         class="mb-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700"
       >
-        <!-- The header of a News card: what it is, when and in which language. -->
-        <div class="flex items-center">
+        <!-- The same header on every card: who, what they did, when, and in
+             which language -->
+        <div class="flex items-start">
           <span class="flex h-9 w-7 shrink-0 items-center justify-start text-lg">
             {{ emojiFor(row) }}
           </span>
-          <div class="flex min-h-9 min-w-0 flex-1 items-center gap-2">
-            <h3
-              class="min-w-0 flex-1 text-sm leading-5 font-semibold break-words text-gray-900 dark:text-white"
-            >
-              <template v-if="row.type === 'food'">
-                {{ row.text }}
-                <span
-                  v-if="row.hidden"
-                  class="ml-1 inline-flex items-center rounded bg-amber-50 px-1.5 text-xs font-medium text-amber-700 dark:bg-amber-950/50 dark:text-amber-300"
+          <div class="flex min-h-9 min-w-0 flex-1 items-start gap-2">
+            <div class="min-w-0 flex-1">
+              <h3 class="text-sm leading-5 font-semibold break-words text-gray-900 dark:text-white">
+                <button
+                  type="button"
+                  :class="[
+                    'cursor-pointer text-left hover:underline',
+                    isOfficial(row.authorId) ? 'text-sky-700 dark:text-sky-300' : ''
+                  ]"
+                  title="Show everything by this user"
+                  @click="showUser(row.authorId)"
                 >
-                  Hidden
-                </span>
-              </template>
-              <button
-                v-else
-                type="button"
-                :class="[
-                  'cursor-pointer text-left hover:underline',
-                  isOfficial(row.authorId) ? 'text-sky-700 dark:text-sky-300' : ''
-                ]"
-                title="Show everything by this user"
-                @click="showUser(row.authorId)"
-              >
-                <LucideBadgeCheck
-                  v-if="isOfficial(row.authorId)"
-                  class="mb-0.5 inline h-4 w-4"
-                  aria-hidden="true"
-                />
-                {{ authorText(row) }}
-              </button>
-            </h3>
+                  {{ authorText(row) }}
+                  <LucideBadgeCheck
+                    v-if="isOfficial(row.authorId)"
+                    class="mb-0.5 inline h-4 w-4"
+                    aria-hidden="true"
+                  />
+                </button>
+              </h3>
+              <p class="text-xs leading-4 break-words text-gray-500 dark:text-gray-400">
+                <template v-if="row.type === 'food'">
+                  shared the food
+                  <strong class="font-semibold text-gray-700 dark:text-gray-300">
+                    {{ row.text }}
+                  </strong>
+                  <span
+                    v-if="row.hidden"
+                    class="ml-1 inline-flex items-center rounded bg-amber-50 px-1.5 font-medium text-amber-700 dark:bg-amber-950/50 dark:text-amber-300"
+                  >
+                    Hidden
+                  </span>
+                </template>
+                <template v-else-if="row.type === 'post'">wrote a post</template>
+                <template v-else-if="row.removedId"
+                  >commented on {{ removedContext(row) }}</template
+                >
+                <button
+                  v-else
+                  type="button"
+                  class="cursor-pointer text-left hover:text-sky-600 hover:underline dark:hover:text-sky-400"
+                  title="Show this thread"
+                  @click="showThread(row.target, row.parentKey)"
+                >
+                  commented on the {{ threadTitle(row.target, row.parentKey) }}
+                </button>
+              </p>
+            </div>
             <div class="flex h-9 shrink-0 flex-col items-end justify-between">
               <time
                 class="text-xs leading-4 text-gray-400 dark:text-gray-500"
@@ -552,40 +581,50 @@ useSeoMeta({ title: 'Admin' })
           </div>
         </div>
 
-        <p v-if="row.type === 'food'" class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Shared by
-          <button
-            type="button"
-            class="cursor-pointer font-medium text-gray-700 hover:underline dark:text-gray-300"
-            title="Show everything by this user"
-            @click="showUser(row.authorId)"
-          >
-            {{ authorText(row) }}
-          </button>
-        </p>
-        <p
-          v-else-if="row.type === 'comment' && row.removedId"
-          class="mt-1 text-xs text-gray-500 dark:text-gray-400"
+        <!-- Live foods and posts: the News card with its votes or likes and its
+             comments, opened in place, plus the admin's buttons in the same row -->
+        <NewsCommunityFood
+          v-if="row.type === 'food' && !row.removedId"
+          v-model:comments-expanded="expanded[row.key]"
+          :food="row.food"
+          :current-user-id="userId"
+          :vote="voteOf(row.food)"
+          :can-vote="row.food.contributorId !== userId"
+          :show-statistics="row.food.contributorId === userId"
+          :busy="votingKey === row.key"
+          @vote="(value) => vote(row, value)"
         >
-          On the {{ removedContext(row) }}
-        </p>
-        <p v-else-if="row.type === 'comment'" class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          <button
-            type="button"
-            class="cursor-pointer text-left hover:text-sky-600 hover:underline dark:hover:text-sky-400"
-            title="Show this thread"
-            @click="showThread(row.target, row.parentKey)"
-          >
-            On the {{ threadTitle(row.target, row.parentKey) }}
-          </button>
-        </p>
-
-        <!-- The food body from News: values, nutrients, source and note. -->
-        <NewsCommunityFood v-if="row.type === 'food'" :food="row.food" />
+          <template #actions>
+            <AdminRowActions
+              :row="row"
+              :translate-url="translateUrl(row)"
+              :busy="busyKey !== null"
+              :retention-days="RETENTION_DAYS"
+              @remove="remove(row)"
+            />
+          </template>
+        </NewsCommunityFood>
+        <NewsCommunityPost
+          v-else-if="row.type === 'post' && !row.removedId"
+          v-model:comments-expanded="expanded[row.key]"
+          :post="row.post"
+          :is-own="row.post.authorId === userId"
+          :current-user-id="userId"
+        >
+          <template #actions>
+            <AdminRowActions
+              :row="row"
+              :translate-url="translateUrl(row)"
+              :busy="busyKey !== null"
+              :retention-days="RETENTION_DAYS"
+              @remove="remove(row)"
+            />
+          </template>
+        </NewsCommunityPost>
 
         <!-- A comment has no figures, so its buttons sit beside the text
              rather than in a row of their own. -->
-        <div v-if="row.type === 'comment'" class="mt-2 flex items-start gap-3">
+        <div v-else-if="row.type === 'comment'" class="mt-2 flex items-start gap-3">
           <p
             class="min-w-0 flex-1 text-sm break-words whitespace-pre-wrap text-gray-700 dark:text-gray-300"
           >
@@ -601,9 +640,12 @@ useSeoMeta({ title: 'Admin' })
             @delete="deletePermanently(row)"
           />
         </div>
+
+        <!-- Removed foods and posts: their content and figures as they were -->
         <template v-else>
+          <NewsCommunityFood v-if="row.type === 'food'" :food="row.food" />
           <p
-            v-if="row.type === 'post'"
+            v-else
             class="mt-2 text-sm break-words whitespace-pre-wrap text-gray-700 dark:text-gray-300"
           >
             {{ row.text }}
@@ -634,10 +676,7 @@ useSeoMeta({ title: 'Admin' })
                 :row="row"
                 :translate-url="translateUrl(row)"
                 :busy="busyKey !== null"
-                :thread-shown="isThreadShown(row)"
                 :retention-days="RETENTION_DAYS"
-                @thread="showThread(row.type, row.id)"
-                @remove="remove(row)"
                 @restore="restore(row)"
                 @delete="deletePermanently(row)"
               />

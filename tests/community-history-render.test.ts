@@ -41,6 +41,7 @@ const renderThread = async (locale: string, entries: CommunityFoodThreadEntry[])
     useI18n: () => ({ t, locale: Vue.ref(locale) }),
     useApi: () => ({ saveCommunityFoodComment: vi.fn(), deleteCommunityFoodComment: vi.fn() }),
     // Nobody in these threads has a community name.
+    useCommentsRead: () => ({ markRead: vi.fn() }),
     useCommunityAuthor: () => ({
       nameOf: () => null,
       isOfficial: () => false,

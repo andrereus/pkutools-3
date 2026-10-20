@@ -206,6 +206,8 @@ const remove = async () => {
         >
           <LucidePencil class="h-4 w-4" aria-hidden="true" />
         </ActionChip>
+        <!-- Further buttons of the screen that shows the post, such as admin ones -->
+        <slot name="actions" />
       </template>
     </ActionBar>
 

@@ -58,7 +58,9 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     },
     [`communityPosts/${postId}/commentCount`]: ServerValue.increment(1),
     [`communityPosts/${postId}/${post.authorId === userId ? 'lastAuthorCommentAt' : 'lastCommunityCommentAt'}`]:
-      now
+      now,
+    // Someone else's thread: later comments there notify this commenter.
+    ...(post.authorId !== userId && { [`${userId}/communityThreads/posts/${postId}`]: now })
   })
 
   return { success: true }

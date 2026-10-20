@@ -146,6 +146,8 @@ describe('store account switching', () => {
       'communityFoods',
       'communityPosts',
       'communityProfiles',
+      'user-1/communityReads',
+      'user-1/communityThreads',
       'user-1/labValues',
       'user-1/ownFood',
       'user-1/pheDiary',

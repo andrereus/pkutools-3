@@ -71,6 +71,7 @@ const renderNews = async (locale: string, dislikes: number, pending: boolean) =>
       items: Vue.ref([]),
       notices,
       postNotices: Vue.ref([]),
+      threadNotices: Vue.ref([]),
       commentEntries: Vue.ref(pending ? [{ key: 'comment-food1', createdAt: 200 }] : []),
       showHiddenFoods: Vue.ref(false),
       hasHiddenFoods: Vue.ref(false),
