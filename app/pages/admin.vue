@@ -88,7 +88,13 @@ const postsRef = () => databaseRef(getDatabase(), 'communityPosts')
 watch(
   [() => store.isAdmin, visibleCount],
   ([admin, count]) => {
-    if (!admin || !import.meta.client) return
+    if (!admin || !import.meta.client) {
+      // Signing out ends every listener; signing back in binds them anew.
+      listeners.forEach((unsubscribe) => unsubscribe())
+      listeners.clear()
+      activityLoaded.value = {}
+      return
+    }
     activityLoaded.value = {}
     for (const field of ACTIVITY_FIELDS) {
       listen(

@@ -29,7 +29,10 @@ export const FEED_POSTS_PAGE = 20
 
 const FOLLOWED_POST_LISTENER = 'followedPost:'
 
-const toList = (data) =>
+// A database key: no path separators or characters Firebase refuses.
+const DATABASE_KEY = /^[^.#$[\]/]{1,128}$/
+
+export const toList = (data) =>
   data && typeof data === 'object'
     ? Object.entries(data).map(([key, value]) => ({ ...value, '.key': key }))
     : []
@@ -91,11 +94,11 @@ export const useStore = defineStore('main', {
     // False while the feed waits for the snapshot of its current query.
     feedLoaded: false,
     // The reader's own posts, and single posts followed whatever their age:
-    // those they commented on, and one a link points to. Notifications and
-    // links always find their post this way.
+    // those they commented on, and the one the current link points to.
+    // Notifications and links always find their post this way.
     ownCommunityPosts: [],
     followedCommunityPosts: {},
-    linkedPostIds: [],
+    linkedPostId: null,
     // Opt-in community names by user ID, shown on posts and comments.
     communityNames: {},
     // When the reader last opened the comments of their own foods and posts,
@@ -352,12 +355,16 @@ export const useStore = defineStore('main', {
     },
     // The newest posts in one language. Rebound when the language or the
     // number asked for changes.
-    bindFeedPosts(db = getDatabase()) {
+    // Only a signed-in reader has a feed. The database is reached after that
+    // check: during server rendering nobody is signed in and Firebase does not
+    // exist.
+    bindFeedPosts(db) {
       this.unsubscribeFunctions['communityPosts']?.()
       delete this.unsubscribeFunctions['communityPosts']
       const { language, limit } = this.feedQuery
       this.feedLoaded = false
       if (!this.user || !language) return
+      db ??= getDatabase()
       const bounds = languageBounds(language)
       this.unsubscribeFunctions['communityPosts'] = onValue(
         query(
@@ -370,6 +377,10 @@ export const useStore = defineStore('main', {
         (snapshot) => {
           this.communityPosts = toList(snapshot.val())
           this.feedLoaded = true
+        },
+        () => {
+          // Nothing more arrives; the page stops waiting for it.
+          this.feedLoaded = true
         }
       )
     },
@@ -379,18 +390,24 @@ export const useStore = defineStore('main', {
       this.feedQuery = { language, limit }
       this.bindFeedPosts()
     },
-    // Follows a single post a link points to, so it can be shown wherever it is.
+    // Follows the post the current link points to, so it can be shown wherever
+    // it is. A new link replaces the previous one.
     followLinkedPost(postId) {
-      if (!postId || this.linkedPostIds.includes(postId)) return
-      this.linkedPostIds = [...this.linkedPostIds, postId]
-      this.syncFollowedPosts(getDatabase())
+      if (typeof postId !== 'string' || !DATABASE_KEY.test(postId)) return
+      if (this.linkedPostId === postId) return
+      this.linkedPostId = postId
+      this.syncFollowedPosts()
     },
     // One listener per followed post, kept in step with the posts the reader
     // commented on and the ones a link asked for.
     syncFollowedPosts(db) {
       if (!this.user) return
+      db ??= getDatabase()
       const postIds = [
-        ...new Set([...Object.keys(this.communityThreads.posts), ...this.linkedPostIds])
+        ...new Set([
+          ...Object.keys(this.communityThreads.posts).filter((postId) => DATABASE_KEY.test(postId)),
+          ...(this.linkedPostId ? [this.linkedPostId] : [])
+        ])
       ]
       for (const name of Object.keys(this.unsubscribeFunctions)) {
         if (!name.startsWith(FOLLOWED_POST_LISTENER)) continue
@@ -424,7 +441,8 @@ export const useStore = defineStore('main', {
       this.communityPosts = []
       this.ownCommunityPosts = []
       this.followedCommunityPosts = {}
-      this.linkedPostIds = []
+      this.linkedPostId = null
+      this.feedLoaded = false
       this.communityNames = {}
       this.communityReads = { foods: {}, posts: {} }
       this.communityThreads = { foods: {}, posts: {} }

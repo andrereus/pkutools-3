@@ -132,6 +132,16 @@ const isItemUnread = (item) => canBeUnread.value && isUnread(item, seen.value)
 const visibleItems = computed(() =>
   visibleNewsItems(filteredItems.value, visibleCount.value, userIsAuthenticated.value)
 )
+// A linked card beyond the shown part of the feed is shown first, on its own,
+// rather than loading everything newer to reach its place.
+const pinnedKey = ref(null)
+const shownItems = computed(() => {
+  const list = visibleItems.value
+  const key = pinnedKey.value
+  if (!key || list.some((item) => item.key === key)) return list
+  const pinned = filteredItems.value.find((item) => item.key === key)
+  return pinned ? [pinned, ...list] : list
+})
 // Posts load from the database as far as the feed is shown: a post among the
 // first N items is always among the newest N posts in this language. A full
 // window may have more beyond it.
@@ -139,9 +149,15 @@ watch(visibleCount, (count) => store.setFeedQuery(locale.value, Math.max(count, 
   immediate: true
 })
 onUnmounted(() => store.setFeedQuery(locale.value, FEED_POSTS_PAGE))
-const morePosts = computed(
-  () => store.feedLoaded && store.communityPosts.length >= store.feedQuery.limit
-)
+// Only the filters that show posts can have more of them to load.
+const morePosts = computed(() => {
+  const filter = showFilters.value ? selectedFilter.value : 'all'
+  return (
+    (filter === 'all' || filter === 'community') &&
+    store.feedLoaded &&
+    store.communityPosts.length >= store.feedQuery.limit
+  )
+})
 const hasMore = computed(
   () =>
     userIsAuthenticated.value &&
@@ -164,24 +180,21 @@ const revealCard = async (key) => {
   if (foodNoticeFor(key)?.isHidden) showHiddenFoods.value = true
   if (!items.value.some((item) => item.key === key)) return
   selectedFilter.value = 'all'
-  // Let the filter's pagination reset finish before extending the visible list.
+  // Let the filter's pagination reset finish before placing the card.
   await nextTick()
   pendingReveal.value = key
 }
 
-// Showing more items loads more posts, which can place newer ones before the
-// card. It is shown once the feed has caught up and the card stays in view.
+// A signed-in reader's feed catches up first, so the card's place is known.
+// Within the shown part it opens in place; beyond it, it is shown first.
 const pendingReveal = ref(null)
-watch([pendingReveal, filteredItems, visibleCount, () => store.feedLoaded], async () => {
+watch([pendingReveal, filteredItems, () => store.feedLoaded], async () => {
   const key = pendingReveal.value
-  if (!key || !store.feedLoaded) return
+  if (!key || (userIsAuthenticated.value && !store.feedLoaded)) return
   const count = newsCountToReveal(filteredItems.value, visibleCount.value, key)
   if (count === null) return
-  if (count > visibleCount.value) {
-    visibleCount.value = count
-    return
-  }
   pendingReveal.value = null
+  pinnedKey.value = count > visibleCount.value ? key : null
   const target = filteredItems.value.find((item) => item.key === key)
   if (target?.food || target?.post) expandedComments.value[key] = true
   await nextTick()
@@ -484,7 +497,7 @@ defineOgImage('Default', {
     </p>
 
     <article
-      v-for="item in visibleItems"
+      v-for="item in shownItems"
       :id="item.key"
       :key="item.key"
       tabindex="-1"

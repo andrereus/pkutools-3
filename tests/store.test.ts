@@ -165,7 +165,7 @@ describe('store data binding', () => {
     expect(listeners.has(feed.replace('limitToLast=20', 'limitToLast=40'))).toBe(true)
   })
 
-  it('follows a post a link points to', () => {
+  it('follows the post the current link points to, and only that one', () => {
     const store = useStore()
     store.user = { id: 'user-1' }
     store.initRef()
@@ -175,6 +175,18 @@ describe('store data binding', () => {
     expect(store.followedCommunityPosts).toEqual({
       linked: { text: 'Old', language: 'de', '.key': 'linked' }
     })
+
+    store.followLinkedPost('next')
+    expect(unsubscribes.get('communityPosts/linked')).toHaveBeenCalledTimes(1)
+    expect(listeners.has('communityPosts/next')).toBe(true)
+  })
+
+  it('ignores a link whose post ID is not a database key', () => {
+    const store = useStore()
+    store.user = { id: 'user-1' }
+    store.initRef()
+    for (const postId of ['a.b', 'a/b', 'a#b', '']) store.followLinkedPost(postId)
+    expect([...listeners.keys()].filter((path) => path.startsWith('communityPosts/'))).toEqual([])
   })
 
   it('binds the community foods listener globally', () => {

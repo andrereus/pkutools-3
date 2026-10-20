@@ -8,7 +8,7 @@ import {
   endAt
 } from 'firebase/database'
 import type { Ref } from 'vue'
-import { useStore } from '../../stores/index'
+import { toList, useStore } from '../../stores/index'
 import { languageCreatedAtKey, languageBounds } from '#shared/utils/community-post'
 
 const DAY_MS = 24 * 60 * 60 * 1000
@@ -30,13 +30,16 @@ export const useDayPosts = (date: Ref<string>, isToday: Ref<boolean>) => {
     posts.value = []
     if (!import.meta.client || !store.user) return
     const language = locale.value
-    const dayStart = new Date(`${date.value}T00:00:00`).getTime()
-    if (!Number.isFinite(dayStart)) return
+    const [year, month, day] = date.value.split('-').map(Number)
+    if (!year || !month || !day) return
+    // Calendar days, so the day the clocks change keeps all its hours.
+    const dayStart = new Date(year, month - 1, day).getTime()
+    const nextDayStart = new Date(year, month - 1, day + 1).getTime()
     // Rounded to the hour, so the window does not rebind every minute.
     const from = isToday.value
       ? Math.floor((Date.now() - DAY_MS) / (60 * 60 * 1000)) * 60 * 60 * 1000
       : dayStart
-    const to = isToday.value ? null : dayStart + DAY_MS
+    const to = isToday.value ? null : nextDayStart - 1
     unsubscribe = onValue(
       query(
         databaseRef(getDatabase(), 'communityPosts'),
@@ -45,14 +48,7 @@ export const useDayPosts = (date: Ref<string>, isToday: Ref<boolean>) => {
         endAt(to === null ? languageBounds(language).end : languageCreatedAtKey(language, to))
       ),
       (snapshot) => {
-        const data = snapshot.val()
-        posts.value =
-          data && typeof data === 'object'
-            ? Object.entries(data).map(([key, value]) => ({
-                ...(value as Record<string, unknown>),
-                '.key': key
-              }))
-            : []
+        posts.value = toList(snapshot.val())
       }
     )
   }
