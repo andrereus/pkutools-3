@@ -1,6 +1,9 @@
 export const MAX_COMMUNITY_FOOD_COMMENTS = 100
 
-/** Rebuild activity from surviving human comments, never from edit history. */
+/**
+ * Rebuild activity from surviving human comments, never from edit history or
+ * comments an admin hid.
+ */
 export function communityFoodCommentActivity(
   thread: Record<string, unknown>,
   contributorId: unknown,

@@ -1,5 +1,6 @@
 import { getDatabase, onValue, ref as databaseRef, type Unsubscribe } from 'firebase/database'
 import { FOOD_CONTENT_FIELDS, type FoodContentField } from '#shared/utils/food-content'
+import type { InjectionKey, Ref } from 'vue'
 import type { CommunityFoodThreadEntry } from './useApi'
 
 const isTimestamp = (value: unknown): value is number =>
@@ -57,6 +58,16 @@ export const normalizeCommunityFoodComments = (value: unknown): CommunityFoodThr
         (left['.key'] < right['.key'] ? -1 : left['.key'] > right['.key'] ? 1 : 0)
     )
 }
+
+/**
+ * Moderation the admin page offers on each comment in a thread: deleting it.
+ * Threads elsewhere get none.
+ */
+export interface AdminModeration {
+  busy: Ref<boolean>
+  remove: (target: 'food' | 'post', key: string, commentId: string) => unknown
+}
+export const ADMIN_MODERATION: InjectionKey<AdminModeration> = Symbol('admin-moderation')
 
 /**
  * Realtime comments for one food. The caller explicitly starts the listener,

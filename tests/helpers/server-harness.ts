@@ -80,6 +80,16 @@ const writePath = (root: Data, path: string, value: unknown) => {
   }
 }
 
+/** Firebase stores neither nulls nor the empty objects they leave behind. */
+const withoutNulls = (value: unknown): unknown => {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return value
+  const entries = Object.entries(value as Data).flatMap(([key, child]) => {
+    const kept = withoutNulls(child)
+    return kept === null || kept === undefined ? [] : [[key, kept]]
+  })
+  return entries.length ? Object.fromEntries(entries) : null
+}
+
 const snapshotOf = (value: unknown) => ({
   // Detached copy, like the real snapshot: a route that reads a value, writes,
   // and then reads its own earlier snapshot must still see the pre-write state.
@@ -159,6 +169,15 @@ export function createFakeDatabase(initial: Data = {}, failWrite?: WriteFailure)
       push: () => {
         pushCounter += 1
         return makeRef(`${path}/-Nfake${pushCounter}`)
+      },
+      // Runs once against the current value; returning undefined aborts.
+      transaction: async (apply: (current: unknown) => unknown) => {
+        guard('set', path)
+        const current = readPath(data, path)
+        const next = apply(current === undefined ? null : structuredClone(current))
+        if (next === undefined) return { committed: false, snapshot: snapshotOf(current) }
+        writePath(data, path, withoutNulls(next) ?? null)
+        return { committed: true, snapshot: snapshotOf(readPath(data, path)) }
       }
     }
   }

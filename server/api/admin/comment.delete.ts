@@ -1,13 +1,13 @@
 import { AdminCommentDeleteSchema } from '../../types/schemas'
 import { defineAdminHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
-import { removeThreadComment } from '../../utils/community-post'
+import { removeThreadComment } from '../../utils/community-thread'
 
-// Removes one comment from its thread, restorably.
-export default defineAdminHandler(async ({ event, userId }) => {
+// Deletes one comment for good.
+export default defineAdminHandler(async ({ event }) => {
   const { target, parentKey, commentId } = await validateBody(event, AdminCommentDeleteSchema)
 
-  if (!(await removeThreadComment(target, parentKey, commentId, { removedBy: userId }))) {
+  if (!(await removeThreadComment(target, parentKey, commentId))) {
     throw createError({
       statusCode: 403,
       message: 'Edit history cannot be deleted',

@@ -11,26 +11,28 @@ export const useCommentsRead = (target: 'food' | 'post', key: string) => {
   const { markCommunityCommentsRead } = useApi()
   let requestedFor = 0
 
-  // The last opening, or for a commenter their own last comment there.
-  const readAt = () => {
-    const stamp = (source: unknown) => {
-      const value = (source as Record<string, Record<string, unknown>>)?.[`${target}s`]?.[key]
-      return typeof value === 'number' ? value : 0
-    }
-    return Math.max(stamp(store.communityReads), stamp(store.communityThreads))
+  const stamp = (source: unknown) => {
+    const value = (source as Record<string, Record<string, unknown>>)?.[`${target}s`]?.[key]
+    return typeof value === 'number' ? value : 0
   }
 
+  // The owner and those who joined the conversation, decided as the server
+  // decides it: by the joined entry, not by the comments on screen.
   const markRead = (
     comments: readonly { type?: string; authorId?: string; createdAt: number }[],
-    readerId: string
+    readerId: string,
+    ownerId: string | null | undefined
   ) => {
+    if (ownerId !== readerId && stamp(store.communityThreads) === 0) return
+    // The last opening, or for a commenter their own last comment there.
+    const readAt = Math.max(stamp(store.communityReads), stamp(store.communityThreads))
     const latest = Math.max(
       0,
       ...comments
         .filter((comment) => comment.type !== 'content-update' && comment.authorId !== readerId)
         .map((comment) => comment.createdAt)
     )
-    if (latest === 0 || latest <= readAt() || latest <= requestedFor) return
+    if (latest === 0 || latest <= readAt || latest <= requestedFor) return
     requestedFor = latest
     markCommunityCommentsRead({ target, key }).catch(() => {
       // Silent: the notification stays and the next opening tries again.

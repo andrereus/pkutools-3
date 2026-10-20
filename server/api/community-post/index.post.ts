@@ -3,6 +3,7 @@ import { CommunityPostSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { MAX_COMMUNITY_POSTS_PER_DAY } from '../../utils/community-post'
+import { languageCreatedAtKey } from '../../../shared/utils/community-post'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -53,6 +54,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     language: locale,
     createdAt: now,
     updatedAt: now,
+    // News asks for posts by language and time together.
+    languageCreatedAt: languageCreatedAtKey(locale, now),
     likes: 0,
     commentCount: 0
   })

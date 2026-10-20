@@ -4,6 +4,7 @@ import { CommunityFoodCommentSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { MAX_COMMUNITY_FOOD_COMMENTS } from '../../utils/community-food-comment'
+import { assertVisibleTo } from '../../utils/community-thread'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { communityFoodKey, commentId, comment } = await validateBody(
@@ -16,6 +17,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   if (!foodSnapshot.exists()) {
     throw createError({ statusCode: 404, message: 'Community food not found' })
   }
+  await assertVisibleTo(foodSnapshot.val(), foodSnapshot.val().contributorId, userId)
 
   if (commentId) {
     const commentRef = db.ref(`communityFoodComments/${communityFoodKey}/${commentId}`)

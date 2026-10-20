@@ -20,6 +20,8 @@ vi.mock(import('firebase/database'), () => ({
   orderByChild: (child: string) => `orderByChild=${child}`,
   limitToLast: (limit: number) => `limitToLast=${limit}`,
   equalTo: (value: string) => `equalTo=${value}`,
+  startAt: (value: string) => `startAt=${value}`,
+  endAt: (value: string) => `endAt=${value}`,
   onValue: (dbRef: { path: string }, callback: Listener) => {
     listeners.set(dbRef.path, callback)
     const unsubscribe = vi.fn()
@@ -133,7 +135,7 @@ describe('store data binding', () => {
 
     emit('user-1/communityThreads', { posts: { old: 100, older: 50 } })
     emit('communityPosts/old', { authorId: 'user-2', text: 'Old post' })
-    expect(store.joinedCommunityPosts).toEqual({
+    expect(store.followedCommunityPosts).toEqual({
       old: { authorId: 'user-2', text: 'Old post', '.key': 'old' }
     })
 
@@ -142,7 +144,37 @@ describe('store data binding', () => {
     expect(olderUnsubscribe).toHaveBeenCalledTimes(1)
 
     emit('communityPosts/old', null)
-    expect(store.joinedCommunityPosts).toEqual({})
+    expect(store.followedCommunityPosts).toEqual({})
+  })
+
+  it('loads the newest posts in one language, as many as asked for', () => {
+    const store = useStore()
+    store.user = { id: 'user-1' }
+    store.initRef()
+    store.setFeedQuery('de')
+
+    const feed =
+      'communityPosts|orderByChild=languageCreatedAt|startAt=de_|endAt=de_~|limitToLast=20'
+    emit(feed, { p1: { text: 'Hallo', language: 'de' } })
+    expect(store.communityPosts).toEqual([{ text: 'Hallo', language: 'de', '.key': 'p1' }])
+    expect(store.feedLoaded).toBe(true)
+
+    store.setFeedQuery('de', 40)
+    expect(unsubscribes.get(feed)).toHaveBeenCalledTimes(1)
+    expect(store.feedLoaded).toBe(false)
+    expect(listeners.has(feed.replace('limitToLast=20', 'limitToLast=40'))).toBe(true)
+  })
+
+  it('follows a post a link points to', () => {
+    const store = useStore()
+    store.user = { id: 'user-1' }
+    store.initRef()
+    store.followLinkedPost('linked')
+
+    emit('communityPosts/linked', { text: 'Old', language: 'de' })
+    expect(store.followedCommunityPosts).toEqual({
+      linked: { text: 'Old', language: 'de', '.key': 'linked' }
+    })
   })
 
   it('binds the community foods listener globally', () => {
@@ -168,7 +200,6 @@ describe('store account switching', () => {
       'admins',
       'communityFoods',
       'communityPosts|orderByChild=authorId|equalTo=user-1',
-      'communityPosts|orderByChild=createdAt|limitToLast=200',
       'communityProfiles',
       'user-1/communityReads',
       'user-1/communityThreads',

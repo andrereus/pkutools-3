@@ -18,6 +18,8 @@ const NOTE_EMOJI = { new: '✨', improved: '🔧', tip: '💡' }
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
+// The day's posts load for this day only; the feed holds just the newest.
+const dayPosts = useDayPosts(toRef(props, 'date'), toRef(props, 'isToday'))
 const {
   foodEntries,
   postEntries,
@@ -26,7 +28,7 @@ const {
   postNotices,
   threadNotices,
   userIsAuthenticated
-} = useNewsContext()
+} = useNewsContext({ extraPosts: dayPosts })
 const seenState = useNewsSeen()
 const changelog = useChangelogNotes()
 

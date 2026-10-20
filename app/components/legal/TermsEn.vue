@@ -120,7 +120,8 @@
     Shared entries and their comments can stay available after you delete your account, because
     other people may be relying on them. Your posts and your comments on posts are deleted with your
     account. Not every contribution can be checked, so please report anything that is wrong or
-    should not be there. Contributions and community names that break these terms can be removed.
+    should not be there. Contributions and community names that break these terms can be hidden or
+    removed.
   </p>
 
   <h2>Availability</h2>

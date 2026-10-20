@@ -1,3 +1,4 @@
+import type { Ref } from 'vue'
 import { useStore } from '../../stores/index'
 import { format } from 'date-fns'
 import {
@@ -7,6 +8,7 @@ import {
 } from '../utils/community-food'
 import { streakMilestones } from '../utils/milestones'
 import { isNewsTimestamp } from '../utils/news-grouping'
+import { isVisibleTo } from '../utils/hidden-content'
 
 // Realtime News sources shared by the page and global unread badge. This module
 // intentionally has no changelog import, keeping that content page-scoped.
@@ -278,28 +280,41 @@ export interface NewsEntry {
 /**
  * Builds News entries from realtime store data.
  */
-export const useNewsContext = () => {
+export const useNewsContext = (options: { extraPosts?: Ref<Post[]> } = {}) => {
   const store = useStore()
   const { locale } = useI18n()
+
+  // The feed follows the reader's app language. Every consumer asks for the
+  // same, so this is a no-op after the first.
+  watch(locale, (language) => store.setFeedQuery(language), { immediate: true })
 
   // The store is plain JavaScript, so `user` is inferred from its null initial
   // value. Narrowed here rather than left to optional chaining, which types the
   // result as never.
   const user = computed(() => store.user as { id?: string } | null)
   const userIsAuthenticated = computed(() => user.value !== null)
-  const foods = computed(() => store.communityFoods as Food[])
-  // The feed's newest posts, plus the reader's own and the ones they commented
-  // on whatever their age, so a notification always has its post to open.
+  // Hidden content reaches only its owner and admins, here and in everything
+  // built from these lists: the feed, notifications and the diary.
+  const reader = computed(() => ({ id: user.value?.id ?? null, isAdmin: store.isAdmin === true }))
+  const foods = computed(() =>
+    (store.communityFoods as Food[]).filter((food) =>
+      isVisibleTo(food, food.contributorId, reader.value)
+    )
+  )
+  // The feed's newest posts, plus the reader's own and the followed ones
+  // whatever their age, so a notification or a link always has its post, plus
+  // any the consumer loads itself, such as one diary day's.
   const posts = computed(() => {
     const byKey = new Map<unknown, Post>()
     for (const post of [
       ...(store.communityPosts as Post[]),
       ...(store.ownCommunityPosts as Post[]),
-      ...Object.values(store.joinedCommunityPosts as Record<string, Post>)
+      ...Object.values(store.followedCommunityPosts as Record<string, Post>),
+      ...(options.extraPosts?.value ?? [])
     ]) {
       byKey.set(post['.key'], post)
     }
-    return [...byKey.values()]
+    return [...byKey.values()].filter((post) => isVisibleTo(post, post.authorId, reader.value))
   })
   // Local to this consumer, not a saved setting. The header badge keeps the
   // default exclusion even when the News page opts in to hidden foods.

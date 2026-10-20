@@ -1,16 +1,14 @@
 <script setup>
-// The admin buttons of one card: Remove for live content, Restore and Delete
-// permanently for removed content, and a translation link for both. Icons
-// only, since the page repeats them on every card.
+// The admin buttons of one card: a translation link, Hide or Show, and
+// Delete. Icons only, since the page repeats them on every card.
 defineProps({
   row: { type: Object, required: true },
   /** Opens the text in Google Translate; null when no translation is needed. */
   translateUrl: { type: String, default: null },
-  busy: { type: Boolean, default: false },
-  retentionDays: { type: Number, required: true }
+  busy: { type: Boolean, default: false }
 })
 
-const emit = defineEmits(['remove', 'restore', 'delete'])
+const emit = defineEmits(['hide', 'show', 'delete'])
 </script>
 
 <template>
@@ -25,41 +23,30 @@ const emit = defineEmits(['remove', 'restore', 'delete'])
     >
       <LucideLanguages class="h-4 w-4" aria-hidden="true" />
     </ActionChip>
-    <template v-if="row.removedId">
-      <ActionChip
-        tone="sky"
-        square
-        :disabled="busy"
-        aria-label="Restore"
-        title="Restore"
-        @click="emit('restore')"
-      >
-        <LucideArchiveRestore class="h-4 w-4" aria-hidden="true" />
-      </ActionChip>
-      <ActionChip
-        tone="red"
-        accent
-        square
-        :disabled="busy"
-        aria-label="Delete permanently"
-        title="Delete permanently"
-        @click="emit('delete')"
-      >
-        <LucideTrash2 class="h-4 w-4" aria-hidden="true" />
-      </ActionChip>
-    </template>
-    <template v-else>
-      <ActionChip
-        tone="red"
-        accent
-        square
-        :disabled="busy"
-        :aria-label="`Remove (restorable for ${retentionDays} days)`"
-        :title="`Remove (restorable for ${retentionDays} days)`"
-        @click="emit('remove')"
-      >
-        <LucideArchive class="h-4 w-4" aria-hidden="true" />
-      </ActionChip>
-    </template>
+    <ActionChip
+      v-if="row.hidden"
+      tone="sky"
+      square
+      :disabled="busy"
+      aria-label="Show again"
+      title="Show again"
+      @click="emit('show')"
+    >
+      <LucideEye class="h-4 w-4" aria-hidden="true" />
+    </ActionChip>
+    <ActionChip v-else square :disabled="busy" aria-label="Hide" title="Hide" @click="emit('hide')">
+      <LucideEyeOff class="h-4 w-4" aria-hidden="true" />
+    </ActionChip>
+    <ActionChip
+      tone="red"
+      accent
+      square
+      :disabled="busy"
+      aria-label="Delete"
+      title="Delete"
+      @click="emit('delete')"
+    >
+      <LucideTrash2 class="h-4 w-4" aria-hidden="true" />
+    </ActionChip>
   </div>
 </template>

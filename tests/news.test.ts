@@ -481,6 +481,13 @@ describe('what a visit records', () => {
     expect(seenAfterVisit([])).toEqual(emptySeen())
   })
 
+  it('does not move the time into the future for an item dated ahead', () => {
+    expect(seenAfterVisit([item('today', 500), item('dated-ahead', 900, 120)], 600)).toEqual({
+      lastReadAt: 500,
+      lastSeenRevision: 120
+    })
+  })
+
   it('ignores an invalid timestamp instead of freezing the marker at NaN', () => {
     expect(seenAfterVisit([item('valid', 500), item('invalid', Number.NaN)])).toEqual({
       lastReadAt: 500,

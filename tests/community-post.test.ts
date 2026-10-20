@@ -136,28 +136,25 @@ describe('community posts', () => {
     expect(fake.data.communityPostComments).toBeUndefined()
   })
 
-  it('removes the account’s posts, name, admin rights and removed content on deletion', async () => {
+  it('removes the account’s posts, hidden ones too, its name and admin rights on deletion', async () => {
     await saveComment(requestEvent({ postId: 'post1', comment: 'Thanks' }))
     currentUser = 'author-1'
     await createPost(requestEvent({ post: 'Second post', locale: 'en' }))
     await saveName(requestEvent({ nickname: 'Anna' }))
+    posts().post1!.hiddenAt = 500
 
     fake.data.admins = { 'author-1': true }
-    fake.data.removedContent = {
-      mine: { type: 'post', key: 'old', authorId: 'author-1', removedAt: 1 },
-      theirs: { type: 'post', key: 'other', authorId: 'reader-1', removedAt: 1 }
-    }
 
     await deleteAccount(requestEvent(undefined))
     expect(fake.data.communityPosts).toBeUndefined()
     expect(fake.data.communityPostComments).toBeUndefined()
     expect(fake.data.communityProfiles).toBeUndefined()
-    expect(Object.keys(fake.data.removedContent as object)).toEqual(['theirs'])
+    expect(fake.data.communityNameKeys).toBeUndefined()
     expect(fake.data.admins).toBeUndefined()
     expect(deleteUser).toHaveBeenCalledWith('author-1')
   })
 
-  it('removes the account’s comments on other posts, also from removed copies, and keeps likes', async () => {
+  it('removes the account’s comments on other posts and keeps likes', async () => {
     fake = createFakeDatabase({
       'reader-1': { communityThreads: { posts: { post1: 300, post2: 200 } } },
       communityPosts: {
@@ -178,24 +175,6 @@ describe('community posts', () => {
           c2: { type: 'comment', authorId: 'author-1', text: 'Welcome', createdAt: 250 },
           c3: { type: 'comment', authorId: 'reader-1', text: 'Again', createdAt: 300 }
         }
-      },
-      removedContent: {
-        r1: {
-          type: 'post',
-          key: 'post2',
-          authorId: 'author-2',
-          removedAt: Date.now(),
-          record: {
-            authorId: 'author-2',
-            text: 'Gone',
-            commentCount: 2,
-            lastCommunityCommentAt: 200
-          },
-          thread: {
-            c4: { type: 'comment', authorId: 'reader-1', text: 'Hi', createdAt: 200 },
-            c5: { type: 'comment', authorId: 'someone', text: 'Hey', createdAt: 150 }
-          }
-        }
       }
     })
 
@@ -208,26 +187,49 @@ describe('community posts', () => {
       likerIds: { 'reader-1': true }
     })
     expect(posts().post1).not.toHaveProperty('lastCommunityCommentAt')
-    const removed = (fake.data.removedContent as Node).r1 as Record<string, Node>
-    expect(Object.keys(removed.thread!)).toEqual(['c5'])
-    expect(removed.record).toMatchObject({ commentCount: 1, lastCommunityCommentAt: 150 })
     expect(fake.data['reader-1']).toBeUndefined()
   })
 })
 
 describe('community names', () => {
-  it('stores a trimmed name and removes it again', async () => {
-    await saveName(requestEvent({ nickname: '  Anna  ' }))
+  it('stores a tidied name, claims it, and frees it when removed', async () => {
+    await saveName(requestEvent({ nickname: '  Anna   Lena  ' }))
     expect(fake.data.communityProfiles).toEqual({
-      'reader-1': { nickname: 'Anna', updatedAt: expect.any(Number) }
+      'reader-1': { nickname: 'Anna Lena', updatedAt: expect.any(Number) }
     })
+    expect(fake.data.communityNameKeys).toEqual({ annalena: 'reader-1' })
+
+    await saveName(requestEvent({ nickname: 'Anna' }))
+    expect(fake.data.communityNameKeys).toEqual({ anna: 'reader-1' })
 
     await saveName(requestEvent({ nickname: null }))
     expect(fake.data.communityProfiles).toBeUndefined()
+    expect(fake.data.communityNameKeys).toBeUndefined()
   })
 
-  it('refuses names that pass for the app or are too short', async () => {
-    for (const nickname of ['PKU Tools', 'pku-tools team', 'Admin', 'A', '\u200B\u200B\u200B']) {
+  it('keeps a name to one account, whatever its case, spacing or punctuation', async () => {
+    await saveName(requestEvent({ nickname: 'Anna' }))
+
+    currentUser = 'author-1'
+    for (const nickname of ['anna', 'A n n a', 'Anna!', 'ＡＮＮＡ']) {
+      await expect(saveName(requestEvent({ nickname }))).rejects.toMatchObject({
+        statusCode: 409,
+        data: { code: 'community-name-taken' }
+      })
+    }
+    expect(Object.keys(fake.data.communityProfiles as object)).toEqual(['reader-1'])
+  })
+
+  it('refuses names that pass for the app, are too short or carry invisible characters', async () => {
+    for (const nickname of [
+      'PKU Tools',
+      'pku-tools team',
+      'Admin',
+      'A',
+      '\u200B\u200B\u200B',
+      'An\u200Bna',
+      'Anna\u202E'
+    ]) {
       await expect(saveName(requestEvent({ nickname }))).rejects.toMatchObject({ statusCode: 400 })
     }
     expect(fake.data.communityProfiles).toBeUndefined()

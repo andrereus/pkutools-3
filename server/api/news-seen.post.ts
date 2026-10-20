@@ -6,7 +6,11 @@ import { validateBody } from '../utils/validation'
 // What the account has seen in News, so the blue dots and the bell agree on
 // every device. Both values only ever move forward.
 export default defineAuthedHandler(async ({ event, userId }) => {
-  const { lastReadAt, lastSeenRevision } = await validateBody(event, NewsSeenSchema)
+  const seen = await validateBody(event, NewsSeenSchema)
+  // A device whose clock runs ahead must not move the marker past the present.
+  const lastReadAt =
+    seen.lastReadAt === undefined ? undefined : Math.min(seen.lastReadAt, Date.now())
+  const { lastSeenRevision } = seen
   const seenRef = getAdminDatabase().ref(`${userId}/newsSeen`)
   const stored = ((await seenRef.once('value')).val() ?? {}) as Record<string, unknown>
 

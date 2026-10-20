@@ -277,10 +277,6 @@
     Les aliments partagés et leurs évaluations et commentaires restent, car d'autres personnes
     peuvent les utiliser.
   </p>
-  <p>
-    Le contenu qu'un administrateur retire de la communauté est conservé 30 jours pour pouvoir être
-    restauré, puis supprimé. La suppression de ton compte le supprime immédiatement.
-  </p>
 
   <h2>Tes droits</h2>
   <p>En vertu du RGPD, tu peux :</p>

@@ -1,7 +1,7 @@
 <script setup>
 import { format, formatDistanceToNow, parseISO, differenceInCalendarDays } from 'date-fns'
 import { enUS, de, es, fr } from 'date-fns/locale'
-import { useStore } from '../../stores/index'
+import { FEED_POSTS_PAGE, useStore } from '../../stores/index'
 import {
   emptySeen,
   filterNewsItems,
@@ -14,6 +14,7 @@ import {
   utcDayForLocalFormatting,
   visibleNewsItems
 } from '../utils/news-grouping'
+import { isHiddenByAdmin } from '../utils/hidden-content'
 
 // Combines the authored changelog with entries derived from existing store data.
 
@@ -131,8 +132,20 @@ const isItemUnread = (item) => canBeUnread.value && isUnread(item, seen.value)
 const visibleItems = computed(() =>
   visibleNewsItems(filteredItems.value, visibleCount.value, userIsAuthenticated.value)
 )
+// Posts load from the database as far as the feed is shown: a post among the
+// first N items is always among the newest N posts in this language. A full
+// window may have more beyond it.
+watch(visibleCount, (count) => store.setFeedQuery(locale.value, Math.max(count, FEED_POSTS_PAGE)), {
+  immediate: true
+})
+onUnmounted(() => store.setFeedQuery(locale.value, FEED_POSTS_PAGE))
+const morePosts = computed(
+  () => store.feedLoaded && store.communityPosts.length >= store.feedQuery.limit
+)
 const hasMore = computed(
-  () => userIsAuthenticated.value && visibleItems.value.length < filteredItems.value.length
+  () =>
+    userIsAuthenticated.value &&
+    (visibleItems.value.length < filteredItems.value.length || morePosts.value)
 )
 const loadMore = () => {
   visibleCount.value += PAGE_SIZE
@@ -149,20 +162,33 @@ const revealCard = async (key) => {
   // A contributor notice remains accessible with the toggle off. Following
   // its link reveals the food and makes the toggle reflect that choice.
   if (foodNoticeFor(key)?.isHidden) showHiddenFoods.value = true
-  const target = items.value.find((item) => item.key === key)
-  if (!target) return
+  if (!items.value.some((item) => item.key === key)) return
   selectedFilter.value = 'all'
   // Let the filter's pagination reset finish before extending the visible list.
   await nextTick()
+  pendingReveal.value = key
+}
+
+// Showing more items loads more posts, which can place newer ones before the
+// card. It is shown once the feed has caught up and the card stays in view.
+const pendingReveal = ref(null)
+watch([pendingReveal, filteredItems, visibleCount, () => store.feedLoaded], async () => {
+  const key = pendingReveal.value
+  if (!key || !store.feedLoaded) return
   const count = newsCountToReveal(filteredItems.value, visibleCount.value, key)
   if (count === null) return
-  visibleCount.value = count
-  if (target.food || target.post) expandedComments.value[key] = true
+  if (count > visibleCount.value) {
+    visibleCount.value = count
+    return
+  }
+  pendingReveal.value = null
+  const target = filteredItems.value.find((item) => item.key === key)
+  if (target?.food || target?.post) expandedComments.value[key] = true
   await nextTick()
   const card = document.getElementById(key)
   card?.focus({ preventScroll: true })
   card?.scrollIntoView({ block: 'start' })
-}
+})
 
 const viewNotice = (event, notice) => {
   // A repeated click on the current link must reopen comments too. Other
@@ -196,7 +222,11 @@ onMounted(() => {
     ([hash]) => {
       if (!hash || hash === revealedHash) return
       const key = hash.slice(1)
-      if (!items.value.some((item) => item.key === key) && !foodNoticeFor(key)) return
+      if (!items.value.some((item) => item.key === key) && !foodNoticeFor(key)) {
+        // A post older than the loaded ones is followed, then shown when it arrives.
+        if (key.startsWith('post-')) store.followLinkedPost(key.slice('post-'.length))
+        return
+      }
       revealedHash = hash
       void revealCard(key)
     },
@@ -484,6 +514,13 @@ defineOgImage('Default', {
                 :title="$t('news.hidden-description')"
               >
                 {{ $t('news.hidden') }}
+              </span>
+              <span
+                v-if="isHiddenByAdmin(item.post ?? item.food)"
+                class="ml-1 inline-flex items-center gap-1 rounded bg-gray-200 px-1.5 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+              >
+                <LucideEyeOff class="h-3 w-3" aria-hidden="true" />
+                {{ $t('news.hidden-by-admin') }}
               </span>
             </h3>
           </div>

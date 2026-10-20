@@ -412,15 +412,12 @@ export const useApi = () => {
   const adminDeleteCommunityName = (userId: string): Promise<{ success: boolean }> =>
     request('/api/admin/community-profile', 'Admin remove name', 'DELETE', { userId })
 
-  const adminRestoreRemoved = (removedId: string): Promise<{ success: boolean }> =>
-    request('/api/admin/removed/restore', 'Admin restore', 'POST', { removedId })
-
-  const adminDeleteRemoved = (removedId: string): Promise<{ success: boolean }> =>
-    request('/api/admin/removed', 'Admin delete permanently', 'DELETE', { removedId })
-
-  // Silent: clearing out expired entries is housekeeping, not something to report.
-  const adminPurgeRemoved = (): Promise<{ success: boolean; purged: number }> =>
-    request('/api/admin/removed/purge', 'Admin purge removed', 'POST', undefined, { silent: true })
+  // Hides a food or post, or shows it again.
+  const adminSetHidden = (data: {
+    target: 'food' | 'post'
+    key: string
+    hidden: boolean
+  }): Promise<{ success: boolean }> => request('/api/admin/hide', 'Admin hide', 'POST', data)
 
   const adminDeleteComment = (data: {
     target: 'food' | 'post'
@@ -463,9 +460,7 @@ export const useApi = () => {
     adminDeleteCommunityFood,
     adminDeleteCommunityName,
     adminDeleteComment,
-    adminRestoreRemoved,
-    adminDeleteRemoved,
-    adminPurgeRemoved,
+    adminSetHidden,
     // Settings
     updateSettings,
     updateConsent,

@@ -4,6 +4,7 @@ import { CommunityVoteSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { isCommunityFoodHidden } from '../../utils/community-food'
+import { assertVisibleTo } from '../../utils/community-thread'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { communityFoodKey, vote } = await validateBody(event, CommunityVoteSchema)
@@ -21,6 +22,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       message: 'Community food not found'
     })
   }
+  await assertVisibleTo(communityFood, communityFood.contributorId, userId)
 
   // Prevent users from voting on their own foods
   if (communityFood.contributorId === userId) {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CommunityFoodComment } from '../composables/useApi'
+import { ADMIN_MODERATION } from '../composables/useCommunityFoodComments'
 
 const props = defineProps<{
   postId: string
@@ -11,16 +12,14 @@ const props = defineProps<{
 const { t, locale } = useI18n()
 const { saveCommunityPostComment, deleteCommunityPostComment } = useApi()
 const { comments, loading, loadFailed, start, stop } = useCommunityPostComments(props.postId)
+// Offered only on the admin page.
+const moderation = inject(ADMIN_MODERATION, null)
 const { markRead } = useCommentsRead('post', props.postId)
 
 // The author, or someone who commented here, opening the thread has read it,
 // which settles the notice.
 watch([() => props.expanded, comments], () => {
-  if (!props.expanded) return
-  const joined =
-    props.postAuthorId === props.currentUserId ||
-    comments.value.some((comment) => comment.authorId === props.currentUserId)
-  if (joined) markRead(comments.value, props.currentUserId)
+  if (props.expanded) markRead(comments.value, props.currentUserId, props.postAuthorId)
 })
 
 const draft = ref('')
@@ -225,6 +224,18 @@ onUnmounted(() => {
             />
           </p>
           <span class="flex shrink-0 items-center gap-1 text-gray-400 dark:text-gray-500">
+            <template v-if="moderation && comment.authorId !== currentUserId">
+              <button
+                type="button"
+                :disabled="moderation.busy.value"
+                aria-label="Delete"
+                title="Delete"
+                class="relative z-20 cursor-pointer rounded p-0.5 text-red-600 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-900/30"
+                @click="moderation.remove('post', postId, comment['.key'])"
+              >
+                <LucideTrash2 class="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
+            </template>
             <LucidePencil
               v-if="comment.authorId === currentUserId"
               class="h-3.5 w-3.5"

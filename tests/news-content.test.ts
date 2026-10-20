@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useNewsBadge } from '../app/composables/useNewsBadge'
 import { useNews } from '../app/composables/useNews'
 import {
@@ -18,11 +18,13 @@ beforeEach(() => {
     communityFoods: [],
     communityPosts: [],
     ownCommunityPosts: [],
-    joinedCommunityPosts: {},
+    followedCommunityPosts: {},
+    setFeedQuery: () => {},
     pheDiary: []
   })
   vi.stubGlobal('computed', computed)
   vi.stubGlobal('ref', ref)
+  vi.stubGlobal('watch', watch)
   vi.stubGlobal('onMounted', () => {})
   vi.stubGlobal('onUnmounted', () => {})
   vi.stubGlobal('useI18n', () => ({ locale: ref('en') }))

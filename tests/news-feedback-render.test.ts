@@ -8,6 +8,7 @@ import * as dates from 'date-fns'
 import * as dateLocales from 'date-fns/locale'
 import ts from 'typescript'
 import * as grouping from '../app/utils/news-grouping'
+import * as hiddenContent from '../app/utils/hidden-content'
 import { communityFoodNotices } from '../app/composables/useNewsContext'
 
 const filename = new URL('../app/pages/news.vue', import.meta.url).pathname
@@ -53,8 +54,21 @@ const renderNews = async (locale: string, dislikes: number, pending: boolean) =>
       if (id === 'vue') return Vue
       if (id === 'date-fns') return dates
       if (id === 'date-fns/locale') return dateLocales
-      if (id === '../../stores/index') return { useStore: () => ({ user: { id: 'owner' } }) }
+      if (id === '../../stores/index') {
+        return {
+          FEED_POSTS_PAGE: 20,
+          useStore: () => ({
+            user: { id: 'owner' },
+            communityPosts: [],
+            feedQuery: { language: locale, limit: 20 },
+            feedLoaded: true,
+            setFeedQuery: vi.fn(),
+            followLinkedPost: vi.fn()
+          })
+        }
+      }
       if (id === '../utils/news-grouping') return grouping
+      if (id === '../utils/hidden-content') return hiddenContent
       throw new Error(`Unexpected runtime import: ${id}`)
     },
     ...Vue,

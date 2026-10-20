@@ -7,6 +7,7 @@ import {
   isCommunityFoodHidden,
   isShareableSource
 } from '../utils/community-food'
+import { isHiddenByAdmin } from '../utils/hidden-content'
 import { roundReference, scaleToWeight, isReported } from '../utils/nutrition'
 
 const store = useStore()
@@ -68,8 +69,9 @@ const communityFoods = computed(() => store.communityFoods)
 const visibleCommunityFoods = computed(() =>
   communityFoods.value.filter((item) => {
     if (item.language !== locale.value) return false
-    // Filter out hidden foods based on score threshold
+    // Filter out hidden foods based on score threshold, and those an admin hid
     if (isCommunityFoodHidden(communityFoodScore(item))) return false
+    if (isHiddenByAdmin(item)) return false
     if (item.contributorId === userId.value) return false
     return true
   })

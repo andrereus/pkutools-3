@@ -16,14 +16,18 @@ import {
   query,
   orderByChild,
   limitToLast,
-  equalTo
+  equalTo,
+  startAt,
+  endAt
 } from 'firebase/database'
 import { defineStore } from 'pinia'
+import { languageBounds } from '../shared/utils/community-post'
 
-// The newest posts across all languages. Older ones drop out of the feed.
-export const COMMUNITY_POSTS_LIMIT = 200
+// How many of the newest posts in the reader's language load at first. News
+// asks for more as the reader loads more.
+export const FEED_POSTS_PAGE = 20
 
-const JOINED_POST_LISTENER = 'joinedPost:'
+const FOLLOWED_POST_LISTENER = 'followedPost:'
 
 const toList = (data) =>
   data && typeof data === 'object'
@@ -81,11 +85,17 @@ export const useStore = defineStore('main', {
     // settingsLoaded decides against the local defaults.
     userDataFailed: false,
     communityFoods: [],
+    // The newest posts in the reader's language, as many as `feedQuery` asks for.
     communityPosts: [],
-    // The reader's own posts and the posts they commented on, whatever their
-    // age, so notifications about them always find their post.
+    feedQuery: { language: null, limit: FEED_POSTS_PAGE },
+    // False while the feed waits for the snapshot of its current query.
+    feedLoaded: false,
+    // The reader's own posts, and single posts followed whatever their age:
+    // those they commented on, and one a link points to. Notifications and
+    // links always find their post this way.
     ownCommunityPosts: [],
-    joinedCommunityPosts: {},
+    followedCommunityPosts: {},
+    linkedPostIds: [],
     // Opt-in community names by user ID, shown on posts and comments.
     communityNames: {},
     // When the reader last opened the comments of their own foods and posts,
@@ -259,16 +269,7 @@ export const useStore = defineStore('main', {
       })
       this.unsubscribeFunctions['communityFoods'] = communityFoodsUnsubscribe
 
-      this.unsubscribeFunctions['communityPosts'] = onValue(
-        query(
-          ref(db, 'communityPosts'),
-          orderByChild('createdAt'),
-          limitToLast(COMMUNITY_POSTS_LIMIT)
-        ),
-        (snapshot) => {
-          this.communityPosts = toList(snapshot.val())
-        }
-      )
+      this.bindFeedPosts(db)
 
       this.unsubscribeFunctions['ownCommunityPosts'] = onValue(
         query(ref(db, 'communityPosts'), orderByChild('authorId'), equalTo(userId)),
@@ -311,7 +312,7 @@ export const useStore = defineStore('main', {
             foods: data?.foods && typeof data.foods === 'object' ? data.foods : {},
             posts: data?.posts && typeof data.posts === 'object' ? data.posts : {}
           }
-          this.syncJoinedPosts(db, Object.keys(this.communityThreads.posts))
+          this.syncFollowedPosts(db)
         }
       )
 
@@ -349,26 +350,65 @@ export const useStore = defineStore('main', {
         }
       )
     },
-    // One listener per post the reader commented on, kept in step with the
-    // list of those posts. All foods are loaded anyway; posts are not.
-    syncJoinedPosts(db, postIds) {
+    // The newest posts in one language. Rebound when the language or the
+    // number asked for changes.
+    bindFeedPosts(db = getDatabase()) {
+      this.unsubscribeFunctions['communityPosts']?.()
+      delete this.unsubscribeFunctions['communityPosts']
+      const { language, limit } = this.feedQuery
+      this.feedLoaded = false
+      if (!this.user || !language) return
+      const bounds = languageBounds(language)
+      this.unsubscribeFunctions['communityPosts'] = onValue(
+        query(
+          ref(db, 'communityPosts'),
+          orderByChild('languageCreatedAt'),
+          startAt(bounds.start),
+          endAt(bounds.end),
+          limitToLast(limit)
+        ),
+        (snapshot) => {
+          this.communityPosts = toList(snapshot.val())
+          this.feedLoaded = true
+        }
+      )
+    },
+    setFeedQuery(language, limit = this.feedQuery.limit) {
+      if (this.feedQuery.language === language && this.feedQuery.limit === limit) return
+      if (this.feedQuery.language !== language) this.communityPosts = []
+      this.feedQuery = { language, limit }
+      this.bindFeedPosts()
+    },
+    // Follows a single post a link points to, so it can be shown wherever it is.
+    followLinkedPost(postId) {
+      if (!postId || this.linkedPostIds.includes(postId)) return
+      this.linkedPostIds = [...this.linkedPostIds, postId]
+      this.syncFollowedPosts(getDatabase())
+    },
+    // One listener per followed post, kept in step with the posts the reader
+    // commented on and the ones a link asked for.
+    syncFollowedPosts(db) {
+      if (!this.user) return
+      const postIds = [
+        ...new Set([...Object.keys(this.communityThreads.posts), ...this.linkedPostIds])
+      ]
       for (const name of Object.keys(this.unsubscribeFunctions)) {
-        if (!name.startsWith(JOINED_POST_LISTENER)) continue
-        const postId = name.slice(JOINED_POST_LISTENER.length)
+        if (!name.startsWith(FOLLOWED_POST_LISTENER)) continue
+        const postId = name.slice(FOLLOWED_POST_LISTENER.length)
         if (postIds.includes(postId)) continue
         this.unsubscribeFunctions[name]()
         delete this.unsubscribeFunctions[name]
-        this.joinedCommunityPosts = without(this.joinedCommunityPosts, postId)
+        this.followedCommunityPosts = without(this.followedCommunityPosts, postId)
       }
       for (const postId of postIds) {
-        const name = `${JOINED_POST_LISTENER}${postId}`
+        const name = `${FOLLOWED_POST_LISTENER}${postId}`
         if (this.unsubscribeFunctions[name]) continue
         this.unsubscribeFunctions[name] = onValue(
           ref(db, `communityPosts/${postId}`),
           (snapshot) => {
             const data = snapshot.val()
-            const others = without(this.joinedCommunityPosts, postId)
-            this.joinedCommunityPosts =
+            const others = without(this.followedCommunityPosts, postId)
+            this.followedCommunityPosts =
               data && typeof data === 'object'
                 ? { ...others, [postId]: { ...data, '.key': postId } }
                 : others
@@ -383,7 +423,8 @@ export const useStore = defineStore('main', {
       this.communityFoods = []
       this.communityPosts = []
       this.ownCommunityPosts = []
-      this.joinedCommunityPosts = {}
+      this.followedCommunityPosts = {}
+      this.linkedPostIds = []
       this.communityNames = {}
       this.communityReads = { foods: {}, posts: {} }
       this.communityThreads = { foods: {}, posts: {} }

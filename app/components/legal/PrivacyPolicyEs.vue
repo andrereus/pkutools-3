@@ -264,10 +264,6 @@
     Los alimentos compartidos y sus valoraciones y comentarios permanecen, porque otras personas
     pueden estar usándolos.
   </p>
-  <p>
-    El contenido que un administrador retira de la comunidad se conserva 30 días para poder
-    restaurarlo y después se borra. Al borrar tu cuenta se borra de inmediato.
-  </p>
 
   <h2>Tus derechos</h2>
   <p>Según el RGPD puedes:</p>

@@ -249,10 +249,6 @@
     queues for the periods set out in their privacy policies.
   </p>
   <p>Shared foods and their ratings and comments stay, because other people may be using them.</p>
-  <p>
-    Content an admin removes from the community is kept for 30 days so it can be restored, then
-    deleted. Deleting your account deletes it straight away.
-  </p>
 
   <h2>Your rights</h2>
   <p>Under the GDPR you can:</p>

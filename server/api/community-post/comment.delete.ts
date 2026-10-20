@@ -2,7 +2,7 @@ import { getAdminDatabase } from '../../utils/firebase-admin'
 import { CommunityPostCommentDeleteSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
-import { removeThreadComment } from '../../utils/community-post'
+import { removeThreadComment } from '../../utils/community-thread'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { postId, commentId } = await validateBody(event, CommunityPostCommentDeleteSchema)
@@ -20,6 +20,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  await removeThreadComment('post', postId, commentId, { leave: true })
+  await removeThreadComment('post', postId, commentId)
   return { success: true }
 })

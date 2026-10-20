@@ -1,23 +1,19 @@
-import { ServerValue } from 'firebase-admin/database'
 import { getAdminDatabase } from '../../utils/firebase-admin'
 import { CommunityFoodCommentDeleteSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
-import { communityFoodCommentActivity } from '../../utils/community-food-comment'
-import { queueThreadLeave } from '../../utils/community-post'
+import { removeThreadComment } from '../../utils/community-thread'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { communityFoodKey, commentId } = await validateBody(
     event,
     CommunityFoodCommentDeleteSchema
   )
-  const db = getAdminDatabase()
-  const commentPath = `communityFoodComments/${communityFoodKey}/${commentId}`
-  const [commentSnapshot, foodSnapshot] = await Promise.all([
-    db.ref(commentPath).once('value'),
-    db.ref(`communityFoods/${communityFoodKey}`).once('value')
-  ])
-  const existing = commentSnapshot.val() as Record<string, unknown> | null
+  const existing = (
+    await getAdminDatabase()
+      .ref(`communityFoodComments/${communityFoodKey}/${commentId}`)
+      .once('value')
+  ).val() as Record<string, unknown> | null
 
   if (!existing) return { success: true }
   if (existing.type === 'content-update' || existing.authorId !== userId) {
@@ -28,20 +24,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  const writes: Record<string, unknown> = { [commentPath]: null }
-  if (foodSnapshot.exists()) {
-    writes[`communityFoods/${communityFoodKey}/commentCount`] = ServerValue.increment(-1)
-    const thread = await db.ref(`communityFoodComments/${communityFoodKey}`).once('value')
-    const contributorId = foodSnapshot.val().contributorId
-    const activity = communityFoodCommentActivity(thread.val() ?? {}, contributorId, commentId)
-    for (const [field, value] of Object.entries(activity)) {
-      writes[`communityFoods/${communityFoodKey}/${field}`] = value
-    }
-    queueThreadLeave(writes, 'food', communityFoodKey, thread.val() ?? {}, userId, contributorId, [
-      commentId
-    ])
-  }
-
-  await db.ref().update(writes)
+  await removeThreadComment('food', communityFoodKey, commentId)
   return { success: true }
 })

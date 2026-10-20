@@ -248,16 +248,21 @@ export const NewsSeenSchema = z
     message: 'Nothing seen'
   })
 
-// The optional name shown on someone's posts and comments. Null removes it.
+// The optional, unique name shown on someone's posts and comments. Null
+// removes it. Control and invisible formatting characters are refused, since
+// they can make one name look like another.
 export const CommunityProfileSchema = z.object({
   nickname: z
     .string()
-    .trim()
-    .min(2, 'Name is too short')
-    .max(30, 'Name is too long')
-    .regex(/^[^\p{Cc}]+$/u, 'Name is invalid')
-    // Visible: a name of only invisible characters would read as no name at all.
-    .regex(/[\p{L}\p{N}]/u, 'Name is invalid')
+    .transform((value) => value.normalize('NFKC').replace(/\s+/g, ' ').trim())
+    .pipe(
+      z
+        .string()
+        .min(2, 'Name is too short')
+        .max(30, 'Name is too long')
+        .regex(/^[^\p{C}]+$/u, 'Name is invalid')
+        .regex(/[\p{L}\p{N}]/u, 'Name is invalid')
+    )
     .nullable()
 })
 
@@ -273,9 +278,15 @@ export const AdminCommunityProfileDeleteSchema = z.object({
   userId: firebaseKeySchema('User id')
 })
 
-export const RemovedContentSchema = z.object({
-  removedId: firebaseKeySchema('Removed id')
-})
+// Hides a food or a post, or shows it again. Strict, so a request naming a
+// comment is refused rather than read as one for its post.
+export const AdminHideSchema = z
+  .object({
+    target: z.enum(['food', 'post']),
+    key: firebaseKeySchema('Key'),
+    hidden: z.boolean()
+  })
+  .strict()
 
 export const AdminCommentDeleteSchema = z.object({
   target: z.enum(['food', 'post']),

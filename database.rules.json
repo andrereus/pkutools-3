@@ -12,7 +12,14 @@
     "communityPosts": {
       ".read": "auth != null",
       ".write": false,
-      ".indexOn": ["createdAt", "authorId"]
+      ".indexOn": [
+        "languageCreatedAt",
+        "authorId",
+        "hiddenAt",
+        "updatedAt",
+        "lastCommunityCommentAt",
+        "lastAuthorCommentAt"
+      ]
     },
     "communityPostComments": {
       ".read": "auth != null",
@@ -22,14 +29,13 @@
       ".read": "auth != null",
       ".write": false
     },
+    "communityNameKeys": {
+      ".read": false,
+      ".write": false
+    },
     "admins": {
       ".read": "auth != null",
       ".write": false
-    },
-    "removedContent": {
-      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
-      ".write": false,
-      ".indexOn": ["authorId"]
     },
     "$uid": {
       ".read": "$uid === auth.uid",

@@ -85,12 +85,16 @@ export const isUnread = (entry: SeenEntry, seen: SeenState): boolean => {
   return newerThanTime || newerRevision
 }
 
-/** The two monotonic positions covered by a visit. */
-export const seenAfterVisit = (items: SeenEntry[]): SeenState => {
+/**
+ * The two monotonic positions covered by a visit. An item dated after `now`
+ * has not been seen yet: counting it would move the marker into the future
+ * and leave everything up to then looking read.
+ */
+export const seenAfterVisit = (items: SeenEntry[], now = Date.now()): SeenState => {
   const seen = emptySeen()
   for (const item of items) {
     const timestamp = newsEntryTimestamp(item)
-    if (isNewsTimestamp(timestamp)) {
+    if (isNewsTimestamp(timestamp) && timestamp <= now) {
       seen.lastReadAt = seen.lastReadAt === null ? timestamp : Math.max(seen.lastReadAt, timestamp)
     }
     if (isNewsTimestamp(item.revision)) {

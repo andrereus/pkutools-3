@@ -4,6 +4,7 @@ import { CommunityPostCommentSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { MAX_COMMUNITY_POST_COMMENTS } from '../../utils/community-post'
+import { assertVisibleTo } from '../../utils/community-thread'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { postId, commentId, comment } = await validateBody(event, CommunityPostCommentSchema)
@@ -13,6 +14,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   if (!postSnapshot.exists()) {
     throw createError({ statusCode: 404, message: 'Post not found' })
   }
+  await assertVisibleTo(postSnapshot.val(), postSnapshot.val().authorId, userId)
 
   if (commentId) {
     const commentRef = db.ref(`communityPostComments/${postId}/${commentId}`)

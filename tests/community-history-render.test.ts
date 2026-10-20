@@ -21,6 +21,10 @@ const compileComponent = (name: string, globals: Record<string, unknown>): Vue.C
     exports,
     require: (id: string) => {
       if (id === 'vue') return Vue
+      // Only the admin page provides moderation; these threads get none.
+      if (id === '../composables/useCommunityFoodComments') {
+        return { ADMIN_MODERATION: Symbol('admin-moderation') }
+      }
       throw new Error(`Unexpected runtime import: ${id}`)
     },
     ...Vue,

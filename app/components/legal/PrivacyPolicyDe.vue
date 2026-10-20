@@ -264,10 +264,6 @@
     Geteilte Lebensmittel und ihre Bewertungen und Kommentare bleiben, weil andere sie nutzen
     können.
   </p>
-  <p>
-    Inhalte, die ein Admin aus der Community entfernt, werden 30 Tage aufbewahrt. So lassen sie sich
-    wiederherstellen. Danach werden sie gelöscht. Mit deinem Konto werden sie sofort gelöscht.
-  </p>
 
   <h2>Deine Rechte</h2>
   <p>Nach der DSGVO kannst du:</p>

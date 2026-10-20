@@ -2,33 +2,44 @@ import { getAdminDatabase } from '../utils/firebase-admin'
 import { CommunityProfileSchema } from '../types/schemas'
 import { defineAuthedHandler } from '../utils/handler'
 import { validateBody } from '../utils/validation'
-
-// Names that would pass for the app itself, whose own comments carry a badge.
-const RESERVED_NAMES = ['pkutools', 'admin', 'administrator', 'moderator']
-
-const isReservedName = (name: string): boolean => {
-  const letters = name.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '')
-  return RESERVED_NAMES.some((reserved) =>
-    reserved === 'pkutools' ? letters.includes(reserved) : letters === reserved
-  )
-}
+import {
+  claimNameKey,
+  communityNameKey,
+  currentNameKey,
+  isReservedNameKey,
+  queueNameKeyRelease
+} from '../utils/community-name'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { nickname } = await validateBody(event, CommunityProfileSchema)
-  const profileRef = getAdminDatabase().ref(`communityProfiles/${userId}`)
+  const previousKey = await currentNameKey(userId)
+  const writes: Record<string, unknown> = {}
 
   if (nickname === null) {
-    await profileRef.remove()
+    writes[`communityProfiles/${userId}`] = null
+    await queueNameKeyRelease(writes, userId, previousKey)
+    await getAdminDatabase().ref().update(writes)
     return { success: true, nickname: null }
   }
-  if (isReservedName(nickname)) {
+
+  const key = communityNameKey(nickname)
+  if (isReservedNameKey(key)) {
     throw createError({
       statusCode: 400,
       message: 'This name is reserved',
       data: { code: 'community-name-reserved' }
     })
   }
+  if (!(await claimNameKey(userId, key))) {
+    throw createError({
+      statusCode: 409,
+      message: 'This name is taken',
+      data: { code: 'community-name-taken' }
+    })
+  }
 
-  await profileRef.set({ nickname, updatedAt: Date.now() })
+  writes[`communityProfiles/${userId}`] = { nickname, updatedAt: Date.now() }
+  if (previousKey !== key) await queueNameKeyRelease(writes, userId, previousKey)
+  await getAdminDatabase().ref().update(writes)
   return { success: true, nickname }
 })
