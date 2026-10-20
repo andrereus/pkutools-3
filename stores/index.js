@@ -21,7 +21,7 @@ import {
   endAt
 } from 'firebase/database'
 import { defineStore } from 'pinia'
-import { languageBounds } from '../shared/utils/community-post'
+import { languageBounds } from '#shared/utils/community-post'
 
 // How many of the newest posts in the reader's language load at first. News
 // asks for more as the reader loads more.
