@@ -310,7 +310,8 @@
       "message-5": "Your diary is empty today. Start logging your meals!",
       "greeting-6": "Hello there, {name}!",
       "message-6": "Ready to track? Add your first meal and keep your Phe in check."
-    }
+    },
+    "on-this-day-all": "All {count}"
   },
   "diet-report": {
     "title": "Diet Report",
@@ -630,7 +631,7 @@
     "title-unread": "News, unread updates",
     "unread-suffix": "unread updates",
     "description": "What is new in PKU Tools and what the community is sharing.",
-    "subtitle": "News by language and post date. Updates can also appear further down.",
+    "subtitle": "What is new in PKU Tools and what the community is sharing in your app language.",
     "subtitle-signed-out": "Updates to PKU Tools.",
     "sign-in": "Sign in to see foods shared by the community and share your own.",
     "unread-item": "Unread",
@@ -686,13 +687,12 @@
     "comment-author-contributor": "Contributor",
     "comment-author-post": "Author",
     "comment-author-community": "Community member",
-    "notice-own-comment-text": "Feedback on your food.",
+    "notice-own-comment-text": "New comment.",
     "more-notices": "Show all {count} notices",
     "fewer-notices": "Fewer notices",
     "notice-own-flag-text": "{count} more dislikes than likes.",
     "notice-own-flag-hidden": "Hidden by default.",
     "notice-own-flag-action": "View food",
-    "notice-post-comment-text": "New comment on your post.",
     "notice-post-action": "View post",
     "food-correction-hint": "Correcting the name or nutritional values in {ownFood} resets the ratings.",
     "comment-notice-hint": "The comment notice disappears when you reply or edit the food in {ownFood}.",

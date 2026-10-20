@@ -310,7 +310,8 @@
       "message-5": "Ton journal est vide aujourd'hui. Commence à enregistrer tes repas !",
       "greeting-6": "Bonjour {name} !",
       "message-6": "Prêt à noter tes repas ? Ajoute ton premier repas et garde un œil sur ta Phe."
-    }
+    },
+    "on-this-day-all": "Tous ({count})"
   },
   "diet-report": {
     "title": "Rapport de régime",
@@ -630,7 +631,7 @@
     "title-unread": "Actualités, mises à jour non lues",
     "unread-suffix": "mises à jour non lues",
     "description": "Les nouveautés de PKU Tools et ce que la communauté partage.",
-    "subtitle": "Actualités par langue et date de publication. Les mises à jour peuvent aussi apparaître plus bas.",
+    "subtitle": "Les nouveautés de PKU Tools et ce que la communauté partage dans la langue de ton application.",
     "subtitle-signed-out": "Nouveautés de PKU Tools.",
     "sign-in": "Connecte-toi pour voir les aliments partagés par la communauté et partager les tiens.",
     "unread-item": "Non lu",
@@ -686,13 +687,12 @@
     "comment-author-contributor": "Auteur du partage",
     "comment-author-post": "Auteur de la publication",
     "comment-author-community": "Membre de la communauté",
-    "notice-own-comment-text": "Commentaires sur ton aliment.",
+    "notice-own-comment-text": "Nouveau commentaire.",
     "more-notices": "Afficher les {count} notifications",
     "fewer-notices": "Moins de notifications",
     "notice-own-flag-text": "{count} votes négatifs de plus que de votes positifs.",
     "notice-own-flag-hidden": "Masqué par défaut.",
     "notice-own-flag-action": "Voir l'aliment",
-    "notice-post-comment-text": "Nouveau commentaire sur ta publication.",
     "notice-post-action": "Voir la publication",
     "food-correction-hint": "Corriger le nom ou les valeurs nutritionnelles dans {ownFood} réinitialise les votes.",
     "comment-notice-hint": "La notification de commentaires disparaît lorsque tu réponds ou modifies l’aliment dans {ownFood}.",

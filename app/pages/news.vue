@@ -39,7 +39,7 @@ const votingKey = ref(null)
 const expandedComments = ref({})
 
 // Keep the notice preview compact. Expanding lasts only for this page visit.
-const NOTICE_PREVIEW_COUNT = 3
+const NOTICE_PREVIEW_COUNT = 2
 const showAllNotices = ref(false)
 // Food notices stay until the contributor acts. A post notice is a reply the
 // author has not seen yet, so it lasts for the visit in which it was unread.
@@ -62,6 +62,12 @@ const additionalNoticeCount = computed(() =>
 )
 const noticeTarget = (notice) =>
   notice.postKey ? `post-${notice.postKey}` : `food-${notice.foodKey}`
+// A food that collects dislikes or is hidden needs checking; a new comment
+// does not, so only the first is amber.
+const isWarningNotice = (notice) =>
+  !notice.postKey && (notice.hasNegativeFeedback || notice.isHidden)
+const isNoticeUnread = (notice) =>
+  !!notice.pendingCommentAt && isItemUnread({ key: notice.key, createdAt: notice.pendingCommentAt })
 
 // The API also rejects votes on the contributor's own food.
 const canVote = (item) => userIsAuthenticated.value && !!item.food && !item.isOwn
@@ -138,20 +144,21 @@ const foodNoticeFor = (key) =>
     (notice) => `food-${notice.foodKey}` === key && notice.language === locale.value
   )
 
-const isRevealable = (item) => !!(item.food || item.post)
-
+// Any card can be linked to, from a notice or from the diary. Foods and posts
+// open with their comments.
 const revealCard = async (key) => {
   // A contributor notice remains accessible with the toggle off. Following
   // its link reveals the food and makes the toggle reflect that choice.
   if (foodNoticeFor(key)?.isHidden) showHiddenFoods.value = true
-  if (!items.value.some((item) => item.key === key && isRevealable(item))) return
+  const target = items.value.find((item) => item.key === key)
+  if (!target) return
   selectedFilter.value = 'all'
   // Let the filter's pagination reset finish before extending the visible list.
   await nextTick()
   const count = newsCountToReveal(filteredItems.value, visibleCount.value, key)
   if (count === null) return
   visibleCount.value = count
-  expandedComments.value[key] = true
+  if (target.food || target.post) expandedComments.value[key] = true
   await nextTick()
   const card = document.getElementById(key)
   card?.focus({ preventScroll: true })
@@ -188,13 +195,9 @@ onMounted(() => {
   watch(
     [() => route.hash, items, notices],
     ([hash]) => {
-      if (!(hash.startsWith('#food-') || hash.startsWith('#post-')) || hash === revealedHash) return
+      if (!hash || hash === revealedHash) return
       const key = hash.slice(1)
-      if (
-        !items.value.some((item) => item.key === key && isRevealable(item)) &&
-        !foodNoticeFor(key)
-      )
-        return
+      if (!items.value.some((item) => item.key === key) && !foodNoticeFor(key)) return
       revealedHash = hash
       void revealCard(key)
     },
@@ -360,24 +363,30 @@ defineOgImage('Default', {
       <PrimaryButton :text="$t('sign-in.title')" @click="navigateTo(localePath('sign-in'))" />
     </div>
 
-    <NewsPostComposer v-if="userIsAuthenticated" @posted="selectedFilter = 'all'" />
-
     <!-- Derived account notices appear above chronological entries. -->
     <div v-if="allNotices.length" class="mb-4 space-y-2">
       <NuxtLink
         v-for="notice in visibleNotices"
         :key="notice.key"
         :to="localePath({ name: 'news', hash: `#${noticeTarget(notice)}` }, notice.language)"
-        class="block rounded-lg bg-amber-50 px-3 py-2 text-sm text-gray-700 ring-1 ring-amber-200 hover:ring-amber-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500 dark:bg-amber-950/30 dark:text-gray-300 dark:ring-amber-900"
+        :class="[
+          'block rounded-lg px-3 py-2 text-sm text-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 dark:text-gray-300',
+          isWarningNotice(notice)
+            ? 'bg-amber-50 ring-1 ring-amber-200 hover:ring-amber-300 focus-visible:outline-amber-500 dark:bg-amber-950/30 dark:ring-amber-900'
+            : 'bg-gray-100 hover:bg-gray-200 focus-visible:outline-sky-500 dark:bg-gray-800 dark:hover:bg-gray-700'
+        ]"
         @click="viewNotice($event, notice)"
       >
+        <span
+          v-if="isNoticeUnread(notice)"
+          class="mr-1.5 inline-block h-2 w-2 rounded-full bg-sky-500 align-middle dark:bg-sky-400"
+        >
+          <span class="sr-only">{{ $t('news.unread-item') }}</span>
+        </span>
         <span class="font-medium break-words text-gray-900 dark:text-white"
           >{{ notice.name }}:</span
         >
-        <span v-if="notice.postKey">{{ ' ' + $t('news.notice-post-comment-text') }}</span>
-        <span v-else-if="notice.pendingCommentAt">
-          {{ ' ' + $t('news.notice-own-comment-text') }}
-        </span>
+        <span v-if="notice.pendingCommentAt">{{ ' ' + $t('news.notice-own-comment-text') }}</span>
         <span v-if="notice.hasNegativeFeedback">
           {{ ' ' + $t('news.notice-own-flag-text', { count: notice.netDislikes }) }}
         </span>
@@ -402,6 +411,8 @@ defineOgImage('Default', {
         }}
       </button>
     </div>
+
+    <NewsPostComposer v-if="userIsAuthenticated" @posted="selectedFilter = 'all'" />
 
     <div
       v-if="showFilters"

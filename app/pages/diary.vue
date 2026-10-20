@@ -999,6 +999,10 @@ defineOgImage('Default', {
               </div>
             </div>
 
+            <!-- Notifications on today, then what happened that day in News,
+                 so an empty day is not blank -->
+            <DiaryDayDigest :date="date" :is-today="isToday" />
+
             <div
               v-if="selectedDayLog.length === 0"
               class="mt-6 mb-6 flex flex-col items-center justify-center py-6 px-4 text-center"

@@ -310,7 +310,8 @@
       "message-5": "Dein Tagebuch ist heute leer. Beginne mit der Erfassung!",
       "greeting-6": "Hallo {name}!",
       "message-6": "Bereit zu erfassen? Füge deine erste Mahlzeit hinzu und behalte deine Phe im Blick."
-    }
+    },
+    "on-this-day-all": "Alle {count}"
   },
   "diet-report": {
     "title": "Diätbericht",
@@ -630,7 +631,7 @@
     "title-unread": "Neuigkeiten, ungelesene Updates",
     "unread-suffix": "ungelesene Updates",
     "description": "Was es Neues bei PKU Tools gibt und was die Community teilt.",
-    "subtitle": "Neuigkeiten nach Sprache und Beitragsdatum. Updates können auch weiter unten auftauchen.",
+    "subtitle": "Was es Neues bei PKU Tools gibt und was die Community in deiner App-Sprache teilt.",
     "subtitle-signed-out": "Neuigkeiten zu PKU Tools.",
     "sign-in": "Melde dich an, um Lebensmittel der Community zu sehen und eigene zu teilen.",
     "unread-item": "Ungelesen",
@@ -676,7 +677,7 @@
     "comments-load-failed": "Kommentare konnten nicht geladen werden.",
     "comments-retry": "Erneut versuchen",
     "your-comment": "Dein Kommentar",
-    "edit-comment": "Deinen Kommentar bearbeiten",
+    "edit-comment": "Dein Kommentar bearbeiten",
     "comment-placeholder": "Was möchtest du hinzufügen?",
     "comment-saving": "Wird gespeichert…",
     "comment-deleting": "Wird gelöscht…",
@@ -686,13 +687,12 @@
     "comment-author-contributor": "Ersteller:in",
     "comment-author-post": "Verfasser:in",
     "comment-author-community": "Community-Mitglied",
-    "notice-own-comment-text": "Rückmeldung zu deinem Lebensmittel.",
+    "notice-own-comment-text": "Neues Kommentar.",
     "more-notices": "Alle {count} Hinweise anzeigen",
     "fewer-notices": "Weniger Hinweise",
     "notice-own-flag-text": "{count} mehr Dislikes als Likes.",
     "notice-own-flag-hidden": "Standardmäßig ausgeblendet.",
     "notice-own-flag-action": "Lebensmittel ansehen",
-    "notice-post-comment-text": "Neuer Kommentar zu deinem Beitrag.",
     "notice-post-action": "Beitrag ansehen",
     "food-correction-hint": "Korrekturen am Namen oder an den Nährwerten unter {ownFood} setzen die Bewertungen zurück.",
     "comment-notice-hint": "Der Kommentarhinweis verschwindet, sobald du antwortest oder das Lebensmittel unter {ownFood} bearbeitest.",
