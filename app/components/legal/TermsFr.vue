@@ -137,7 +137,7 @@
     commentaires sur les publications sont supprimés avec ton compte. Toutes les contributions ne
     peuvent pas être vérifiées : signale donc tout ce qui est faux ou qui ne devrait pas s'y
     trouver. Les contributions et les noms dans la communauté qui enfreignent ces conditions peuvent
-    être masqués ou retirés.
+    être retirés ou supprimés.
   </p>
 
   <h2>Disponibilité</h2>

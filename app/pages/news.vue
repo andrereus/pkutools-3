@@ -134,14 +134,16 @@ const visibleItems = computed(() =>
 )
 // A linked card beyond the shown part of the feed is shown first, on its own,
 // rather than loading everything newer to reach its place.
+// A line beneath it sets it apart from the feed's history.
 const pinnedKey = ref(null)
-const shownItems = computed(() => {
-  const list = visibleItems.value
+const pinnedItem = computed(() => {
   const key = pinnedKey.value
-  if (!key || list.some((item) => item.key === key)) return list
-  const pinned = filteredItems.value.find((item) => item.key === key)
-  return pinned ? [pinned, ...list] : list
+  if (!key || visibleItems.value.some((item) => item.key === key)) return null
+  return filteredItems.value.find((item) => item.key === key) ?? null
 })
+const shownItems = computed(() =>
+  pinnedItem.value ? [pinnedItem.value, ...visibleItems.value] : visibleItems.value
+)
 // Posts load from the database as far as the feed is shown: a post among the
 // first N items is always among the newest N posts in this language. A full
 // window may have more beyond it.
@@ -496,110 +498,111 @@ defineOgImage('Default', {
       {{ $t('news.empty') }}
     </p>
 
-    <article
-      v-for="item in shownItems"
-      :id="item.key"
-      :key="item.key"
-      tabindex="-1"
-      :class="[
-        'mb-3 scroll-mt-24 rounded-xl bg-white p-4 shadow-sm ring-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-gray-900',
-        isItemUnread(item) ? 'ring-sky-300 dark:ring-sky-700' : 'ring-gray-200 dark:ring-gray-700'
-      ]"
-    >
-      <!-- Fixed-height metadata keeps short titles aligned across card types. -->
-      <div class="flex items-center">
-        <span class="flex h-9 w-7 shrink-0 items-center justify-start text-lg">
-          {{ emojiFor(item) }}
-        </span>
-
-        <div class="flex min-h-9 min-w-0 flex-1 items-center gap-2">
-          <div class="min-w-0 flex-1">
-            <h3 class="text-sm leading-5 font-semibold break-words text-gray-900 dark:text-white">
-              {{ titleFor(item) }}
-              <LucideBadgeCheck
-                v-if="item.post && isOfficial(item.post.authorId)"
-                class="mb-0.5 inline h-4 w-4 text-sky-600 dark:text-sky-400"
-                aria-hidden="true"
-              />
-              <span
-                v-if="item.isHidden"
-                class="ml-1 inline-flex items-center rounded bg-amber-50 px-1.5 text-xs font-medium text-amber-700 dark:bg-amber-950/50 dark:text-amber-300"
-                :title="$t('news.hidden-description')"
-              >
-                {{ $t('news.hidden') }}
-              </span>
-              <span
-                v-if="isHiddenByAdmin(item.post ?? item.food)"
-                class="ml-1 inline-flex items-center gap-1 rounded bg-gray-200 px-1.5 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
-              >
-                <LucideEyeOff class="h-3 w-3" aria-hidden="true" />
-                {{ $t('news.hidden-by-admin') }}
-              </span>
-            </h3>
-          </div>
-          <div class="flex h-9 shrink-0 flex-col items-end justify-between">
-            <div class="flex items-center gap-1">
-              <span
-                v-if="isItemUnread(item)"
-                class="h-2 w-2 shrink-0 rounded-full bg-sky-500 dark:bg-sky-400"
-              >
-                <span class="sr-only">{{ $t('news.unread-item') }}</span>
-              </span>
-              <time
-                class="text-xs leading-4 text-gray-400 dark:text-gray-500"
-                :datetime="item.date || new Date(newsEntryTimestamp(item)).toISOString()"
-              >
-                {{ formatDate(item) }}
-              </time>
-            </div>
-            <span class="text-xs leading-4 whitespace-nowrap text-gray-400 dark:text-gray-500">
-              {{ metaLabelFor(item) }}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <p
-        v-if="bodyFor(item)"
+    <template v-for="item in shownItems" :key="item.key">
+      <article
+        :id="item.key"
+        tabindex="-1"
         :class="[
-          'mt-2',
-          item.kind === 'note'
-            ? 'text-sm text-gray-700 dark:text-gray-300'
-            : 'text-xs text-gray-500 dark:text-gray-400'
+          'mb-3 scroll-mt-24 rounded-xl bg-white p-4 shadow-sm ring-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-gray-900',
+          isItemUnread(item) ? 'ring-sky-300 dark:ring-sky-700' : 'ring-gray-200 dark:ring-gray-700'
         ]"
       >
-        <template v-for="part in bodyParts(bodyFor(item))" :key="part.key">
-          <a
-            v-if="part.href"
-            :href="part.href"
-            rel="external nofollow noopener"
-            target="_blank"
-            class="break-all text-sky-600 hover:underline dark:text-sky-400"
-            >{{ part.text }}</a
-          ><template v-else>{{ part.text }}</template>
-        </template>
-      </p>
+        <!-- Fixed-height metadata keeps short titles aligned across card types. -->
+        <div class="flex items-center">
+          <span class="flex h-9 w-7 shrink-0 items-center justify-start text-lg">
+            {{ emojiFor(item) }}
+          </span>
 
-      <NewsCommunityFood
-        v-if="item.food"
-        v-model:comments-expanded="expandedComments[item.key]"
-        :food="item.food"
-        :vote="voteFor(item)"
-        :can-vote="canVote(item)"
-        :show-statistics="item.isOwn"
-        :current-user-id="userId"
-        :busy="votingKey === item.key"
-        @vote="(value) => vote(item, value)"
-      />
+          <div class="flex min-h-9 min-w-0 flex-1 items-center gap-2">
+            <div class="min-w-0 flex-1">
+              <h3 class="text-sm leading-5 font-semibold break-words text-gray-900 dark:text-white">
+                {{ titleFor(item) }}
+                <LucideBadgeCheck
+                  v-if="item.post && isOfficial(item.post.authorId)"
+                  class="mb-0.5 inline h-4 w-4 text-sky-600 dark:text-sky-400"
+                  aria-hidden="true"
+                />
+                <span
+                  v-if="item.isHidden"
+                  class="ml-1 inline-flex items-center rounded bg-amber-50 px-1.5 text-xs font-medium text-amber-700 dark:bg-amber-950/50 dark:text-amber-300"
+                  :title="$t('news.hidden-description')"
+                >
+                  {{ $t('news.hidden') }}
+                </span>
+                <span
+                  v-if="isHiddenByAdmin(item.post ?? item.food)"
+                  class="ml-1 inline-flex items-center gap-1 rounded bg-gray-200 px-1.5 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+                >
+                  <LucideEyeOff class="h-3 w-3" aria-hidden="true" />
+                  {{ $t('news.hidden-by-admin') }}
+                </span>
+              </h3>
+            </div>
+            <div class="flex h-9 shrink-0 flex-col items-end justify-between">
+              <div class="flex items-center gap-1">
+                <span
+                  v-if="isItemUnread(item)"
+                  class="h-2 w-2 shrink-0 rounded-full bg-sky-500 dark:bg-sky-400"
+                >
+                  <span class="sr-only">{{ $t('news.unread-item') }}</span>
+                </span>
+                <time
+                  class="text-xs leading-4 text-gray-400 dark:text-gray-500"
+                  :datetime="item.date || new Date(newsEntryTimestamp(item)).toISOString()"
+                >
+                  {{ formatDate(item) }}
+                </time>
+              </div>
+              <span class="text-xs leading-4 whitespace-nowrap text-gray-400 dark:text-gray-500">
+                {{ metaLabelFor(item) }}
+              </span>
+            </div>
+          </div>
+        </div>
 
-      <NewsCommunityPost
-        v-if="item.post"
-        v-model:comments-expanded="expandedComments[item.key]"
-        :post="item.post"
-        :is-own="item.isOwn"
-        :current-user-id="userId"
-      />
-    </article>
+        <p
+          v-if="bodyFor(item)"
+          :class="[
+            'mt-2',
+            item.kind === 'note'
+              ? 'text-sm text-gray-700 dark:text-gray-300'
+              : 'text-xs text-gray-500 dark:text-gray-400'
+          ]"
+        >
+          <template v-for="part in bodyParts(bodyFor(item))" :key="part.key">
+            <a
+              v-if="part.href"
+              :href="part.href"
+              rel="external nofollow noopener"
+              target="_blank"
+              class="break-all text-sky-600 hover:underline dark:text-sky-400"
+              >{{ part.text }}</a
+            ><template v-else>{{ part.text }}</template>
+          </template>
+        </p>
+
+        <NewsCommunityFood
+          v-if="item.food"
+          v-model:comments-expanded="expandedComments[item.key]"
+          :food="item.food"
+          :vote="voteFor(item)"
+          :can-vote="canVote(item)"
+          :show-statistics="item.isOwn"
+          :current-user-id="userId"
+          :busy="votingKey === item.key"
+          @vote="(value) => vote(item, value)"
+        />
+
+        <NewsCommunityPost
+          v-if="item.post"
+          v-model:comments-expanded="expandedComments[item.key]"
+          :post="item.post"
+          :is-own="item.isOwn"
+          :current-user-id="userId"
+        />
+      </article>
+      <hr v-if="item.key === pinnedItem?.key" class="mb-3 border-gray-300 dark:border-gray-700" />
+    </template>
 
     <button
       v-if="hasMore"

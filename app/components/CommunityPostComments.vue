@@ -235,8 +235,8 @@ onUnmounted(() => {
               <button
                 type="button"
                 :disabled="moderation.busy.value"
-                :aria-label="comment.hiddenAt ? 'Show again' : 'Hide'"
-                :title="comment.hiddenAt ? 'Show again' : 'Hide'"
+                :aria-label="comment.hiddenAt ? $t('admin.restore') : $t('admin.remove')"
+                :title="comment.hiddenAt ? $t('admin.restore') : $t('admin.remove')"
                 class="relative z-20 cursor-pointer rounded p-0.5 hover:bg-gray-200 hover:text-gray-700 disabled:opacity-50 dark:hover:bg-white/10 dark:hover:text-gray-200"
                 @click="moderation.setHidden('post', postId, comment['.key'], !comment.hiddenAt)"
               >
@@ -246,8 +246,8 @@ onUnmounted(() => {
               <button
                 type="button"
                 :disabled="moderation.busy.value"
-                aria-label="Delete"
-                title="Delete"
+                :aria-label="$t('common.delete')"
+                :title="$t('common.delete')"
                 class="relative z-20 cursor-pointer rounded p-0.5 text-red-600 hover:bg-red-50 disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-900/30"
                 @click="moderation.remove('post', postId, comment['.key'])"
               >

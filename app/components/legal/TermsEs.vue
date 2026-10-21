@@ -131,7 +131,7 @@
     cuenta, porque otras personas pueden depender de ellos. Tus publicaciones y tus comentarios en
     publicaciones se borran con tu cuenta. No es posible revisar cada aportación, así que informa de
     cualquier cosa incorrecta o que no debería estar ahí. Las aportaciones y los nombres en la
-    comunidad que incumplan estas condiciones pueden ocultarse o eliminarse.
+    comunidad que incumplan estas condiciones pueden retirarse o eliminarse.
   </p>
 
   <h2>Disponibilidad</h2>

@@ -131,7 +131,7 @@
     andere sich darauf stützen. Deine Beiträge und deine Kommentare zu Beiträgen werden mit deinem
     Konto gelöscht. Nicht jeder Inhalt lässt sich prüfen. Melde deshalb bitte alles, was falsch ist
     oder nicht dort stehen sollte. Inhalte und Community-Namen, die gegen diese Bedingungen
-    verstoßen, können ausgeblendet oder entfernt werden.
+    verstoßen, können entfernt oder gelöscht werden.
   </p>
 
   <h2>Verfügbarkeit</h2>

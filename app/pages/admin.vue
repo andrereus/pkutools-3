@@ -17,8 +17,8 @@ import { ADMIN_MODERATION } from '../composables/useCommunityFoodComments'
 // Moderation: posts and foods in all languages, sorted by their latest
 // activity, so a new comment brings its post or food to the top. Comments are
 // moderated inside their card's thread. Posts, foods and comments can be
-// hidden: out of view in place, quickly and reversibly. Deleting is final. Admin-only; the page's own wording is English. Every
-// action is checked server-side.
+// removed: hidden in place, quickly and reversibly. Deleting is final.
+// Admin-only; every action is checked server-side.
 
 const store = useStore()
 const {
@@ -32,7 +32,7 @@ const {
 const { confirm } = useConfirm()
 const notifications = useNotifications()
 const { nameOf, isOfficial } = useCommunityAuthor()
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 
 const PAGE_SIZE = 20
 // 'all', or 'hidden' for what is hidden at the moment.
@@ -276,34 +276,21 @@ const emojiFor = (row) => (row.type === 'food' ? row.food.emoji || '🌱' : '�
 
 const authorText = (row) => {
   if (isOfficial(row.authorId)) return 'PKU Tools'
-  if (typeof row.authorId !== 'string') return 'Unknown user'
+  if (typeof row.authorId !== 'string') return t('admin.unknown-user')
   const shortId = row.authorId.slice(0, 8)
   const name = nameOf(row.authorId)
-  return name ? `${name} (${shortId})` : `User ${shortId}`
-}
-
-// A link that opens the card's text in Google Translate, for content in a
-// language other than the admin's own app language.
-const translateUrl = (row) => {
-  const source = row.language
-  if (!source || source === locale.value) return null
-  const text = [row.text, row.note]
-    .filter((part) => typeof part === 'string' && part.trim() !== '')
-    .join('\n\n')
-  if (!text) return null
-  return (
-    `https://translate.google.com/?sl=${encodeURIComponent(source)}` +
-    `&tl=${encodeURIComponent(locale.value)}&text=${encodeURIComponent(text)}&op=translate`
-  )
+  return name ? `${name} (${shortId})` : t('admin.user', { id: shortId })
 }
 
 // What kind of content it is is in the action line under the author.
 const metaLabel = (row) =>
-  [(row.language ?? '—').toUpperCase(), row.edited ? 'edited' : null].filter(Boolean).join(' · ')
+  [(row.language ?? '—').toUpperCase(), row.edited ? t('admin.edited') : null]
+    .filter(Boolean)
+    .join(' · ')
 
 const formatDate = (timestamp) =>
   timestamp > 0
-    ? new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short' }).format(
+    ? new Intl.DateTimeFormat(locale.value, { dateStyle: 'medium', timeStyle: 'short' }).format(
         timestamp
       )
     : '—'
@@ -311,7 +298,7 @@ const formatDate = (timestamp) =>
 // Every admin action asks first: each one changes what the community sees.
 const run = async (key, question, action, done) => {
   if (busyKey.value) return
-  if ((await confirm({ cancelLabel: 'Cancel', ...question })) !== true) return
+  if ((await confirm({ cancelLabel: t('common.cancel'), ...question })) !== true) return
   busyKey.value = key
   try {
     await action()
@@ -332,33 +319,26 @@ const setHidden = (item, hidden) =>
     `${item.target}-${item.key}-${item.commentId ?? ''}`,
     hidden
       ? {
-          title: `Hide ${kindOf(item)}?`,
-          message:
-            'Only its author and admins see it, marked as hidden, until you show it again or delete it.',
-          confirmLabel: 'Hide'
+          title: t(`admin.remove-${kindOf(item)}`),
+          message: t('admin.remove-description'),
+          confirmLabel: t('admin.remove')
         }
       : {
-          title: `Show ${kindOf(item)} again?`,
-          message: 'Everyone sees it again.',
-          confirmLabel: 'Show'
+          title: t(`admin.restore-${kindOf(item)}`),
+          message: t('admin.restore-description'),
+          confirmLabel: t('admin.restore')
         },
     () => adminSetHidden({ ...item, hidden }),
-    hidden ? 'Hidden.' : 'Shown again.'
+    hidden ? t('admin.removed-done') : t('admin.restored-done')
   )
-
-const DELETE_MESSAGES = {
-  post: 'The post and its comments are deleted for good.',
-  food: 'The food and its comments leave the community for good. The contributor keeps it in Own Food, unshared.',
-  comment: 'The comment is deleted for good.'
-}
 
 const remove = (item) =>
   run(
     `${item.target}-${item.key}-${item.commentId ?? ''}`,
     {
-      title: `Delete ${kindOf(item)}?`,
-      message: DELETE_MESSAGES[kindOf(item)],
-      confirmLabel: 'Delete',
+      title: t(`admin.delete-${kindOf(item)}`),
+      message: t(`admin.delete-${kindOf(item)}-description`),
+      confirmLabel: t('common.delete'),
       variant: 'destructive'
     },
     () => {
@@ -373,7 +353,7 @@ const remove = (item) =>
         ? adminDeleteCommunityPost(item.key)
         : adminDeleteCommunityFood(item.key)
     },
-    'Deleted.'
+    t('admin.deleted-done')
   )
 
 // The threads inside the cards offer the same actions per comment.
@@ -386,11 +366,10 @@ const itemOf = (row) => ({ target: row.type, key: row.id })
 
 const removeName = async (authorId) => {
   const answer = await confirm({
-    title: 'Remove community name?',
-    message:
-      'Their posts and comments then show as “Community member”. The name becomes free, and they can choose a new one.',
-    confirmLabel: 'Remove',
-    cancelLabel: 'Cancel',
+    title: t('admin.delete-name-title'),
+    message: t('admin.delete-name-description'),
+    confirmLabel: t('common.delete'),
+    cancelLabel: t('common.cancel'),
     variant: 'destructive'
   })
   if (answer !== true) return
@@ -403,34 +382,34 @@ const removeName = async (authorId) => {
 
 definePageMeta({ robots: false, sitemap: false })
 
-useSeoMeta({ title: 'Admin' })
+useSeoMeta({ title: () => t('app.admin') })
 </script>
 
 <template>
   <div class="mx-auto max-w-2xl">
-    <PageHeader title="Admin" />
+    <PageHeader :title="$t('app.admin')" />
 
     <p v-if="!store.authChecked || (store.user && store.isAdmin === null)" class="text-sm">
-      Loading…
+      {{ $t('admin.loading') }}
     </p>
     <p v-else-if="!store.isAdmin" class="text-sm text-gray-600 dark:text-gray-400">
-      This page is only available to admins.
+      {{ $t('admin.only-admins') }}
     </p>
 
     <template v-else>
       <input
         v-model="search"
         type="search"
-        placeholder="Search what is shown: text, name or user ID"
-        aria-label="Search"
+        :placeholder="$t('admin.search')"
+        :aria-label="$t('admin.search-label')"
         class="mb-3 block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600"
       />
 
-      <nav class="mb-3 flex flex-wrap gap-2" aria-label="View">
+      <nav class="mb-3 flex flex-wrap gap-2" :aria-label="$t('admin.view-label')">
         <button
           v-for="option in [
-            { key: 'all', label: 'All' },
-            { key: 'hidden', label: `Hidden (${hiddenCount})` }
+            { key: 'all', label: $t('news.filter-all') },
+            { key: 'hidden', label: $t('admin.view-removed', { count: hiddenCount }) }
           ]"
           :key="option.key"
           type="button"
@@ -452,22 +431,23 @@ useSeoMeta({ title: 'Admin' })
         class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-sky-50 px-3 py-2 text-sm text-gray-800 dark:bg-sky-900/20 dark:text-gray-200"
       >
         <template v-if="filter">
-          <span>
-            Everything by
-            <strong class="font-semibold">
-              {{ nameOf(filter.userId) ?? 'this user' }}
-            </strong>
-            <span class="font-mono text-xs text-gray-500 dark:text-gray-400">
-              {{ filter.userId }}
-            </span>
-          </span>
+          <i18n-t keypath="admin.everything-by" tag="span" scope="global">
+            <template #name>
+              <strong class="font-semibold">
+                {{ nameOf(filter.userId) ?? $t('admin.this-user') }}
+              </strong>
+              <span class="font-mono text-xs text-gray-500 dark:text-gray-400">
+                {{ filter.userId }}
+              </span>
+            </template>
+          </i18n-t>
           <button
             v-if="nameOf(filter.userId)"
             type="button"
             class="cursor-pointer font-medium text-red-600 hover:underline dark:text-red-400"
             @click="removeName(filter.userId)"
           >
-            Remove name
+            {{ $t('admin.delete-name') }}
           </button>
         </template>
         <button
@@ -475,7 +455,7 @@ useSeoMeta({ title: 'Admin' })
           class="ml-auto cursor-pointer font-medium text-sky-600 hover:underline dark:text-sky-400"
           @click="filter = null"
         >
-          Show everything
+          {{ $t('admin.show-everything') }}
         </button>
       </div>
 
@@ -483,7 +463,7 @@ useSeoMeta({ title: 'Admin' })
         v-if="visibleRows.length === 0"
         class="py-12 text-center text-sm text-gray-500 dark:text-gray-400"
       >
-        Nothing found.
+        {{ $t('admin.nothing-found') }}
       </p>
 
       <article
@@ -511,7 +491,7 @@ useSeoMeta({ title: 'Admin' })
                     'cursor-pointer text-left hover:underline',
                     isOfficial(row.authorId) ? 'text-sky-700 dark:text-sky-300' : ''
                   ]"
-                  title="Show everything by this user"
+                  :title="$t('admin.show-user')"
                   @click="showUser(row.authorId)"
                 >
                   {{ authorText(row) }}
@@ -526,30 +506,32 @@ useSeoMeta({ title: 'Admin' })
                   class="ml-1 inline-flex items-center gap-1 rounded bg-gray-200 px-1.5 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
                 >
                   <LucideEyeOff class="h-3 w-3" aria-hidden="true" />
-                  Hidden
+                  {{ $t('admin.removed') }}
                 </span>
               </h3>
               <p class="text-xs leading-4 break-words text-gray-500 dark:text-gray-400">
                 <template v-if="row.type === 'food'">
-                  shared the food
-                  <strong class="font-semibold text-gray-700 dark:text-gray-300">
-                    {{ row.text }}
-                  </strong>
+                  <i18n-t keypath="admin.shared-food" tag="span" scope="global">
+                    <template #name>
+                      <strong class="font-semibold text-gray-700 dark:text-gray-300">
+                        {{ row.text }}
+                      </strong>
+                    </template>
+                  </i18n-t>
                   <span
                     v-if="row.hiddenByRatings"
                     class="ml-1 inline-flex items-center rounded bg-amber-50 px-1.5 font-medium text-amber-700 dark:bg-amber-950/50 dark:text-amber-300"
                   >
-                    Rated down
+                    {{ $t('admin.rated-down') }}
                   </span>
                 </template>
-                <template v-else>wrote a post</template>
+                <template v-else>{{ $t('admin.wrote-post') }}</template>
                 <span
                   v-if="row.hiddenCommentCount > 0"
                   class="ml-1 inline-flex items-center gap-1 rounded bg-gray-200 px-1.5 font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
                 >
                   <LucideEyeOff class="h-3 w-3" aria-hidden="true" />
-                  {{ row.hiddenCommentCount }} hidden
-                  {{ row.hiddenCommentCount === 1 ? 'comment' : 'comments' }}
+                  {{ $t('admin.removed-comments', { count: row.hiddenCommentCount }) }}
                 </span>
               </p>
             </div>
@@ -583,7 +565,6 @@ useSeoMeta({ title: 'Admin' })
           <template #actions>
             <AdminRowActions
               :row="row"
-              :translate-url="translateUrl(row)"
               :busy="busyKey !== null"
               @hide="setHidden(itemOf(row), true)"
               @show="setHidden(itemOf(row), false)"
@@ -601,7 +582,6 @@ useSeoMeta({ title: 'Admin' })
           <template #actions>
             <AdminRowActions
               :row="row"
-              :translate-url="translateUrl(row)"
               :busy="busyKey !== null"
               @hide="setHidden(itemOf(row), true)"
               @show="setHidden(itemOf(row), false)"
@@ -617,7 +597,7 @@ useSeoMeta({ title: 'Admin' })
         class="mb-3 w-full cursor-pointer rounded-xl border border-dashed border-gray-300 py-3 text-sm font-medium text-gray-600 hover:border-sky-400 hover:text-sky-600 dark:border-gray-700 dark:text-gray-400 dark:hover:text-sky-400"
         @click="visibleCount += PAGE_SIZE"
       >
-        Show more
+        {{ $t('news.load-more') }}
       </button>
     </template>
   </div>
