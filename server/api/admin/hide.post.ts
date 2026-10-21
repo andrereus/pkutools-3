@@ -3,7 +3,12 @@ import { getAdminDatabase } from '../../utils/firebase-admin'
 import { AdminHideSchema } from '../../types/schemas'
 import { defineAdminHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
-import { queueThreadActivity, threadOwner, threadPaths } from '../../utils/community-thread'
+import {
+  queueThreadActivity,
+  queueThreadParticipants,
+  threadOwner,
+  threadPaths
+} from '../../utils/community-thread'
 
 // Hides a food, a post or one comment, or shows it again. Hidden content stays
 // where it is, seen only by its owner and by admins, until it is shown again
@@ -35,20 +40,17 @@ export default defineAdminHandler(async ({ event }) => {
   if (Boolean(comment.hiddenAt) === hidden) return { success: true }
 
   // A hidden comment leaves the comment count and the activity that notifies
-  // people, and joins the count of hidden comments, which lets the admin page
-  // find it.
+  // people, in the thread and in each participant's conversation entry, and
+  // joins the count of hidden comments, which lets the admin page find it.
   const writes: Record<string, unknown> = { [`${paths.thread}/${commentId}/hiddenAt`]: hiddenAt }
   const parent = parentSnapshot.val() as Record<string, unknown> | null
   if (parent) {
     writes[`${paths.parent}/commentCount`] = ServerValue.increment(hidden ? -1 : 1)
     writes[`${paths.parent}/hiddenCommentCount`] = ServerValue.increment(hidden ? 1 : -1)
-    queueThreadActivity(
-      writes,
-      target,
-      key,
-      { ...thread, [commentId]: { ...comment, hiddenAt } },
-      threadOwner(target, parent)
-    )
+    const updated = { ...thread, [commentId]: { ...comment, hiddenAt } }
+    const ownerId = threadOwner(target, parent)
+    queueThreadActivity(writes, target, key, updated, ownerId)
+    await queueThreadParticipants(writes, target, key, updated, ownerId)
   }
   await db.ref().update(writes)
   return { success: true }

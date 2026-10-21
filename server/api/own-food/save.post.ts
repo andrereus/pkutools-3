@@ -45,9 +45,9 @@ async function checkDuplicateCommunityFood(
   const normalizedName = normalizeFoodName(name)
   for (const key of Object.keys(foods)) {
     const existing = foods[key]
-    // Skip hidden foods (based on score) - they shouldn't block new submissions
+    // Foods hidden by their score or removed by an admin don't block new submissions
     const score = (existing.likes || 0) - (existing.dislikes || 0)
-    if (isCommunityFoodHidden(score)) continue
+    if (isCommunityFoodHidden(score) || existing.hiddenAt) continue
     // Duplicate = same name (case-insensitive) AND exact same phe value
     if (
       normalizeFoodName(existing.name) === normalizedName &&

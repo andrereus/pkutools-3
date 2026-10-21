@@ -2,35 +2,26 @@ import { getAdminDatabase } from '../utils/firebase-admin'
 import { CommunityProfileSchema } from '../types/schemas'
 import { defineAuthedHandler } from '../utils/handler'
 import { validateBody } from '../utils/validation'
-import {
-  claimNameKey,
-  communityNameKey,
-  currentNameKey,
-  isReservedNameKey,
-  queueNameKeyRelease
-} from '../utils/community-name'
+import { communityNameKey, isNameKeyTaken, isReservedNameKey } from '../utils/community-name'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { nickname } = await validateBody(event, CommunityProfileSchema)
-  const previousKey = await currentNameKey(userId)
-  const writes: Record<string, unknown> = {}
+  const profileRef = getAdminDatabase().ref(`communityProfiles/${userId}`)
 
   if (nickname === null) {
-    writes[`communityProfiles/${userId}`] = null
-    await queueNameKeyRelease(writes, userId, previousKey)
-    await getAdminDatabase().ref().update(writes)
+    await profileRef.remove()
     return { success: true, nickname: null }
   }
 
-  const key = communityNameKey(nickname)
-  if (isReservedNameKey(key)) {
+  const nameKey = communityNameKey(nickname)
+  if (isReservedNameKey(nameKey)) {
     throw createError({
       statusCode: 400,
       message: 'This name is reserved',
       data: { code: 'community-name-reserved' }
     })
   }
-  if (!(await claimNameKey(userId, key))) {
+  if (await isNameKeyTaken(userId, nameKey)) {
     throw createError({
       statusCode: 409,
       message: 'This name is taken',
@@ -38,8 +29,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  writes[`communityProfiles/${userId}`] = { nickname, updatedAt: Date.now() }
-  if (previousKey !== key) await queueNameKeyRelease(writes, userId, previousKey)
-  await getAdminDatabase().ref().update(writes)
+  await profileRef.set({ nickname, nameKey, updatedAt: Date.now() })
   return { success: true, nickname }
 })

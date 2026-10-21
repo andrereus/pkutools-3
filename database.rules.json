@@ -28,11 +28,8 @@
     },
     "communityProfiles": {
       ".read": "auth != null",
-      ".write": false
-    },
-    "communityNameKeys": {
-      ".read": false,
-      ".write": false
+      ".write": false,
+      ".indexOn": ["nameKey"]
     },
     "admins": {
       ".read": "auth != null",

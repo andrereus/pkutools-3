@@ -4,7 +4,7 @@ import { CommunityPostCommentSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { MAX_COMMUNITY_POST_COMMENTS } from '../../utils/community-post'
-import { assertVisibleTo } from '../../utils/community-thread'
+import { assertVisibleTo, queueThreadParticipants } from '../../utils/community-thread'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { postId, commentId, comment } = await validateBody(event, CommunityPostCommentSchema)
@@ -47,23 +47,37 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   }
 
   const now = Date.now()
-  const newCommentKey = db.ref(`communityPostComments/${postId}`).push().key
+  const threadRef = db.ref(`communityPostComments/${postId}`)
+  const newCommentKey = threadRef.push().key as string
+  const newComment = {
+    type: 'comment',
+    authorId: userId,
+    text: comment,
+    createdAt: now,
+    updatedAt: now
+  }
+  const thread = ((await threadRef.once('value')).val() ?? {}) as Record<string, unknown>
 
-  // The comment, the count and the activity time change in one atomic update.
-  await db.ref().update({
-    [`communityPostComments/${postId}/${newCommentKey}`]: {
-      type: 'comment',
-      authorId: userId,
-      text: comment,
-      createdAt: now,
-      updatedAt: now
-    },
+  // The comment, the count, the activity time and the conversation entries of
+  // everyone in it change in one atomic update. Writing a comment counts as
+  // reading the thread. On someone else's post the commenter joins the
+  // conversation, so later comments there notify them.
+  const writes: Record<string, unknown> = {
+    [`communityPostComments/${postId}/${newCommentKey}`]: newComment,
     [`communityPosts/${postId}/commentCount`]: ServerValue.increment(1),
     [`communityPosts/${postId}/${post.authorId === userId ? 'lastAuthorCommentAt' : 'lastCommunityCommentAt'}`]:
       now,
-    // Someone else's thread: later comments there notify this commenter.
-    ...(post.authorId !== userId && { [`${userId}/communityThreads/posts/${postId}`]: now })
-  })
+    [`${userId}/communityReads/posts/${postId}`]: now
+  }
+  await queueThreadParticipants(
+    writes,
+    'post',
+    postId,
+    { ...thread, [newCommentKey]: newComment },
+    post.authorId,
+    { joiningId: userId }
+  )
+  await db.ref().update(writes)
 
   return { success: true }
 })

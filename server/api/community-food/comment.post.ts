@@ -4,7 +4,7 @@ import { CommunityFoodCommentSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { MAX_COMMUNITY_FOOD_COMMENTS } from '../../utils/community-food-comment'
-import { assertVisibleTo } from '../../utils/community-thread'
+import { assertVisibleTo, queueThreadParticipants } from '../../utils/community-thread'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { communityFoodKey, commentId, comment } = await validateBody(
@@ -39,8 +39,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     return { success: true }
   }
 
-  // The count is maintained in the same atomic update as each comment. This
-  // keeps the normal request path cheap and avoids loading comment text here.
+  // The count is maintained in the same atomic update as each comment.
   const storedFood = foodSnapshot.val() as Record<string, unknown>
   const storedCommentCount = Number(storedFood.commentCount)
   const commentCount =
@@ -60,26 +59,38 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   }
 
   const now = Date.now()
-  const newCommentRef = db.ref(`communityFoodComments/${communityFoodKey}`).push()
+  const threadRef = db.ref(`communityFoodComments/${communityFoodKey}`)
+  const newCommentKey = threadRef.push().key as string
+  const newComment = {
+    type: 'comment',
+    authorId: userId,
+    text: comment,
+    createdAt: now,
+    updatedAt: now
+  }
+  const thread = ((await threadRef.once('value')).val() ?? {}) as Record<string, unknown>
 
-  // The comment and its list-level count change together in one atomic update.
+  // The comment, its list-level count, the activity time and the conversation
+  // entries of everyone in it change together in one atomic update.
   // ServerValue.increment is the same concurrency primitive used by votes.
-  await db.ref().update({
-    [`communityFoodComments/${communityFoodKey}/${newCommentRef.key}`]: {
-      type: 'comment',
-      authorId: userId,
-      text: comment,
-      createdAt: now,
-      updatedAt: now
-    },
+  // Writing a comment counts as reading the thread. On someone else's food the
+  // commenter joins the conversation, so later comments there notify them.
+  const writes: Record<string, unknown> = {
+    [`communityFoodComments/${communityFoodKey}/${newCommentKey}`]: newComment,
     [`communityFoods/${communityFoodKey}/commentCount`]: ServerValue.increment(1),
     [`communityFoods/${communityFoodKey}/${storedFood.contributorId === userId ? 'lastContributorCommentAt' : 'lastCommunityCommentAt'}`]:
       now,
-    // Someone else's thread: later comments there notify this commenter.
-    ...(storedFood.contributorId !== userId && {
-      [`${userId}/communityThreads/foods/${communityFoodKey}`]: now
-    })
-  })
+    [`${userId}/communityReads/foods/${communityFoodKey}`]: now
+  }
+  await queueThreadParticipants(
+    writes,
+    'food',
+    communityFoodKey,
+    { ...thread, [newCommentKey]: newComment },
+    storedFood.contributorId,
+    { joiningId: userId }
+  )
+  await db.ref().update(writes)
 
   return { success: true }
 })

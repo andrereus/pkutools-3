@@ -19,8 +19,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  const writes: Record<string, unknown> = { [`${userId}/communityReads/posts/${postId}`]: null }
-  queueCommunityPostRemoval(postId, writes)
+  const writes: Record<string, unknown> = {}
+  await queueCommunityPostRemoval(postId, userId, writes)
   await db.ref().update(writes)
   return { success: true }
 })

@@ -617,9 +617,11 @@ describe('notices for conversations the reader joined', () => {
     lastAuthorCommentAt: 400
   }
 
-  it('reports a comment by someone else after the reader’s own last comment', () => {
+  const joined = { posts: { post1: { lastOtherCommentAt: 400 } } }
+
+  it('reports a comment by someone else after the reader last read the thread', () => {
     expect(
-      communityThreadNotices([], [post], 'reader-1', { posts: { post1: 300 } }, undefined)
+      communityThreadNotices([], [post], 'reader-1', joined, { posts: { post1: 300 } })
     ).toEqual([
       {
         key: 'thread-post-post1',
@@ -632,11 +634,10 @@ describe('notices for conversations the reader joined', () => {
   })
 
   it('stays quiet once the thread was opened, for threads not joined and for the owner', () => {
-    const joined = { posts: { post1: 300 } }
     expect(
       communityThreadNotices([], [post], 'reader-1', joined, { posts: { post1: 500 } })
     ).toEqual([])
     expect(communityThreadNotices([], [post], 'reader-1', {}, undefined)).toEqual([])
-    expect(communityThreadNotices([], [post], 'author-1', { posts: { post1: 300 } })).toEqual([])
+    expect(communityThreadNotices([], [post], 'author-1', joined)).toEqual([])
   })
 })

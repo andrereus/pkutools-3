@@ -134,6 +134,8 @@ describe('community posts', () => {
     await deletePost(requestEvent({ postId: 'post1' }))
     expect(fake.data.communityPosts).toBeUndefined()
     expect(fake.data.communityPostComments).toBeUndefined()
+    // The commenter's conversation goes with it.
+    expect(fake.data['reader-1']).toBeUndefined()
   })
 
   it('removes the account’s posts, hidden ones too, its name and admin rights on deletion', async () => {
@@ -149,14 +151,20 @@ describe('community posts', () => {
     expect(fake.data.communityPosts).toBeUndefined()
     expect(fake.data.communityPostComments).toBeUndefined()
     expect(fake.data.communityProfiles).toBeUndefined()
-    expect(fake.data.communityNameKeys).toBeUndefined()
     expect(fake.data.admins).toBeUndefined()
     expect(deleteUser).toHaveBeenCalledWith('author-1')
   })
 
   it('removes the account’s comments on other posts, hidden ones too, and keeps likes', async () => {
     fake = createFakeDatabase({
-      'reader-1': { communityThreads: { posts: { post1: 300, post2: 200 } } },
+      'reader-1': {
+        communityThreads: {
+          posts: {
+            post1: { lastOtherCommentAt: 250 },
+            post2: { lastOtherCommentAt: 0 }
+          }
+        }
+      },
       communityPosts: {
         post1: {
           authorId: 'author-1',
@@ -201,19 +209,26 @@ describe('community posts', () => {
 })
 
 describe('community names', () => {
-  it('stores a tidied name, claims it, and frees it when removed', async () => {
+  it('stores a tidied name with its comparison form, and removes it', async () => {
     await saveName(requestEvent({ nickname: '  Anna   Lena  ' }))
     expect(fake.data.communityProfiles).toEqual({
-      'reader-1': { nickname: 'Anna Lena', updatedAt: expect.any(Number) }
+      'reader-1': { nickname: 'Anna Lena', nameKey: 'annalena', updatedAt: expect.any(Number) }
     })
-    expect(fake.data.communityNameKeys).toEqual({ annalena: 'reader-1' })
-
-    await saveName(requestEvent({ nickname: 'Anna' }))
-    expect(fake.data.communityNameKeys).toEqual({ anna: 'reader-1' })
 
     await saveName(requestEvent({ nickname: null }))
     expect(fake.data.communityProfiles).toBeUndefined()
-    expect(fake.data.communityNameKeys).toBeUndefined()
+  })
+
+  it('frees a name once its account changes it', async () => {
+    await saveName(requestEvent({ nickname: 'Anna' }))
+    await saveName(requestEvent({ nickname: 'Bob' }))
+
+    currentUser = 'author-1'
+    await saveName(requestEvent({ nickname: 'Anna' }))
+    expect(fake.data.communityProfiles).toMatchObject({
+      'reader-1': { nickname: 'Bob' },
+      'author-1': { nickname: 'Anna' }
+    })
   })
 
   it('keeps a name to one account, whatever its case, spacing or punctuation', async () => {
@@ -266,8 +281,10 @@ describe('reading comments', () => {
 describe('conversations a commenter joined', () => {
   it('records the thread with the comment and lets the commenter mark it read', async () => {
     await saveComment(requestEvent({ postId: 'post1', comment: 'Try the plain ones' }))
+    // Writing it counts as reading the thread.
     expect(fake.data['reader-1']).toEqual({
-      communityThreads: { posts: { post1: expect.any(Number) } }
+      communityThreads: { posts: { post1: { lastOtherCommentAt: 0 } } },
+      communityReads: { posts: { post1: expect.any(Number) } }
     })
 
     await markRead(requestEvent({ target: 'post', key: 'post1' }))
@@ -284,7 +301,7 @@ describe('conversations a commenter joined', () => {
 
     await deleteComment(requestEvent({ postId: 'post1', commentId: first }))
     expect(fake.data['reader-1']).toMatchObject({
-      communityThreads: { posts: { post1: expect.any(Number) } },
+      communityThreads: { posts: { post1: { lastOtherCommentAt: 0 } } },
       communityReads: { posts: { post1: expect.any(Number) } }
     })
 
@@ -292,9 +309,36 @@ describe('conversations a commenter joined', () => {
     expect(fake.data['reader-1']).toBeUndefined()
   })
 
-  it('does not record the author’s own thread', async () => {
+  it('tells the others in it about a new comment, and forgets a deleted one', async () => {
+    // An earlier commenter without an entry, e.g. an account that is gone.
+    fake.data.communityPostComments = {
+      post1: { c0: { type: 'comment', authorId: 'gone-1', text: 'Hi', createdAt: 50 } }
+    }
+    await saveComment(requestEvent({ postId: 'post1', comment: 'First' }))
+    currentUser = 'reader-2'
+    await saveComment(requestEvent({ postId: 'post1', comment: 'Second' }))
+
+    const createdAt = (authorId: string) =>
+      Object.values(thread('post1')).find((comment) => comment.authorId === authorId)!.createdAt
+    const entryOf = (userId: string) =>
+      (fake.data[userId] as { communityThreads: { posts: Record<string, unknown> } })
+        .communityThreads.posts.post1
+    expect(entryOf('reader-1')).toEqual({ lastOtherCommentAt: createdAt('reader-2') })
+    expect(entryOf('reader-2')).toEqual({ lastOtherCommentAt: createdAt('reader-1') })
+    expect(fake.data['gone-1']).toBeUndefined()
+
+    const [secondId] = Object.entries(thread('post1')).find(
+      ([, comment]) => comment.authorId === 'reader-2'
+    )!
+    await deleteComment(requestEvent({ postId: 'post1', commentId: secondId }))
+    expect(entryOf('reader-1')).toEqual({ lastOtherCommentAt: 50 })
+  })
+
+  it('records the author’s own thread as read, not as joined', async () => {
     currentUser = 'author-1'
     await saveComment(requestEvent({ postId: 'post1', comment: 'Thanks!' }))
-    expect(fake.data['author-1']).toBeUndefined()
+    expect(fake.data['author-1']).toEqual({
+      communityReads: { posts: { post1: expect.any(Number) } }
+    })
   })
 })

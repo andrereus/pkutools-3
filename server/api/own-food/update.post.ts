@@ -4,7 +4,7 @@ import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { isCommunityFoodHidden, isShareableSource } from '../../utils/community-food'
 import { storedNumberEquals } from '../../utils/numeric'
-import { queueCommunityFoodCommentRemoval } from '../../utils/community-food-comment'
+import { queueThreadRemoval } from '../../utils/community-thread'
 import { hasMaterialFoodChange, normalizeFoodName } from '../../../shared/utils/material-food'
 import { changedFoodContentFields } from '../../../shared/utils/food-content'
 import type { H3Event } from 'h3'
@@ -49,9 +49,9 @@ async function checkDuplicateCommunityFood(
   for (const key of Object.keys(foods)) {
     if (key === excludeKey) continue
     const existing = foods[key]
-    // Skip hidden foods (based on score) - they shouldn't block new submissions
+    // Foods hidden by their score or removed by an admin don't block new submissions
     const score = (existing.likes || 0) - (existing.dislikes || 0)
-    if (isCommunityFoodHidden(score)) continue
+    if (isCommunityFoodHidden(score) || existing.hiddenAt) continue
     // Duplicate = same name (case-insensitive) AND exact same phe value
     if (
       normalizeFoodName(existing.name) === normalizedName &&
@@ -202,7 +202,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     // foreign target is left untouched while the broken local pointer clears.
     if (existingCommunityKey && hasValidCommunityLink) {
       writes[`communityFoods/${existingCommunityKey}`] = null
-      queueCommunityFoodCommentRemoval(existingCommunityKey, writes)
+      await queueThreadRemoval(writes, 'food', existingCommunityKey, userId)
     }
     communityKey = null
   } else if (

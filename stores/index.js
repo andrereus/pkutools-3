@@ -40,6 +40,12 @@ export const toList = (data) =>
 const without = (record, key) =>
   Object.fromEntries(Object.entries(record).filter(([entryKey]) => entryKey !== key))
 
+const timestamp = (value) => (Number.isSafeInteger(value) && value > 0 ? value : 0)
+
+// Whether someone else commented in a conversation since the reader last read
+// it: opened its comments or wrote one there.
+const hasNewComment = (entry, readAt) => timestamp(entry?.lastOtherCommentAt) > timestamp(readAt)
+
 const defaultSettings = {
   maxPhe: null,
   maxKcal: null,
@@ -94,18 +100,22 @@ export const useStore = defineStore('main', {
     // False while the feed waits for the snapshot of its current query.
     feedLoaded: false,
     // The reader's own posts, and single posts followed whatever their age:
-    // those they commented on, and the one the current link points to.
-    // Notifications and links always find their post this way.
+    // those they commented on where someone else wrote since, and the one the
+    // current link points to. Notifications and links always find their post
+    // this way.
     ownCommunityPosts: [],
     followedCommunityPosts: {},
     linkedPostId: null,
     // Opt-in community names by user ID, shown on posts and comments.
     communityNames: {},
-    // When the reader last opened the comments of their own foods and posts,
-    // by key, so a read comment no longer counts as a notification.
+    // When the reader last read the comments of a food or post, by opening
+    // them or writing one, by key, so a read comment no longer counts as a
+    // notification.
     communityReads: { foods: {}, posts: {} },
-    // Others' foods and posts the reader commented on, with their last comment
-    // there, so later comments by someone else can notify them.
+    communityReadsLoaded: false,
+    // Others' foods and posts the reader commented on, with the newest comment
+    // there by someone else, kept by the server. Compared with the read time,
+    // the app sees where something is new without loading every thread.
     communityThreads: { foods: {}, posts: {} },
     // What the account has seen in News, for the blue dots and the bell.
     newsSeen: { loaded: false, lastReadAt: null, lastSeenRevision: null },
@@ -304,6 +314,13 @@ export const useStore = defineStore('main', {
             foods: data?.foods && typeof data.foods === 'object' ? data.foods : {},
             posts: data?.posts && typeof data.posts === 'object' ? data.posts : {}
           }
+          this.communityReadsLoaded = true
+          this.syncFollowedPosts(db)
+        },
+        () => {
+          // Without read times, replies on followed posts count as new.
+          this.communityReadsLoaded = true
+          this.syncFollowedPosts(db)
         }
       )
 
@@ -398,26 +415,33 @@ export const useStore = defineStore('main', {
       this.linkedPostId = postId
       this.syncFollowedPosts()
     },
-    // One listener per followed post, kept in step with the posts the reader
-    // commented on and the ones a link asked for.
+    // One listener per followed post: those the reader commented on where
+    // someone else wrote since, and the one a link asked for. A followed post
+    // stays for the session once its comments are read, so its card does not
+    // disappear while open; the next start leaves it out.
     syncFollowedPosts(db) {
       if (!this.user) return
       db ??= getDatabase()
-      const postIds = [
-        ...new Set([
-          ...Object.keys(this.communityThreads.posts).filter((postId) => DATABASE_KEY.test(postId)),
-          ...(this.linkedPostId ? [this.linkedPostId] : [])
-        ])
-      ]
+      const joined = Object.keys(this.communityThreads.posts).filter((postId) =>
+        DATABASE_KEY.test(postId)
+      )
+      const linked = this.linkedPostId ? [this.linkedPostId] : []
+      // Until the read times are in, every reply would look new.
+      const pending = this.communityReadsLoaded
+        ? joined.filter((postId) =>
+            hasNewComment(this.communityThreads.posts[postId], this.communityReads.posts[postId])
+          )
+        : []
+      const kept = new Set([...joined, ...linked])
       for (const name of Object.keys(this.unsubscribeFunctions)) {
         if (!name.startsWith(FOLLOWED_POST_LISTENER)) continue
         const postId = name.slice(FOLLOWED_POST_LISTENER.length)
-        if (postIds.includes(postId)) continue
+        if (kept.has(postId)) continue
         this.unsubscribeFunctions[name]()
         delete this.unsubscribeFunctions[name]
         this.followedCommunityPosts = without(this.followedCommunityPosts, postId)
       }
-      for (const postId of postIds) {
+      for (const postId of new Set([...pending, ...linked])) {
         const name = `${FOLLOWED_POST_LISTENER}${postId}`
         if (this.unsubscribeFunctions[name]) continue
         this.unsubscribeFunctions[name] = onValue(
@@ -445,6 +469,7 @@ export const useStore = defineStore('main', {
       this.feedLoaded = false
       this.communityNames = {}
       this.communityReads = { foods: {}, posts: {} }
+      this.communityReadsLoaded = false
       this.communityThreads = { foods: {}, posts: {} }
       this.newsSeen = { loaded: false, lastReadAt: null, lastSeenRevision: null }
       this.adminIds = {}

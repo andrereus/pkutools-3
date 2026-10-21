@@ -1,7 +1,7 @@
 import { getAdminDatabase } from './firebase-admin'
 
-// Community names are unique. Each name in use is claimed under its key in
-// `communityNameKeys`, so a check and a claim happen in one step.
+// Community names are unique. Each profile stores its name's comparison form
+// as `nameKey`, so a name in use is found with one indexed query.
 
 /** The form two names are compared in: case, spaces and punctuation do not count. */
 export const communityNameKey = (name: string): string =>
@@ -16,29 +16,14 @@ const RESERVED_KEYS = ['admin', 'administrator', 'moderator']
 export const isReservedNameKey = (key: string): boolean =>
   key.includes('pkutools') || RESERVED_KEYS.includes(key)
 
-/** The key of the account's current name, if it has one. */
-export async function currentNameKey(userId: string): Promise<string | null> {
-  const name = (
-    await getAdminDatabase().ref(`communityProfiles/${userId}/nickname`).once('value')
-  ).val()
-  return typeof name === 'string' ? communityNameKey(name) : null
-}
-
-/** Claims a name key for the account. False when another account holds it. */
-export async function claimNameKey(userId: string, key: string): Promise<boolean> {
-  const result = await getAdminDatabase()
-    .ref(`communityNameKeys/${key}`)
-    .transaction((owner: unknown) => (owner === null || owner === userId ? userId : undefined))
-  return result.committed
-}
-
-/** Adds releasing a name key to an existing atomic update, if the account holds it. */
-export async function queueNameKeyRelease(
-  writes: Record<string, unknown>,
-  userId: string,
-  key: string | null
-): Promise<void> {
-  if (!key) return
-  const owner = (await getAdminDatabase().ref(`communityNameKeys/${key}`).once('value')).val()
-  if (owner === userId) writes[`communityNameKeys/${key}`] = null
+/** Whether another account already uses a name with this key. */
+export async function isNameKeyTaken(userId: string, key: string): Promise<boolean> {
+  const holders = (
+    await getAdminDatabase()
+      .ref('communityProfiles')
+      .orderByChild('nameKey')
+      .equalTo(key)
+      .once('value')
+  ).val() as Record<string, unknown> | null
+  return Object.keys(holders ?? {}).some((holderId) => holderId !== userId)
 }

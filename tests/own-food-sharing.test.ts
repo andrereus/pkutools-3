@@ -115,17 +115,18 @@ describe('sharing an own food', () => {
   })
 
   // A food the community already buried must not block a fresh submission.
-  it('publishes even when the only match is a hidden food', async () => {
+  it('publishes even when the only matches are hidden or removed foods', async () => {
     seed(
       { ...OWN_FOOD },
       {
-        buried: { name: 'Protein shake', phe: 12, language: 'en', likes: 0, dislikes: 3 }
+        buried: { name: 'Protein shake', phe: 12, language: 'en', likes: 0, dislikes: 3 },
+        removed: { name: 'Protein shake', phe: 12, language: 'en', hiddenAt: 100 }
       }
     )
 
     await updateOwnFood(request({ shared: true }))
 
-    expect(Object.keys(community())).toHaveLength(2)
+    expect(Object.keys(community())).toHaveLength(3)
   })
 
   it('treats a food in another language as a separate entry', async () => {
@@ -314,7 +315,7 @@ describe('unsharing an own food', () => {
     expect(storedOwnFood()).not.toHaveProperty('communityKey')
   })
 
-  it('removes comments and history with the community entry', async () => {
+  it('removes comments, history and the conversation with the community entry', async () => {
     seed(
       { ...OWN_FOOD, shared: true, communityKey: 'community1' },
       {
@@ -341,9 +342,14 @@ describe('unsharing an own food', () => {
       createdAt: 200,
       changedFields: ['phe']
     }
+    fake.data['commenter-1'] = {
+      communityThreads: { foods: { community1: { lastOtherCommentAt: 0 } } },
+      communityReads: { foods: { community1: 150 } }
+    }
     await updateOwnFood(request({ shared: false }))
 
     expect(fake.data.communityFoodComments).toBeUndefined()
+    expect(fake.data['commenter-1']).toBeUndefined()
   })
 
   it("does not delete another contributor's food through a malformed pointer", async () => {

@@ -128,22 +128,35 @@ describe('store data binding', () => {
     expect(store.settings.labUnit).toBe('mgdl')
   })
 
-  it('follows the posts the reader commented on, whatever their age', () => {
+  it('follows the posts the reader commented on where someone else wrote since', () => {
     const store = useStore()
     store.user = { id: 'user-1' }
     store.initRef()
+    const followed = () =>
+      [...listeners.keys()].filter((path) => path.startsWith('communityPosts/')).sort()
 
-    emit('user-1/communityThreads', { posts: { old: 100, older: 50 } })
+    emit('user-1/communityThreads', {
+      posts: {
+        old: { lastOtherCommentAt: 200 },
+        quiet: { lastOtherCommentAt: 0 },
+        read: { lastOtherCommentAt: 300 }
+      }
+    })
+    // Until the read times are in, nothing counts as new.
+    expect(followed()).toEqual([])
+
+    emit('user-1/communityReads', { posts: { read: 400 } })
+    expect(followed()).toEqual(['communityPosts/old'])
     emit('communityPosts/old', { authorId: 'user-2', text: 'Old post' })
     expect(store.followedCommunityPosts).toEqual({
       old: { authorId: 'user-2', text: 'Old post', '.key': 'old' }
     })
 
-    const olderUnsubscribe = unsubscribes.get('communityPosts/older')
-    emit('user-1/communityThreads', { posts: { old: 100 } })
-    expect(olderUnsubscribe).toHaveBeenCalledTimes(1)
-
-    emit('communityPosts/old', null)
+    // Reading it keeps it for the session; leaving the conversation ends it.
+    emit('user-1/communityReads', { posts: { read: 400, old: 500 } })
+    expect(unsubscribes.get('communityPosts/old')).not.toHaveBeenCalled()
+    emit('user-1/communityThreads', { posts: { quiet: { lastOtherCommentAt: 0 } } })
+    expect(unsubscribes.get('communityPosts/old')).toHaveBeenCalledTimes(1)
     expect(store.followedCommunityPosts).toEqual({})
   })
 

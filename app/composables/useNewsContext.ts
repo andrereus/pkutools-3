@@ -188,8 +188,8 @@ export interface ThreadNotice {
 }
 
 /**
- * The reader's last comment in each thread they joined, by key, written by the
- * server along with the comment.
+ * The threads the reader joined, by key, with the newest comment there by
+ * someone else, kept by the server.
  */
 export interface JoinedThreads {
   foods?: Record<string, unknown>
@@ -226,15 +226,15 @@ export const communityThreadNotices = (
       ) {
         return []
       }
-      // The newest comment by anyone. The reader's own last comment there and
-      // their last opening of the thread settle everything up to then.
+      // The newest comment by anyone. The reader's last read, by opening the
+      // thread or commenting there, settles everything up to then.
       const ownerLast =
         target === 'food' ? record.lastContributorCommentAt : record.lastAuthorCommentAt
       const latest = Math.max(
         isNewsTimestamp(record.lastCommunityCommentAt) ? record.lastCommunityCommentAt : 0,
         isNewsTimestamp(ownerLast) ? ownerLast : 0
       )
-      const settled = Math.max(readAtOf(joinedOfTarget, key), readAtOf(readsOfTarget, key))
+      const settled = readAtOf(readsOfTarget, key)
       if (latest <= settled) return []
       return [
         {

@@ -40,6 +40,7 @@ beforeEach(() => {
     'user-1': {
       ownFood: { own1: { name: 'Rice cake', shared: true, communityKey: 'food1' } }
     },
+    'user-2': { communityThreads: { foods: { food1: { lastOtherCommentAt: 0 } } } },
     communityFoods: {
       food1: {
         name: 'Rice cake',
@@ -60,8 +61,7 @@ beforeEach(() => {
       post1: { authorId: 'user-2', text: 'Spam', language: 'en', createdAt: 100, likes: 0 }
     },
     communityPostComments: { post1: { c1: { authorId: 'user-1', text: 'Hi', createdAt: 200 } } },
-    communityProfiles: { 'user-2': { nickname: 'Spammer', updatedAt: 100 } },
-    communityNameKeys: { spammer: 'user-2' }
+    communityProfiles: { 'user-2': { nickname: 'Spammer', nameKey: 'spammer', updatedAt: 100 } }
   })
 })
 
@@ -82,10 +82,9 @@ describe('admin routes', () => {
     expect(fake.data).toEqual(before)
   })
 
-  it('removes a community name and frees it', async () => {
+  it('removes a community name', async () => {
     await deleteName(requestEvent({ userId: 'user-2' }))
     expect(fake.data.communityProfiles).toBeUndefined()
-    expect(fake.data.communityNameKeys).toBeUndefined()
   })
 
   it('deletes a post with its comments', async () => {
@@ -101,6 +100,7 @@ describe('admin routes', () => {
     expect((fake.data['user-1'] as Record<string, unknown>).ownFood).toEqual({
       own1: { name: 'Rice cake', shared: false }
     })
+    expect(fake.data['user-2']).toBeUndefined()
   })
 
   it('deletes one comment and its count, but never edit history', async () => {

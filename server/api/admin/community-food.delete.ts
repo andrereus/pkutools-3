@@ -2,7 +2,7 @@ import { getAdminDatabase } from '../../utils/firebase-admin'
 import { AdminCommunityFoodDeleteSchema } from '../../types/schemas'
 import { defineAdminHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
-import { queueCommunityFoodCommentRemoval } from '../../utils/community-food-comment'
+import { queueThreadRemoval } from '../../utils/community-thread'
 
 const isDatabaseKey = (value: unknown): value is string =>
   typeof value === 'string' && value !== '' && !/[.#$[\]/]/.test(value)
@@ -20,7 +20,7 @@ export default defineAdminHandler(async ({ event }) => {
   if (!food) return { success: true }
 
   const writes: Record<string, unknown> = { [`communityFoods/${communityFoodKey}`]: null }
-  queueCommunityFoodCommentRemoval(communityFoodKey, writes)
+  await queueThreadRemoval(writes, 'food', communityFoodKey, food.contributorId)
 
   // Only a pointer that both records agree on is followed, and only to an own
   // food that exists.
