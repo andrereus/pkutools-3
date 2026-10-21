@@ -343,8 +343,7 @@ describe('unsharing an own food', () => {
       changedFields: ['phe']
     }
     fake.data['commenter-1'] = {
-      communityThreads: { foods: { community1: { lastOtherCommentAt: 0 } } },
-      communityReads: { foods: { community1: 150 } }
+      readState: { foods: { community1: { lastReadAt: 150, lastOtherCommentAt: 0 } } }
     }
     await updateOwnFood(request({ shared: false }))
 

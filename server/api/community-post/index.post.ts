@@ -3,6 +3,7 @@ import { CommunityPostSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { MAX_COMMUNITY_POSTS_PER_DAY } from '../../utils/community-post'
+import { readStatePath } from '../../utils/community-thread'
 import { languageCreatedAtKey } from '../../../shared/utils/community-post'
 
 const DAY_MS = 24 * 60 * 60 * 1000
@@ -47,18 +48,23 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  const postRef = db.ref('communityPosts').push()
-  await postRef.set({
-    authorId: userId,
-    text: post,
-    language: locale,
-    createdAt: now,
-    updatedAt: now,
-    // News asks for posts by language and time together.
-    languageCreatedAt: languageCreatedAtKey(locale, now),
-    likes: 0,
-    commentCount: 0
+  const newPostId = db.ref('communityPosts').push().key as string
+  // The post and its author's read state start together, so comments reach the
+  // author the way they reach anyone else in the conversation.
+  await db.ref().update({
+    [`communityPosts/${newPostId}`]: {
+      authorId: userId,
+      text: post,
+      language: locale,
+      createdAt: now,
+      updatedAt: now,
+      // News asks for posts by language and time together.
+      languageCreatedAt: languageCreatedAtKey(locale, now),
+      likes: 0,
+      commentCount: 0
+    },
+    [readStatePath(userId, 'post', newPostId)]: { lastReadAt: now, lastOtherCommentAt: 0 }
   })
 
-  return { success: true, key: postRef.key }
+  return { success: true, key: newPostId }
 })

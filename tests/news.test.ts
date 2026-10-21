@@ -230,11 +230,13 @@ describe('contributor feedback notices', () => {
     expect(communityFoodNotices([commented], 'owner-1')[0]).toMatchObject({
       pendingCommentAt: 300
     })
-    const [notice] = communityFoodNotices([commented], 'owner-1', { food1: 400 })
+    const [notice] = communityFoodNotices([commented], 'owner-1', { food1: { lastReadAt: 400 } })
     expect(notice).not.toHaveProperty('pendingCommentAt')
     expect(notice).toMatchObject({ hasNegativeFeedback: true })
     expect(
-      communityFoodNotices([{ ...commented, dislikes: 2 }], 'owner-1', { food1: 400 })
+      communityFoodNotices([{ ...commented, dislikes: 2 }], 'owner-1', {
+        food1: { lastReadAt: 400 }
+      })
     ).toEqual([])
   })
 
@@ -617,12 +619,12 @@ describe('notices for conversations the reader joined', () => {
     lastAuthorCommentAt: 400
   }
 
-  const joined = { posts: { post1: { lastOtherCommentAt: 400 } } }
+  const threadsAt = (readAt: number) => ({
+    posts: { post1: { lastReadAt: readAt, lastOtherCommentAt: 400 } }
+  })
 
   it('reports a comment by someone else after the reader last read the thread', () => {
-    expect(
-      communityThreadNotices([], [post], 'reader-1', joined, { posts: { post1: 300 } })
-    ).toEqual([
+    expect(communityThreadNotices([], [post], 'reader-1', threadsAt(300))).toEqual([
       {
         key: 'thread-post-post1',
         postKey: 'post1',
@@ -634,10 +636,8 @@ describe('notices for conversations the reader joined', () => {
   })
 
   it('stays quiet once the thread was opened, for threads not joined and for the owner', () => {
-    expect(
-      communityThreadNotices([], [post], 'reader-1', joined, { posts: { post1: 500 } })
-    ).toEqual([])
-    expect(communityThreadNotices([], [post], 'reader-1', {}, undefined)).toEqual([])
-    expect(communityThreadNotices([], [post], 'author-1', joined)).toEqual([])
+    expect(communityThreadNotices([], [post], 'reader-1', threadsAt(500))).toEqual([])
+    expect(communityThreadNotices([], [post], 'reader-1', {})).toEqual([])
+    expect(communityThreadNotices([], [post], 'author-1', threadsAt(300))).toEqual([])
   })
 })

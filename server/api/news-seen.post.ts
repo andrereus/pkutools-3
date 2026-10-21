@@ -11,7 +11,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   const lastReadAt =
     seen.lastReadAt === undefined ? undefined : Math.min(seen.lastReadAt, Date.now())
   const { lastSeenRevision } = seen
-  const seenRef = getAdminDatabase().ref(`${userId}/newsSeen`)
+  const seenRef = getAdminDatabase().ref(`${userId}/readState/news`)
   const stored = ((await seenRef.once('value')).val() ?? {}) as Record<string, unknown>
 
   const isLater = (next: number | undefined, current: unknown): next is number =>

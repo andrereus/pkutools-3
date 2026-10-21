@@ -17,7 +17,6 @@ beforeEach(() => {
     user: { id: 'reader' },
     communityFoods: [],
     communityPosts: [],
-    ownCommunityPosts: [],
     followedCommunityPosts: {},
     setFeedQuery: () => {},
     pheDiary: []

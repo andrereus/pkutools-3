@@ -2,9 +2,10 @@ import { getAdminDatabase } from '../utils/firebase-admin'
 import { CommunityReadSchema } from '../types/schemas'
 import { defineAuthedHandler } from '../utils/handler'
 import { validateBody } from '../utils/validation'
+import { readStatePath } from '../utils/community-thread'
 
 // The owner of a food or post, or someone who commented on it, opened its
-// comments. Kept in their private data, so a comment read on one device no
+// comments. Kept in their read state, so a comment read on one device no
 // longer shows as a notification on another.
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { target, key } = await validateBody(event, CommunityReadSchema)
@@ -17,9 +18,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
 
   if (!record) return { success: true }
   const ownerId = target === 'food' ? record.contributorId : record.authorId
-  const joined =
-    ownerId === userId ||
-    (await db.ref(`${userId}/communityThreads/${target}s/${key}`).once('value')).exists()
+  const entryRef = db.ref(readStatePath(userId, target, key))
+  const joined = ownerId === userId || (await entryRef.once('value')).exists()
   if (!joined) {
     throw createError({
       statusCode: 403,
@@ -28,6 +28,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  await db.ref(`${userId}/communityReads/${target}s/${key}`).set(Date.now())
+  await entryRef.update({ lastReadAt: Date.now() })
   return { success: true }
 })

@@ -30,7 +30,7 @@ const likeCount = computed(() => countOf(props.post.likes))
 const commentCount = computed(() => countOf(props.post.commentCount))
 const visibleCommentCount = computed(() => (commentCount.value > 99 ? '99+' : commentCount.value))
 const liked = computed(
-  () => !!props.currentUserId && props.post.likerIds?.[props.currentUserId] === true
+  () => !!props.currentUserId && props.post.likedBy?.[props.currentUserId] === true
 )
 const commentButtonLabel = computed(() =>
   commentCount.value > 0

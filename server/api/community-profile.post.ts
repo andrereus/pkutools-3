@@ -5,15 +5,15 @@ import { validateBody } from '../utils/validation'
 import { communityNameKey, isNameKeyTaken, isReservedNameKey } from '../utils/community-name'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
-  const { nickname } = await validateBody(event, CommunityProfileSchema)
+  const { communityName } = await validateBody(event, CommunityProfileSchema)
   const profileRef = getAdminDatabase().ref(`communityProfiles/${userId}`)
 
-  if (nickname === null) {
+  if (communityName === null) {
     await profileRef.remove()
-    return { success: true, nickname: null }
+    return { success: true, communityName: null }
   }
 
-  const nameKey = communityNameKey(nickname)
+  const nameKey = communityNameKey(communityName)
   if (isReservedNameKey(nameKey)) {
     throw createError({
       statusCode: 400,
@@ -29,6 +29,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  await profileRef.set({ nickname, nameKey, updatedAt: Date.now() })
-  return { success: true, nickname }
+  await profileRef.set({ communityName, updatedAt: Date.now() })
+  return { success: true, communityName }
 })

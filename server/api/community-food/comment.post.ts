@@ -4,7 +4,11 @@ import { CommunityFoodCommentSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { MAX_COMMUNITY_FOOD_COMMENTS } from '../../utils/community-food-comment'
-import { assertVisibleTo, queueThreadParticipants } from '../../utils/community-thread'
+import {
+  assertVisibleTo,
+  readStatePath,
+  queueThreadParticipants
+} from '../../utils/community-thread'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { communityFoodKey, commentId, comment } = await validateBody(
@@ -80,7 +84,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     [`communityFoods/${communityFoodKey}/commentCount`]: ServerValue.increment(1),
     [`communityFoods/${communityFoodKey}/${storedFood.contributorId === userId ? 'lastContributorCommentAt' : 'lastCommunityCommentAt'}`]:
       now,
-    [`${userId}/communityReads/foods/${communityFoodKey}`]: now
+    [`${readStatePath(userId, 'food', communityFoodKey)}/lastReadAt`]: now
   }
   await queueThreadParticipants(
     writes,

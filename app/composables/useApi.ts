@@ -397,9 +397,9 @@ export const useApi = () => {
 
   // Null removes the name.
   const saveCommunityName = (
-    nickname: string | null
-  ): Promise<{ success: boolean; nickname: string | null }> =>
-    request('/api/community-profile', 'Save community name', 'POST', { nickname })
+    communityName: string | null
+  ): Promise<{ success: boolean; communityName: string | null }> =>
+    request('/api/community-profile', 'Save community name', 'POST', { communityName })
 
   // ============================================================================
   // Admin Operations

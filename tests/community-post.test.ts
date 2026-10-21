@@ -90,11 +90,11 @@ describe('community posts', () => {
   it('likes once, ignores a repeat and unlikes', async () => {
     await likePost(requestEvent({ postId: 'post1', liked: true }))
     await likePost(requestEvent({ postId: 'post1', liked: true }))
-    expect(posts().post1).toMatchObject({ likes: 1, likerIds: { 'reader-1': true } })
+    expect(posts().post1).toMatchObject({ likes: 1, likedBy: { 'reader-1': true } })
 
     await likePost(requestEvent({ postId: 'post1', liked: false }))
     expect(posts().post1!.likes).toBe(0)
-    expect(posts().post1).not.toHaveProperty('likerIds')
+    expect(posts().post1).not.toHaveProperty('likedBy')
   })
 
   it('does not let the author like their own post', async () => {
@@ -142,7 +142,7 @@ describe('community posts', () => {
     await saveComment(requestEvent({ postId: 'post1', comment: 'Thanks' }))
     currentUser = 'author-1'
     await createPost(requestEvent({ post: 'Second post', locale: 'en' }))
-    await saveName(requestEvent({ nickname: 'Anna' }))
+    await saveName(requestEvent({ communityName: 'Anna' }))
     posts().post1!.hiddenAt = 500
 
     fake.data.admins = { 'author-1': true }
@@ -158,10 +158,10 @@ describe('community posts', () => {
   it('removes the account’s comments on other posts, hidden ones too, and keeps likes', async () => {
     fake = createFakeDatabase({
       'reader-1': {
-        communityThreads: {
+        readState: {
           posts: {
-            post1: { lastOtherCommentAt: 250 },
-            post2: { lastOtherCommentAt: 0 }
+            post1: { lastReadAt: 350, lastOtherCommentAt: 250 },
+            post2: { lastReadAt: 200, lastOtherCommentAt: 0 }
           }
         }
       },
@@ -171,7 +171,7 @@ describe('community posts', () => {
           text: 'Hello',
           createdAt: 100,
           likes: 1,
-          likerIds: { 'reader-1': true },
+          likedBy: { 'reader-1': true },
           commentCount: 3,
           hiddenCommentCount: 1,
           lastCommunityCommentAt: 300,
@@ -201,7 +201,7 @@ describe('community posts', () => {
       hiddenCommentCount: 0,
       lastAuthorCommentAt: 250,
       likes: 1,
-      likerIds: { 'reader-1': true }
+      likedBy: { 'reader-1': true }
     })
     expect(posts().post1).not.toHaveProperty('lastCommunityCommentAt')
     expect(fake.data['reader-1']).toBeUndefined()
@@ -209,34 +209,34 @@ describe('community posts', () => {
 })
 
 describe('community names', () => {
-  it('stores a tidied name with its comparison form, and removes it', async () => {
-    await saveName(requestEvent({ nickname: '  Anna   Lena  ' }))
+  it('stores a tidied name, and removes it', async () => {
+    await saveName(requestEvent({ communityName: '  Anna   Lena  ' }))
     expect(fake.data.communityProfiles).toEqual({
-      'reader-1': { nickname: 'Anna Lena', nameKey: 'annalena', updatedAt: expect.any(Number) }
+      'reader-1': { communityName: 'Anna Lena', updatedAt: expect.any(Number) }
     })
 
-    await saveName(requestEvent({ nickname: null }))
+    await saveName(requestEvent({ communityName: null }))
     expect(fake.data.communityProfiles).toBeUndefined()
   })
 
   it('frees a name once its account changes it', async () => {
-    await saveName(requestEvent({ nickname: 'Anna' }))
-    await saveName(requestEvent({ nickname: 'Bob' }))
+    await saveName(requestEvent({ communityName: 'Anna' }))
+    await saveName(requestEvent({ communityName: 'Bob' }))
 
     currentUser = 'author-1'
-    await saveName(requestEvent({ nickname: 'Anna' }))
+    await saveName(requestEvent({ communityName: 'Anna' }))
     expect(fake.data.communityProfiles).toMatchObject({
-      'reader-1': { nickname: 'Bob' },
-      'author-1': { nickname: 'Anna' }
+      'reader-1': { communityName: 'Bob' },
+      'author-1': { communityName: 'Anna' }
     })
   })
 
   it('keeps a name to one account, whatever its case, spacing or punctuation', async () => {
-    await saveName(requestEvent({ nickname: 'Anna' }))
+    await saveName(requestEvent({ communityName: 'Anna' }))
 
     currentUser = 'author-1'
-    for (const nickname of ['anna', 'A n n a', 'Anna!', 'ＡＮＮＡ']) {
-      await expect(saveName(requestEvent({ nickname }))).rejects.toMatchObject({
+    for (const communityName of ['anna', 'A n n a', 'Anna!', 'ＡＮＮＡ']) {
+      await expect(saveName(requestEvent({ communityName }))).rejects.toMatchObject({
         statusCode: 409,
         data: { code: 'community-name-taken' }
       })
@@ -245,7 +245,7 @@ describe('community names', () => {
   })
 
   it('refuses names that pass for the app, are too short or carry invisible characters', async () => {
-    for (const nickname of [
+    for (const communityName of [
       'PKU Tools',
       'pku-tools team',
       'Admin',
@@ -254,7 +254,9 @@ describe('community names', () => {
       'An\u200Bna',
       'Anna\u202E'
     ]) {
-      await expect(saveName(requestEvent({ nickname }))).rejects.toMatchObject({ statusCode: 400 })
+      await expect(saveName(requestEvent({ communityName }))).rejects.toMatchObject({
+        statusCode: 400
+      })
     }
     expect(fake.data.communityProfiles).toBeUndefined()
   })
@@ -270,7 +272,7 @@ describe('reading comments', () => {
     currentUser = 'author-1'
     await markRead(requestEvent({ target: 'post', key: 'post1' }))
     expect(fake.data['author-1']).toEqual({
-      communityReads: { posts: { post1: expect.any(Number) } }
+      readState: { posts: { post1: { lastReadAt: expect.any(Number) } } }
     })
 
     await deletePost(requestEvent({ postId: 'post1' }))
@@ -283,13 +285,12 @@ describe('conversations a commenter joined', () => {
     await saveComment(requestEvent({ postId: 'post1', comment: 'Try the plain ones' }))
     // Writing it counts as reading the thread.
     expect(fake.data['reader-1']).toEqual({
-      communityThreads: { posts: { post1: { lastOtherCommentAt: 0 } } },
-      communityReads: { posts: { post1: expect.any(Number) } }
+      readState: { posts: { post1: { lastReadAt: expect.any(Number), lastOtherCommentAt: 0 } } }
     })
 
     await markRead(requestEvent({ target: 'post', key: 'post1' }))
-    expect(fake.data['reader-1']).toMatchObject({
-      communityReads: { posts: { post1: expect.any(Number) } }
+    expect(fake.data['reader-1']).toEqual({
+      readState: { posts: { post1: { lastReadAt: expect.any(Number), lastOtherCommentAt: 0 } } }
     })
   })
 
@@ -300,9 +301,8 @@ describe('conversations a commenter joined', () => {
     const [first, second] = Object.keys(thread('post1'))
 
     await deleteComment(requestEvent({ postId: 'post1', commentId: first }))
-    expect(fake.data['reader-1']).toMatchObject({
-      communityThreads: { posts: { post1: { lastOtherCommentAt: 0 } } },
-      communityReads: { posts: { post1: expect.any(Number) } }
+    expect(fake.data['reader-1']).toEqual({
+      readState: { posts: { post1: { lastReadAt: expect.any(Number), lastOtherCommentAt: 0 } } }
     })
 
     await deleteComment(requestEvent({ postId: 'post1', commentId: second }))
@@ -320,25 +320,35 @@ describe('conversations a commenter joined', () => {
 
     const createdAt = (authorId: string) =>
       Object.values(thread('post1')).find((comment) => comment.authorId === authorId)!.createdAt
-    const entryOf = (userId: string) =>
-      (fake.data[userId] as { communityThreads: { posts: Record<string, unknown> } })
-        .communityThreads.posts.post1
-    expect(entryOf('reader-1')).toEqual({ lastOtherCommentAt: createdAt('reader-2') })
-    expect(entryOf('reader-2')).toEqual({ lastOtherCommentAt: createdAt('reader-1') })
+    const lastOtherCommentAt = (userId: string) =>
+      (
+        fake.data[userId] as {
+          readState: { posts: Record<string, { lastOtherCommentAt: number }> }
+        }
+      ).readState.posts.post1!.lastOtherCommentAt
+    expect(lastOtherCommentAt('reader-1')).toBe(createdAt('reader-2'))
+    expect(lastOtherCommentAt('reader-2')).toBe(createdAt('reader-1'))
     expect(fake.data['gone-1']).toBeUndefined()
 
     const [secondId] = Object.entries(thread('post1')).find(
       ([, comment]) => comment.authorId === 'reader-2'
     )!
     await deleteComment(requestEvent({ postId: 'post1', commentId: secondId }))
-    expect(entryOf('reader-1')).toEqual({ lastOtherCommentAt: 50 })
+    expect(lastOtherCommentAt('reader-1')).toBe(50)
   })
 
-  it('records the author’s own thread as read, not as joined', async () => {
+  it('tells a post’s author about comments the same way, from the post’s start', async () => {
     currentUser = 'author-1'
-    await saveComment(requestEvent({ postId: 'post1', comment: 'Thanks!' }))
-    expect(fake.data['author-1']).toEqual({
-      communityReads: { posts: { post1: expect.any(Number) } }
-    })
+    const { key } = await createPost(requestEvent({ post: 'Any tips?', locale: 'en' }))
+    const entry = () =>
+      (fake.data['author-1'] as { readState: { posts: Record<string, unknown> } }).readState.posts[
+        key as string
+      ]
+    expect(entry()).toEqual({ lastReadAt: expect.any(Number), lastOtherCommentAt: 0 })
+
+    currentUser = 'reader-1'
+    await saveComment(requestEvent({ postId: key, comment: 'Try the plain ones' }))
+    const [reply] = Object.values(thread(key as string))
+    expect(entry()).toMatchObject({ lastOtherCommentAt: reply!.createdAt })
   })
 })

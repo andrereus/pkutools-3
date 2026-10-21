@@ -16,7 +16,6 @@ import {
   query,
   orderByChild,
   limitToLast,
-  equalTo,
   startAt,
   endAt
 } from 'firebase/database'
@@ -42,9 +41,9 @@ const without = (record, key) =>
 
 const timestamp = (value) => (Number.isSafeInteger(value) && value > 0 ? value : 0)
 
-// Whether someone else commented in a conversation since the reader last read
-// it: opened its comments or wrote one there.
-const hasNewComment = (entry, readAt) => timestamp(entry?.lastOtherCommentAt) > timestamp(readAt)
+// Whether someone else commented in a thread since the reader last read it:
+// opened its comments or wrote one there.
+const hasNewComment = (entry) => timestamp(entry?.lastOtherCommentAt) > timestamp(entry?.lastReadAt)
 
 const defaultSettings = {
   maxPhe: null,
@@ -99,26 +98,26 @@ export const useStore = defineStore('main', {
     feedQuery: { language: null, limit: FEED_POSTS_PAGE },
     // False while the feed waits for the snapshot of its current query.
     feedLoaded: false,
-    // The reader's own posts, and single posts followed whatever their age:
-    // those they commented on where someone else wrote since, and the one the
+    // Single posts followed whatever their age: the reader's own and those
+    // they commented on, where someone else wrote since, and the one the
     // current link points to. Notifications and links always find their post
     // this way.
-    ownCommunityPosts: [],
     followedCommunityPosts: {},
     linkedPostId: null,
     // Opt-in community names by user ID, shown on posts and comments.
     communityNames: {},
-    // When the reader last read the comments of a food or post, by opening
-    // them or writing one, by key, so a read comment no longer counts as a
-    // notification.
-    communityReads: { foods: {}, posts: {} },
-    communityReadsLoaded: false,
-    // Others' foods and posts the reader commented on, with the newest comment
-    // there by someone else, kept by the server. Compared with the read time,
-    // the app sees where something is new without loading every thread.
-    communityThreads: { foods: {}, posts: {} },
-    // What the account has seen in News, for the blue dots and the bell.
-    newsSeen: { loaded: false, lastReadAt: null, lastSeenRevision: null },
+    // What the account has seen. `news` is its last News visit and newest app
+    // update seen, for the blue dots and the bell. `foods` and `posts` hold a
+    // read state per thread, by key: `lastReadAt`, when it last opened the
+    // comments or wrote one, and on others' content it commented on,
+    // `lastOtherCommentAt`, kept by the server. Together they show where
+    // something is new without loading every thread.
+    readState: {
+      loaded: false,
+      news: { lastReadAt: null, lastSeenRevision: null },
+      foods: {},
+      posts: {}
+    },
     // Accounts whose posts and comments show as PKU Tools, by user ID.
     adminIds: {},
     // Only decides whether admin pages are offered; the server checks again.
@@ -284,13 +283,6 @@ export const useStore = defineStore('main', {
 
       this.bindFeedPosts(db)
 
-      this.unsubscribeFunctions['ownCommunityPosts'] = onValue(
-        query(ref(db, 'communityPosts'), orderByChild('authorId'), equalTo(userId)),
-        (snapshot) => {
-          this.ownCommunityPosts = toList(snapshot.val())
-        }
-      )
-
       this.unsubscribeFunctions['communityProfiles'] = onValue(
         ref(db, 'communityProfiles'),
         (snapshot) => {
@@ -298,58 +290,34 @@ export const useStore = defineStore('main', {
           this.communityNames = Object.fromEntries(
             Object.entries(data && typeof data === 'object' ? data : {}).flatMap(
               ([userId, profile]) =>
-                typeof profile?.nickname === 'string' && profile.nickname.trim()
-                  ? [[userId, profile.nickname]]
+                typeof profile?.communityName === 'string' && profile.communityName.trim()
+                  ? [[userId, profile.communityName]]
                   : []
             )
           )
         }
       )
 
-      this.unsubscribeFunctions['communityReads'] = onValue(
-        ref(db, `${userId}/communityReads`),
-        (snapshot) => {
-          const data = snapshot.val()
-          this.communityReads = {
-            foods: data?.foods && typeof data.foods === 'object' ? data.foods : {},
-            posts: data?.posts && typeof data.posts === 'object' ? data.posts : {}
-          }
-          this.communityReadsLoaded = true
-          this.syncFollowedPosts(db)
-        },
-        () => {
-          // Without read times, replies on followed posts count as new.
-          this.communityReadsLoaded = true
-          this.syncFollowedPosts(db)
-        }
-      )
-
-      this.unsubscribeFunctions['communityThreads'] = onValue(
-        ref(db, `${userId}/communityThreads`),
-        (snapshot) => {
-          const data = snapshot.val()
-          this.communityThreads = {
-            foods: data?.foods && typeof data.foods === 'object' ? data.foods : {},
-            posts: data?.posts && typeof data.posts === 'object' ? data.posts : {}
-          }
-          this.syncFollowedPosts(db)
-        }
-      )
-
       const marker = (value) => (Number.isSafeInteger(value) && value > 0 ? value : null)
-      this.unsubscribeFunctions['newsSeen'] = onValue(
-        ref(db, `${userId}/newsSeen`),
+      const recordOf = (value) => (value && typeof value === 'object' ? value : {})
+      this.unsubscribeFunctions['readState'] = onValue(
+        ref(db, `${userId}/readState`),
         (snapshot) => {
           const data = snapshot.val()
-          this.newsSeen = {
+          this.readState = {
             loaded: true,
-            lastReadAt: marker(data?.lastReadAt),
-            lastSeenRevision: marker(data?.lastSeenRevision)
+            news: {
+              lastReadAt: marker(data?.news?.lastReadAt),
+              lastSeenRevision: marker(data?.news?.lastSeenRevision)
+            },
+            foods: recordOf(data?.foods),
+            posts: recordOf(data?.posts)
           }
+          this.syncFollowedPosts(db)
         },
         () => {
-          // The browser's marker stands in, as for a signed-out visitor.
-          this.newsSeen = { loaded: true, lastReadAt: null, lastSeenRevision: null }
+          // The browser's News marker stands in, as for a signed-out visitor.
+          this.readState = { ...this.readState, loaded: true }
         }
       )
 
@@ -415,24 +383,19 @@ export const useStore = defineStore('main', {
       this.linkedPostId = postId
       this.syncFollowedPosts()
     },
-    // One listener per followed post: those the reader commented on where
-    // someone else wrote since, and the one a link asked for. A followed post
+    // One listener per followed post: the reader's own and those they
+    // commented on, where someone else wrote since, and the one a link asked
+    // for. A followed post
     // stays for the session once its comments are read, so its card does not
     // disappear while open; the next start leaves it out.
     syncFollowedPosts(db) {
       if (!this.user) return
       db ??= getDatabase()
-      const joined = Object.keys(this.communityThreads.posts).filter((postId) =>
-        DATABASE_KEY.test(postId)
-      )
+      const threads = this.readState.posts
+      const known = Object.keys(threads).filter((postId) => DATABASE_KEY.test(postId))
       const linked = this.linkedPostId ? [this.linkedPostId] : []
-      // Until the read times are in, every reply would look new.
-      const pending = this.communityReadsLoaded
-        ? joined.filter((postId) =>
-            hasNewComment(this.communityThreads.posts[postId], this.communityReads.posts[postId])
-          )
-        : []
-      const kept = new Set([...joined, ...linked])
+      const pending = known.filter((postId) => hasNewComment(threads[postId]))
+      const kept = new Set([...known, ...linked])
       for (const name of Object.keys(this.unsubscribeFunctions)) {
         if (!name.startsWith(FOLLOWED_POST_LISTENER)) continue
         const postId = name.slice(FOLLOWED_POST_LISTENER.length)
@@ -463,15 +426,16 @@ export const useStore = defineStore('main', {
       this.ownFood = []
       this.communityFoods = []
       this.communityPosts = []
-      this.ownCommunityPosts = []
       this.followedCommunityPosts = {}
       this.linkedPostId = null
       this.feedLoaded = false
       this.communityNames = {}
-      this.communityReads = { foods: {}, posts: {} }
-      this.communityReadsLoaded = false
-      this.communityThreads = { foods: {}, posts: {} }
-      this.newsSeen = { loaded: false, lastReadAt: null, lastSeenRevision: null }
+      this.readState = {
+        loaded: false,
+        news: { lastReadAt: null, lastSeenRevision: null },
+        foods: {},
+        posts: {}
+      }
       this.adminIds = {}
       this.isAdmin = null
       this.settings = { ...defaultSettings }

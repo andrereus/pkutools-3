@@ -34,12 +34,13 @@ export const useNewsSeen = () => {
 
   // The store is plain JavaScript, so its fields are narrowed here.
   const userId = computed(() => (store.user as { id?: string } | null)?.id ?? null)
-  const account = computed(
-    () => store.newsSeen as { loaded: boolean } & Record<Field, number | null>
+  const readState = computed(
+    () => store.readState as { loaded: boolean; news: Record<Field, number | null> }
   )
+  const account = computed(() => readState.value.news)
 
   // Signed in, the account's positions must have loaded too, so no dot flashes.
-  const ready = computed(() => localReady.value && (!userId.value || account.value.loaded))
+  const ready = computed(() => localReady.value && (!userId.value || readState.value.loaded))
   const lastReadAt = computed(() =>
     userId.value ? (account.value.lastReadAt ?? localReadAt.value) : localReadAt.value
   )
@@ -68,7 +69,7 @@ export const useNewsSeen = () => {
   }
 
   const sendToAccount = (field: Field, marker: number) => {
-    if (!userId.value || !account.value.loaded) return
+    if (!userId.value || !readState.value.loaded) return
     if (requested.userId !== userId.value) {
       Object.assign(requested, { userId: userId.value, lastReadAt: 0, lastSeenRevision: 0 })
     }

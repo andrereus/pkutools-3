@@ -1,7 +1,6 @@
 import { getAdminDatabase } from './firebase-admin'
 
-// Community names are unique. Each profile stores its name's comparison form
-// as `nameKey`, so a name in use is found with one indexed query.
+// Community names are unique: no two accounts hold names with the same key.
 
 /** The form two names are compared in: case, spaces and punctuation do not count. */
 export const communityNameKey = (name: string): string =>
@@ -16,14 +15,18 @@ const RESERVED_KEYS = ['admin', 'administrator', 'moderator']
 export const isReservedNameKey = (key: string): boolean =>
   key.includes('pkutools') || RESERVED_KEYS.includes(key)
 
-/** Whether another account already uses a name with this key. */
+/**
+ * Whether another account already uses a name with this key. Keys are worked
+ * out from the stored names each time, so a stricter comparison applies to
+ * every existing name at once.
+ */
 export async function isNameKeyTaken(userId: string, key: string): Promise<boolean> {
-  const holders = (
-    await getAdminDatabase()
-      .ref('communityProfiles')
-      .orderByChild('nameKey')
-      .equalTo(key)
-      .once('value')
-  ).val() as Record<string, unknown> | null
-  return Object.keys(holders ?? {}).some((holderId) => holderId !== userId)
+  const profiles = ((await getAdminDatabase().ref('communityProfiles').once('value')).val() ??
+    {}) as Record<string, { communityName?: unknown } | null>
+  return Object.entries(profiles).some(
+    ([holderId, profile]) =>
+      holderId !== userId &&
+      typeof profile?.communityName === 'string' &&
+      communityNameKey(profile.communityName) === key
+  )
 }

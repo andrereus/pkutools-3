@@ -12,19 +12,22 @@ export const useCommentsRead = (target: 'food' | 'post', key: string) => {
   let requestedFor = 0
 
   const entryOf = (source: unknown) =>
-    (source as Record<string, Record<string, unknown>>)?.[`${target}s`]?.[key]
+    (source as Record<string, Record<string, Record<string, unknown> | undefined>>)?.[
+      `${target}s`
+    ]?.[key]
   const timeOf = (value: unknown) => (typeof value === 'number' ? value : 0)
 
   // The owner and those who joined the conversation, decided as the server
-  // decides it: by the joined entry, not by the comments on screen.
+  // decides it: by the read state, not by the comments on screen.
   const markRead = (
     comments: readonly { type?: string; authorId?: string; createdAt: number }[],
     readerId: string,
     ownerId: string | null | undefined
   ) => {
-    if (ownerId !== readerId && !entryOf(store.communityThreads)) return
+    const entry = entryOf(store.readState)
+    if (ownerId !== readerId && !entry) return
     // The last opening, or the reader's own last comment there.
-    const readAt = timeOf(entryOf(store.communityReads))
+    const readAt = timeOf(entry?.lastReadAt)
     const latest = Math.max(
       0,
       ...comments

@@ -252,7 +252,7 @@ export const NewsSeenSchema = z
 // removes it. Control and invisible formatting characters are refused, since
 // they can make one name look like another.
 export const CommunityProfileSchema = z.object({
-  nickname: z
+  communityName: z
     .string()
     .transform((value) => value.normalize('NFKC').replace(/\s+/g, ' ').trim())
     .pipe(

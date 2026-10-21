@@ -40,7 +40,7 @@ beforeEach(() => {
     'user-1': {
       ownFood: { own1: { name: 'Rice cake', shared: true, communityKey: 'food1' } }
     },
-    'user-2': { communityThreads: { foods: { food1: { lastOtherCommentAt: 0 } } } },
+    'user-2': { readState: { foods: { food1: { lastReadAt: 100, lastOtherCommentAt: 0 } } } },
     communityFoods: {
       food1: {
         name: 'Rice cake',
@@ -61,7 +61,9 @@ beforeEach(() => {
       post1: { authorId: 'user-2', text: 'Spam', language: 'en', createdAt: 100, likes: 0 }
     },
     communityPostComments: { post1: { c1: { authorId: 'user-1', text: 'Hi', createdAt: 200 } } },
-    communityProfiles: { 'user-2': { nickname: 'Spammer', nameKey: 'spammer', updatedAt: 100 } }
+    communityProfiles: {
+      'user-2': { communityName: 'Spammer', updatedAt: 100 }
+    }
   })
 })
 

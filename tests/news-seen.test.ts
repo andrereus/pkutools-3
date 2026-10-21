@@ -22,7 +22,9 @@ describe('news seen', () => {
   it('only ever moves the account’s positions forward', async () => {
     await saveSeen(requestEvent({ lastReadAt: 200, lastSeenRevision: 5 }))
     await saveSeen(requestEvent({ lastReadAt: 100, lastSeenRevision: 7 }))
-    expect(fake.data['user-1']).toEqual({ newsSeen: { lastReadAt: 200, lastSeenRevision: 7 } })
+    expect(fake.data['user-1']).toEqual({
+      readState: { news: { lastReadAt: 200, lastSeenRevision: 7 } }
+    })
   })
 
   it('rejects a request without a position', async () => {

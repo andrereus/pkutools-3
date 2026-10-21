@@ -13,6 +13,16 @@ type Thread = Record<string, unknown>
 const isAccountId = (value: unknown): value is string =>
   typeof value === 'string' && /^[^.#$[\]/]{1,128}$/.test(value)
 
+/**
+ * An account's read state for one food or post thread, in its private data. It
+ * holds `lastReadAt`, and `lastOtherCommentAt` on the account's own posts, from
+ * the moment they are written, and on someone else's food or post, where it
+ * exists only while the account has a comment there. On the account's own
+ * foods it holds `lastReadAt` only; their comments are seen from the food.
+ */
+export const readStatePath = (userId: string, target: ThreadTarget, key: string) =>
+  `${userId}/readState/${target}s/${key}`
+
 export const threadPaths = (target: ThreadTarget, key: string) =>
   target === 'food'
     ? { parent: `communityFoods/${key}`, thread: `communityFoodComments/${key}` }
@@ -81,18 +91,18 @@ export function queueThreadLeave(
     )
   })
   if (remains) return
-  writes[`${authorId}/communityThreads/${target}s/${key}`] = null
-  writes[`${authorId}/communityReads/${target}s/${key}`] = null
+  writes[readStatePath(authorId, target, key)] = null
 }
 
 /**
- * Rewrites the conversation entry of everyone who commented on someone else's
- * food or post: the newest comment there by someone else, 0 while there is
- * none. Compared with their read time, it tells their app where something is
- * new without loading the thread. Adds that to an existing atomic update, built
- * from `thread` without `excludedIds`. Only entries that exist are rewritten,
- * plus the one of `joiningId`, who is commenting now, so an account that is
- * gone never gets private data back.
+ * Sets `lastOtherCommentAt` in the read state of everyone in a thread: the
+ * newest comment there by someone else, 0 while there is none. Compared with
+ * their `lastReadAt`, it tells their app where something is new without loading
+ * the thread. Everyone means each commenter on someone else's food or post,
+ * and a post's author. Adds that to an existing atomic update, built from
+ * `thread` without `excludedIds`. Only entries that exist are written, plus the
+ * one of `joiningId`, who is commenting now, so an account that is gone never
+ * gets private data back.
  */
 export async function queueThreadParticipants(
   writes: Record<string, unknown>,
@@ -117,11 +127,12 @@ export async function queueThreadParticipants(
     return [{ authorId, createdAt, removed: Boolean(comment.hiddenAt) }]
   })
   const newest = (list: typeof comments) => Math.max(0, ...list.map((item) => item.createdAt))
-  const entryPath = (userId: string) => `${userId}/communityThreads/${target}s/${key}`
+  const entryPath = (userId: string) => readStatePath(userId, target, key)
 
   const participants = [...new Set(comments.map((item) => item.authorId))].filter(
     (userId) => userId !== ownerId
   )
+  if (target === 'post' && isAccountId(ownerId)) participants.push(ownerId)
   const db = getAdminDatabase()
   const present = await Promise.all(
     participants.map(
@@ -132,18 +143,16 @@ export async function queueThreadParticipants(
   participants.forEach((userId, index) => {
     if (!present[index]) return
     // A comment an admin removed notifies no one.
-    writes[entryPath(userId)] = {
-      lastOtherCommentAt: newest(
-        comments.filter((item) => item.authorId !== userId && !item.removed)
-      )
-    }
+    writes[`${entryPath(userId)}/lastOtherCommentAt`] = newest(
+      comments.filter((item) => item.authorId !== userId && !item.removed)
+    )
   })
 }
 
 /**
  * Deletes the whole thread of a food or post that is deleted or no longer
- * shared, and the conversation with it: the owner's read entry and every
- * commenter's joined and read entries. Adds that to an existing atomic update.
+ * shared, and with it the read state of its owner and of every commenter.
+ * Adds that to an existing atomic update.
  */
 export async function queueThreadRemoval(
   writes: Record<string, unknown>,
@@ -159,9 +168,7 @@ export async function queueThreadRemoval(
     participants.add((raw as Record<string, unknown> | null)?.authorId)
   }
   for (const userId of participants) {
-    if (!isAccountId(userId)) continue
-    writes[`${userId}/communityReads/${target}s/${key}`] = null
-    if (userId !== ownerId) writes[`${userId}/communityThreads/${target}s/${key}`] = null
+    if (isAccountId(userId)) writes[readStatePath(userId, target, key)] = null
   }
 }
 

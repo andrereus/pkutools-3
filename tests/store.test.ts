@@ -135,17 +135,15 @@ describe('store data binding', () => {
     const followed = () =>
       [...listeners.keys()].filter((path) => path.startsWith('communityPosts/')).sort()
 
-    emit('user-1/communityThreads', {
+    const own = { lastReadAt: 300 }
+    emit('user-1/readState', {
       posts: {
-        old: { lastOtherCommentAt: 200 },
-        quiet: { lastOtherCommentAt: 0 },
-        read: { lastOtherCommentAt: 300 }
+        old: { lastReadAt: 100, lastOtherCommentAt: 200 },
+        quiet: { lastReadAt: 300, lastOtherCommentAt: 0 },
+        read: { lastReadAt: 400, lastOtherCommentAt: 300 },
+        own
       }
     })
-    // Until the read times are in, nothing counts as new.
-    expect(followed()).toEqual([])
-
-    emit('user-1/communityReads', { posts: { read: 400 } })
     expect(followed()).toEqual(['communityPosts/old'])
     emit('communityPosts/old', { authorId: 'user-2', text: 'Old post' })
     expect(store.followedCommunityPosts).toEqual({
@@ -153,9 +151,11 @@ describe('store data binding', () => {
     })
 
     // Reading it keeps it for the session; leaving the conversation ends it.
-    emit('user-1/communityReads', { posts: { read: 400, old: 500 } })
+    emit('user-1/readState', {
+      posts: { old: { lastReadAt: 500, lastOtherCommentAt: 200 }, own }
+    })
     expect(unsubscribes.get('communityPosts/old')).not.toHaveBeenCalled()
-    emit('user-1/communityThreads', { posts: { quiet: { lastOtherCommentAt: 0 } } })
+    emit('user-1/readState', { posts: { own } })
     expect(unsubscribes.get('communityPosts/old')).toHaveBeenCalledTimes(1)
     expect(store.followedCommunityPosts).toEqual({})
   })
@@ -224,14 +224,11 @@ describe('store account switching', () => {
     expect([...firstRound.keys()].sort()).toEqual([
       'admins',
       'communityFoods',
-      'communityPosts|orderByChild=authorId|equalTo=user-1',
       'communityProfiles',
-      'user-1/communityReads',
-      'user-1/communityThreads',
       'user-1/labValues',
-      'user-1/newsSeen',
       'user-1/ownFood',
       'user-1/pheDiary',
+      'user-1/readState',
       'user-1/settings'
     ])
 

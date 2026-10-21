@@ -22,14 +22,14 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   }
   await assertVisibleTo(post, post.authorId, userId)
 
-  const likerIds = (post.likerIds ?? {}) as Record<string, unknown>
-  if ((likerIds[userId] === true) === liked) return { success: true, liked }
+  const likedBy = (post.likedBy ?? {}) as Record<string, unknown>
+  if ((likedBy[userId] === true) === liked) return { success: true, liked }
 
-  // The liker entry and the count change together, the count with a
+  // The like and the count change together, the count with a
   // server-side increment as for food votes, so people liking the same post at
   // once never wait for or overwrite each other.
   await postRef.update({
-    [`likerIds/${userId}`]: liked ? true : null,
+    [`likedBy/${userId}`]: liked ? true : null,
     likes: ServerValue.increment(liked ? 1 : -1)
   })
 

@@ -48,20 +48,22 @@ export interface Notice {
 
 /** Notices include their target language so foods remain reachable across locales. */
 /**
- * When the reader last opened the comments of each of their own foods or
- * posts, by key. A comment up to then has been read.
+ * The reader's read state for foods or for posts, by key. `lastReadAt` is when
+ * they last opened the comments or wrote one; a comment up to then has been
+ * read.
  */
-export type CommentReads = Record<string, unknown>
+export type ThreadReadStates = Record<string, unknown>
 
-const readAtOf = (reads: CommentReads | undefined, key: unknown): number => {
-  const value = typeof key === 'string' ? reads?.[key] : undefined
+const readAtOf = (threads: ThreadReadStates | undefined, key: unknown): number => {
+  const entry = typeof key === 'string' ? threads?.[key] : undefined
+  const value = (entry as { lastReadAt?: unknown } | null | undefined)?.lastReadAt
   return isNewsTimestamp(value) ? value : 0
 }
 
 export const communityFoodNotices = (
   foods: Food[],
   currentUserId?: string | null,
-  reads?: CommentReads
+  reads?: ThreadReadStates
 ): Notice[] => {
   if (!currentUserId) return []
   return foods.flatMap((food) => {
@@ -140,7 +142,7 @@ const postExcerpt = (text: string): string => {
 export const communityPostNotices = (
   posts: Post[],
   currentUserId?: string | null,
-  reads?: CommentReads
+  reads?: ThreadReadStates
 ): PostNotice[] => {
   if (!currentUserId) return []
   return posts.flatMap((post) => {
@@ -188,27 +190,21 @@ export interface ThreadNotice {
 }
 
 /**
- * The threads the reader joined, by key, with the newest comment there by
- * someone else, kept by the server.
+ * Notices for others' foods and posts the reader commented on: their read
+ * state there exists while they have a comment there.
  */
-export interface JoinedThreads {
-  foods?: Record<string, unknown>
-  posts?: Record<string, unknown>
-}
-
 export const communityThreadNotices = (
   foods: Food[],
   posts: Post[],
   currentUserId?: string | null,
-  joined?: JoinedThreads,
-  reads?: { foods?: CommentReads; posts?: CommentReads }
+  threads?: { foods?: ThreadReadStates; posts?: ThreadReadStates }
 ): ThreadNotice[] => {
   if (!currentUserId) return []
   const sources = [
-    { target: 'food', records: foods, joined: joined?.foods, reads: reads?.foods },
-    { target: 'post', records: posts, joined: joined?.posts, reads: reads?.posts }
+    { target: 'food', records: foods, threads: threads?.foods },
+    { target: 'post', records: posts, threads: threads?.posts }
   ] as const
-  return sources.flatMap(({ target, records, joined: joinedOfTarget, reads: readsOfTarget }) =>
+  return sources.flatMap(({ target, records, threads: threadsOfTarget }) =>
     records.flatMap((record) => {
       const key = record['.key']
       const language = record.language
@@ -216,8 +212,8 @@ export const communityThreadNotices = (
       if (
         typeof key !== 'string' ||
         !key ||
-        !joinedOfTarget ||
-        !(key in joinedOfTarget) ||
+        !threadsOfTarget ||
+        !(key in threadsOfTarget) ||
         (target === 'food' ? record.contributorId : record.authorId) === currentUserId ||
         typeof name !== 'string' ||
         typeof language !== 'string' ||
@@ -234,7 +230,7 @@ export const communityThreadNotices = (
         isNewsTimestamp(record.lastCommunityCommentAt) ? record.lastCommunityCommentAt : 0,
         isNewsTimestamp(ownerLast) ? ownerLast : 0
       )
-      const settled = readAtOf(readsOfTarget, key)
+      const settled = readAtOf(threadsOfTarget, key)
       if (latest <= settled) return []
       return [
         {
@@ -301,14 +297,13 @@ export const useNewsContext = (options: { extraPosts?: Ref<Post[]> } = {}) => {
       isVisibleTo(food, food.contributorId, reader.value)
     )
   )
-  // The feed's newest posts, plus the reader's own and the followed ones
-  // whatever their age, so a notification or a link always has its post, plus
-  // any the consumer loads itself, such as one diary day's.
+  // The feed's newest posts, plus the followed ones whatever their age, so a
+  // notification or a link always has its post, plus any the consumer loads
+  // itself, such as one diary day's.
   const posts = computed(() => {
     const byKey = new Map<unknown, Post>()
     for (const post of [
       ...(store.communityPosts as Post[]),
-      ...(store.ownCommunityPosts as Post[]),
       ...Object.values(store.followedCommunityPosts as Record<string, Post>),
       ...(options.extraPosts?.value ?? [])
     ]) {
@@ -399,22 +394,17 @@ export const useNewsContext = (options: { extraPosts?: Ref<Post[]> } = {}) => {
   // Pending feedback is independent of browser-local read state. Visiting News
   // clears its bell dot; opening the comments, replying or editing the food
   // clears the comment notice, on every device.
-  const reads = computed(() => store.communityReads as { foods: CommentReads; posts: CommentReads })
-  const joinedThreads = computed(() => store.communityThreads as JoinedThreads)
+  const threads = computed(
+    () => store.readState as { foods: ThreadReadStates; posts: ThreadReadStates }
+  )
   const notices = computed(() =>
-    communityFoodNotices(foods.value, user.value?.id, reads.value?.foods)
+    communityFoodNotices(foods.value, user.value?.id, threads.value?.foods)
   )
   const postNotices = computed(() =>
-    communityPostNotices(posts.value, user.value?.id, reads.value?.posts)
+    communityPostNotices(posts.value, user.value?.id, threads.value?.posts)
   )
   const threadNotices = computed(() =>
-    communityThreadNotices(
-      foods.value,
-      posts.value,
-      user.value?.id,
-      joinedThreads.value,
-      reads.value
-    )
+    communityThreadNotices(foods.value, posts.value, user.value?.id, threads.value)
   )
   const commentEntries = computed(() => [
     ...notices.value.flatMap((notice) =>

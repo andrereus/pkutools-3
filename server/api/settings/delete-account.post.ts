@@ -19,7 +19,7 @@ export default defineAuthedHandler(async ({ userId }) => {
   // included. So do admin rights.
   const [posts, joined] = await Promise.all([
     db.ref('communityPosts').orderByChild('authorId').equalTo(userId).once('value'),
-    db.ref(`${userId}/communityThreads/posts`).once('value')
+    db.ref(`${userId}/readState/posts`).once('value')
   ])
   const ownPostIds = Object.keys(posts.val() ?? {})
   const writes: Record<string, unknown> = {
@@ -28,8 +28,9 @@ export default defineAuthedHandler(async ({ userId }) => {
   }
   await Promise.all(ownPostIds.map((postId) => queueCommunityPostRemoval(postId, userId, writes)))
 
-  // Every comment on someone else's post records its thread with it, so these
-  // are all the posts the account commented on.
+  // Every comment on someone else's post records the post in the read state,
+  // so apart from the account's own posts these are all the posts it commented
+  // on.
   const joinedPostIds = Object.keys(joined.val() ?? {}).filter(
     (postId) => !ownPostIds.includes(postId)
   )

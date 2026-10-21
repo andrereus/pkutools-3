@@ -4,7 +4,11 @@ import { CommunityPostCommentSchema } from '../../types/schemas'
 import { defineAuthedHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { MAX_COMMUNITY_POST_COMMENTS } from '../../utils/community-post'
-import { assertVisibleTo, queueThreadParticipants } from '../../utils/community-thread'
+import {
+  assertVisibleTo,
+  readStatePath,
+  queueThreadParticipants
+} from '../../utils/community-thread'
 
 export default defineAuthedHandler(async ({ event, userId }) => {
   const { postId, commentId, comment } = await validateBody(event, CommunityPostCommentSchema)
@@ -67,7 +71,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     [`communityPosts/${postId}/commentCount`]: ServerValue.increment(1),
     [`communityPosts/${postId}/${post.authorId === userId ? 'lastAuthorCommentAt' : 'lastCommunityCommentAt'}`]:
       now,
-    [`${userId}/communityReads/posts/${postId}`]: now
+    [`${readStatePath(userId, 'post', postId)}/lastReadAt`]: now
   }
   await queueThreadParticipants(
     writes,
