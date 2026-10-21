@@ -278,15 +278,14 @@ export const AdminCommunityProfileDeleteSchema = z.object({
   userId: firebaseKeySchema('User id')
 })
 
-// Hides a food or a post, or shows it again. Strict, so a request naming a
-// comment is refused rather than read as one for its post.
-export const AdminHideSchema = z
-  .object({
-    target: z.enum(['food', 'post']),
-    key: firebaseKeySchema('Key'),
-    hidden: z.boolean()
-  })
-  .strict()
+// Hides a food or post, or one comment on it when `commentId` is given, or
+// shows it again.
+export const AdminHideSchema = z.object({
+  target: z.enum(['food', 'post']),
+  key: firebaseKeySchema('Key'),
+  commentId: CommunityFoodCommentIdSchema.optional(),
+  hidden: z.boolean()
+})
 
 export const AdminCommentDeleteSchema = z.object({
   target: z.enum(['food', 'post']),

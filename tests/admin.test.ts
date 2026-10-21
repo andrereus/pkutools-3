@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createFakeDatabase, installServerGlobals, requestEvent } from './helpers/server-harness'
 
 // Admin hiding and deleting. Admin rights come from `admins/<uid>` in the
-// database; a hidden post or food stays in place with `hiddenAt`.
+// database; hidden content stays in place with `hiddenAt`.
 
 installServerGlobals()
 
@@ -125,12 +125,30 @@ describe('hiding', () => {
     expect(posts().post1).not.toHaveProperty('hiddenAt')
   })
 
-  it('refuses to hide a comment, which can only be deleted', async () => {
-    const before = structuredClone(fake.data)
-    await expect(
-      setHidden(requestEvent({ target: 'food', key: 'food1', commentId: 'c1', hidden: true }))
-    ).rejects.toMatchObject({ statusCode: 400 })
-    expect(fake.data).toEqual(before)
+  it('moves a hidden comment from the comment count to the hidden one, and back', async () => {
+    const request = (hidden: boolean) =>
+      setHidden(requestEvent({ target: 'food', key: 'food1', commentId: 'c1', hidden }))
+
+    await request(true)
+    await request(true)
+    expect(foods().food1).toMatchObject({ commentCount: 0, hiddenCommentCount: 1 })
+    expect(foods().food1).not.toHaveProperty('lastCommunityCommentAt')
+
+    await request(false)
+    expect(foods().food1).toMatchObject({
+      commentCount: 1,
+      hiddenCommentCount: 0,
+      lastCommunityCommentAt: 100
+    })
+    expect((fake.data.communityFoodComments as Record<string, Node>).food1!.c1).not.toHaveProperty(
+      'hiddenAt'
+    )
+  })
+
+  it('takes a deleted hidden comment out of the hidden count only', async () => {
+    await setHidden(requestEvent({ target: 'food', key: 'food1', commentId: 'c1', hidden: true }))
+    await deleteComment(requestEvent({ target: 'food', parentKey: 'food1', commentId: 'c1' }))
+    expect(foods().food1).toMatchObject({ commentCount: 0, hiddenCommentCount: 0 })
   })
 
   it('keeps hidden content out of reach for everyone but its owner and admins', async () => {

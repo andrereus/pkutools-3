@@ -154,7 +154,7 @@ describe('community posts', () => {
     expect(deleteUser).toHaveBeenCalledWith('author-1')
   })
 
-  it('removes the account’s comments on other posts and keeps likes', async () => {
+  it('removes the account’s comments on other posts, hidden ones too, and keeps likes', async () => {
     fake = createFakeDatabase({
       'reader-1': { communityThreads: { posts: { post1: 300, post2: 200 } } },
       communityPosts: {
@@ -165,6 +165,7 @@ describe('community posts', () => {
           likes: 1,
           likerIds: { 'reader-1': true },
           commentCount: 3,
+          hiddenCommentCount: 1,
           lastCommunityCommentAt: 300,
           lastAuthorCommentAt: 250
         }
@@ -173,7 +174,14 @@ describe('community posts', () => {
         post1: {
           c1: { type: 'comment', authorId: 'reader-1', text: 'Thanks', createdAt: 200 },
           c2: { type: 'comment', authorId: 'author-1', text: 'Welcome', createdAt: 250 },
-          c3: { type: 'comment', authorId: 'reader-1', text: 'Again', createdAt: 300 }
+          c3: { type: 'comment', authorId: 'reader-1', text: 'Again', createdAt: 300 },
+          c4: {
+            type: 'comment',
+            authorId: 'reader-1',
+            text: 'Hidden',
+            createdAt: 350,
+            hiddenAt: 400
+          }
         }
       }
     })
@@ -182,6 +190,7 @@ describe('community posts', () => {
     expect(Object.keys(thread('post1'))).toEqual(['c2'])
     expect(posts().post1).toMatchObject({
       commentCount: 1,
+      hiddenCommentCount: 0,
       lastAuthorCommentAt: 250,
       likes: 1,
       likerIds: { 'reader-1': true }

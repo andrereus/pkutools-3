@@ -17,6 +17,7 @@ export function communityFoodCommentActivity(
     if (id === excludedCommentId || !raw || typeof raw !== 'object') continue
     const comment = raw as Record<string, unknown>
     if (
+      comment.hiddenAt ||
       (comment.type !== undefined && comment.type !== 'comment') ||
       typeof comment.authorId !== 'string' ||
       !comment.authorId ||

@@ -52,7 +52,11 @@ export default defineAuthedHandler(async ({ userId }) => {
     const paths = threadPaths('post', postId)
     for (const [id] of own) writes[`${paths.thread}/${id}`] = null
     if (post) {
-      writes[`${paths.parent}/commentCount`] = ServerValue.increment(-own.length)
+      // Hidden comments are already out of the comment count, and in the hidden one.
+      const hidden = own.filter(([, comment]) => comment?.hiddenAt).length
+      const counted = own.length - hidden
+      if (counted > 0) writes[`${paths.parent}/commentCount`] = ServerValue.increment(-counted)
+      if (hidden > 0) writes[`${paths.parent}/hiddenCommentCount`] = ServerValue.increment(-hidden)
       queueThreadActivity(
         writes,
         'post',

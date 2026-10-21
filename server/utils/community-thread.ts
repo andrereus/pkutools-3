@@ -108,7 +108,9 @@ export async function removeThreadComment(
   const parent = parentSnapshot.val() as Record<string, unknown> | null
   if (parent) {
     const ownerId = threadOwner(target, parent)
-    writes[`${paths.parent}/commentCount`] = ServerValue.increment(-1)
+    // A hidden comment is already out of the comment count, and in the hidden one.
+    const counter = existing.hiddenAt ? 'hiddenCommentCount' : 'commentCount'
+    writes[`${paths.parent}/${counter}`] = ServerValue.increment(-1)
     queueThreadActivity(writes, target, key, thread, ownerId, [commentId])
     queueThreadLeave(writes, target, key, thread, existing.authorId, ownerId, [commentId])
   }

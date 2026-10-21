@@ -1,6 +1,8 @@
 import { getDatabase, onValue, ref as databaseRef, type Unsubscribe } from 'firebase/database'
 import { FOOD_CONTENT_FIELDS, type FoodContentField } from '#shared/utils/food-content'
 import type { InjectionKey, Ref } from 'vue'
+import { useStore } from '../../stores/index'
+import { isVisibleTo } from '../utils/hidden-content'
 import type { CommunityFoodThreadEntry } from './useApi'
 
 const isTimestamp = (value: unknown): value is number =>
@@ -48,7 +50,8 @@ export const normalizeCommunityFoodComments = (value: unknown): CommunityFoodThr
           authorId: comment.authorId,
           text: comment.text,
           createdAt: comment.createdAt,
-          updatedAt: isTimestamp(comment.updatedAt) ? comment.updatedAt : comment.createdAt
+          updatedAt: isTimestamp(comment.updatedAt) ? comment.updatedAt : comment.createdAt,
+          ...(isTimestamp(comment.hiddenAt) && { hiddenAt: comment.hiddenAt })
         }
       ]
     })
@@ -60,21 +63,42 @@ export const normalizeCommunityFoodComments = (value: unknown): CommunityFoodThr
 }
 
 /**
- * Moderation the admin page offers on each comment in a thread: deleting it.
- * Threads elsewhere get none.
+ * Moderation the admin page offers on each comment in a thread: hiding or
+ * showing it, and deleting it. Threads elsewhere get none.
  */
 export interface AdminModeration {
   busy: Ref<boolean>
+  setHidden: (target: 'food' | 'post', key: string, commentId: string, hidden: boolean) => unknown
   remove: (target: 'food' | 'post', key: string, commentId: string) => unknown
 }
 export const ADMIN_MODERATION: InjectionKey<AdminModeration> = Symbol('admin-moderation')
+
+/**
+ * A thread as the reader may see it: comments an admin hid stay visible to
+ * their author and to admins only. Recomputed when the reader's rights load.
+ */
+export const useVisibleThread = <T extends { type: string; authorId?: string; hiddenAt?: number }>(
+  entries: Ref<T[]>
+) => {
+  const store = useStore()
+  return computed(() => {
+    const reader = {
+      id: (store.user as { id?: string } | null)?.id ?? null,
+      isAdmin: store.isAdmin === true
+    }
+    return entries.value.filter(
+      (entry) => entry.type !== 'comment' || isVisibleTo(entry, entry.authorId, reader)
+    )
+  })
+}
 
 /**
  * Realtime comments for one food. The caller explicitly starts the listener,
  * allowing a collapsed News card to cost no additional database read.
  */
 export const useCommunityFoodComments = (communityFoodKey: string) => {
-  const comments = ref<CommunityFoodThreadEntry[]>([])
+  const entries = ref<CommunityFoodThreadEntry[]>([])
+  const comments = useVisibleThread(entries)
   const loading = ref(false)
   const loadFailed = ref(false)
   let unsubscribe: Unsubscribe | null = null
@@ -91,7 +115,7 @@ export const useCommunityFoodComments = (communityFoodKey: string) => {
     unsubscribe = onValue(
       databaseRef(getDatabase(), `communityFoodComments/${communityFoodKey}`),
       (snapshot) => {
-        comments.value = normalizeCommunityFoodComments(snapshot.val())
+        entries.value = normalizeCommunityFoodComments(snapshot.val())
         loading.value = false
       },
       () => {

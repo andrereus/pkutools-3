@@ -1,6 +1,6 @@
 import { getDatabase, onValue, ref as databaseRef, type Unsubscribe } from 'firebase/database'
 import type { CommunityFoodComment } from './useApi'
-import { normalizeCommunityFoodComments } from './useCommunityFoodComments'
+import { normalizeCommunityFoodComments, useVisibleThread } from './useCommunityFoodComments'
 
 /**
  * Realtime comments for one post. Post threads hold only comments, which have
@@ -8,7 +8,8 @@ import { normalizeCommunityFoodComments } from './useCommunityFoodComments'
  * collapsed card costs no database read.
  */
 export const useCommunityPostComments = (postId: string) => {
-  const comments = ref<CommunityFoodComment[]>([])
+  const entries = ref<CommunityFoodComment[]>([])
+  const comments = useVisibleThread(entries)
   const loading = ref(false)
   const loadFailed = ref(false)
   let unsubscribe: Unsubscribe | null = null
@@ -25,7 +26,7 @@ export const useCommunityPostComments = (postId: string) => {
     unsubscribe = onValue(
       databaseRef(getDatabase(), `communityPostComments/${postId}`),
       (snapshot) => {
-        comments.value = normalizeCommunityFoodComments(snapshot.val()).filter(
+        entries.value = normalizeCommunityFoodComments(snapshot.val()).filter(
           (entry): entry is CommunityFoodComment => entry.type === 'comment'
         )
         loading.value = false

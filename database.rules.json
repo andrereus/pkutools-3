@@ -18,7 +18,8 @@
         "hiddenAt",
         "updatedAt",
         "lastCommunityCommentAt",
-        "lastAuthorCommentAt"
+        "lastAuthorCommentAt",
+        "hiddenCommentCount"
       ]
     },
     "communityPostComments": {

@@ -222,9 +222,27 @@ onUnmounted(() => {
               class="h-3.5 w-3.5"
               aria-hidden="true"
             />
+            <span
+              v-if="comment.hiddenAt"
+              class="ml-1 inline-flex items-center gap-1 rounded bg-gray-200 px-1.5 font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+            >
+              <LucideEyeOff class="h-3 w-3" aria-hidden="true" />
+              {{ $t('news.hidden-by-admin') }}
+            </span>
           </p>
           <span class="flex shrink-0 items-center gap-1 text-gray-400 dark:text-gray-500">
             <template v-if="moderation && comment.authorId !== currentUserId">
+              <button
+                type="button"
+                :disabled="moderation.busy.value"
+                :aria-label="comment.hiddenAt ? 'Show again' : 'Hide'"
+                :title="comment.hiddenAt ? 'Show again' : 'Hide'"
+                class="relative z-20 cursor-pointer rounded p-0.5 hover:bg-gray-200 hover:text-gray-700 disabled:opacity-50 dark:hover:bg-white/10 dark:hover:text-gray-200"
+                @click="moderation.setHidden('post', postId, comment['.key'], !comment.hiddenAt)"
+              >
+                <LucideEye v-if="comment.hiddenAt" class="h-3.5 w-3.5" aria-hidden="true" />
+                <LucideEyeOff v-else class="h-3.5 w-3.5" aria-hidden="true" />
+              </button>
               <button
                 type="button"
                 :disabled="moderation.busy.value"

@@ -16,9 +16,8 @@ import { ADMIN_MODERATION } from '../composables/useCommunityFoodComments'
 
 // Moderation: posts and foods in all languages, sorted by their latest
 // activity, so a new comment brings its post or food to the top. Comments are
-// moderated inside their card's thread, where they can be deleted. Posts and
-// foods can also be hidden: out of view in place, quickly and reversibly.
-// Deleting is final. Admin-only; the page's own wording is English. Every
+// moderated inside their card's thread. Posts, foods and comments can be
+// hidden: out of view in place, quickly and reversibly. Deleting is final. Admin-only; the page's own wording is English. Every
 // action is checked server-side.
 
 const store = useStore()
@@ -64,6 +63,7 @@ const ACTIVITY_FIELDS = ['updatedAt', 'lastCommunityCommentAt', 'lastAuthorComme
 const activityPosts = Object.fromEntries(ACTIVITY_FIELDS.map((field) => [field, ref({})]))
 const activityLoaded = ref({})
 const hiddenPosts = ref({})
+const postsWithHiddenComments = ref({})
 const userPosts = ref({})
 const windowLoaded = computed(() => ACTIVITY_FIELDS.every((field) => activityLoaded.value[field]))
 const listeners = new Map()
@@ -108,6 +108,11 @@ watch(
     }
     if (!listeners.has('hidden')) {
       listen('hidden', query(postsRef(), orderByChild('hiddenAt'), startAt(1)), hiddenPosts)
+      listen(
+        'hiddenComments',
+        query(postsRef(), orderByChild('hiddenCommentCount'), startAt(1)),
+        postsWithHiddenComments
+      )
     }
   },
   { immediate: true }
@@ -140,6 +145,7 @@ const postRow = (key, post) => ({
   at: latest(post.createdAt, post.updatedAt, post.lastCommunityCommentAt, post.lastAuthorCommentAt),
   edited: isEdited(post.createdAt, post.updatedAt),
   hidden: isHiddenByAdmin(post),
+  hiddenCommentCount: countOf(post.hiddenCommentCount),
   commentCount: countOf(post.commentCount),
   text: post.text,
   post: { ...post, '.key': key }
@@ -160,6 +166,7 @@ const foodRow = (food) => ({
   ),
   edited: isEdited(food.createdAt, food.contentUpdatedAt),
   hidden: isHiddenByAdmin(food),
+  hiddenCommentCount: countOf(food.hiddenCommentCount),
   commentCount: countOf(food.commentCount),
   hiddenByRatings: isCommunityFoodHidden(communityFoodScore(food)),
   text: food.name,
@@ -175,12 +182,18 @@ const postRowsOf = (...sources) => {
   return Object.entries(byKey).map(([key, post]) => postRow(key, post))
 }
 
+// A post or food that is hidden itself, or holds hidden comments.
+const holdsHidden = (row) => row.hidden || row.hiddenCommentCount > 0
+
 // The list on screen. A post among the first N rows by activity is always
 // among the N most active posts, so the activity queries are enough.
 const rows = computed(() => {
   if (view.value === 'hidden') {
-    return [...postRowsOf(hiddenPosts.value), ...store.communityFoods.map(foodRow)]
-      .filter((row) => row.hidden)
+    return [
+      ...postRowsOf(hiddenPosts.value, postsWithHiddenComments.value),
+      ...store.communityFoods.map(foodRow)
+    ]
+      .filter(holdsHidden)
       .sort(byActivity)
   }
   if (filter.value) {
@@ -200,8 +213,8 @@ const rows = computed(() => {
 })
 const hiddenCount = computed(
   () =>
-    postRowsOf(hiddenPosts.value).filter((row) => row.hidden).length +
-    store.communityFoods.filter(isHiddenByAdmin).length
+    postRowsOf(hiddenPosts.value, postsWithHiddenComments.value).filter(holdsHidden).length +
+    store.communityFoods.map(foodRow).filter(holdsHidden).length
 )
 
 // Search narrows what is loaded; the user filter loads all of one account.
@@ -230,7 +243,10 @@ watch(
   rows,
   (list) => {
     for (const row of list) {
-      if (expanded.value[row.key] === undefined && row.commentCount > 0) {
+      if (
+        expanded.value[row.key] === undefined &&
+        (row.commentCount > 0 || row.hiddenCommentCount > 0)
+      ) {
         expanded.value[row.key] = true
       }
     }
@@ -308,12 +324,12 @@ const run = async (key, question, action, done) => {
 }
 
 // `item` is a post, a food or one comment, with `target` and `key` naming the
-// post or food and `commentId` the comment. Only posts and foods are hidden.
+// post or food and `commentId` the comment.
 const kindOf = (item) => (item.commentId ? 'comment' : item.target)
 
 const setHidden = (item, hidden) =>
   run(
-    `${item.target}-${item.key}-`,
+    `${item.target}-${item.key}-${item.commentId ?? ''}`,
     hidden
       ? {
           title: `Hide ${kindOf(item)}?`,
@@ -326,7 +342,7 @@ const setHidden = (item, hidden) =>
           message: 'Everyone sees it again.',
           confirmLabel: 'Show'
         },
-    () => adminSetHidden({ target: item.target, key: item.key, hidden }),
+    () => adminSetHidden({ ...item, hidden }),
     hidden ? 'Hidden.' : 'Shown again.'
   )
 
@@ -363,6 +379,7 @@ const remove = (item) =>
 // The threads inside the cards offer the same actions per comment.
 provide(ADMIN_MODERATION, {
   busy: computed(() => busyKey.value !== null),
+  setHidden: (target, key, commentId, hidden) => setHidden({ target, key, commentId }, hidden),
   remove: (target, key, commentId) => remove({ target, key, commentId })
 })
 const itemOf = (row) => ({ target: row.type, key: row.id })
@@ -526,6 +543,14 @@ useSeoMeta({ title: 'Admin' })
                   </span>
                 </template>
                 <template v-else>wrote a post</template>
+                <span
+                  v-if="row.hiddenCommentCount > 0"
+                  class="ml-1 inline-flex items-center gap-1 rounded bg-gray-200 px-1.5 font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+                >
+                  <LucideEyeOff class="h-3 w-3" aria-hidden="true" />
+                  {{ row.hiddenCommentCount }} hidden
+                  {{ row.hiddenCommentCount === 1 ? 'comment' : 'comments' }}
+                </span>
               </p>
             </div>
             <div class="flex h-9 shrink-0 flex-col items-end justify-between">

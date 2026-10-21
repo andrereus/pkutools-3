@@ -29,6 +29,8 @@ export interface CommunityFoodComment {
   text: string
   createdAt: number
   updatedAt: number
+  /** Hidden by an admin: only its author and admins see it. */
+  hiddenAt?: number
 }
 
 export interface CommunityFoodContentUpdate {
@@ -412,10 +414,11 @@ export const useApi = () => {
   const adminDeleteCommunityName = (userId: string): Promise<{ success: boolean }> =>
     request('/api/admin/community-profile', 'Admin remove name', 'DELETE', { userId })
 
-  // Hides a food or post, or shows it again.
+  // Hides a food or post, or one comment on it, or shows it again.
   const adminSetHidden = (data: {
     target: 'food' | 'post'
     key: string
+    commentId?: string
     hidden: boolean
   }): Promise<{ success: boolean }> => request('/api/admin/hide', 'Admin hide', 'POST', data)
 
