@@ -18,8 +18,9 @@ export default defineAuthedHandler(async ({ event, userId }) => {
 
   if (!record) return { success: true }
   const ownerId = target === 'food' ? record.contributorId : record.authorId
+  const isOwner = ownerId === userId
   const entryRef = db.ref(readStatePath(userId, target, key))
-  const joined = ownerId === userId || (await entryRef.once('value')).exists()
+  const joined = isOwner || (await entryRef.once('value')).exists()
   if (!joined) {
     throw createError({
       statusCode: 403,
@@ -28,6 +29,11 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     })
   }
 
-  await entryRef.update({ lastReadAt: Date.now() })
+  // A commenter's entry that disappeared meanwhile, because they left the
+  // conversation or the thread was deleted, stays gone.
+  const now = Date.now()
+  await entryRef.transaction((current: Record<string, unknown> | null) =>
+    current === null && !isOwner ? null : { ...current, lastReadAt: now }
+  )
   return { success: true }
 })

@@ -776,7 +776,7 @@
       "note": "Notiz",
       "comment": "Kommentar",
       "post": "Beitrag",
-      "nickname": "Community-Name",
+      "communityName": "Community-Name",
       "pheReference": "Phe-Referenzwert",
       "kcalReference": "Kcal-Referenzwert",
       "date": "Datum",

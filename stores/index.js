@@ -109,9 +109,10 @@ export const useStore = defineStore('main', {
     // What the account has seen. `news` is its last News visit and newest app
     // update seen, for the blue dots and the bell. `foods` and `posts` hold a
     // read state per thread, by key: `lastReadAt`, when it last opened the
-    // comments or wrote one, and on others' content it commented on,
-    // `lastOtherCommentAt`, kept by the server. Together they show where
-    // something is new without loading every thread.
+    // comments or wrote one, and `lastOtherCommentAt`, the newest comment by
+    // someone else, kept by the server on its own posts and on others' content
+    // it commented on. Together they show where something is new without
+    // loading every thread.
     readState: {
       loaded: false,
       news: { lastReadAt: null, lastSeenRevision: null },
@@ -385,9 +386,8 @@ export const useStore = defineStore('main', {
     },
     // One listener per followed post: the reader's own and those they
     // commented on, where someone else wrote since, and the one a link asked
-    // for. A followed post
-    // stays for the session once its comments are read, so its card does not
-    // disappear while open; the next start leaves it out.
+    // for. A followed post stays for the session once its comments are read, so
+    // its card does not disappear while open; the next start leaves it out.
     syncFollowedPosts(db) {
       if (!this.user) return
       db ??= getDatabase()
