@@ -21,6 +21,7 @@ const tiers = computed(() => [
       t('settings.tier-basic-feature-3'),
       t('settings.tier-basic-feature-ai')
     ],
+    notes: [t('settings.tier-basic-note-1'), t('settings.tier-basic-note-3')],
     featured: false
   },
   {
@@ -109,6 +110,9 @@ const tiers = computed(() => [
           {{ feature }}
         </li>
       </ul>
+      <div v-if="tier.notes" class="text-gray-500 dark:text-gray-400 mt-4 space-y-1 text-xs/5">
+        <p v-for="note in tier.notes" :key="note">{{ note }}</p>
+      </div>
       <a
         v-if="tier.id === 'tier-unlimited' || tier.id === 'tier-premium-ai'"
         href="https://ko-fi.com/andrereus/tiers"
