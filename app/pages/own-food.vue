@@ -89,26 +89,9 @@ const storedEditedItem = computed(() =>
 )
 const wasEditedItemShared = computed(() => storedEditedItem.value?.shared === true)
 
-// PKU Tools took this food out of the community. A changed name or values
-// brings it back, as the server applies it too; unchanged, a food without a
-// public copy cannot be shared again, while one with a copy can be withdrawn.
+// PKU Tools took this food out of the community. Only PKU Tools brings it back,
+// also when it is shared again.
 const isEditedItemRemoved = computed(() => isHiddenByAdmin(storedEditedItem.value))
-// The server counts a public copy only when both records point at each other.
-const hasPublicCopy = computed(
-  () =>
-    wasEditedItemShared.value &&
-    editedCommunityFood.value?.contributorId === store.user?.id &&
-    editedCommunityFood.value?.ownFoodKey === editedKey.value
-)
-const isShareLocked = computed(
-  () =>
-    isEditedItemRemoved.value &&
-    !hasPublicCopy.value &&
-    !hasMaterialFoodChange(storedEditedItem.value, editedItem.value)
-)
-watch(isShareLocked, (locked) => {
-  if (locked) editedItem.value.shared = false
-})
 
 // Offer the icon update once the name is edited away from what the current
 // emoji represents (only when there is an emoji to replace)
@@ -933,7 +916,7 @@ defineOgImage('Default', {
                   v-model="editedItem.shared"
                   name="shared"
                   type="checkbox"
-                  :disabled="(!canShareEditedItem && !editedItem.shared) || isShareLocked"
+                  :disabled="!canShareEditedItem && !editedItem.shared"
                   class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
                 />
               </div>

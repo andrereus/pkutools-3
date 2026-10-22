@@ -157,6 +157,11 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
   }
 
+  // PKU Tools took this food out of the community, and only PKU Tools brings
+  // it back: edits reach a hidden copy, and a copy shared anew after a delete
+  // or unshare starts hidden too, waiting for a restore.
+  const hiddenByAdmin = typeof ownFood.hiddenAt === 'number' && ownFood.hiddenAt > 0
+
   const queueNewCommunityFood = async () => {
     const language = getLanguage(event, locale)
     const isDuplicate = await checkDuplicateCommunityFood(db, data.name, data.phe, language)
@@ -188,24 +193,9 @@ export default defineAuthedHandler(async ({ event, userId }) => {
       dislikes: 0,
       score: 0,
       usageCount: 0,
-      commentCount: 0
+      commentCount: 0,
+      ...(hiddenByAdmin && { hiddenAt: ownFood.hiddenAt })
     }
-  }
-
-  // PKU Tools took this food out of the community. A changed name or values
-  // brings it back: a public copy that is still there shows again, with its
-  // comments and the change in its history, and without one the food may be
-  // shared again. Unchanged, it stays out.
-  const hiddenByAdmin = typeof ownFood.hiddenAt === 'number' && ownFood.hiddenAt > 0
-  const copyHidden =
-    typeof existingCommunityFood?.hiddenAt === 'number' && existingCommunityFood.hiddenAt > 0
-  const liftsHidden = (hiddenByAdmin || copyHidden) && materialChange
-  if (hiddenByAdmin && !hasValidCommunityLink && willBeShared && !materialChange) {
-    throw createError({
-      statusCode: 409,
-      message: 'This food was taken out of the community',
-      data: { code: 'community-food-hidden' }
-    })
   }
 
   // Handle sharing state changes
@@ -305,11 +295,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
   }
 
-  // A copy that stays shared is shown again; one being withdrawn goes anyway.
-  if (liftsHidden && copyHidden && willBeShared && existingCommunityKey) {
-    writes[`communityFoods/${existingCommunityKey}/hiddenAt`] = null
-  }
-
   // The own food, also field by field, so it keeps merge semantics: the edit
   // form sends no provenance, and what it leaves out has to stay on the record.
   // The stored createdAt wins over anything the client sent, and a legacy entry
@@ -318,7 +303,6 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     ...data,
     ...provenance,
     communityKey,
-    ...(liftsHidden && hiddenByAdmin && { hiddenAt: null }),
     ...(ownFood.createdAt != null && { createdAt: ownFood.createdAt }),
     updatedAt: now
   }
