@@ -417,7 +417,7 @@ defineOgImage('Default', {
           'block rounded-lg px-3 py-2 text-sm text-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 dark:text-gray-300',
           isWarningNotice(notice)
             ? 'bg-amber-50 ring-1 ring-amber-200 hover:ring-amber-300 focus-visible:outline-amber-500 dark:bg-amber-950/30 dark:ring-amber-900'
-            : 'bg-black/5 hover:bg-black/10 focus-visible:outline-sky-500 dark:bg-white/15 dark:hover:bg-white/10'
+            : 'bg-black/3 hover:bg-black/6 focus-visible:outline-sky-500 dark:bg-white/10 dark:hover:bg-white/15'
         ]"
         @click="viewNotice($event, notice)"
       >
