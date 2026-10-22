@@ -719,6 +719,8 @@
     "search-label": "Rechercher",
     "view-label": "Affichage",
     "view-removed": "Retirés ({count})",
+    "language-label": "Langue",
+    "all-languages": "Toutes les langues",
     "everything-by": "Tout le contenu de {name}",
     "this-user": "ce compte",
     "delete-name": "Supprimer le nom",

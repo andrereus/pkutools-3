@@ -32,12 +32,14 @@ const {
 const { confirm } = useConfirm()
 const notifications = useNotifications()
 const { nameOf, isOfficial } = useCommunityAuthor()
-const { locale, t } = useI18n()
+const { locale, locales, t } = useI18n()
 
 const PAGE_SIZE = 20
 // 'all', or 'hidden' for what is hidden at the moment.
 const view = ref('all')
 const search = ref('')
+// Null for every language, or the code of one.
+const language = ref(null)
 // Null for everything, or { userId } for one account's content.
 const filter = ref(null)
 const visibleCount = ref(PAGE_SIZE)
@@ -211,17 +213,23 @@ const rows = computed(() => {
     .sort(byActivity)
     .slice(0, visibleCount.value)
 })
+// A language narrows what is loaded, like the search: the activity window spans
+// all languages, so the order within one stays complete.
+const inLanguage = (row) => !language.value || row.language === language.value
 const hiddenCount = computed(
   () =>
-    postRowsOf(hiddenPosts.value, postsWithHiddenComments.value).filter(holdsHidden).length +
-    store.communityFoods.map(foodRow).filter(holdsHidden).length
+    [
+      ...postRowsOf(hiddenPosts.value, postsWithHiddenComments.value),
+      ...store.communityFoods.map(foodRow)
+    ].filter((row) => holdsHidden(row) && inLanguage(row)).length
 )
 
 // Search narrows what is loaded; the user filter loads all of one account.
 const visibleRows = computed(() => {
   const term = search.value.trim().toLowerCase()
-  if (!term) return rows.value
-  return rows.value.filter((row) =>
+  const inView = rows.value.filter(inLanguage)
+  if (!term) return inView
+  return inView.filter((row) =>
     [row.text, row.note, row.authorId, nameOf(row.authorId)].some(
       (field) => typeof field === 'string' && field.toLowerCase().includes(term)
     )
@@ -405,26 +413,39 @@ useSeoMeta({ title: () => t('app.admin') })
         class="mb-3 block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600"
       />
 
-      <nav class="mb-3 flex flex-wrap gap-2" :aria-label="$t('admin.view-label')">
-        <button
-          v-for="option in [
-            { key: 'all', label: $t('news.filter-all') },
-            { key: 'hidden', label: $t('admin.view-removed', { count: hiddenCount }) }
-          ]"
-          :key="option.key"
-          type="button"
-          :aria-pressed="view === option.key"
-          :class="[
-            'cursor-pointer rounded-full px-3 py-1.5 text-sm font-medium ring-1 transition-colors',
-            view === option.key
-              ? 'bg-sky-50 text-sky-700 ring-sky-300 dark:bg-sky-900/30 dark:text-sky-300 dark:ring-sky-700'
-              : 'text-gray-600 ring-gray-300 hover:text-sky-600 hover:ring-sky-400 dark:text-gray-400 dark:ring-gray-700 dark:hover:text-sky-400'
-          ]"
-          @click="view = option.key"
+      <div class="mb-3 flex flex-wrap items-center gap-2">
+        <nav class="flex flex-wrap gap-2" :aria-label="$t('admin.view-label')">
+          <button
+            v-for="option in [
+              { key: 'all', label: $t('news.filter-all') },
+              { key: 'hidden', label: $t('admin.view-removed', { count: hiddenCount }) }
+            ]"
+            :key="option.key"
+            type="button"
+            :aria-pressed="view === option.key"
+            :class="[
+              'cursor-pointer rounded-full px-3 py-1.5 text-sm font-medium ring-1 transition-colors',
+              view === option.key
+                ? 'bg-sky-50 text-sky-700 ring-sky-300 dark:bg-sky-900/30 dark:text-sky-300 dark:ring-sky-700'
+                : 'text-gray-600 ring-gray-300 hover:text-sky-600 hover:ring-sky-400 dark:text-gray-400 dark:ring-gray-700 dark:hover:text-sky-400'
+            ]"
+            @click="view = option.key"
+          >
+            {{ option.label }}
+          </button>
+        </nav>
+        <select
+          id="admin-language"
+          v-model="language"
+          :aria-label="$t('admin.language-label')"
+          class="ml-auto cursor-pointer rounded-full border-0 bg-white py-1.5 pr-8 pl-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 ring-inset focus:ring-2 focus:ring-sky-500 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-700"
         >
-          {{ option.label }}
-        </button>
-      </nav>
+          <option :value="null">{{ $t('admin.all-languages') }}</option>
+          <option v-for="option in locales" :key="option.code" :value="option.code">
+            {{ option.name }}
+          </option>
+        </select>
+      </div>
 
       <div
         v-if="filter"
