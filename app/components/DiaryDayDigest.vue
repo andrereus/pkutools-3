@@ -174,7 +174,7 @@ const figuresFor = (entry) => {
 }
 
 const pillClass =
-  'inline-flex h-8 max-w-full items-center gap-1.5 rounded-full px-3 text-sm transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 sm:max-w-xs'
+  'inline-flex h-8 max-w-full items-center gap-1.5 rounded-full px-3 text-sm transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500'
 </script>
 
 <template>
@@ -196,7 +196,7 @@ const pillClass =
     <ul class="mt-2 flex flex-wrap gap-2">
       <!-- Notifications: amber only for a rating warning, otherwise the gray
            of the other pills -->
-      <li v-for="notice in visibleNotices" :key="notice.key" class="max-w-full">
+      <li v-for="notice in visibleNotices" :key="notice.key" class="max-w-[calc(50%-0.25rem)]">
         <NuxtLink
           :to="noticeLink(notice)"
           :title="noticeText(notice)"
@@ -218,7 +218,7 @@ const pillClass =
         </NuxtLink>
       </li>
 
-      <li v-for="entry in visibleEntries" :key="entry.key" class="max-w-full">
+      <li v-for="entry in visibleEntries" :key="entry.key" class="max-w-[calc(50%-0.25rem)]">
         <NuxtLink
           :to="localePath({ name: 'news', hash: `#${entry.key}` })"
           :title="textFor(entry)"
