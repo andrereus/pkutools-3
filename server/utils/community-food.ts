@@ -1,3 +1,5 @@
+import { getAdminDatabase } from './firebase-admin'
+
 /**
  * Community food configuration constants
  */
@@ -30,4 +32,25 @@ export const SHAREABLE_FOOD_SOURCES = ['manual', 'barcode', 'ai-label'] as const
 export function isShareableSource(source: string | null | undefined): boolean {
   if (source === null || source === undefined || source === '') return true
   return (SHAREABLE_FOOD_SOURCES as readonly string[]).includes(source)
+}
+
+const isDatabaseKey = (value: unknown): value is string =>
+  typeof value === 'string' && value !== '' && !/[.#$[\]/]/.test(value)
+
+/**
+ * The path of the contributor's own food behind a community food, when that
+ * own food exists and points back to it. Only a link both records agree on is
+ * followed, so malformed data cannot reach another account's food.
+ */
+export async function linkedOwnFoodPath(
+  food: Record<string, unknown>,
+  communityFoodKey: string
+): Promise<string | null> {
+  if (!isDatabaseKey(food.contributorId) || !isDatabaseKey(food.ownFoodKey)) return null
+  const path = `${food.contributorId}/ownFood/${food.ownFoodKey}`
+  const ownFood = (await getAdminDatabase().ref(path).once('value')).val() as Record<
+    string,
+    unknown
+  > | null
+  return ownFood?.communityKey === communityFoodKey ? path : null
 }

@@ -9,6 +9,7 @@ import {
   threadOwner,
   threadPaths
 } from '../../utils/community-thread'
+import { linkedOwnFoodPath } from '../../utils/community-food'
 
 // Hides a food, a post or one comment, or shows it again. Hidden content stays
 // where it is, seen only by its owner and by admins, until it is shown again
@@ -26,7 +27,13 @@ export default defineAdminHandler(async ({ event }) => {
       unknown
     > | null
     if (!record) throw notFound()
-    if (Boolean(record.hiddenAt) !== hidden) await db.ref(paths.parent).update({ hiddenAt })
+    if (Boolean(record.hiddenAt) === hidden) return { success: true }
+    // A food's copy in its contributor's Own Food is marked the same way, so it
+    // is not simply shared again once its public copy is gone.
+    const writes: Record<string, unknown> = { [`${paths.parent}/hiddenAt`]: hiddenAt }
+    const ownFoodPath = target === 'food' ? await linkedOwnFoodPath(record, key) : null
+    if (ownFoodPath) writes[`${ownFoodPath}/hiddenAt`] = hiddenAt
+    await db.ref().update(writes)
     return { success: true }
   }
 

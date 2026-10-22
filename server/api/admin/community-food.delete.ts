@@ -3,12 +3,11 @@ import { AdminCommunityFoodDeleteSchema } from '../../types/schemas'
 import { defineAdminHandler } from '../../utils/handler'
 import { validateBody } from '../../utils/validation'
 import { queueThreadRemoval } from '../../utils/community-thread'
-
-const isDatabaseKey = (value: unknown): value is string =>
-  typeof value === 'string' && value !== '' && !/[.#$[\]/]/.test(value)
+import { linkedOwnFoodPath } from '../../utils/community-food'
 
 // Deletes a food and its comments from the community for good. The
-// contributor keeps their own food, unshared.
+// contributor keeps their own food, unshared and hidden from the community, so
+// it is shared again only once its name or values change.
 export default defineAdminHandler(async ({ event }) => {
   const { communityFoodKey } = await validateBody(event, AdminCommunityFoodDeleteSchema)
   const db = getAdminDatabase()
@@ -22,18 +21,12 @@ export default defineAdminHandler(async ({ event }) => {
   const writes: Record<string, unknown> = { [`communityFoods/${communityFoodKey}`]: null }
   await queueThreadRemoval(writes, 'food', communityFoodKey, food.contributorId)
 
-  // Only a pointer that both records agree on is followed, and only to an own
-  // food that exists.
-  if (isDatabaseKey(food.contributorId) && isDatabaseKey(food.ownFoodKey)) {
-    const ownFoodPath = `${food.contributorId}/ownFood/${food.ownFoodKey}`
-    const ownFood = (await db.ref(ownFoodPath).once('value')).val() as Record<
-      string,
-      unknown
-    > | null
-    if (ownFood?.communityKey === communityFoodKey) {
-      writes[`${ownFoodPath}/shared`] = false
-      writes[`${ownFoodPath}/communityKey`] = null
-    }
+  const ownFoodPath = await linkedOwnFoodPath(food, communityFoodKey)
+  if (ownFoodPath) {
+    writes[`${ownFoodPath}/shared`] = false
+    writes[`${ownFoodPath}/communityKey`] = null
+    writes[`${ownFoodPath}/hiddenAt`] =
+      typeof food.hiddenAt === 'number' ? food.hiddenAt : Date.now()
   }
 
   await db.ref().update(writes)

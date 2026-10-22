@@ -75,16 +75,18 @@ export const ADMIN_MODERATION: InjectionKey<AdminModeration> = Symbol('admin-mod
 
 /**
  * A thread as the reader may see it: comments an admin hid stay visible to
- * their author and to admins only. Recomputed when the reader's rights load.
+ * their author, and to admins on the admin page, where they are moderated.
+ * Recomputed when the reader's rights load.
  */
 export const useVisibleThread = <T extends { type: string; authorId?: string; hiddenAt?: number }>(
   entries: Ref<T[]>
 ) => {
   const store = useStore()
+  const onAdminPage = inject(ADMIN_MODERATION, null) !== null
   return computed(() => {
     const reader = {
       id: (store.user as { id?: string } | null)?.id ?? null,
-      isAdmin: store.isAdmin === true
+      isAdmin: onAdminPage && store.isAdmin === true
     }
     return entries.value.filter(
       (entry) => entry.type !== 'comment' || isVisibleTo(entry, entry.authorId, reader)

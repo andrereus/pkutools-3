@@ -56,6 +56,41 @@ beforeEach(() => {
 })
 
 describe('sharing an own food', () => {
+  it('brings a removed food back with its comments once its values are corrected', async () => {
+    seed(
+      { ...OWN_FOOD, shared: true, communityKey: 'community1', hiddenAt: 100 },
+      { community1: { name: 'Protein shake', phe: 12, kcal: 90, hiddenAt: 100, likes: 2 } }
+    )
+    fake.data.communityFoodComments = {
+      community1: { c1: { authorId: 'reader-1', text: 'Phe looks low', createdAt: 50 } }
+    }
+
+    await updateOwnFood(request({ shared: true, note: 'Checked' }))
+    expect(community().community1).toMatchObject({ hiddenAt: 100 })
+    expect(storedOwnFood()).toMatchObject({ hiddenAt: 100 })
+
+    await updateOwnFood(request({ shared: true, phe: 20 }))
+    expect(community().community1).not.toHaveProperty('hiddenAt')
+    expect(community().community1).toMatchObject({ phe: 20, likes: 0 })
+    expect(storedOwnFood()).not.toHaveProperty('hiddenAt')
+    expect(Object.keys(communityComments().community1!)).toContain('c1')
+  })
+
+  it('shares a food PKU Tools took out of the community only once it changed', async () => {
+    seed({ ...OWN_FOOD, hiddenAt: 100 })
+
+    await expect(updateOwnFood(request({ shared: true }))).rejects.toMatchObject({
+      statusCode: 409,
+      data: { code: 'community-food-hidden' }
+    })
+    expect(community()).toEqual({})
+
+    await updateOwnFood(request({ shared: true, phe: 15 }))
+    expect(Object.keys(community())).toHaveLength(1)
+    expect(storedOwnFood()).toMatchObject({ shared: true, phe: 15 })
+    expect(storedOwnFood()).not.toHaveProperty('hiddenAt')
+  })
+
   it('publishes a community entry with zeroed votes', async () => {
     let clock = 200
     vi.spyOn(Date, 'now').mockImplementation(() => clock++)

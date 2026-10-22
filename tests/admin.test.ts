@@ -95,12 +95,12 @@ describe('admin routes', () => {
     expect(fake.data.communityPostComments).toBeUndefined()
   })
 
-  it('deletes a food and its comments and leaves the own food unshared', async () => {
+  it('deletes a food and its comments, leaving the own food unshared and hidden', async () => {
     await deleteFood(requestEvent({ communityFoodKey: 'food1' }))
     expect(fake.data.communityFoods).toBeUndefined()
     expect(fake.data.communityFoodComments).toBeUndefined()
     expect((fake.data['user-1'] as Record<string, unknown>).ownFood).toEqual({
-      own1: { name: 'Rice cake', shared: false }
+      own1: { name: 'Rice cake', shared: false, hiddenAt: expect.any(Number) }
     })
     expect(fake.data['user-2']).toBeUndefined()
   })
@@ -125,6 +125,18 @@ describe('hiding', () => {
 
     await setHidden(requestEvent({ target: 'post', key: 'post1', hidden: false }))
     expect(posts().post1).not.toHaveProperty('hiddenAt')
+  })
+
+  it('hides a food together with its contributor’s own copy, and shows both again', async () => {
+    const ownFood = () =>
+      (fake.data['user-1'] as { ownFood: Record<string, Record<string, unknown>> }).ownFood.own1
+    await setHidden(requestEvent({ target: 'food', key: 'food1', hidden: true }))
+    expect(foods().food1).toMatchObject({ hiddenAt: expect.any(Number) })
+    expect(ownFood()).toMatchObject({ shared: true, hiddenAt: foods().food1!.hiddenAt })
+
+    await setHidden(requestEvent({ target: 'food', key: 'food1', hidden: false }))
+    expect(foods().food1).not.toHaveProperty('hiddenAt')
+    expect(ownFood()).not.toHaveProperty('hiddenAt')
   })
 
   it('moves a hidden comment from the comment count to the hidden one, and back', async () => {

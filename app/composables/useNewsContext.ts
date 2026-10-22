@@ -289,9 +289,10 @@ export const useNewsContext = (options: { extraPosts?: Ref<Post[]> } = {}) => {
   // result as never.
   const user = computed(() => store.user as { id?: string } | null)
   const userIsAuthenticated = computed(() => user.value !== null)
-  // Hidden content reaches only its owner and admins, here and in everything
-  // built from these lists: the feed, notifications and the diary.
-  const reader = computed(() => ({ id: user.value?.id ?? null, isAdmin: store.isAdmin === true }))
+  // Hidden content reaches only its owner, here and in everything built from
+  // these lists: the feed, notifications and the diary. Admins see here what
+  // everyone sees, and hidden content on the admin page.
+  const reader = computed(() => ({ id: user.value?.id ?? null, isAdmin: false }))
   const foods = computed(() =>
     (store.communityFoods as Food[]).filter((food) =>
       isVisibleTo(food, food.contributorId, reader.value)

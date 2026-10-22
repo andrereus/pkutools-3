@@ -29,6 +29,7 @@ const isOwnFood = ref(false)
 const isCommunityFood = ref(false)
 const communityFoodKey = ref(null)
 const isSharedOwnFood = ref(false)
+const isRemovedOwnFood = ref(false)
 const ownFoodCommunityKey = ref(null)
 const selectedOwnFoodKey = ref(null)
 const advancedFood = ref(null)
@@ -129,6 +130,7 @@ const loadItem = (item) => {
   isCommunityFood.value = item.isCommunityFood || false
   communityFoodKey.value = item.communityFoodKey || null
   isSharedOwnFood.value = item.isShared || false
+  isRemovedOwnFood.value = item.isRemoved || false
   ownFoodCommunityKey.value = item.ownFoodCommunityKey || null
   selectedOwnFoodKey.value = item.ownFoodKey || null
   phe.value = item.phe
@@ -279,6 +281,7 @@ const buildFuseIndex = () => {
             isOwnFood: true,
             isCommunityFood: false,
             isShared: item.shared || false,
+            isRemoved: isHiddenByAdmin(item),
             ownFoodCommunityKey: item.communityKey || null,
             ownFoodKey: item['.key']
           }))
@@ -552,16 +555,25 @@ defineOgImage('Default', {
                 </span>
                 <!-- Own food indicator badge -->
                 <span
-                  v-if="item.isOwnFood && !item.isShared"
+                  v-if="item.isOwnFood && !item.isShared && !item.isRemoved"
                   class="inline-flex items-center align-middle rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-sky-900/30 dark:text-sky-300"
                   :title="$t('food-search.own-food-indicator')"
                 >
                   <LucideUser class="h-3 w-3 mr-1" />
                   {{ $t('food-search.own-food') }}
                 </span>
+                <!-- Own food PKU Tools took out of the community -->
+                <span
+                  v-if="item.isOwnFood && item.isRemoved"
+                  class="inline-flex items-center align-middle rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+                  :title="$t('community.removed')"
+                >
+                  <LucideEyeOff class="h-3 w-3" aria-hidden="true" />
+                  <span class="sr-only">{{ $t('community.removed') }}</span>
+                </span>
                 <!-- Shared own food indicator badge -->
                 <span
-                  v-if="item.isOwnFood && item.isShared"
+                  v-else-if="item.isOwnFood && item.isShared"
                   class="inline-flex items-center align-middle rounded-full bg-teal-100 px-2 py-0.5 text-xs font-medium text-teal-800 dark:bg-teal-900/30 dark:text-teal-300"
                   :title="$t('community.shared')"
                 >
@@ -668,6 +680,15 @@ defineOgImage('Default', {
 
         <FoodNote v-if="note" class="mt-3" :note="note" />
 
+        <p v-if="isOwnFood && isRemovedOwnFood" class="mt-3">
+          <span
+            class="inline-flex items-center gap-1 rounded bg-gray-200 px-1.5 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+          >
+            <LucideEyeOff class="h-3 w-3" aria-hidden="true" />
+            {{ $t('community.removed') }}
+          </span>
+        </p>
+
         <!-- Votes, or the figures on the reader's own shared food, and the
              comment thread: the same row as in News -->
         <CommunityFoodActions
@@ -686,7 +707,13 @@ defineOgImage('Default', {
         <!-- An own food that is not shared yet: the same hint as in Own Food,
              with the way there as its link -->
         <i18n-t
-          v-if="isOwnFood && !isSharedOwnFood && userIsAuthenticated && canShareSelectedOwnFood"
+          v-if="
+            isOwnFood &&
+            !isSharedOwnFood &&
+            !isRemovedOwnFood &&
+            userIsAuthenticated &&
+            canShareSelectedOwnFood
+          "
           keypath="own-food.share-hint"
           tag="p"
           scope="global"

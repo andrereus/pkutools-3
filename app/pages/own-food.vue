@@ -7,7 +7,7 @@ import { h, ref, computed, watch, onMounted } from 'vue'
 import { dataTableFeatures, valueUpdater } from '@/lib/table-utils'
 import DataTableColumnHeader from '@/components/DataTableColumnHeader.vue'
 import DataTablePagination from '@/components/DataTablePagination.vue'
-import { LucideStickyNote, LucideUsers } from '@lucide/vue'
+import { LucideEyeOff, LucideStickyNote, LucideUsers } from '@lucide/vue'
 import {
   scaleToWeight,
   isReported,
@@ -17,6 +17,7 @@ import {
   proteinPheReference
 } from '../utils/nutrition'
 import { isShareableSource } from '../utils/community-food'
+import { isHiddenByAdmin } from '../utils/hidden-content'
 import { hasMaterialFoodChange } from '#shared/utils/material-food'
 
 const store = useStore()
@@ -83,9 +84,23 @@ const formTitle = computed(() => {
 // An AI estimate is a guess, so a new share is never offered for it. A legacy
 // record that is already shared still needs the control so it can be withdrawn.
 const canShareEditedItem = computed(() => isShareableSource(editedItem.value.source))
-const wasEditedItemShared = computed(() => {
-  if (!editedKey.value) return false
-  return ownFood.value.find((item) => item['.key'] === editedKey.value)?.shared === true
+const storedEditedItem = computed(() =>
+  editedKey.value ? (ownFood.value.find((item) => item['.key'] === editedKey.value) ?? null) : null
+)
+const wasEditedItemShared = computed(() => storedEditedItem.value?.shared === true)
+
+// PKU Tools took this food out of the community. A changed name or values
+// brings it back, as the server applies it too; unchanged, a food without a
+// public copy cannot be shared again, while one with a copy can be withdrawn.
+const isEditedItemRemoved = computed(() => isHiddenByAdmin(storedEditedItem.value))
+const isShareLocked = computed(
+  () =>
+    isEditedItemRemoved.value &&
+    !wasEditedItemShared.value &&
+    !hasMaterialFoodChange(storedEditedItem.value, editedItem.value)
+)
+watch(isShareLocked, (locked) => {
+  if (locked) editedItem.value.shared = false
 })
 
 // Offer the icon update once the name is edited away from what the current
@@ -179,17 +194,27 @@ const columns = [
         iconOrEmoji,
         h('span', { class: 'wrap-anywhere' }, [
           item.name,
-          item.shared
+          isHiddenByAdmin(item)
             ? h(
                 'span',
                 {
                   class:
-                    'inline-flex items-center align-middle rounded-full bg-teal-100 px-2 py-1 text-xs font-medium text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 ml-1',
-                  title: t('community.shared')
+                    'inline-flex items-center align-middle rounded-full bg-gray-200 px-2 py-1 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200 ml-1',
+                  title: t('community.removed')
                 },
-                [h(LucideUsers, { class: 'h-3.5 w-3.5' })]
+                [h(LucideEyeOff, { class: 'h-3.5 w-3.5' })]
               )
-            : null,
+            : item.shared
+              ? h(
+                  'span',
+                  {
+                    class:
+                      'inline-flex items-center align-middle rounded-full bg-teal-100 px-2 py-1 text-xs font-medium text-teal-800 dark:bg-teal-900/30 dark:text-teal-300 ml-1',
+                    title: t('community.shared')
+                  },
+                  [h(LucideUsers, { class: 'h-3.5 w-3.5' })]
+                )
+              : null,
           item.note
             ? h(
                 'span',
@@ -901,7 +926,7 @@ defineOgImage('Default', {
                   v-model="editedItem.shared"
                   name="shared"
                   type="checkbox"
-                  :disabled="!canShareEditedItem && !editedItem.shared"
+                  :disabled="(!canShareEditedItem && !editedItem.shared) || isShareLocked"
                   class="h-4 w-4 rounded border-gray-300 text-sky-600 focus:ring-sky-600 dark:border-gray-600 dark:bg-gray-800"
                 />
               </div>
@@ -909,7 +934,10 @@ defineOgImage('Default', {
                 <label for="shared" class="font-medium text-gray-900 dark:text-gray-300">
                   {{ $t('community.share') }}
                 </label>
-                <p v-if="canShareEditedItem" class="text-gray-500 dark:text-gray-400">
+                <p v-if="isEditedItemRemoved" class="text-gray-500 dark:text-gray-400">
+                  {{ $t('community.removedShareHint') }}
+                </p>
+                <p v-else-if="canShareEditedItem" class="text-gray-500 dark:text-gray-400">
                   {{ $t('community.shareLanguage', { language: $t('app.language-name') }) }}
                 </p>
                 <p v-else class="text-gray-500 dark:text-gray-400">
@@ -917,6 +945,15 @@ defineOgImage('Default', {
                 </p>
               </div>
             </div>
+
+            <p v-if="isEditedItemRemoved" class="mt-3">
+              <span
+                class="inline-flex items-center gap-1 rounded bg-gray-200 px-1.5 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+              >
+                <LucideEyeOff class="h-3 w-3" aria-hidden="true" />
+                {{ $t('community.removed') }}
+              </span>
+            </p>
 
             <!-- Figures and the comment thread of a shared food, as in News -->
             <CommunityFoodActions
@@ -989,10 +1026,19 @@ defineOgImage('Default', {
           {{ $t('common.phe-mismatch-short', { action: $t('common.edit') }) }}
         </p>
         <p
-          v-if="!editedItem.shared && canShareEditedItem"
+          v-if="!editedItem.shared && canShareEditedItem && !isEditedItemRemoved"
           class="mt-3 text-xs text-gray-500 sm:text-sm dark:text-gray-400"
         >
           {{ $t('own-food.share-hint', { action: $t('common.edit') }) }}
+        </p>
+
+        <p v-if="isEditedItemRemoved" class="mt-3">
+          <span
+            class="inline-flex items-center gap-1 rounded bg-gray-200 px-1.5 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-200"
+          >
+            <LucideEyeOff class="h-3 w-3" aria-hidden="true" />
+            {{ $t('community.removed') }}
+          </span>
         </p>
 
         <!-- Figures and the comment thread of a shared food, as in News -->
