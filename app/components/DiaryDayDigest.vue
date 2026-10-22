@@ -204,7 +204,7 @@ const pillClass =
             pillClass,
             isWarning(notice)
               ? 'bg-amber-50 text-gray-700 ring-1 ring-amber-200 hover:bg-amber-100 dark:bg-amber-950/30 dark:text-gray-300 dark:ring-amber-900 dark:hover:bg-amber-950/50'
-              : 'bg-black/2 text-gray-700 hover:bg-black/4 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15'
+              : 'bg-black/3 text-gray-700 hover:bg-black/6 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15'
           ]"
         >
           <span class="shrink-0" aria-hidden="true">🔔</span>
@@ -224,7 +224,7 @@ const pillClass =
           :title="textFor(entry)"
           :class="[
             pillClass,
-            'bg-black/2 text-gray-700 hover:bg-black/4 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15'
+            'bg-black/3 text-gray-700 hover:bg-black/6 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/15'
           ]"
         >
           <span class="shrink-0" aria-hidden="true">{{ emojiFor(entry) }}</span>
