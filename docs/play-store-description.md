@@ -2,7 +2,7 @@
 
 Paste into **Google Play Console → Main store listing → Full description**, one language at a time.
 
-The opening line and the eight bullets are the app's own strings — `app.long-description` and `features.*` in `i18n/locales/`. Change them there first and mirror the change here, so the listing and the app cannot drift apart. Only the closing "Also included" line is written for the store alone.
+The opening line and the nine bullets are the app's own strings — `app.long-description` and `features.*` in `i18n/locales/`. Change them there first and mirror the change here, so the listing and the app cannot drift apart. Only the closing "Also included" line is written for the store alone.
 
 ## English
 
@@ -17,6 +17,7 @@ This app is intended for people with PKU. It combines a scale, nutritional table
 📖 Diet Report: Charts and summary of your diet over time.
 📈 Blood Values: Track Phe and tyrosine in charts.
 🍎 Own & Community Foods: Save custom foods, find them in search and share with the community.
+💬 News: Posts, likes and comments from the PKU community in your language.
 
 Also included: multiple languages (English, German, Spanish, French), real-time sync across devices and dark mode.
 ```
@@ -34,6 +35,7 @@ Diese App richtet sich an Menschen mit PKU. Sie kombiniert Waage, Nährwerttabel
 📖 Diätbericht: Diagramme und Zusammenfassung deiner Ernährung über die Zeit.
 📈 Blutwerte: Phe und Tyrosin in Diagrammen verfolgen.
 🍎 Eigene & Community-Lebensmittel: Eigene Lebensmittel speichern, in der Suche finden und mit der Community teilen.
+💬 Neuigkeiten: Beiträge, Likes und Kommentare der PKU-Community in deiner Sprache.
 
 Außerdem enthalten: Mehrsprachigkeit (Englisch, Deutsch, Spanisch, Französisch), Echtzeit-Synchronisation zwischen Geräten und Dark Mode.
 ```
@@ -51,6 +53,7 @@ Esta aplicación está dirigida a personas con fenilcetonuria. Combina báscula,
 📖 Informe de dieta: Gráficos y resumen de tu dieta a lo largo del tiempo.
 📈 Valores de sangre: Rastrea Phe y tirosina en gráficos.
 🍎 Alimentos propios y de la comunidad: Guarda alimentos, encuéntralos en la búsqueda y comparte con la comunidad.
+💬 Novedades: Publicaciones, me gusta y comentarios de la comunidad PKU en tu idioma.
 
 También incluido: varios idiomas (inglés, alemán, español, francés), sincronización en tiempo real entre dispositivos y modo oscuro.
 ```
@@ -68,6 +71,7 @@ Cette application s'adresse aux personnes atteintes de PKU. Elle combine balance
 📖 Rapport de régime: Graphiques et résumé de ton régime dans le temps.
 📈 Valeurs sanguines: Suis Phe et tyrosine dans des graphiques.
 🍎 Aliments personnels et communautaires: Enregistre des aliments, retrouve-les dans la recherche et partage avec la communauté.
+💬 Actualités: Publications, j’aime et commentaires de la communauté PKU dans ta langue.
 
 Également inclus: plusieurs langues (anglais, allemand, espagnol, français), synchronisation en temps réel entre les appareils et mode sombre.
 ```

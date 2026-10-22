@@ -14,6 +14,7 @@ PKU Tools is an All-in-One Nutrition App for PKU — a Progressive Web App (PWA)
 - **📖 Diet Report**: Charts and sortable tables of dietary patterns over time, plus an averages card for a period you pick (CSV export)
 - **📈 Blood Values**: Track and visualize Phe and tyrosine lab results with interactive charts (export as CSV, SVG, or PNG)
 - **🍎 Own & Community Foods**: Save custom food entries (included in search) and share with the PKU community (voting and quality control)
+- **💬 News**: Posts, likes and comments from the PKU community in your language, with an optional community name and notices for new comments, plus app updates
 
 ### User Experience
 

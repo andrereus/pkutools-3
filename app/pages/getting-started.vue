@@ -1,4 +1,5 @@
 <script setup>
+import { getAuth, updateProfile } from 'firebase/auth'
 import { useStore } from '../../stores/index'
 
 const store = useStore()
@@ -6,8 +7,10 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
 const { updateConsent, updateGettingStarted, updateSettings } = useApi()
+const { handleError } = useErrorHandler()
+const { current: currentCommunityName, save: saveCommunityName } = useCommunityName()
 
-const totalSteps = 4
+const totalSteps = 5
 const currentStep = ref(1)
 const saving = ref(false)
 
@@ -15,11 +18,28 @@ const saving = ref(false)
 const consentGiven = ref(store.settings?.healthDataConsent ?? false)
 const emailConsent = ref(store.settings?.emailConsent ?? false)
 
-// Step 2: Daily targets
+// Step 2: Names. Each field shows the stored name until it is edited, since
+// the community name may arrive after the page opens.
+const usernameDraft = ref(null)
+const communityNameDraft = ref(null)
+const usernameInput = computed({
+  get: () => usernameDraft.value ?? store.user?.name ?? '',
+  set: (value) => {
+    usernameDraft.value = value
+  }
+})
+const communityNameInput = computed({
+  get: () => communityNameDraft.value ?? currentCommunityName.value ?? '',
+  set: (value) => {
+    communityNameDraft.value = value
+  }
+})
+
+// Step 3: Daily targets
 const maxPhe = ref(store.settings?.maxPhe ?? null)
 const maxKcal = ref(store.settings?.maxKcal ?? null)
 
-// Step 3: Blood values
+// Step 4: Blood values
 const labUnit = ref(store.settings?.labUnit ?? 'mgdl')
 const bloodPheMin = ref(store.settings?.bloodPheMin ?? null)
 const bloodPheMax = ref(store.settings?.bloodPheMax ?? null)
@@ -124,6 +144,31 @@ const handleConsentDeclined = async () => {
   }
 }
 
+// The name is kept in the account's sign-in profile, as in Settings. The
+// community name is saved only when it changed, and the step stays open when
+// it cannot be, e.g. because it is taken.
+const saveNames = async () => {
+  saving.value = true
+  try {
+    const name = usernameInput.value.trim() || null
+    if (name !== (store.user?.name || null)) {
+      const user = getAuth().currentUser
+      if (!user) {
+        notifications.error(t('app.auth-error'))
+        return
+      }
+      await updateProfile(user, { displayName: name })
+      // Profile updates don't trigger onAuthStateChanged.
+      store.user = { ...store.user, name }
+    }
+    if (await saveCommunityName(communityNameInput.value)) currentStep.value = 3
+  } catch (error) {
+    handleError(error, 'update username')
+  } finally {
+    saving.value = false
+  }
+}
+
 const saveTargets = async () => {
   saving.value = true
   try {
@@ -131,7 +176,7 @@ const saveTargets = async () => {
       maxPhe: maxPhe.value || null,
       maxKcal: maxKcal.value || null
     })
-    currentStep.value = 3
+    currentStep.value = 4
   } catch (error) {
     console.error('Save settings error:', error)
   } finally {
@@ -149,7 +194,7 @@ const saveBloodValues = async () => {
       bloodTyrMin: bloodTyrMin.value || null,
       bloodTyrMax: bloodTyrMax.value || null
     })
-    currentStep.value = 4
+    currentStep.value = 5
   } catch (error) {
     console.error('Save settings error:', error)
   } finally {
@@ -290,9 +335,50 @@ defineOgImage('Default', {
       </div>
     </div>
 
-    <!-- Step 2: Daily Targets -->
+    <!-- Step 2: Names -->
     <div
       v-if="currentStep === 2"
+      class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
+    >
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+        {{ $t('settings.change-username') }}
+      </h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+        {{ $t('settings.change-username-info') }}
+      </p>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        {{ $t('getting-started.optional-hint') }}
+      </p>
+
+      <TextInput
+        v-model="usernameInput"
+        id-name="username"
+        :label="$t('settings.username')"
+        class="mb-4"
+      />
+      <TextInput
+        v-model="communityNameInput"
+        id-name="community-name"
+        :label="$t('community.name')"
+        class="mb-1"
+      />
+      <p class="mb-6 text-sm text-gray-600 dark:text-gray-400">
+        {{ $t('community.name-help') }}
+      </p>
+
+      <div class="flex justify-between">
+        <SecondaryButton :text="$t('getting-started.back')" @click="currentStep = 1" />
+        <PrimaryButton
+          :text="$t('getting-started.continue')"
+          :loading="saving"
+          @click="saveNames"
+        />
+      </div>
+    </div>
+
+    <!-- Step 3: Daily Targets -->
+    <div
+      v-if="currentStep === 3"
       class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
     >
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -312,7 +398,7 @@ defineOgImage('Default', {
       </div>
 
       <div class="flex justify-between">
-        <SecondaryButton :text="$t('getting-started.back')" @click="currentStep = 1" />
+        <SecondaryButton :text="$t('getting-started.back')" @click="currentStep = 2" />
         <PrimaryButton
           :text="$t('getting-started.continue')"
           :loading="saving"
@@ -321,9 +407,9 @@ defineOgImage('Default', {
       </div>
     </div>
 
-    <!-- Step 3: Blood Values -->
+    <!-- Step 4: Blood Values -->
     <div
-      v-if="currentStep === 3"
+      v-if="currentStep === 4"
       class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
     >
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -371,7 +457,7 @@ defineOgImage('Default', {
       </div>
 
       <div class="flex justify-between">
-        <SecondaryButton :text="$t('getting-started.back')" @click="currentStep = 2" />
+        <SecondaryButton :text="$t('getting-started.back')" @click="currentStep = 3" />
         <PrimaryButton
           :text="$t('getting-started.continue')"
           :loading="saving"
@@ -380,9 +466,9 @@ defineOgImage('Default', {
       </div>
     </div>
 
-    <!-- Step 4: All Set -->
+    <!-- Step 5: All Set -->
     <div
-      v-if="currentStep === 4"
+      v-if="currentStep === 5"
       class="rounded-xl bg-white dark:bg-gray-900 p-6 shadow-sm ring-1 ring-gray-200 dark:ring-gray-700"
     >
       <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -443,7 +529,7 @@ defineOgImage('Default', {
       </div>
 
       <div class="flex justify-between">
-        <SecondaryButton :text="$t('getting-started.back')" @click="currentStep = 3" />
+        <SecondaryButton :text="$t('getting-started.back')" @click="currentStep = 4" />
         <PrimaryButton :text="$t('getting-started.go-diary')" :loading="saving" @click="finish" />
       </div>
     </div>
