@@ -93,10 +93,17 @@ const wasEditedItemShared = computed(() => storedEditedItem.value?.shared === tr
 // brings it back, as the server applies it too; unchanged, a food without a
 // public copy cannot be shared again, while one with a copy can be withdrawn.
 const isEditedItemRemoved = computed(() => isHiddenByAdmin(storedEditedItem.value))
+// The server counts a public copy only when both records point at each other.
+const hasPublicCopy = computed(
+  () =>
+    wasEditedItemShared.value &&
+    editedCommunityFood.value?.contributorId === store.user?.id &&
+    editedCommunityFood.value?.ownFoodKey === editedKey.value
+)
 const isShareLocked = computed(
   () =>
     isEditedItemRemoved.value &&
-    !wasEditedItemShared.value &&
+    !hasPublicCopy.value &&
     !hasMaterialFoodChange(storedEditedItem.value, editedItem.value)
 )
 watch(isShareLocked, (locked) => {
@@ -934,7 +941,10 @@ defineOgImage('Default', {
                 <label for="shared" class="font-medium text-gray-900 dark:text-gray-300">
                   {{ $t('community.share') }}
                 </label>
-                <p v-if="isEditedItemRemoved" class="text-gray-500 dark:text-gray-400">
+                <p
+                  v-if="isEditedItemRemoved && canShareEditedItem"
+                  class="text-gray-500 dark:text-gray-400"
+                >
                   {{ $t('community.removedShareHint') }}
                 </p>
                 <p v-else-if="canShareEditedItem" class="text-gray-500 dark:text-gray-400">
