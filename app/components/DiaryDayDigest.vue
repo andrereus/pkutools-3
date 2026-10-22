@@ -194,8 +194,8 @@ const pillClass =
     </div>
 
     <ul class="mt-2 flex flex-wrap gap-2">
-      <!-- Notifications: amber only for a rating warning, otherwise the gray
-           of the other pills -->
+      <!-- Notifications: amber only for a rating warning, otherwise the
+           see-through gray of the other pills, which shows on every theme -->
       <li v-for="notice in visibleNotices" :key="notice.key" class="max-w-[calc(50%-0.25rem)]">
         <NuxtLink
           :to="noticeLink(notice)"
@@ -204,7 +204,7 @@ const pillClass =
             pillClass,
             isWarning(notice)
               ? 'bg-amber-50 text-gray-700 ring-1 ring-amber-200 hover:bg-amber-100 dark:bg-amber-950/30 dark:text-gray-300 dark:ring-amber-900 dark:hover:bg-amber-950/50'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+              : 'bg-black/5 text-gray-900 hover:bg-black/10 dark:bg-white/15 dark:text-gray-300 dark:hover:bg-white/10'
           ]"
         >
           <span class="shrink-0" aria-hidden="true">🔔</span>
@@ -224,7 +224,7 @@ const pillClass =
           :title="textFor(entry)"
           :class="[
             pillClass,
-            'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'
+            'bg-black/5 text-gray-900 hover:bg-black/10 dark:bg-white/15 dark:text-gray-300 dark:hover:bg-white/10'
           ]"
         >
           <span class="shrink-0" aria-hidden="true">{{ emojiFor(entry) }}</span>
