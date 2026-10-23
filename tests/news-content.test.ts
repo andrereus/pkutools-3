@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { computed, reactive, ref, watch } from 'vue'
+import changelog from '../content/changelog.json'
 import { useNewsBadge } from '../app/composables/useNewsBadge'
 import { useNews } from '../app/composables/useNews'
 import {
@@ -27,6 +28,12 @@ beforeEach(() => {
   vi.stubGlobal('onMounted', () => {})
   vi.stubGlobal('onUnmounted', () => {})
   vi.stubGlobal('useI18n', () => ({ locale: ref('en') }))
+  vi.stubGlobal('useRoute', () => ({ path: '/news' }))
+  // The server's answers: the whole changelog, or only its newest note.
+  vi.stubGlobal('useFetch', (url: string) => ({
+    data: ref(url === '/api/changelog' ? changelog : { at: 0, revision: 0 }),
+    refresh: vi.fn()
+  }))
 })
 afterEach(() => vi.unstubAllGlobals())
 
@@ -153,7 +160,6 @@ describe('contributor feedback in News', () => {
       lastSeenRevision: ref(999)
     }
     vi.stubGlobal('useNewsSeen', () => seen)
-    vi.stubGlobal('useRuntimeConfig', () => ({ public: {} }))
     const { notices, commentEntries, items } = useNews()
     const { hasUnread } = useNewsBadge()
     expect(notices.value).toHaveLength(1)

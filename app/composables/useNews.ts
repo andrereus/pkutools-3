@@ -1,31 +1,10 @@
-import changelog from '../../content/changelog.json'
 import { useNewsContext, type NewsEntry } from './useNewsContext'
+import { useChangelogNotes } from './useChangelogNotes'
 import { newsEntryTimestamp } from '../utils/news-grouping'
 
-// Merges the authored changelog with community and diary-derived entries.
-// Only the News page imports this module, keeping changelog content out of the
-// global layout bundle.
+// Merges the release notes with community and diary-derived entries.
 
-interface ChangelogText {
-  title: string
-  body: string
-}
-
-export interface ChangelogEntry {
-  /** Stable identity and monotonic publication order. */
-  revision: number
-  /** Publication instant used for display and chronological ordering. */
-  publishedAt: string
-  category: 'new' | 'improved' | 'tip'
-  en: ChangelogText
-  de?: ChangelogText
-  es?: ChangelogText
-  fr?: ChangelogText
-}
-
-const entries = changelog as ChangelogEntry[]
-
-/** The whole page, changelog included. Only the news page pays for this. */
+/** The whole page, release notes included. */
 export const useNews = () => {
   const {
     locale,
@@ -40,9 +19,10 @@ export const useNews = () => {
     hasHiddenFoods,
     userIsAuthenticated
   } = useNewsContext()
+  const notes = useChangelogNotes({ server: true })
 
   const noteEntries = computed<NewsEntry[]>(() =>
-    entries.map((entry) => {
+    notes.value.map((entry) => {
       // English is the only language a note must have. The rest fall back to it,
       // so one can be translated months later without holding up a release.
       const text = entry[locale.value as 'de' | 'es' | 'fr'] ?? entry.en

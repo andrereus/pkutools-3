@@ -4,24 +4,36 @@ import { isUnread } from '../utils/news-grouping'
 /**
  * Whether the bell shows a dot — for the header, on every page.
  *
- * The changelog reduces to its newest publication date and revision at build
- * time rather than being imported here, so a file that only grows is not
- * shipped to someone looking at their diary.
+ * Of the release notes it only asks the server for the newest one's time and
+ * revision, on start and on every page change, so a note published while the
+ * app stays open still lights the dot, without loading every note everywhere.
  *
  * Rating warnings do not trigger a dot; new comments on the reader's food or post do.
  */
 export const useNewsBadge = () => {
   const { foodEntries, postEntries, milestoneEntries, commentEntries } = useNewsContext()
   const seenState = useNewsSeen()
-  const config = useRuntimeConfig().public
-  const newestNoteAt = Number(config.changelogLatestAt ?? 0)
-  const newestNoteRevision = Number(config.changelogLatestRevision ?? 0)
+  const { data: latestNote, refresh } = useFetch<{ at: number; revision: number }>(
+    '/api/changelog/latest',
+    {
+      key: 'changelog-latest',
+      server: false,
+      dedupe: 'defer',
+      default: () => ({ at: 0, revision: 0 })
+    }
+  )
+  const route = useRoute()
+  watch(
+    () => route.path,
+    () => refresh()
+  )
 
   const hasUnread = computed(() => {
+    const newestNoteAt = latestNote.value.at
     const newestNote = {
       key: 'latest-note',
       createdAt: newestNoteAt,
-      revision: newestNoteRevision
+      revision: latestNote.value.revision
     }
 
     // Wait for browser storage to avoid a hydration mismatch.

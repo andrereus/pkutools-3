@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { NewsEntry, Notice } from '../app/composables/useNewsContext'
 import { useNewsBadge } from '../app/composables/useNewsBadge'
 import { streakMilestones } from '../app/utils/milestones'
@@ -17,6 +17,8 @@ const seen = {
   lastReadAt: ref<number | null>(null),
   lastSeenRevision: ref<number | null>(null)
 }
+// The server's newest release note.
+const latestNote = ref({ at: 0, revision: 0 })
 
 vi.mock('../app/composables/useNewsContext', () => ({ useNewsContext: () => context }))
 
@@ -29,9 +31,12 @@ beforeEach(() => {
   seen.ready.value = true
   seen.lastReadAt.value = null
   seen.lastSeenRevision.value = null
+  latestNote.value = { at: 0, revision: 0 }
   vi.stubGlobal('computed', computed)
+  vi.stubGlobal('watch', watch)
   vi.stubGlobal('useNewsSeen', () => seen)
-  vi.stubGlobal('useRuntimeConfig', () => ({ public: {} }))
+  vi.stubGlobal('useRoute', () => ({ path: '/diary' }))
+  vi.stubGlobal('useFetch', () => ({ data: latestNote, refresh: vi.fn() }))
 })
 
 afterEach(() => vi.unstubAllGlobals())
@@ -119,9 +124,7 @@ describe('News unread badge', () => {
   })
 
   it('preserves release-note notifications', () => {
-    vi.stubGlobal('useRuntimeConfig', () => ({
-      public: { changelogLatestAt: 100, changelogLatestRevision: 1 }
-    }))
+    latestNote.value = { at: 100, revision: 1 }
     context.notices.value = [hiddenNotice]
     const { hasUnread } = useNewsBadge()
     expect(hasUnread.value).toBe(true)

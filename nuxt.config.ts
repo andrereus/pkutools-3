@@ -1,22 +1,6 @@
 import tailwindcss from '@tailwindcss/vite'
 import { defineOrganization } from 'nuxt-schema-org/schema'
-import changelog from './content/changelog.json'
 import { accentColorInitScript } from './shared/utils/accent-color'
-
-// The two release-note facts the header needs, resolved once at build time.
-//
-// The header draws a dot when something is unread. Time covers normal
-// chronological publication; revision catches a note deployed behind that
-// time. Reading either from the changelog in the layout would pull the whole
-// growing file into every page, so only these two numbers cross that boundary.
-const changelogLatestAt = changelog.reduce(
-  (latest, entry) => Math.max(latest, new Date(entry.publishedAt).getTime()),
-  0
-)
-const changelogLatestRevision = changelog.reduce(
-  (latest, entry) => Math.max(latest, entry.revision),
-  0
-)
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -139,9 +123,7 @@ export default defineNuxtConfig({
       firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
       firebaseAppId: process.env.FIREBASE_APP_ID,
       firebaseDatabaseURL: process.env.FIREBASE_DATABASE_URL,
-      firebaseAppCheckSiteKey: process.env.FIREBASE_APP_CHECK_SITE_KEY,
-      changelogLatestAt,
-      changelogLatestRevision
+      firebaseAppCheckSiteKey: process.env.FIREBASE_APP_CHECK_SITE_KEY
     }
   },
   i18n: {
