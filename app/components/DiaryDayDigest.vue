@@ -1,7 +1,6 @@
 <script setup>
 import { format } from 'date-fns'
 import { entriesOfDay, entriesOfToday } from '../utils/day-digest'
-import { isUnread } from '../utils/news-grouping'
 
 // What happened on a diary day besides the log, as compact pills that each
 // open the item in News, so an empty day is not a blank page. On today the
@@ -32,7 +31,7 @@ const {
 const seenState = useNewsSeen()
 const changelog = useChangelogNotes()
 
-// Read state is browser-local; until it has loaded, nothing counts as unread.
+// What the reader has seen in News; until it has loaded, no update arrived late.
 const seen = computed(() =>
   seenState.ready.value
     ? { lastReadAt: seenState.lastReadAt.value, lastSeenRevision: seenState.lastSeenRevision.value }
@@ -62,15 +61,6 @@ const noticeText = (notice) => {
 // A food that collects dislikes or is hidden needs checking; a new comment
 // does not.
 const isWarning = (notice) => !notice.postKey && (notice.hasNegativeFeedback || notice.isHidden)
-
-// Unread as in News and the bell: newer than the reader's last News visit,
-// for notices as for the day's items. Viewing the diary marks nothing as read.
-// A rating warning has no moment to be new, so amber is its only mark.
-const isNoticeUnread = (notice) =>
-  !!seen.value &&
-  !!notice.pendingCommentAt &&
-  isUnread({ key: notice.key, createdAt: notice.pendingCommentAt }, seen.value)
-const isEntryUnread = (entry) => !!seen.value && isUnread(entry, seen.value)
 
 const noticeLink = (notice) =>
   localePath(
@@ -209,12 +199,6 @@ const pillClass =
         >
           <span class="shrink-0" aria-hidden="true">🔔</span>
           <span class="min-w-0 truncate">{{ noticeText(notice) }}</span>
-          <span
-            v-if="isNoticeUnread(notice)"
-            class="h-2 w-2 shrink-0 rounded-full bg-sky-500 dark:bg-sky-400"
-          >
-            <span class="sr-only">{{ $t('news.unread-item') }}</span>
-          </span>
         </NuxtLink>
       </li>
 
@@ -242,12 +226,6 @@ const pillClass =
             />
             <LucideMessageCircle v-else class="h-3.5 w-3.5" aria-hidden="true" />
             {{ figure.count }}
-          </span>
-          <span
-            v-if="isEntryUnread(entry)"
-            class="h-2 w-2 shrink-0 rounded-full bg-sky-500 dark:bg-sky-400"
-          >
-            <span class="sr-only">{{ $t('news.unread-item') }}</span>
           </span>
         </NuxtLink>
       </li>
