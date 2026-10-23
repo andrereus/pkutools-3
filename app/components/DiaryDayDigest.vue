@@ -8,7 +8,11 @@ import { entriesOfDay, entriesOfToday } from '../utils/day-digest'
 const props = defineProps({
   /** The diary day, as yyyy-MM-dd. */
   date: { type: String, required: true },
-  isToday: { type: Boolean, default: false }
+  isToday: { type: Boolean, default: false },
+  /** The day's posts, loaded by the diary. */
+  posts: { type: Array, default: () => [] },
+  /** The release notes, loaded by the diary. */
+  notes: { type: Array, default: () => [] }
 })
 
 const NOTICE_LIMIT = 2
@@ -18,7 +22,7 @@ const NOTE_EMOJI = { new: '✨', improved: '🔧', tip: '💡' }
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 // The day's posts load for this day only; the feed holds just the newest.
-const dayPosts = useDayPosts(toRef(props, 'date'), toRef(props, 'isToday'))
+const dayPosts = toRef(props, 'posts')
 const {
   foodEntries,
   postEntries,
@@ -29,7 +33,7 @@ const {
   userIsAuthenticated
 } = useNewsContext({ extraPosts: dayPosts })
 const seenState = useNewsSeen()
-const changelog = useChangelogNotes()
+const changelog = toRef(props, 'notes')
 
 // What the reader has seen in News; until it has loaded, no update arrived late.
 const seen = computed(() =>

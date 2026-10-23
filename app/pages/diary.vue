@@ -645,6 +645,11 @@ const nextDay = () => {
 
 const isToday = computed(() => date.value === format(new Date(), 'yyyy-MM-dd'))
 
+// The News section's posts and release notes start loading with the page, not
+// once the log has appeared, so the section is usually there with it.
+const newsPosts = useDayPosts(date, isToday)
+const newsNotes = useChangelogNotes()
+
 const goToday = () => {
   date.value = format(new Date(), 'yyyy-MM-dd')
 }
@@ -1001,7 +1006,12 @@ defineOgImage('Default', {
 
             <!-- Notifications on today, then what happened that day in News,
                  so an empty day is not blank -->
-            <DiaryDayDigest :date="date" :is-today="isToday" />
+            <DiaryDayDigest
+              :date="date"
+              :is-today="isToday"
+              :posts="newsPosts"
+              :notes="newsNotes"
+            />
 
             <div
               v-if="selectedDayLog.length === 0"
