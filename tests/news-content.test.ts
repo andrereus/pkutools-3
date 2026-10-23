@@ -29,6 +29,7 @@ beforeEach(() => {
   vi.stubGlobal('onUnmounted', () => {})
   vi.stubGlobal('useI18n', () => ({ locale: ref('en') }))
   vi.stubGlobal('useRoute', () => ({ path: '/news' }))
+  vi.stubGlobal('useState', (_key: string, init: () => unknown) => ref(init()))
   // The server's answers: the whole changelog, or only its newest note.
   vi.stubGlobal('useFetch', (url: string) => ({
     data: ref(url === '/api/changelog' ? changelog : { at: 0, revision: 0 }),

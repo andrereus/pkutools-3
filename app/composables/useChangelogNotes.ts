@@ -19,13 +19,23 @@ export interface ChangelogEntry {
   fr?: ChangelogText
 }
 
-/** `server` renders them into the page, for News; the diary loads them after. */
+/**
+ * `server` renders them into the page, for News; the diary loads them after.
+ * The last notes are kept for the visit, so a page that opens again shows them
+ * at once while the server is asked for new ones.
+ */
 export const useChangelogNotes = ({ server = false } = {}) => {
+  const lastNotes = useState<ChangelogEntry[]>('changelog-notes', () => [])
   const { data } = useFetch<ChangelogEntry[]>('/api/changelog', {
     key: 'changelog',
     server,
     dedupe: 'defer',
-    default: () => []
+    default: () => lastNotes.value
   })
+  if (import.meta.client) {
+    watch(data, (notes) => {
+      if (notes.length > 0) lastNotes.value = notes
+    })
+  }
   return data
 }
