@@ -39,8 +39,11 @@ export const useNewsSeen = () => {
   )
   const account = computed(() => readState.value.news)
 
-  // Signed in, the account's positions must have loaded too, so no dot flashes.
-  const ready = computed(() => localReady.value && (!userId.value || readState.value.loaded))
+  // The restored sign-in decides whose positions count, and signed in, the
+  // account's must have loaded too, so no dot flashes on start.
+  const ready = computed(
+    () => localReady.value && store.authChecked && (!userId.value || readState.value.loaded)
+  )
   const lastReadAt = computed(() =>
     userId.value ? (account.value.lastReadAt ?? localReadAt.value) : localReadAt.value
   )
