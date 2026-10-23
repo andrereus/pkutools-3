@@ -29,11 +29,11 @@ beforeEach(() => {
   vi.stubGlobal('onUnmounted', () => {})
   vi.stubGlobal('useI18n', () => ({ locale: ref('en') }))
   vi.stubGlobal('useRoute', () => ({ path: '/news' }))
-  // The server's answers: the whole changelog, or only its newest note.
-  vi.stubGlobal('useFetch', (url: string) => ({
-    data: ref(url === '/api/changelog' ? changelog : { at: 0, revision: 0 }),
-    refresh: vi.fn()
-  }))
+  // The release notes as loaded from the server, and its newest note.
+  vi.stubGlobal('useState', (key: string, init: () => unknown) =>
+    ref(key === 'changelog-notes' ? changelog : init())
+  )
+  vi.stubGlobal('useFetch', () => ({ data: ref({ at: 0, revision: 0 }), refresh: vi.fn() }))
 })
 afterEach(() => vi.unstubAllGlobals())
 

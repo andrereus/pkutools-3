@@ -19,7 +19,7 @@ export const useNews = () => {
     hasHiddenFoods,
     userIsAuthenticated
   } = useNewsContext()
-  const notes = useChangelogNotes({ server: true })
+  const { notes } = useChangelogNotes({ server: true })
 
   const noteEntries = computed<NewsEntry[]>(() =>
     notes.value.map((entry) => {

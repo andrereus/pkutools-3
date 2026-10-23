@@ -18,7 +18,10 @@ const NOTE_EMOJI = { new: '✨', improved: '🔧', tip: '💡' }
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 // The day's posts load for this day only; the feed holds just the newest.
-const dayPosts = useDayPosts(toRef(props, 'date'), toRef(props, 'isToday'))
+const { posts: dayPosts, loaded: dayPostsLoaded } = useDayPosts(
+  toRef(props, 'date'),
+  toRef(props, 'isToday')
+)
 const {
   foodEntries,
   postEntries,
@@ -29,7 +32,10 @@ const {
   userIsAuthenticated
 } = useNewsContext({ extraPosts: dayPosts })
 const seenState = useNewsSeen()
-const changelog = useChangelogNotes()
+const { notes: changelog, loaded: changelogLoaded } = useChangelogNotes()
+// The section appears once, with the day's posts and the release notes,
+// rather than growing in steps and pushing the log down each time.
+const ready = computed(() => dayPostsLoaded.value && changelogLoaded.value)
 
 // What the reader has seen in News; until it has loaded, no update arrived late.
 const seen = computed(() =>
@@ -169,7 +175,7 @@ const pillClass =
 
 <template>
   <section
-    v-if="allNotices.length > 0 || entries.length > 0"
+    v-if="ready && (allNotices.length > 0 || entries.length > 0)"
     class="mb-6"
     :aria-label="$t('news.title')"
   >
