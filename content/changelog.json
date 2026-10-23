@@ -1,5 +1,89 @@
 [
   {
+    "revision": 130,
+    "publishedAt": "2026-10-23T09:00:13.967Z",
+    "category": "improved",
+    "en": {
+      "title": "Multiple updates",
+      "body": "Own Food and Food Search now show comments too, buttons look the same everywhere, food details sit under More and the terms as well as the privacy policy have been updated."
+    },
+    "de": {
+      "title": "Mehrere Updates",
+      "body": "Eigene Lebensmittel und die Lebensmittelsuche zeigen jetzt auch Kommentare, Schaltflächen sehen überall gleich aus, Details stehen unter Mehr und Nutzungsbedingungen sowie Datenschutzerklärung wurden aktualisiert."
+    },
+    "es": {
+      "title": "Varias novedades",
+      "body": "Alimentos propios y la Búsqueda de alimentos muestran ahora también comentarios, los botones se ven igual en todas partes, los detalles están en Más y los términos así como la política de privacidad se han actualizado."
+    },
+    "fr": {
+      "title": "Plusieurs mises à jour",
+      "body": "Aliments personnels et la Recherche alimentaire affichent maintenant aussi les commentaires, les boutons sont identiques partout, les détails se trouvent sous Plus et les conditions ainsi que la politique de confidentialité ont été mises à jour."
+    }
+  },
+  {
+    "revision": 129,
+    "publishedAt": "2026-10-23T09:00:12.897Z",
+    "category": "improved",
+    "en": {
+      "title": "Notifications and diary",
+      "body": "Notifications have been reworked. People who commented are now notified too, and a notice disappears once the comments have been read. What has been read is now saved to the account for all devices. The diary also shows notifications and news for each day."
+    },
+    "de": {
+      "title": "Benachrichtigungen und Tagebuch",
+      "body": "Benachrichtigungen wurden überarbeitet. Jetzt werden auch Kommentierende benachrichtigt und ein Hinweis verschwindet, sobald die Kommentare gelesen sind. Was gelesen wurde, speichert jetzt das Konto für alle Geräte. Das Tagebuch zeigt außerdem Benachrichtigungen und Neuigkeiten pro Tag."
+    },
+    "es": {
+      "title": "Notificaciones y diario",
+      "body": "Las notificaciones se han renovado. Ahora también reciben aviso quienes han comentado y un aviso desaparece en cuanto se leen los comentarios. Lo leído se guarda ahora en la cuenta para todos los dispositivos. El diario muestra además notificaciones y novedades de cada día."
+    },
+    "fr": {
+      "title": "Notifications et journal",
+      "body": "Les notifications ont été repensées. Les personnes qui ont commenté sont maintenant aussi notifiées et une notification disparaît dès que les commentaires sont lus. Ce qui a été lu est maintenant enregistré dans le compte pour tous les appareils. Le journal affiche aussi les notifications et les actualités de chaque jour."
+    }
+  },
+  {
+    "revision": 128,
+    "publishedAt": "2026-10-23T09:00:11.833Z",
+    "category": "new",
+    "en": {
+      "title": "Posts in News",
+      "body": "Posts can now be written, liked and commented on in News. A unique community name can also be chosen. I recommend reserving one in Settings right away, as names make the community more personal."
+    },
+    "de": {
+      "title": "Beiträge unter Neuigkeiten",
+      "body": "Unter Neuigkeiten lassen sich jetzt Beiträge schreiben, liken und kommentieren. Außerdem lässt sich ein einzigartiger Community-Name festlegen. Ich empfehle, sich den eigenen Namen gleich in den Einstellungen zu reservieren, denn mit Namen wird die Community persönlicher."
+    },
+    "es": {
+      "title": "Publicaciones en Novedades",
+      "body": "En Novedades ahora se pueden escribir publicaciones, darles me gusta y comentarlas. Además, se puede elegir un nombre único en la comunidad. Recomiendo reservar el propio nombre ahora mismo en Configuración, porque con nombres la comunidad es más personal."
+    },
+    "fr": {
+      "title": "Publications dans Actualités",
+      "body": "Dans Actualités, on peut maintenant écrire des publications, les aimer et les commenter. On peut aussi choisir un nom unique dans la communauté. Je recommande de réserver son nom dès maintenant dans les Paramètres, car avec des noms la communauté devient plus personnelle."
+    }
+  },
+  {
+    "revision": 127,
+    "publishedAt": "2026-10-18T22:30:20.000Z",
+    "category": "improved",
+    "en": {
+      "title": "Smoother navigation",
+      "body": "Pages now change with a short transition, and in the diary a swipe goes to the previous or next day. A loading animation now shows while data loads."
+    },
+    "de": {
+      "title": "Flüssigere Navigation",
+      "body": "Seiten wechseln jetzt mit einem kurzen Übergang und im Tagebuch lässt sich zum vorherigen oder nächsten Tag wischen. Während die Daten laden, erscheint jetzt eine Ladeanimation."
+    },
+    "es": {
+      "title": "Navegación más fluida",
+      "body": "Las páginas cambian ahora con una breve transición y en el diario se puede deslizar al día anterior o al siguiente. Mientras se cargan los datos, ahora aparece una animación de carga."
+    },
+    "fr": {
+      "title": "Navigation plus fluide",
+      "body": "Les pages changent maintenant avec une courte transition et dans le journal on peut glisser vers le jour précédent ou suivant. Pendant le chargement des données, une animation de chargement s’affiche maintenant."
+    }
+  },
+  {
     "revision": 126,
     "publishedAt": "2026-10-04T11:27:32.318Z",
     "category": "improved",
