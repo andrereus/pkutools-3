@@ -45,7 +45,7 @@ const filter = ref(null)
 const visibleCount = ref(PAGE_SIZE)
 const busyKey = ref(null)
 const votingKey = ref(null)
-// Which cards have their comments open. Cards with comments start open.
+// Which cards have their comments open. All start closed.
 const expanded = ref({})
 const userId = computed(() => store.user?.id ?? null)
 
@@ -244,22 +244,6 @@ const hasMore = computed(
       (field) => Object.keys(activityPosts[field].value).length >= visibleCount.value
     ) ||
       rows.value.length >= visibleCount.value)
-)
-
-// Threads with comments start open, so new ones are seen without a click.
-watch(
-  rows,
-  (list) => {
-    for (const row of list) {
-      if (
-        expanded.value[row.key] === undefined &&
-        (row.commentCount > 0 || row.hiddenCommentCount > 0)
-      ) {
-        expanded.value[row.key] = true
-      }
-    }
-  },
-  { immediate: true }
 )
 
 const showUser = (authorId) => {
