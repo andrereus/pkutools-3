@@ -4,7 +4,8 @@
 
 const grow = (el: HTMLTextAreaElement) => {
   el.style.height = 'auto' // reset so it can shrink too (falls back to `rows`)
-  el.style.height = `${el.scrollHeight}px`
+  // A hidden field measures 0; it keeps `rows` until it is measured visible.
+  if (el.scrollHeight > 0) el.style.height = `${el.scrollHeight}px`
 }
 
 export default defineNuxtPlugin((nuxtApp) => {

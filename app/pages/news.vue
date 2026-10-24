@@ -32,7 +32,8 @@ const {
   commentEntries,
   showHiddenFoods,
   hasHiddenFoods,
-  userIsAuthenticated
+  userIsAuthenticated,
+  notesReady
 } = useNews()
 const seenState = useNewsSeen()
 
@@ -390,6 +391,10 @@ defineOgImage('Default', {
   title: () => t('news.title') + ' - PKU Tools',
   description: () => t('news.description')
 })
+
+// The server renders the release notes into the page. On a page change inside
+// the app, the page waits for them the first time, so it never opens empty.
+await notesReady
 </script>
 
 <template>

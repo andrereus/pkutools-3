@@ -89,7 +89,8 @@ const renderNews = async (locale: string, dislikes: number, pending: boolean) =>
       commentEntries: Vue.ref(pending ? [{ key: 'comment-food1', createdAt: 200 }] : []),
       showHiddenFoods: Vue.ref(false),
       hasHiddenFoods: Vue.ref(false),
-      userIsAuthenticated: Vue.ref(true)
+      userIsAuthenticated: Vue.ref(true),
+      notesReady: Promise.resolve()
     }),
     useNewsSeen: () => ({
       ready: Vue.ref(true),
