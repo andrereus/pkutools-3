@@ -2,7 +2,7 @@ import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai'
 import { getApp } from 'firebase/app'
 import { parseModelJson } from '../utils/model-json'
 
-const EMOJI_MODEL = 'gemini-3.1-flash-lite'
+const EMOJI_MODEL = 'gemini-3.5-flash-lite'
 
 /**
  * Fetches a single emoji for a food name (client-side). Returns null if the

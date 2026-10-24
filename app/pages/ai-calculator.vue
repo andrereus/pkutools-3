@@ -59,7 +59,7 @@ const resetOwnFoodOption = () => {
 }
 
 // Constants
-const ESTIMATE_MODEL = 'gemini-3.5-flash'
+const ESTIMATE_MODEL = 'gemini-3.8-flash'
 const BASE_DAILY_ESTIMATE_LIMIT = 20
 const PREMIUM_AI_DAILY_ESTIMATE_LIMIT = 100
 const FREE_USER_DAILY_ESTIMATE_LIMIT = 3

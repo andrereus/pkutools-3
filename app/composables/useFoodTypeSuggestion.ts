@@ -6,7 +6,7 @@ import type { FoodType } from '../utils/nutrition'
 // A food type suggested from a food name, alongside `foodTypeFromCategories`,
 // which reads a scanned product's category data. Offered only: the caller keeps
 // its current type until the user accepts a suggestion.
-const FOOD_TYPE_MODEL = 'gemini-3.1-flash-lite'
+const FOOD_TYPE_MODEL = 'gemini-3.5-flash-lite'
 
 const FOOD_TYPES: readonly string[] = ['fruit', 'vegetable', 'meat', 'other']
 
