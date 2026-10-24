@@ -152,7 +152,6 @@
     "description": "Search a food database.",
     "search": "Search for food",
     "show-more": "Show more",
-    "sources": "Sources",
     "search-info": "Refine your search with several words, e.g. \"apples raw\" or \"potatoes cooked\". Sources: USDA (fdc.nal.usda.gov) and BLS (Max Rubner-Institut)",
     "own-food": "Own",
     "own-food-indicator": "This is your own food",

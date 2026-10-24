@@ -152,7 +152,6 @@
     "description": "Durchsuche eine Lebensmitteldatenbank.",
     "search": "Lebensmittel suchen",
     "show-more": "Mehr anzeigen",
-    "sources": "Quellen",
     "search-info": "Verfeinere deine Suche mit mehreren Wörtern, z.B. \"äpfel roh\" oder \"kartoffeln gekocht\". Quellen: USDA (fdc.nal.usda.gov) und BLS (Max Rubner-Institut)",
     "own-food": "Eigenes",
     "own-food-indicator": "Dies ist dein eigenes Lebensmittel",

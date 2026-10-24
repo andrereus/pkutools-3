@@ -104,6 +104,13 @@ const ownFoodEditPath = computed(() =>
     : null
 )
 
+const aiCalculatorPath = computed(() => {
+  const text = search.value.trim()
+  return text
+    ? `${localePath('ai-calculator')}?text=${encodeURIComponent(text)}`
+    : localePath('ai-calculator')
+})
+
 // Get user's vote for current community food (stored in voterIds on the community food)
 const currentUserVote = computed(() => {
   if (!communityFoodKey.value || !currentCommunityFood.value || !userId.value) return null
@@ -463,20 +470,31 @@ defineOgImage('Default', {
     <div>
       <div class="w-full mb-6">
         <label for="search" class="sr-only">{{ $t('food-search.search') }}</label>
-        <div class="relative">
-          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <LucideSearch class="h-5 w-5 text-gray-400" aria-hidden="true" />
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <LucideSearch class="h-5 w-5 text-gray-400" aria-hidden="true" />
+            </div>
+            <input
+              id="search"
+              v-model="search"
+              type="search"
+              name="search"
+              :placeholder="$t('food-search.search')"
+              autocomplete="off"
+              class="block w-full rounded-lg border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
+              @input="searchFood"
+            />
           </div>
-          <input
-            id="search"
-            v-model="search"
-            type="search"
-            name="search"
-            :placeholder="$t('food-search.search')"
-            autocomplete="off"
-            class="block w-full rounded-lg border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
-            @input="searchFood"
-          />
+          <!-- The search text carries over as the AI Calculator's description -->
+          <NuxtLink
+            :to="aiCalculatorPath"
+            :aria-label="$t('ai-calculator.title')"
+            :title="$t('ai-calculator.title')"
+            class="p-1.5 rounded-full bg-black/5 dark:bg-white/15 text-gray-700 dark:text-gray-300 hover:bg-black/10 hover:text-gray-900 dark:hover:bg-white/10 dark:hover:text-white cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:focus-visible:outline-gray-400"
+          >
+            <LucideSparkles class="h-5 w-5" aria-hidden="true" />
+          </NuxtLink>
         </div>
 
         <!-- Source filter (only when there is more than one source) -->
@@ -484,7 +502,6 @@ defineOgImage('Default', {
           v-if="visibleSources.length > 1"
           class="mt-3 flex flex-wrap items-center gap-2 text-sm"
         >
-          <span class="text-gray-500 dark:text-gray-400"> {{ $t('food-search.sources') }}: </span>
           <button
             v-for="sourceOption in visibleSources"
             :key="sourceOption.key"

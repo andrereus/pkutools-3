@@ -25,12 +25,14 @@ const { addFoodItemToDiary } = useApi()
 const { saveAlongsideDiary, reportSaved } = useSaveToOwnFood()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
 const { confirmFoodType } = useFoodTypeSuggestion()
+const route = useRoute()
 
 // Reactive state
 // 'estimate' | 'label' — ?mode=label deep-links straight to the label scanner
 // (used by the barcode scanner's label link)
-const mode = ref(useRoute().query.mode === 'label' ? 'label' : 'estimate')
-const description = ref('')
+const mode = ref(route.query.mode === 'label' ? 'label' : 'estimate')
+// ?text= prefills the description (used by the food search's AI button)
+const description = ref(typeof route.query.text === 'string' ? route.query.text : '')
 const selectedDate = ref(format(new Date(), 'yyyy-MM-dd'))
 const isEstimating = ref(false)
 const isReadingLabel = ref(false)

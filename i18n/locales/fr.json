@@ -152,7 +152,6 @@
     "description": "Recherche dans une base de données d'aliments.",
     "search": "Chercher des aliments",
     "show-more": "Afficher plus",
-    "sources": "Sources",
     "search-info": "Affine ta recherche avec plusieurs mots, par exemple \"pommes crues\" ou \"pommes de terre cuites\". Sources: USDA (fdc.nal.usda.gov) et BLS (Max Rubner-Institut)",
     "own-food": "Mes aliments",
     "own-food-indicator": "C'est ton propre aliment",

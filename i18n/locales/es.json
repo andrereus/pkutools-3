@@ -152,7 +152,6 @@
     "description": "Busca en una base de datos de alimentos.",
     "search": "Buscar alimentos",
     "show-more": "Mostrar más",
-    "sources": "Fuentes",
     "search-info": "Afina tu búsqueda con varias palabras, por ejemplo \"manzanas crudas\" o \"patatas cocidas\". Fuentes: USDA (fdc.nal.usda.gov) y BLS (Max Rubner-Institut)",
     "own-food": "Mis alimentos",
     "own-food-indicator": "Este es tu propio alimento",
