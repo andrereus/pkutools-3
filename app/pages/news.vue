@@ -188,6 +188,23 @@ const revealCard = async (key) => {
   pendingReveal.value = key
 }
 
+// The card a link opened is outlined until the reader next taps or types, so
+// it is found at a glance. The browser's own focus ring would show only
+// sometimes, depending on how the page was reached.
+const highlightedKey = ref(null)
+const endHighlight = () => {
+  highlightedKey.value = null
+}
+const highlightCard = (key) => {
+  highlightedKey.value = key
+  window.addEventListener('pointerdown', endHighlight, { once: true })
+  window.addEventListener('keydown', endHighlight, { once: true })
+}
+onUnmounted(() => {
+  window.removeEventListener('pointerdown', endHighlight)
+  window.removeEventListener('keydown', endHighlight)
+})
+
 // A signed-in reader's feed catches up first, so the card's place is known.
 // Within the shown part it opens in place; beyond it, it is shown first.
 const pendingReveal = ref(null)
@@ -204,6 +221,7 @@ watch([pendingReveal, filteredItems, () => store.feedLoaded], async () => {
   const card = document.getElementById(key)
   card?.focus({ preventScroll: true })
   card?.scrollIntoView({ block: 'start' })
+  if (card) highlightCard(key)
 })
 
 const viewNotice = (event, notice) => {
@@ -508,8 +526,13 @@ await notesReady
         :id="item.key"
         tabindex="-1"
         :class="[
-          'mb-3 scroll-mt-24 rounded-xl bg-white p-4 shadow-sm ring-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-gray-900',
-          isItemUnread(item) ? 'ring-sky-300 dark:ring-sky-700' : 'ring-gray-200 dark:ring-gray-700'
+          'mb-3 scroll-mt-24 rounded-xl bg-white p-4 shadow-sm ring-1 dark:bg-gray-900',
+          isItemUnread(item)
+            ? 'ring-sky-300 dark:ring-sky-700'
+            : 'ring-gray-200 dark:ring-gray-700',
+          item.key === highlightedKey
+            ? 'outline-2 outline-offset-2 outline-sky-500 dark:outline-sky-400'
+            : 'focus:outline-hidden'
         ]"
       >
         <!-- Fixed-height metadata keeps short titles aligned across card types. -->
