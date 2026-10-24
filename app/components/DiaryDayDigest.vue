@@ -180,6 +180,8 @@ const pillClass =
     <div class="flex items-center justify-between px-1">
       <h2 class="text-xs font-semibold tracking-wider text-gray-500 uppercase dark:text-gray-400">
         {{ $t('news.title') }}
+        <!-- Today reaches back 24 hours, so late items from yesterday show on both days -->
+        <span v-if="isToday" class="normal-case">{{ '(24h)' }}</span>
       </h2>
       <ActionChip v-if="hiddenCount > 0" :to="moreLink">
         {{ $t('diary.on-this-day-all', { count: allNotices.length + entries.length }) }}
