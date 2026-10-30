@@ -147,5 +147,7 @@ export default defineNuxtConfig({
       name: 'PKU Tools',
       logo: '/logo-512.png'
     })
-  }
+  },
+  skewProtection: false,
+  aiReady: false
 })
