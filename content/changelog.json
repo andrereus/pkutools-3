@@ -1,5 +1,26 @@
 [
   {
+    "revision": 131,
+    "publishedAt": "2026-10-31T18:13:38.363Z",
+    "category": "new",
+    "en": {
+      "title": "Split foods by ingredient",
+      "body": "You can now split foods by ingredient in the AI Calculator. Each ingredient gets its own weight and they are all added to the diary at once. This also works for several dishes."
+    },
+    "de": {
+      "title": "Essen nach Zutaten aufteilen",
+      "body": "Im KI Rechner kannst du Essen jetzt nach Zutaten aufteilen. Jede Zutat bekommt ein eigenes Gewicht und alle werden auf einmal zum Tagebuch hinzugefügt. Das funktioniert auch für mehrere Gerichte."
+    },
+    "es": {
+      "title": "Dividir comidas por ingredientes",
+      "body": "Ahora puedes dividir comidas por ingredientes en la Calculadora IA. Cada ingrediente tiene su propio peso y todos se añaden al diario a la vez. También funciona con varios platos."
+    },
+    "fr": {
+      "title": "Séparer les repas par ingrédient",
+      "body": "Tu peux maintenant séparer les repas par ingrédient dans le Calculateur IA. Chaque ingrédient a son propre poids et tous sont ajoutés au journal en une fois. Cela fonctionne aussi pour plusieurs plats."
+    }
+  },
+  {
     "revision": 130,
     "publishedAt": "2026-10-23T09:00:13.967Z",
     "category": "improved",

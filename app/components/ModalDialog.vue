@@ -27,6 +27,8 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  // { label, type, visible, disabled } — a disabled button stays visible but
+  // can't be pressed
   buttons: {
     type: Array,
     required: true
@@ -95,11 +97,19 @@ const filteredButtons = computed(() => {
   })
 })
 
-function handleButtonClick(buttonType) {
+// Submit and delete are blocked while loading; any button can also be
+// disabled on its own
+const isButtonDisabled = (button) =>
+  button.disabled === true ||
+  (props.loading && (button.type === 'submit' || button.type === 'delete'))
+
+function handleButtonClick(button) {
   // Don't allow clicks on disabled buttons
-  if (props.loading && (buttonType === 'submit' || buttonType === 'delete')) {
+  if (isButtonDisabled(button)) {
     return
   }
+
+  const buttonType = button.type
 
   // New attempt — clear any previous inline error
   if (buttonType === 'submit' || buttonType === 'delete') {
@@ -211,12 +221,10 @@ function handleButtonClick(buttonType) {
                   v-for="button in filteredButtons"
                   :key="button.type"
                   type="button"
-                  :disabled="loading && (button.type === 'submit' || button.type === 'delete')"
+                  :disabled="isButtonDisabled(button)"
                   :class="[
                     'inline-flex w-full justify-center rounded-full px-3 py-2 text-sm font-semibold shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2',
-                    loading && (button.type === 'submit' || button.type === 'delete')
-                      ? 'opacity-50 cursor-not-allowed'
-                      : 'cursor-pointer',
+                    isButtonDisabled(button) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
                     button.type === 'delete'
                       ? 'bg-red-500 text-white hover:bg-red-600 focus-visible:outline-red-500 dark:bg-red-500 dark:shadow-none dark:hover:bg-red-400 dark:focus-visible:outline-red-500'
                       : button.type === 'simpleClose' ||
@@ -230,7 +238,7 @@ function handleButtonClick(buttonType) {
                     button.type === 'simpleClose' ||
                     button.type === 'close'
                   "
-                  @click="handleButtonClick(button.type)"
+                  @click="handleButtonClick(button)"
                 >
                   {{ loading && button.type === 'submit' ? $t('common.saving') : button.label }}
                 </button>

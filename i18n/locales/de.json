@@ -228,7 +228,10 @@
     "correct": "Korrigieren",
     "correct-title": "Schätzung korrigieren",
     "correct-description": "Teile der KI mit, was falsch ist, und die Schätzung wird wiederholt.",
-    "re-estimate": "Neu schätzen"
+    "re-estimate": "Neu schätzen",
+    "split-ingredients": "Nach Zutaten aufteilen",
+    "remove-ingredient": "Zutat entfernen",
+    "ingredient-removed": "Zutat entfernt"
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",

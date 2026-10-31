@@ -228,7 +228,10 @@
     "correct": "Corriger",
     "correct-title": "Corriger l'estimation",
     "correct-description": "Indique à l'IA ce qui ne va pas et l'estimation sera refaite.",
-    "re-estimate": "Ré-estimer"
+    "re-estimate": "Ré-estimer",
+    "split-ingredients": "Séparer par ingrédient",
+    "remove-ingredient": "Retirer l'ingrédient",
+    "ingredient-removed": "Ingrédient retiré"
   },
   "barcode-scanner": {
     "title": "Scanner de code-barres",

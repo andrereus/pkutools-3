@@ -21,7 +21,7 @@ const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const notifications = useNotifications()
 const { isPremium, isPremiumAI } = useLicense()
-const { addFoodItemToDiary } = useApi()
+const { addFoodItemToDiary, addFoodItemsToDiary } = useApi()
 const { saveAlongsideDiary, reportSaved } = useSaveToOwnFood()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
 const { confirmFoodType } = useFoodTypeSuggestion()
@@ -45,9 +45,14 @@ const labelFileInputRef = ref(null)
 const labelFoodType = ref('other')
 const correctionDialog = ref(null)
 const correctionHint = ref('')
+// Asks for one food per food or ingredient instead of one combined food
+const splitIntoIngredients = ref(false)
 
 // Result state
 const result = ref(null) // { name, emoji, phePer100g, proteinPer100g, kcalPer100g, weightInGrams, explanation, nutrients }
+// The input split into ingredients, each with the same fields as `result` plus
+// its own editable weight: { name, emoji, ingredients: [{ id, weight, showNutrients, ... }] }
+const splitResult = ref(null)
 const weight = ref(null)
 const saveToOwnFood = ref(false)
 const shareWithCommunity = ref(false)
@@ -67,6 +72,8 @@ const PREMIUM_AI_DAILY_ESTIMATE_LIMIT = 100
 const FREE_USER_DAILY_ESTIMATE_LIMIT = 3
 const MAX_IMAGE_DIMENSION = 1024
 const MAX_IMAGE_FILE_SIZE = 15 * 1024 * 1024 // 15MB
+// Characters of user text passed to the model
+const MAX_INPUT_LENGTH = 500
 
 // Computed properties
 const userIsAuthenticated = computed(() => store.user !== null)
@@ -87,6 +94,13 @@ const remainingEstimates = computed(() => {
 })
 
 const isBusy = computed(() => isEstimating.value || isReadingLabel.value || isSaving.value)
+
+// Longer text would be cut off before it reaches the model, so it is not sent.
+// The description and the correction each have the full length.
+const descriptionLength = computed(() => description.value.trim().length)
+const isDescriptionTooLong = computed(() => descriptionLength.value > MAX_INPUT_LENGTH)
+const correctionLength = computed(() => correctionHint.value.trim().length)
+const isCorrectionTooLong = computed(() => correctionLength.value > MAX_INPUT_LENGTH)
 
 const isLabelResult = computed(() => result.value?.source === 'label')
 
@@ -144,6 +158,39 @@ const totalPhe = computed(() => scaleToWeight(pheReference.value, weight.value))
 const totalKcal = computed(() => scaleToWeight(kcalReference.value, weight.value))
 
 const resultNutrientRows = computed(() => nutrientRows(result.value?.nutrients, weight.value, t))
+
+// An estimate's Phe per 100 g: the model's value, or protein × the general
+// factor where it gave only protein
+const estimatedPheReference = (food) => {
+  if (food.phePer100g !== null) return food.phePer100g
+  if (food.proteinPer100g !== null) return proteinPheReference(food.proteinPer100g, 'other')
+  return 0
+}
+
+// Each ingredient with its values for the weight entered for it
+const ingredientRows = computed(() =>
+  (splitResult.value?.ingredients ?? []).map((ingredient) => {
+    const pheReference = estimatedPheReference(ingredient)
+    const kcalReference = ingredient.kcalPer100g ?? 0
+    return {
+      ingredient,
+      pheReference,
+      kcalReference,
+      phe: scaleToWeight(pheReference, ingredient.weight),
+      kcal: scaleToWeight(kcalReference, ingredient.weight),
+      isProteinFallback: ingredient.phePer100g === null && ingredient.proteinPer100g !== null,
+      nutrientRows: nutrientRows(ingredient.nutrients, ingredient.weight, t)
+    }
+  })
+)
+
+// Summed from the rounded amounts, the same way the diary sums the entries
+const ingredientsTotalPhe = computed(() =>
+  ingredientRows.value.reduce((sum, row) => sum + row.phe, 0)
+)
+const ingredientsTotalKcal = computed(() =>
+  ingredientRows.value.reduce((sum, row) => sum + row.kcal, 0)
+)
 
 // Methods
 const resizeAndConvertToBase64 = (file) => {
@@ -209,7 +256,7 @@ const removeImage = () => {
 const sanitizePromptInput = (value) =>
   (value || '')
     .trim()
-    .slice(0, 500)
+    .slice(0, MAX_INPUT_LENGTH)
     .replace(/"/g, '\\"')
     .replace(/\n/g, ' ')
     .replace(/\r/g, '')
@@ -312,12 +359,37 @@ const parseCommonNutrients = (data) => {
   return entries.length > 0 ? Object.fromEntries(entries) : null
 }
 
+// Free-form model text, kept only where it is a non-empty string
+const parseModelText = (value) =>
+  value && typeof value === 'string' && value.trim() !== '' ? value.trim() : null
+
+// One estimated food, from the whole-meal response or one of its ingredients
+const parseEstimatedFood = (foodData) => {
+  // A serving size of 0 or less is not a serving, so it falls back to the
+  // default weight rather than being offered as one
+  const servingSize = parseNutrientNumber(foodData.weightInGrams)
+
+  return {
+    source: 'estimate',
+    name: foodData.name || null,
+    emoji: parseModelText(foodData.emoji),
+    phePer100g: parseNutrientNumber(foodData.phePer100g),
+    proteinPer100g: parseNutrientNumber(foodData.proteinPer100g),
+    kcalPer100g: parseNutrientNumber(foodData.kcalPer100g),
+    weightInGrams: servingSize !== null && servingSize > 0 ? servingSize : null,
+    explanation: parseModelText(foodData.explanation),
+    nutrients: parseCommonNutrients(foodData)
+  }
+}
+
 const estimateFoodValues = async () => {
   if (isBusy.value) return
 
   isEstimating.value = true
   const previousResult = result.value
+  const previousSplitResult = splitResult.value
   result.value = null
+  splitResult.value = null
   resetOwnFoodOption()
 
   try {
@@ -331,16 +403,56 @@ const estimateFoodValues = async () => {
 
     const sanitizedText = sanitizePromptInput(description.value)
     const sanitizedCorrection = sanitizePromptInput(correctionHint.value)
-    const hasCorrection = sanitizedCorrection !== '' && previousResult !== null
+    const hasCorrection =
+      sanitizedCorrection !== '' && (previousResult !== null || previousSplitResult !== null)
+    // A correction redoes the result on screen, so it keeps that result's
+    // shape whatever the switch is set to now
+    const split = hasCorrection ? previousSplitResult !== null : splitIntoIngredients.value
 
     const model = await requestAiModel()
     if (!model) return
 
     const appLanguage = appLanguageName()
 
-    const previousEstimate = hasCorrection ? JSON.stringify(previousResult) : ''
+    // A split result is corrected as it is shown: without the ingredients the
+    // user removed and with the weights they entered
+    const previousEstimate = !hasCorrection
+      ? ''
+      : previousSplitResult
+        ? JSON.stringify({
+            name: previousSplitResult.name,
+            emoji: previousSplitResult.emoji,
+            items: previousSplitResult.ingredients.map(
+              ({ id, weight, showNutrients, ...food }) => ({ ...food, weightInGrams: weight })
+            )
+          })
+        : JSON.stringify(previousResult)
 
-    const prompt = `Identify the food(s) and estimate (combined) nutritional values. Consider all provided inputs together (text description and/or image). Use ${appLanguage} for values. Use null for unknown values. Base estimates on typical nutritional databases. Cross-check that phePer100g is plausible relative to proteinPer100g.${hasText ? `\n\nText description: "${sanitizedText}"` : ''}${hasCorrection ? `\n\nPrevious estimate: ${previousEstimate}\nUser correction: "${sanitizedCorrection}"` : ''}
+    const prompt = split
+      ? `Identify the food(s) and split each dish into its main ingredients. Estimate nutritional values for each item separately. Consider all provided inputs together (text description and/or image). Use ${appLanguage} for values. Use null for unknown values. Base estimates on typical nutritional databases. Cross-check that phePer100g is plausible relative to proteinPer100g.${hasText ? `\n\nText description: "${sanitizedText}"` : ''}${hasCorrection ? `\n\nPrevious estimate: ${previousEstimate}\nUser correction: "${sanitizedCorrection}"` : ''}
+
+Return JSON:
+{
+  "name": string (short descriptive name) or null,
+  "emoji": string (exactly one emoji character) or null,
+  "items": [
+    {
+      "name": string (short descriptive name) or null,
+      "phePer100g": number (phenylalanine in mg per 100g) or null,
+      "kcalPer100g": number (calories in kcal per 100g) or null,
+      "proteinPer100g": number (protein in g per 100g) or null,
+      "fatPer100g": number (fat in g per 100g) or null,
+      "carbsPer100g": number (carbohydrates in g per 100g) or null,
+      "sugarPer100g": number (sugars in g per 100g) or null,
+      "fiberPer100g": number (fiber in g per 100g) or null,
+      "saltPer100g": number (salt in g per 100g) or null,
+      "weightInGrams": number (weight or typical serving size in g) or null,
+      "emoji": string (exactly one emoji character) or null,
+      "explanation": string (maximum 140 characters) or null
+    }
+  ]
+}`
+      : `Identify the food(s) and estimate (combined) nutritional values. Consider all provided inputs together (text description and/or image). Use ${appLanguage} for values. Use null for unknown values. Base estimates on typical nutritional databases. Cross-check that phePer100g is plausible relative to proteinPer100g.${hasText ? `\n\nText description: "${sanitizedText}"` : ''}${hasCorrection ? `\n\nPrevious estimate: ${previousEstimate}\nUser correction: "${sanitizedCorrection}"` : ''}
 
 Return JSON:
 {
@@ -373,31 +485,24 @@ Return JSON:
     const foodData = parseModelJson(text)
     if (!foodData) throw new Error('No JSON found in response')
 
-    // A serving size of 0 or less is not a serving, so it falls back to the
-    // default weight rather than being offered as one
-    const servingSize = parseNutrientNumber(foodData.weightInGrams)
+    if (split) {
+      const items = Array.isArray(foodData.items)
+        ? foodData.items.filter((item) => item !== null && typeof item === 'object')
+        : []
+      if (items.length === 0) throw new Error('No items in response')
 
-    result.value = {
-      source: 'estimate',
-      name: foodData.name || null,
-      emoji:
-        foodData.emoji && typeof foodData.emoji === 'string' && foodData.emoji.trim() !== ''
-          ? foodData.emoji.trim()
-          : null,
-      phePer100g: parseNutrientNumber(foodData.phePer100g),
-      proteinPer100g: parseNutrientNumber(foodData.proteinPer100g),
-      kcalPer100g: parseNutrientNumber(foodData.kcalPer100g),
-      weightInGrams: servingSize !== null && servingSize > 0 ? servingSize : null,
-      explanation:
-        foodData.explanation &&
-        typeof foodData.explanation === 'string' &&
-        foodData.explanation.trim() !== ''
-          ? foodData.explanation.trim()
-          : null,
-      nutrients: parseCommonNutrients(foodData)
+      splitResult.value = {
+        name: foodData.name || null,
+        emoji: parseModelText(foodData.emoji),
+        ingredients: items.map((item, index) => {
+          const food = parseEstimatedFood(item)
+          return { ...food, id: index, weight: food.weightInGrams || 100, showNutrients: false }
+        })
+      }
+    } else {
+      result.value = parseEstimatedFood(foodData)
+      weight.value = result.value.weightInGrams || 100
     }
-
-    weight.value = result.value.weightInGrams || 100
 
     // Clear correction hint after a successful re-estimate
     correctionHint.value = ''
@@ -416,6 +521,7 @@ const readLabel = async () => {
 
   isReadingLabel.value = true
   result.value = null
+  splitResult.value = null
   resetOwnFoodOption()
 
   try {
@@ -510,8 +616,73 @@ const openCorrectionDialog = () => {
 
 const submitCorrection = async () => {
   if (!correctionHint.value || correctionHint.value.trim() === '') return
+  if (isCorrectionTooLong.value) return
   correctionDialog.value?.closeDialog()
   await estimateFoodValues()
+}
+
+// Nothing is saved yet, but getting a removed ingredient back would take a new
+// estimate, so the removal can be undone
+const removeIngredient = (id) => {
+  const current = splitResult.value
+  const index = current.ingredients.findIndex((ingredient) => ingredient.id === id)
+  if (index === -1) return
+  const removed = current.ingredients[index]
+  current.ingredients = current.ingredients.filter((ingredient) => ingredient.id !== id)
+
+  notifications.success(t('ai-calculator.ingredient-removed'), {
+    undoAction: () => {
+      // A newer estimate has replaced the list in the meantime
+      if (splitResult.value !== current) return
+      current.ingredients.splice(Math.min(index, current.ingredients.length), 0, removed)
+    },
+    undoLabel: t('common.undo')
+  })
+}
+
+// Every ingredient becomes its own diary entry, written in one request so the
+// diary never holds only part of the meal
+const saveIngredients = async () => {
+  if (!store.user || store.settings.healthDataConsent !== true) {
+    notifications.error(t('health-consent.no-consent'))
+    return
+  }
+
+  if (!splitResult.value) return
+
+  const entryDate = selectedDate.value
+  isSaving.value = true
+
+  try {
+    const logEntries = await Promise.all(
+      ingredientRows.value.map((row) =>
+        ensureEmojiForLogEntry({
+          name: row.ingredient.name || t('ai-calculator.title'),
+          emoji: row.ingredient.emoji || null,
+          icon: null,
+          pheReference: row.pheReference,
+          kcalReference: row.kcalReference,
+          weight: Number(row.ingredient.weight),
+          phe: row.phe,
+          kcal: row.kcal,
+          // The model's account of how it arrived at the values, as for a
+          // single estimate
+          note: row.ingredient.explanation,
+          source: 'ai-estimate',
+          ...(row.ingredient.nutrients && { nutrients: row.ingredient.nutrients }),
+          // Only when the Phe above was derived from that protein
+          ...(row.isProteinFallback && { factor: PHE_FACTORS.other })
+        })
+      )
+    )
+
+    await addFoodItemsToDiary({ date: entryDate, items: logEntries })
+    navigateTo(localePath('diary'))
+  } catch (error) {
+    console.error('Save error:', error)
+  } finally {
+    isSaving.value = false
+  }
 }
 
 const save = async () => {
@@ -735,6 +906,42 @@ defineOgImage('Default', {
             class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
           />
         </div>
+        <p
+          v-if="isDescriptionTooLong"
+          class="mt-1 text-right text-xs text-red-600 dark:text-red-400"
+        >
+          {{ descriptionLength }} / {{ MAX_INPUT_LENGTH }}
+        </p>
+
+        <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <button
+            type="button"
+            class="rounded-full bg-black/5 px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-xs hover:bg-black/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:bg-white/15 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-gray-400 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
+            :disabled="isBusy"
+            :title="$t('phe-calculator.add-photo')"
+            @click="
+              isPremium
+                ? fileInputRef?.click()
+                : notifications.error(t('phe-calculator.image-premium-only'))
+            "
+          >
+            <LucideCamera class="h-5 w-5" />
+            <span class="ml-1">{{ $t('ai-calculator.analyze-photo') }}</span>
+          </button>
+
+          <label
+            class="flex cursor-pointer items-center gap-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+          >
+            <ToggleSwitch
+              v-model="splitIntoIngredients"
+              small
+              thin
+              :disabled="isBusy"
+              class="disabled:opacity-50 disabled:cursor-not-allowed"
+            />
+            <span>{{ $t('ai-calculator.split-ingredients') }}</span>
+          </label>
+        </div>
 
         <div v-if="imageFile" class="flex items-center gap-4 mt-3">
           <div class="relative">
@@ -755,35 +962,20 @@ defineOgImage('Default', {
           </div>
         </div>
 
-        <div class="flex items-center gap-2 mt-3">
-          <button
-            type="button"
-            class="rounded-full bg-black/5 px-3 py-1.5 text-sm font-semibold text-gray-900 shadow-xs hover:bg-black/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:bg-white/15 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-gray-400 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
-            :disabled="isBusy"
-            :title="$t('phe-calculator.add-photo')"
-            @click="
-              isPremium
-                ? fileInputRef?.click()
-                : notifications.error(t('phe-calculator.image-premium-only'))
-            "
-          >
-            <LucideCamera class="h-5 w-5" />
-            <span class="ml-1">{{ $t('ai-calculator.analyze-photo') }}</span>
-          </button>
-          <button
-            type="button"
-            class="rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
-            :disabled="
-              isBusy ||
-              ((!description || description.trim() === '') && !imageFile) ||
-              remainingEstimates === 0
-            "
-            @click="estimateFoodValues"
-          >
-            <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
-            <span v-else>{{ $t('phe-calculator.estimate') }}</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          class="mt-3 rounded-full bg-sky-500 px-3 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-sky-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 dark:bg-sky-500 dark:shadow-none dark:hover:bg-sky-400 dark:focus-visible:outline-sky-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer h-9 flex items-center"
+          :disabled="
+            isBusy ||
+            ((!description || description.trim() === '') && !imageFile) ||
+            isDescriptionTooLong ||
+            remainingEstimates === 0
+          "
+          @click="estimateFoodValues"
+        >
+          <span v-if="isEstimating">{{ $t('phe-calculator.estimating') }}</span>
+          <span v-else>{{ $t('phe-calculator.estimate') }}</span>
+        </button>
       </template>
 
       <div v-else>
@@ -931,6 +1123,129 @@ defineOgImage('Default', {
       />
     </fieldset>
 
+    <fieldset
+      v-if="splitResult"
+      :disabled="isSaving"
+      class="mt-6 min-w-0 rounded-xl border-0 bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700"
+    >
+      <div class="flex items-start justify-between gap-3 mb-2">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+          <span v-if="splitResult.emoji">{{ splitResult.emoji }}&nbsp;</span>{{ splitResult.name }}
+        </h2>
+        <button
+          type="button"
+          class="shrink-0 inline-flex items-center gap-1 rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold text-gray-900 shadow-xs hover:bg-black/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:bg-white/15 dark:text-gray-300 dark:hover:bg-white/10 dark:focus-visible:outline-gray-400 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          :disabled="isBusy || remainingEstimates === 0"
+          :title="$t('ai-calculator.correct-title')"
+          @click="openCorrectionDialog"
+        >
+          <LucidePencil class="h-4 w-4" />
+          <span>{{ $t('ai-calculator.correct') }}</span>
+        </button>
+      </div>
+
+      <ul class="divide-y divide-gray-200 dark:divide-gray-700 mb-2">
+        <li v-for="row in ingredientRows" :key="row.ingredient.id" class="py-4">
+          <div class="flex items-start justify-between gap-3 mb-1">
+            <h3 class="font-semibold text-gray-900 dark:text-white">
+              <span v-if="row.ingredient.emoji">{{ row.ingredient.emoji }}&nbsp;</span
+              >{{ row.ingredient.name }}
+            </h3>
+            <button
+              v-if="ingredientRows.length > 1"
+              type="button"
+              class="shrink-0 rounded-full p-1 text-gray-500 hover:bg-black/5 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-gray-200 cursor-pointer"
+              :title="$t('ai-calculator.remove-ingredient')"
+              :aria-label="$t('ai-calculator.remove-ingredient')"
+              @click="removeIngredient(row.ingredient.id)"
+            >
+              <LucideX class="h-4 w-4" />
+            </button>
+          </div>
+
+          <div
+            v-if="row.ingredient.explanation"
+            class="text-sm text-gray-600 dark:text-gray-400 italic wrap-break-word mb-2"
+          >
+            {{ row.ingredient.explanation }}
+          </div>
+
+          <div v-if="row.isProteinFallback" class="text-xs text-amber-600 dark:text-amber-400 mb-2">
+            {{ $t('ai-calculator.protein-fallback-note') }}
+          </div>
+
+          <NumberInput
+            v-model.number="row.ingredient.weight"
+            :id-name="`ingredient-weight-${row.ingredient.id}`"
+            :label="$t('ai-calculator.serving-size')"
+          />
+
+          <div class="flex items-center gap-4">
+            <span class="flex-1">
+              <template v-if="row.isProteinFallback">≈</template>
+              <template v-else>=</template>
+              {{ row.phe }} mg Phe
+            </span>
+            <span class="flex flex-1 min-w-0 items-center justify-between gap-1">
+              <span v-if="row.kcalReference">= {{ row.kcal }} {{ $t('common.kcal') }}</span>
+              <button
+                v-if="row.nutrientRows.length > 0"
+                type="button"
+                class="-my-1 ml-auto inline-flex shrink-0 cursor-pointer items-center gap-0.5 rounded-md py-1 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-500 dark:text-gray-300 dark:hover:text-white"
+                :aria-expanded="row.ingredient.showNutrients"
+                :aria-label="
+                  $t(row.ingredient.showNutrients ? 'news.hide-details' : 'news.show-details')
+                "
+                @click="row.ingredient.showNutrients = !row.ingredient.showNutrients"
+              >
+                <span aria-hidden="true">{{ $t('news.more') }}</span>
+                <LucideChevronDown
+                  class="h-4 w-4 transition-transform"
+                  :class="row.ingredient.showNutrients ? 'rotate-180' : ''"
+                  aria-hidden="true"
+                />
+              </button>
+            </span>
+          </div>
+
+          <!-- Nutrient breakdown for the entered weight -->
+          <div
+            v-if="row.ingredient.showNutrients && row.nutrientRows.length > 0"
+            class="mt-2 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-600 dark:text-gray-400"
+          >
+            <div
+              v-for="nutrient in row.nutrientRows"
+              :key="nutrient.key"
+              class="flex justify-between"
+            >
+              <span>{{ nutrient.label }}</span>
+              <span>{{ nutrient.value }} g</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <DateInput v-model="selectedDate" id-name="date" :label="$t('common.date')" />
+
+      <div class="flex gap-4 my-4">
+        <span class="flex-1 text-lg">
+          <template v-if="ingredientRows.some((row) => row.isProteinFallback)">≈</template>
+          <template v-else>=</template>
+          {{ ingredientsTotalPhe }} mg Phe {{ $t('app.total') }}
+        </span>
+        <span v-if="ingredientsTotalKcal" class="flex-1 text-lg"
+          >= {{ ingredientsTotalKcal }} {{ $t('common.kcal') }} {{ $t('app.total') }}</span
+        >
+      </div>
+
+      <PrimaryButton
+        :text="$t('common.add')"
+        :loading="isSaving"
+        :loading-text="$t('common.saving')"
+        @click="saveIngredients"
+      />
+    </fieldset>
+
     <ModalDialog
       ref="correctionDialog"
       :title="$t('ai-calculator.correct-title')"
@@ -938,7 +1253,8 @@ defineOgImage('Default', {
         {
           label: $t('ai-calculator.re-estimate'),
           type: 'submit',
-          visible: true
+          visible: true,
+          disabled: isCorrectionTooLong
         },
         { label: $t('common.cancel'), type: 'simpleClose', visible: true }
       ]"
@@ -954,6 +1270,9 @@ defineOgImage('Default', {
         :disabled="isBusy"
         class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
       />
+      <p v-if="isCorrectionTooLong" class="mt-1 text-right text-xs text-red-600 dark:text-red-400">
+        {{ correctionLength }} / {{ MAX_INPUT_LENGTH }}
+      </p>
     </ModalDialog>
 
     <p v-if="userIsAuthenticated" class="mt-4 text-gray-600 dark:text-gray-400 italic text-sm">

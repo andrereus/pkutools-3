@@ -228,7 +228,10 @@
     "correct": "Correct",
     "correct-title": "Correct estimate",
     "correct-description": "Tell the AI what is wrong and the estimate will be redone.",
-    "re-estimate": "Re-estimate"
+    "re-estimate": "Re-estimate",
+    "split-ingredients": "Split by ingredient",
+    "remove-ingredient": "Remove ingredient",
+    "ingredient-removed": "Ingredient removed"
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",

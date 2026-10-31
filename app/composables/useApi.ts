@@ -114,26 +114,35 @@ export const useApi = () => {
   }): Promise<{ success: boolean; key?: string }> =>
     request('/api/diary/days', 'Create diary day', 'POST', data)
 
+  type NewDiaryFoodItem = Provenance & {
+    itemId?: string
+    name: string
+    emoji?: string | null
+    icon?: string | null
+    pheReference?: number | null
+    kcalReference?: number | null
+    weight: number
+    phe: number
+    kcal: number
+    note?: string | null
+    addedFrom?: AddedFrom | null // Set when the entry was picked from a list
+    communityFoodKey?: string | null // Optional: tracks usage count and stored in diary entry
+    createdAt?: number // Only for undo-restore: preserves the original timestamps
+    updatedAt?: number
+  }
+
   const addFoodItemToDiary = (
-    data: Provenance & {
-      itemId?: string
-      date?: string
-      name: string
-      emoji?: string | null
-      icon?: string | null
-      pheReference?: number | null
-      kcalReference?: number | null
-      weight: number
-      phe: number
-      kcal: number
-      note?: string | null
-      addedFrom?: AddedFrom | null // Set when the entry was picked from a list
-      communityFoodKey?: string | null // Optional: tracks usage count and stored in diary entry
-      createdAt?: number // Only for undo-restore: preserves the original timestamps
-      updatedAt?: number
-    }
+    data: NewDiaryFoodItem & { date?: string }
   ): Promise<{ success: boolean; key?: string; updated?: boolean }> =>
     request('/api/diary/food-items', 'Add food item to diary', 'POST', data)
+
+  // Several entries for the same day, written together: either all of them are
+  // added or none are
+  const addFoodItemsToDiary = (data: {
+    date?: string
+    items: NewDiaryFoodItem[]
+  }): Promise<{ success: boolean; key?: string; updated?: boolean }> =>
+    request('/api/diary/food-items', 'Add food items to diary', 'POST', data)
 
   const updateDiaryDay = (data: {
     entryKey: string
@@ -433,6 +442,7 @@ export const useApi = () => {
     // Diary
     createDiaryDay,
     addFoodItemToDiary,
+    addFoodItemsToDiary,
     updateDiaryDay,
     updateFoodItemInDiary,
     deleteDiaryDay,

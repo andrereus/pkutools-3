@@ -7,45 +7,59 @@ import { checkPremiumStatus } from '../../utils/license'
 import { storedNumberOrZero } from '../../utils/numeric'
 import { z } from 'zod'
 
-// Extended schema to accept optional date (not part of DiaryEntrySchema)
-const DiaryFoodItemRequestSchema = DiaryEntrySchema.extend({
-  date: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format')
-    .optional()
-})
+const MAX_ITEMS_PER_REQUEST = 50
+
+// Either a single log entry or `{ items }`, several entries for the same day
+// (a meal split into ingredients). A list is appended in one write, so the day
+// never ends up holding only part of it. The optional date is not part of
+// DiaryEntrySchema: it only selects the day.
+const DiaryFoodItemRequestSchema = z.preprocess(
+  // A single entry is the same request with one item
+  (body) =>
+    body !== null && typeof body === 'object' && !Array.isArray((body as { items?: unknown }).items)
+      ? { date: (body as { date?: unknown }).date, items: [body] }
+      : body,
+  z.object({
+    date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format')
+      .optional(),
+    items: z
+      .array(DiaryEntrySchema)
+      .min(1, 'At least one food item is required')
+      .max(MAX_ITEMS_PER_REQUEST, 'Too many food items')
+  })
+)
 
 export default defineAuthedHandler(async ({ event, userId }) => {
-  // Validate input - expect a single log entry with optional date
-  const validated = await validateBody(event, DiaryFoodItemRequestSchema)
-
-  // Extract date (not stored in log entry, used to find/create diary day)
-  const { date: requestDate, ...diaryEntryData } = validated
-  const communityFoodKey = diaryEntryData.communityFoodKey || null
+  const { date: requestDate, items } = await validateBody(event, DiaryFoodItemRequestSchema)
 
   // Timestamps are server-owned; client values are honored only so
   // undo-restore can keep the original creation time of a deleted item.
   const now = Date.now()
-  const logEntryData = {
-    ...diaryEntryData,
-    createdAt: diaryEntryData.createdAt ?? now,
-    updatedAt: diaryEntryData.updatedAt ?? now
-  }
+  const logEntriesData = items.map((item) => ({
+    ...item,
+    createdAt: item.createdAt ?? now,
+    updatedAt: item.updatedAt ?? now
+  }))
 
   const db = getAdminDatabase()
   const isPremium = await checkPremiumStatus(userId)
 
   // Push ids are unique and stable; timestamps are not. A restored item may
-  // keep its original id as long as that id is not already present in the day.
-  const withItemId = (existingLog: Array<{ itemId?: string }> = []) => {
-    const requestedId = logEntryData.itemId
-    const idAlreadyExists =
-      requestedId !== undefined && existingLog.some((item) => item.itemId === requestedId)
-    const itemId =
-      requestedId && !idAlreadyExists
-        ? requestedId
-        : db.ref(`/${userId}/pheDiary/logItemIds`).push().key!
-    return { ...logEntryData, itemId }
+  // keep its original id as long as that id is not already present in the day
+  // or earlier in the same request.
+  const withItemIds = (existingLog: Array<{ itemId?: string }> = []) => {
+    const takenIds = new Set(existingLog.map((item) => item.itemId))
+    return logEntriesData.map((logEntryData) => {
+      const requestedId = logEntryData.itemId
+      const itemId =
+        requestedId && !takenIds.has(requestedId)
+          ? requestedId
+          : db.ref(`/${userId}/pheDiary/logItemIds`).push().key!
+      takenIds.add(itemId)
+      return { ...logEntryData, itemId }
+    })
   }
 
   const date = requestDate || format(new Date(), 'yyyy-MM-dd')
@@ -85,7 +99,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   }
 
   // If communityFoodKey provided, increment usage count (fire and forget)
-  if (communityFoodKey) {
+  for (const { communityFoodKey } of logEntriesData) {
+    if (!communityFoodKey) continue
     const communityFoodRef = db.ref(`communityFoods/${communityFoodKey}`)
     communityFoodRef
       .once('value')
@@ -105,7 +120,7 @@ export default defineAuthedHandler(async ({ event, userId }) => {
 
   if (existingEntryKey) {
     // TODO: Make full-day log updates concurrency-safe.
-    // Update existing entry - add new log item
+    // Update existing entry - add new log items
     interface DiaryEntry {
       date: string
       log: Array<{ itemId?: string; phe: unknown; kcal: unknown }>
@@ -114,8 +129,8 @@ export default defineAuthedHandler(async ({ event, userId }) => {
     }
     // Use the value we already fetched from the query
     const existingEntry = existingEntryVal as DiaryEntry
-    const logEntry = withItemId(existingEntry.log || [])
-    const updatedLog = [...(existingEntry.log || []), logEntry]
+    const logEntries = withItemIds(existingEntry.log || [])
+    const updatedLog = [...(existingEntry.log || []), ...logEntries]
 
     const totalPhe = updatedLog.reduce((sum: number, item) => sum + storedNumberOrZero(item.phe), 0)
     const totalKcal = updatedLog.reduce(
@@ -138,20 +153,20 @@ export default defineAuthedHandler(async ({ event, userId }) => {
   } else {
     // Create new entry
     // TODO: Make date creation atomic.
-    const logEntry = withItemId()
-    const totalPhe = storedNumberOrZero(logEntry.phe)
-    const totalKcal = storedNumberOrZero(logEntry.kcal)
+    const logEntries = withItemIds()
+    const totalPhe = logEntries.reduce((sum, item) => sum + storedNumberOrZero(item.phe), 0)
+    const totalKcal = logEntries.reduce((sum, item) => sum + storedNumberOrZero(item.kcal), 0)
 
     const newEntryRef = db.ref(`/${userId}/pheDiary`).push()
     await newEntryRef.set({
       date,
       phe: totalPhe,
       kcal: totalKcal,
-      log: [logEntry],
+      log: logEntries,
       // The day comes into existence with its first item, so it inherits that
       // item's createdAt — on undo-restore this recovers the original day
       // creation time (the first restored item is the oldest one).
-      createdAt: logEntry.createdAt,
+      createdAt: logEntries[0]!.createdAt,
       updatedAt: now
     })
 

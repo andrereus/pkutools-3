@@ -196,6 +196,70 @@ describe('provenance on a stored item', () => {
   })
 })
 
+// A meal split into ingredients is sent as one list. Each ingredient becomes
+// its own entry, and the day is written once, so it never shows part of the
+// meal.
+describe('adding several food items at once', () => {
+  const RICE = { name: 'Rice', weight: 100, phe: 120, kcal: 130 }
+
+  it('creates the day with every item in its total', async () => {
+    const result = await addFoodItem(requestEvent({ date: '2026-07-26', items: [ENTRY, RICE] }))
+
+    expect(result.updated).toBe(false)
+    const created = day(result.key)
+    expect(created).toMatchObject({ date: '2026-07-26', phe: 147, kcal: 208 })
+    expect(created.log.map((item) => item.phe)).toEqual([27, 120])
+  })
+
+  it('appends every item to an existing day', async () => {
+    seedDiary({
+      day1: {
+        date: '2026-07-26',
+        phe: 100,
+        kcal: 500,
+        log: [{ name: 'Bread', weight: 50, phe: 100, kcal: 500 }]
+      }
+    })
+
+    const result = await addFoodItem(requestEvent({ date: '2026-07-26', items: [ENTRY, RICE] }))
+
+    expect(result).toMatchObject({ key: 'day1', updated: true })
+    expect(day('day1')).toMatchObject({ phe: 247, kcal: 708 })
+    expect(day('day1').log).toHaveLength(3)
+  })
+
+  it('gives each item its own id', async () => {
+    const result = await addFoodItem(
+      requestEvent({
+        date: '2026-07-26',
+        items: [
+          { ...ENTRY, itemId: '-Nsame' },
+          { ...RICE, itemId: '-Nsame' }
+        ]
+      })
+    )
+
+    const ids = (day(result.key).log as unknown as Array<{ itemId: string }>).map(
+      (item) => item.itemId
+    )
+    expect(new Set(ids).size).toBe(2)
+    expect(ids).toContain('-Nsame')
+  })
+
+  it('writes nothing when one item is invalid', async () => {
+    await expect(
+      addFoodItem(requestEvent({ date: '2026-07-26', items: [ENTRY, { ...RICE, weight: 0 }] }))
+    ).rejects.toMatchObject({ statusCode: 400 })
+    expect(diary() ?? {}).toEqual({})
+  })
+
+  it('rejects an empty list', async () => {
+    await expect(
+      addFoodItem(requestEvent({ date: '2026-07-26', items: [] }))
+    ).rejects.toMatchObject({ statusCode: 400 })
+  })
+})
+
 describe('free-tier diary limit', () => {
   const fullDiary = (days: number) =>
     Object.fromEntries(
