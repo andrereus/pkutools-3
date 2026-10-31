@@ -296,7 +296,6 @@ onUnmounted(() => {
               maxlength="300"
               rows="1"
               class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
-              :placeholder="$t('news.comment-placeholder')"
             />
             <div class="mt-2 flex flex-wrap items-center justify-end gap-2">
               <span class="text-xs text-gray-400 dark:text-gray-500">
@@ -355,7 +354,6 @@ onUnmounted(() => {
         maxlength="300"
         rows="1"
         class="mt-1 block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
-        :placeholder="$t('news.comment-placeholder')"
       />
       <div class="mt-2 flex items-center justify-end gap-3">
         <span class="text-xs text-gray-400 dark:text-gray-500">{{ draft.length }}/300</span>

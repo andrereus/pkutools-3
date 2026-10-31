@@ -901,7 +901,6 @@ defineOgImage('Default', {
             v-auto-grow
             v-model="description"
             rows="1"
-            :placeholder="$t('ai-calculator.input-placeholder')"
             :disabled="isBusy"
             class="block w-full rounded-lg border-0 bg-white py-1.5 text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-500 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-600 dark:focus:ring-sky-500"
           />
@@ -1010,12 +1009,7 @@ defineOgImage('Default', {
           <span v-if="result.emoji">{{ result.emoji }}&nbsp;</span>{{ result.name }}
         </h2>
         <div v-else class="flex-1">
-          <TextInput
-            v-model="result.name"
-            id-name="food-name"
-            :label="$t('common.food-name')"
-            :placeholder="$t('ai-calculator.name-placeholder')"
-          />
+          <TextInput v-model="result.name" id-name="food-name" :label="$t('common.food-name')" />
         </div>
         <button
           v-if="!isLabelResult"
@@ -1261,10 +1255,11 @@ defineOgImage('Default', {
       :loading="isBusy"
       @submit="submitCorrection"
     >
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+      <label for="correction-hint" class="block text-sm text-gray-600 dark:text-gray-400 mb-3">
         {{ $t('ai-calculator.correct-description') }}
-      </p>
+      </label>
       <textarea
+        id="correction-hint"
         v-model="correctionHint"
         rows="3"
         :disabled="isBusy"
