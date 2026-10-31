@@ -53,6 +53,8 @@ const result = ref(null) // { name, emoji, phePer100g, proteinPer100g, kcalPer10
 // The input split into ingredients, each with the same fields as `result` plus
 // its own editable weight: { name, emoji, ingredients: [{ id, weight, showNutrients, ... }] }
 const splitResult = ref(null)
+// The consumed weight of a split result as typed, while the field is in use
+const consumedWeightDraft = ref(null)
 const weight = ref(null)
 const saveToOwnFood = ref(false)
 const shareWithCommunity = ref(false)
@@ -190,6 +192,16 @@ const ingredientsTotalPhe = computed(() =>
 )
 const ingredientsTotalKcal = computed(() =>
   ingredientRows.value.reduce((sum, row) => sum + row.kcal, 0)
+)
+// Rounded like the weights it sums, so 0.1 + 0.2 shows as 0.3 and not as
+// 0.30000000000000004
+const ingredientsTotalWeight = computed(() =>
+  roundReference(
+    (splitResult.value?.ingredients ?? []).reduce(
+      (sum, ingredient) => sum + (Number(ingredient.weight) || 0),
+      0
+    )
+  )
 )
 
 // Methods
@@ -639,6 +651,56 @@ const removeIngredient = (id) => {
     undoLabel: t('common.undo')
   })
 }
+
+// The ingredients are a recipe and the total weight is the part of it that was
+// eaten, so every ingredient is scaled by the same factor. A scaled weight is a
+// value the app computes, so it gets the same two decimals as the others; the
+// floor of 0.01 g keeps it a weight the diary accepts. Each typed value is
+// applied to the weights from when typing started, so one typed on the way
+// ("4" before "400") does not shrink the recipe for good. They are kept by
+// ingredient id: an ingredient removed or restored meanwhile leaves the others'
+// weights where they belong, and one new to the list joins at its own.
+let recipeWeights = null
+
+const startConsumedWeight = () => {
+  recipeWeights = new Map()
+}
+
+const updateConsumedWeight = (value) => {
+  consumedWeightDraft.value = value
+  recipeWeights ??= new Map()
+
+  const ingredients = splitResult.value.ingredients
+  for (const ingredient of ingredients) {
+    if (!recipeWeights.has(ingredient.id)) {
+      recipeWeights.set(ingredient.id, Number(ingredient.weight) || 0)
+    }
+  }
+
+  const target = Number(value)
+  const recipeTotal = ingredients.reduce(
+    (sum, ingredient) => sum + recipeWeights.get(ingredient.id),
+    0
+  )
+  if (!(target > 0) || !(recipeTotal > 0)) return
+
+  for (const ingredient of ingredients) {
+    const recipeWeight = recipeWeights.get(ingredient.id)
+    if (recipeWeight > 0) {
+      ingredient.weight = Math.max(0.01, roundReference((recipeWeight * target) / recipeTotal))
+    }
+  }
+}
+
+// Afterwards the field shows the sum of the ingredients again
+const endConsumedWeight = () => {
+  consumedWeightDraft.value = null
+  recipeWeights = null
+}
+
+// A new result is a new recipe. The field is not always left before one
+// arrives, so nothing typed for the previous result carries over.
+watch(splitResult, endConsumedWeight)
 
 // Every ingredient becomes its own diary entry, written in one request so the
 // diary never holds only part of the meal
@@ -1122,7 +1184,7 @@ defineOgImage('Default', {
       :disabled="isSaving"
       class="mt-6 min-w-0 rounded-xl border-0 bg-white p-4 shadow-sm ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700"
     >
-      <div class="flex items-start justify-between gap-3 mb-2">
+      <div class="flex items-start justify-between gap-3 mb-4">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
           <span v-if="splitResult.emoji">{{ splitResult.emoji }}&nbsp;</span>{{ splitResult.name }}
         </h2>
@@ -1138,13 +1200,40 @@ defineOgImage('Default', {
         </button>
       </div>
 
+      <DateInput v-model="selectedDate" id-name="date" :label="$t('common.date')" />
+
+      <NumberInput
+        :model-value="consumedWeightDraft ?? ingredientsTotalWeight"
+        id-name="total-weight"
+        :label="$t('ai-calculator.total-weight')"
+        @update:model-value="updateConsumedWeight"
+        @focusin="startConsumedWeight"
+        @focusout="endConsumedWeight"
+      />
+
+      <div class="flex gap-4 my-4">
+        <span class="flex-1">
+          <template v-if="ingredientRows.some((row) => row.isProteinFallback)">≈</template>
+          <template v-else>=</template>
+          {{ ingredientsTotalPhe }} mg Phe {{ $t('app.total') }}
+        </span>
+        <span v-if="ingredientsTotalKcal" class="flex-1"
+          >= {{ ingredientsTotalKcal }} {{ $t('common.kcal') }} {{ $t('app.total') }}</span
+        >
+      </div>
+
+      <h3
+        class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mt-6"
+      >
+        {{ $t('ai-calculator.split-ingredients-heading') }}
+      </h3>
       <ul class="divide-y divide-gray-200 dark:divide-gray-700 mb-2">
         <li v-for="row in ingredientRows" :key="row.ingredient.id" class="py-4">
           <div class="flex items-start justify-between gap-3 mb-1">
-            <h3 class="font-semibold text-gray-900 dark:text-white">
+            <h4 class="font-semibold text-gray-900 dark:text-white">
               <span v-if="row.ingredient.emoji">{{ row.ingredient.emoji }}&nbsp;</span
               >{{ row.ingredient.name }}
-            </h3>
+            </h4>
             <button
               v-if="ingredientRows.length > 1"
               type="button"
@@ -1218,19 +1307,6 @@ defineOgImage('Default', {
           </div>
         </li>
       </ul>
-
-      <DateInput v-model="selectedDate" id-name="date" :label="$t('common.date')" />
-
-      <div class="flex gap-4 my-4">
-        <span class="flex-1 text-lg">
-          <template v-if="ingredientRows.some((row) => row.isProteinFallback)">≈</template>
-          <template v-else>=</template>
-          {{ ingredientsTotalPhe }} mg Phe {{ $t('app.total') }}
-        </span>
-        <span v-if="ingredientsTotalKcal" class="flex-1 text-lg"
-          >= {{ ingredientsTotalKcal }} {{ $t('common.kcal') }} {{ $t('app.total') }}</span
-        >
-      </div>
 
       <PrimaryButton
         :text="$t('common.add')"

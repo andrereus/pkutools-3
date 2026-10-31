@@ -229,7 +229,9 @@
     "re-estimate": "Ré-estimer",
     "split-ingredients": "Séparer par ingrédient",
     "remove-ingredient": "Retirer l'ingrédient",
-    "ingredient-removed": "Ingrédient retiré"
+    "ingredient-removed": "Ingrédient retiré",
+    "split-ingredients-heading": "Séparé par ingrédient",
+    "total-weight": "Poids total (en g)"
   },
   "barcode-scanner": {
     "title": "Scanner de code-barres",

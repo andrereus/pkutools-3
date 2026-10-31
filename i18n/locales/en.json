@@ -229,7 +229,9 @@
     "re-estimate": "Re-estimate",
     "split-ingredients": "Split by ingredient",
     "remove-ingredient": "Remove ingredient",
-    "ingredient-removed": "Ingredient removed"
+    "ingredient-removed": "Ingredient removed",
+    "split-ingredients-heading": "Split by ingredient",
+    "total-weight": "Total weight (in g)"
   },
   "barcode-scanner": {
     "title": "Barcode Scanner",
