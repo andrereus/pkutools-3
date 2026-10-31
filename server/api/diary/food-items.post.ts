@@ -7,7 +7,7 @@ import { checkPremiumStatus } from '../../utils/license'
 import { storedNumberOrZero } from '../../utils/numeric'
 import { z } from 'zod'
 
-const MAX_ITEMS_PER_REQUEST = 50
+const MAX_ITEMS_PER_REQUEST = 100
 
 // Either a single log entry or `{ items }`, several entries for the same day
 // (a meal split into ingredients). A list is appended in one write, so the day

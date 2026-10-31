@@ -258,6 +258,18 @@ describe('adding several food items at once', () => {
       addFoodItem(requestEvent({ date: '2026-07-26', items: [] }))
     ).rejects.toMatchObject({ statusCode: 400 })
   })
+
+  it('accepts up to 100 items and writes nothing beyond that', async () => {
+    const items = (count: number) => Array.from({ length: count }, () => ENTRY)
+
+    const result = await addFoodItem(requestEvent({ date: '2026-07-26', items: items(100) }))
+    expect(day(result.key).log).toHaveLength(100)
+
+    await expect(
+      addFoodItem(requestEvent({ date: '2026-07-27', items: items(101) }))
+    ).rejects.toMatchObject({ statusCode: 400 })
+    expect(Object.keys(diary())).toHaveLength(1)
+  })
 })
 
 describe('free-tier diary limit', () => {
