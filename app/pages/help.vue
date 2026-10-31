@@ -1,10 +1,6 @@
 <script setup>
 const { t } = useI18n()
 
-const part1 = ref('mail')
-const part2 = ref('pkutools')
-const part3 = ref('com')
-
 // Install and contact come first (the app's "install" button links here, and
 // contact matters most for support). They open custom panels via named slots
 // below; the remaining items render their translated answer text. Install
@@ -61,8 +57,9 @@ defineOgImage('Default', {
     <div class="max-w-3xl">
       <FaqAccordion :items="faqItems">
         <template #contact>
-          <!-- prettier-ignore -->
-          <p class="text-base leading-7 text-gray-600 dark:text-gray-400">{{ $t("help.contact-me") }} {{ part1 }}@<span class="email-hidden">null</span>{{ part2 }}.{{ part3 }}</p>
+          <p class="text-base leading-7 text-gray-600 dark:text-gray-400">
+            {{ $t('help.contact-me') }} <LegalContactEmail />
+          </p>
         </template>
 
         <template #install>
@@ -116,10 +113,6 @@ defineOgImage('Default', {
   display: inline-block;
   width: 125px;
   vertical-align: middle;
-}
-
-.email-hidden {
-  display: none;
 }
 
 .pwa-img {

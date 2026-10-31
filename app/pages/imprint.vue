@@ -1,10 +1,6 @@
 <script setup>
 const { t } = useI18n()
 
-const part1 = ref('mail')
-const part2 = ref('pkutools')
-const part3 = ref('com')
-
 definePageMeta({
   i18n: {
     paths: {
@@ -39,8 +35,7 @@ defineOgImage('Default', {
       71120 Grafenau
     </p>
 
-    <!-- prettier-ignore -->
-    <p>{{ $t("imprint.email") }}: {{ part1 }}@<span class="hidden">null</span>{{ part2 }}.{{ part3 }}</p>
+    <p>{{ $t('imprint.email') }}: <LegalContactEmail /></p>
     <br />
     <p>{{ $t('imprint.sources') }}:</p>
     <ul class="mt-2 list-disc pl-5 space-y-1">
@@ -82,9 +77,3 @@ defineOgImage('Default', {
     </p>
   </div>
 </template>
-
-<style scoped>
-.hidden {
-  display: none;
-}
-</style>
