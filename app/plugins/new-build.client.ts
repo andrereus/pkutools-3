@@ -31,8 +31,25 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
   }
   document.addEventListener('visibilitychange', check)
+
+  // Covers the page while the new one loads, so the tap shows it was taken
+  let loading: HTMLElement | null = null
+  const showLoading = () => {
+    loading = document.createElement('div')
+    loading.className =
+      'fixed inset-0 z-70 flex items-center justify-center bg-gray-50/60 dark:bg-gray-950/60'
+    loading.setAttribute('aria-hidden', 'true')
+    loading.innerHTML =
+      '<svg class="h-8 w-8 animate-spin text-sky-500 dark:text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>'
+    document.body.append(loading)
+  }
+
+  // A page restored from the back-forward cache comes back without the cover
   window.addEventListener('pageshow', (event) => {
-    if (event.persisted) void check()
+    if (!event.persisted) return
+    loading?.remove()
+    loading = null
+    void check()
   })
 
   // A switch loads the new page in full instead of showing it first. A step back
@@ -42,6 +59,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const router = useRouter()
   router.beforeEach((to, from) => {
     if (!newBuild || to.path === from.path || window.location.pathname === to.path) return
+    showLoading()
     window.location.assign(to.fullPath)
     return false
   })
