@@ -268,6 +268,7 @@
     "export-filename": "PKU Tools - Alimentos propios",
     "item-deleted": "Alimento eliminado",
     "diary-only": "Guardado en el diario. No se guardó en Alimentos propios: {reason}",
+    "diary-partly": "Guardado en el diario. No todos se guardaron en Alimentos propios: {reason}",
     "already-saved": "Guardado en el diario. Este alimento ya está en Alimentos propios.",
     "already-saved-share": "Guardado en el diario. Este alimento ya está en Alimentos propios. Puedes compartirlo desde ahí.",
     "delete-shared-title": "¿Eliminar alimento compartido?",

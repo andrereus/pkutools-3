@@ -22,7 +22,7 @@ const localePath = useLocalePath()
 const notifications = useNotifications()
 const { isPremium, isPremiumAI } = useLicense()
 const { addFoodItemToDiary, addFoodItemsToDiary } = useApi()
-const { saveAlongsideDiary, reportSaved } = useSaveToOwnFood()
+const { saveAlongsideDiary, reportSaved, reportSavedMany } = useSaveToOwnFood()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
 const { confirmFoodType } = useFoodTypeSuggestion()
 const route = useRoute()
@@ -713,6 +713,7 @@ const saveIngredients = async () => {
   if (!splitResult.value) return
 
   const entryDate = selectedDate.value
+  const shouldSaveToOwnFood = saveToOwnFood.value
   isSaving.value = true
 
   try {
@@ -738,7 +739,33 @@ const saveIngredients = async () => {
       )
     )
 
+    // The diary comes first: if it fails, nothing is saved anywhere and a retry
+    // starts clean. The own foods follow one at a time, since each save checks
+    // the foods already stored.
     await addFoodItemsToDiary({ date: entryDate, items: logEntries })
+
+    let ownFoodOutcomes = null
+    if (shouldSaveToOwnFood) {
+      ownFoodOutcomes = []
+      for (const logEntry of logEntries) {
+        ownFoodOutcomes.push(
+          await saveAlongsideDiary({
+            name: logEntry.name,
+            icon: null,
+            emoji: logEntry.emoji || null,
+            phe: logEntry.pheReference,
+            kcal: logEntry.kcalReference,
+            note: logEntry.note,
+            shared: false,
+            source: logEntry.source,
+            ...(logEntry.nutrients && { nutrients: logEntry.nutrients }),
+            ...(logEntry.factor && { factor: logEntry.factor })
+          })
+        )
+      }
+    }
+
+    reportSavedMany(ownFoodOutcomes)
     navigateTo(localePath('diary'))
   } catch (error) {
     console.error('Save error:', error)
@@ -1307,6 +1334,10 @@ defineOgImage('Default', {
           </div>
         </li>
       </ul>
+
+      <!-- One option for every food in the list. An estimate is never shared,
+           and its note is the model's explanation. -->
+      <SaveToOwnFood v-model="saveToOwnFood" class="mt-4" :can-share="false" :show-note="false" />
 
       <PrimaryButton
         :text="$t('common.add')"

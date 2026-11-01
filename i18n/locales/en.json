@@ -268,6 +268,7 @@
     "export-filename": "PKU Tools - Own Food",
     "item-deleted": "Food deleted",
     "diary-only": "Saved to the diary. Not saved to Own Food: {reason}",
+    "diary-partly": "Saved to the diary. Not all saved to Own Food: {reason}",
     "already-saved": "Saved to the diary. This food is already in Own Food.",
     "already-saved-share": "Saved to the diary. This food is already in Own Food. You can share it from there.",
     "delete-shared-title": "Delete shared food?",

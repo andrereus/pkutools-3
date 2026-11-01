@@ -104,5 +104,21 @@ export const useSaveToOwnFood = () => {
     notifications.success(t('common.saved'))
   }
 
-  return { saveAlongsideDiary, reportSaved }
+  /**
+   * Reports several foods saved next to one diary write, such as a meal split
+   * into its foods. Pass null when the user didn't ask for own foods.
+   */
+  const reportSavedMany = (outcomes: OwnFoodSaveOutcome[] | null) => {
+    const failed = (outcomes ?? []).filter((outcome) => outcome.failure)
+    if (failed.length === 0) {
+      notifications.success(t('common.saved'))
+      return
+    }
+    // One reason stands for all: a reached limit fails every save after it
+    const reason = failed[0]!.failure
+    const key = failed.length === outcomes!.length ? 'own-food.diary-only' : 'own-food.diary-partly'
+    notifications.warning(t(key, { reason }))
+  }
+
+  return { saveAlongsideDiary, reportSaved, reportSavedMany }
 }

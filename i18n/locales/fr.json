@@ -268,6 +268,7 @@
     "export-filename": "PKU Tools - Aliments personnels",
     "item-deleted": "Aliment supprimé",
     "diary-only": "Enregistré dans le journal. Non enregistré dans Aliments personnels : {reason}",
+    "diary-partly": "Enregistré dans le journal. Pas tous enregistrés dans Aliments personnels : {reason}",
     "already-saved": "Enregistré dans le journal. Cet aliment est déjà dans Aliments personnels.",
     "already-saved-share": "Enregistré dans le journal. Cet aliment est déjà dans Aliments personnels. Tu peux le partager depuis cette rubrique.",
     "delete-shared-title": "Supprimer l'aliment partagé ?",

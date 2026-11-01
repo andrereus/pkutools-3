@@ -139,6 +139,47 @@ describe('reporting the save', () => {
   })
 })
 
+// A meal split into its foods saves each one, and some can fail while others
+// don't. The message must not claim that none were saved when most were.
+describe('reporting several foods saved at once', () => {
+  const saved = { alreadyExists: false, failure: null, wantedToShare: false }
+  const failed = { alreadyExists: false, failure: 'errors.limit-reached', wantedToShare: false }
+
+  it('confirms when every food was saved', () => {
+    const { reportSavedMany } = useSaveToOwnFood()
+
+    reportSavedMany([saved, saved])
+
+    expect(success).toHaveBeenCalledWith('common.saved')
+    expect(warning).not.toHaveBeenCalled()
+  })
+
+  it('says none were saved when every save failed', () => {
+    const { reportSavedMany } = useSaveToOwnFood()
+
+    reportSavedMany([failed, failed])
+
+    expect(warning).toHaveBeenCalledWith('own-food.diary-only:{"reason":"errors.limit-reached"}')
+  })
+
+  it('says not all were saved when only some failed', () => {
+    const { reportSavedMany } = useSaveToOwnFood()
+
+    reportSavedMany([saved, failed])
+
+    expect(warning).toHaveBeenCalledWith('own-food.diary-partly:{"reason":"errors.limit-reached"}')
+    expect(success).not.toHaveBeenCalled()
+  })
+
+  it('confirms plainly when no own foods were asked for', () => {
+    const { reportSavedMany } = useSaveToOwnFood()
+
+    reportSavedMany(null)
+
+    expect(success).toHaveBeenCalledWith('common.saved')
+  })
+})
+
 // Notes are deliberately not retained as composable state: the current save
 // resolves them once, so no note can leak into the next food.
 describe('the note', () => {
@@ -151,7 +192,11 @@ describe('the note', () => {
     expect(saveOwnFood).toHaveBeenCalledWith(expect.objectContaining({ note: 'Unsweetened' }), {
       silent: true
     })
-    expect(Object.keys(useSaveToOwnFood())).toEqual(['saveAlongsideDiary', 'reportSaved'])
+    expect(Object.keys(useSaveToOwnFood())).toEqual([
+      'saveAlongsideDiary',
+      'reportSaved',
+      'reportSavedMany'
+    ])
   })
 
   it.each([
