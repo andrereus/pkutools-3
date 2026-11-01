@@ -227,10 +227,10 @@
     "correct-title": "Schätzung korrigieren",
     "correct-description": "Teile der KI mit, was falsch ist, und die Schätzung wird wiederholt.",
     "re-estimate": "Neu schätzen",
-    "split-ingredients": "Nach Zutaten aufteilen",
-    "remove-ingredient": "Zutat entfernen",
-    "ingredient-removed": "Zutat entfernt",
-    "split-ingredients-heading": "Aufgeteilt nach Zutaten",
+    "split-ingredients": "Lebensmittel aufteilen",
+    "remove-ingredient": "Lebensmittel entfernen",
+    "ingredient-removed": "Lebensmittel entfernt",
+    "split-ingredients-heading": "Einzelne Lebensmittel",
     "total-weight": "Gesamtgewicht (in g)"
   },
   "barcode-scanner": {

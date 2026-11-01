@@ -227,10 +227,10 @@
     "correct-title": "Corregir estimación",
     "correct-description": "Indica a la IA qué está mal y se volverá a estimar.",
     "re-estimate": "Volver a estimar",
-    "split-ingredients": "Dividir por ingredientes",
-    "remove-ingredient": "Quitar ingrediente",
-    "ingredient-removed": "Ingrediente quitado",
-    "split-ingredients-heading": "Dividido por ingredientes",
+    "split-ingredients": "Dividir alimentos",
+    "remove-ingredient": "Quitar alimento",
+    "ingredient-removed": "Alimento quitado",
+    "split-ingredients-heading": "Alimentos individuales",
     "total-weight": "Peso total (en g)"
   },
   "barcode-scanner": {
