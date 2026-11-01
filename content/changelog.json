@@ -1,5 +1,26 @@
 [
   {
+    "revision": 132,
+    "publishedAt": "2026-11-01T09:53:24.204Z",
+    "category": "improved",
+    "en": {
+      "title": "Important: App updates",
+      "body": "The app now gets updates even when it is never closed. If you never close it fully, please do so once. Only then will this update reach you too."
+    },
+    "de": {
+      "title": "Wichtig: App Updates",
+      "body": "Die App erhält jetzt auch Updates, wenn sie nie geschlossen wird. Falls ihr sie nie ganz schließt, macht das bitte einmal. Erst dann kommt auch dieses Update bei euch an."
+    },
+    "es": {
+      "title": "Importante: actualizaciones de la app",
+      "body": "La app ahora recibe actualizaciones aunque nunca se cierre. Si nunca la cerráis del todo, hacedlo una vez, por favor. Solo así os llegará también esta actualización."
+    },
+    "fr": {
+      "title": "Important : mises à jour de l'app",
+      "body": "L'app reçoit maintenant des mises à jour même si elle n'est jamais fermée. Si vous ne la fermez jamais complètement, merci de le faire une fois. Ce n'est qu'alors que cette mise à jour vous parviendra aussi."
+    }
+  },
+  {
     "revision": 131,
     "publishedAt": "2026-10-31T18:13:38.363Z",
     "category": "new",
