@@ -1,7 +1,7 @@
 // An app left open, e.g. from the home screen, keeps running the build it first
 // loaded: a page switch only swaps in code that is already in memory. Once a
-// newer build is deployed, the next page switch also reloads the page. The page
-// changes at that moment anyway, so nothing typed is lost.
+// newer build is deployed, the next page switch loads the new page in full. The
+// page changes at that moment anyway, so nothing typed is lost.
 
 export default defineNuxtPlugin((nuxtApp) => {
   // Development has no deployed build to compare against
@@ -35,10 +35,17 @@ export default defineNuxtPlugin((nuxtApp) => {
     if (event.persisted) void check()
   })
 
-  // Reloads once the switch has landed, so back and forward keep their history.
-  // A change of only the hash or query stays on the page, and a stopped switch
-  // keeps the page as it is.
-  useRouter().afterEach((to, from, failure) => {
+  // A switch loads the new page in full instead of showing it first. A step back
+  // or forward has already changed the address, so it reloads once it lands,
+  // which keeps the history intact. A change of only the hash or query stays on
+  // the page, and a stopped switch keeps the page as it is.
+  const router = useRouter()
+  router.beforeEach((to, from) => {
+    if (!newBuild || to.path === from.path || window.location.pathname === to.path) return
+    window.location.assign(to.fullPath)
+    return false
+  })
+  router.afterEach((to, from, failure) => {
     if (newBuild && !failure && to.path !== from.path) reloadNuxtApp()
   })
 })
