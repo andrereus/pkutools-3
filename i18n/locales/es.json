@@ -139,7 +139,7 @@
       "q2": "¿PKU Tools es gratis?",
       "a2": "Sí. La búsqueda de alimentos, el escáner de código de barras y la calculadora de Phe son totalmente gratis y ni siquiera necesitan cuenta. El diario, los valores sanguíneos, los alimentos propios y la calculadora con IA están disponibles en una versión de prueba gratuita, sin anuncios. Las suscripciones Premium opcionales amplían estos límites y añaden exportación CSV y más uso de la IA.",
       "q3": "¿En qué dispositivos puedo usarla?",
-      "a3": "PKU Tools es una aplicación web progresiva. Se instala en Android, iOS, Mac y Windows y también está en Google Play Store. Tus datos se sincronizan en tiempo real entre tus dispositivos.",
+      "a3": "PKU Tools es una aplicación web progresiva. Se instala en Android, iOS, Mac y Windows. Tus datos se sincronizan en tiempo real entre tus dispositivos.",
       "q4": "¿Mis datos de salud son privados y seguros?",
       "a4": "Sí. Tus datos se almacenan de forma segura y no se venden. Son tuyos, y puedes exportarlos o eliminarlos cuando quieras. PKU Tools es de código abierto e independiente, creada por y para la comunidad PKU. Consulta la Política de privacidad para más detalles.",
       "q5": "¿Necesito una cuenta?",
@@ -468,9 +468,10 @@
     "contact-me": "Contáctame por correo electrónico:",
     "install-p1": "Esta aplicación web puede instalarse en cualquier dispositivo como una aplicación.",
     "install-p2": "Android:",
-    "install-p2-2": "o en Chrome",
+    "install-p2-2": "En Chrome, toca los tres puntos y luego «Instalar».",
     "install-p3": "En Safari, toca el botón de compartir y luego «Añadir a la pantalla de inicio».",
-    "install-p4": "Haz clic en el pequeño icono de instalación en la barra de direcciones en Chrome, Brave o Edge.",
+    "install-desktop": "Escritorio:",
+    "install-p4": "En Chrome, haz clic en el icono de instalación en la barra de direcciones.",
     "faq": {
       "title": "Preguntas frecuentes",
       "q1": "¿Qué es PKU Tools?",
@@ -508,10 +509,10 @@
       "q17": "¿Funciona PKU Tools sin conexión?",
       "a17": "No, PKU Tools necesita conexión a internet. El modo sin conexión encaja mal con la sincronización en tiempo real entre tus dispositivos y con las actualizaciones de la app. Por eso la app prescinde de él a propósito. A cambio siempre ves tus datos actuales y usas la versión más reciente.",
       "q18": "El icono de la aplicación en mi dispositivo está desactualizado. ¿Qué puedo hacer?",
-      "a18": "Instalada desde el navegador: el icono se actualiza solo en pocos días. Si no es así, elimina la aplicación e instálala de nuevo.\nInstalada desde Google Play: el icono llega con la próxima actualización de la aplicación.\niPhone/iPad: elimina la aplicación de la pantalla de inicio. Luego en Safari toca el botón de compartir y de nuevo «Añadir a la pantalla de inicio».",
+      "a18": "Instalada desde el navegador: el icono se actualiza solo en pocos días. Si no es así, elimina la aplicación e instálala de nuevo.\nInstalada desde Google Play: elimina la aplicación e instálala de nuevo en Chrome.\niPhone/iPad: elimina la aplicación de la pantalla de inicio. Luego en Safari toca el botón de compartir y de nuevo «Añadir a la pantalla de inicio».",
       "q-contact": "¿Cómo obtengo ayuda o envío comentarios?",
       "q-install": "¿Cómo instalo PKU Tools?",
-      "a-install": "PKU Tools es una aplicación web y puede instalarse en cualquier dispositivo como una aplicación. Android: consíguela en Google Play o instálala en Chrome. iOS: en Safari, toca el botón de compartir y luego «Añadir a la pantalla de inicio». PC: haz clic en el pequeño icono de instalación en la barra de direcciones en Chrome, Brave o Edge."
+      "a-install": "PKU Tools es una aplicación web y puede instalarse en cualquier dispositivo como una aplicación. Android: en Chrome, toca los tres puntos y luego «Instalar». iOS: en Safari, toca el botón de compartir y luego «Añadir a la pantalla de inicio». Escritorio: en Chrome, haz clic en el icono de instalación en la barra de direcciones."
     }
   },
   "imprint": {

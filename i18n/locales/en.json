@@ -139,7 +139,7 @@
       "q2": "Is PKU Tools free?",
       "a2": "Yes. Food Search, the Barcode Scanner and the Phe Calculator are completely free and don't even require an account. The diary, blood values, own foods and the AI Calculator are available in a free trial, with no ads. Optional Premium subscriptions increase these limits and add CSV export and more AI usage.",
       "q3": "Which devices can I use it on?",
-      "a3": "PKU Tools is a progressive web app. It installs on Android, iOS, Mac and Windows and is also on the Google Play Store. Your data syncs across your devices in real time.",
+      "a3": "PKU Tools is a progressive web app. It installs on Android, iOS, Mac and Windows. Your data syncs across your devices in real time.",
       "q4": "Is my health data private and secure?",
       "a4": "Yes. Your data is stored securely and is not sold. It stays yours, and you can export or delete it anytime. PKU Tools is open source and independent, built by and for the PKU community. See the Privacy Policy for details.",
       "q5": "Do I need an account?",
@@ -468,9 +468,10 @@
     "contact-me": "Contact me via email:",
     "install-p1": "This web app can be installed on any device like an app.",
     "install-p2": "Android:",
-    "install-p2-2": "or in Chrome",
+    "install-p2-2": "In Chrome, tap the three dots and then \"Install\".",
     "install-p3": "In Safari, tap the share button and then \"Add to Home Screen\".",
-    "install-p4": "Click the little installation icon in the address bar in Chrome, Brave or Edge.",
+    "install-desktop": "Desktop:",
+    "install-p4": "In Chrome, click the installation icon in the address bar.",
     "faq": {
       "title": "Frequently asked questions",
       "q1": "What is PKU Tools?",
@@ -508,10 +509,10 @@
       "q17": "Does PKU Tools work offline?",
       "a17": "No, PKU Tools needs an internet connection. Offline support conflicts with real-time sync across your devices and with app updates. That's why the app deliberately leaves it out. In return you always see your current data and use the latest version.",
       "q18": "The app icon on my device is outdated. What can I do?",
-      "a18": "Installed via the browser: the icon updates by itself within a few days. If it doesn't, remove the app and install it again.\nInstalled via Google Play: the icon arrives with the next app update.\niPhone/iPad: remove the app from the Home Screen. Then in Safari tap the share button and \"Add to Home Screen\" again.",
+      "a18": "Installed via the browser: the icon updates by itself within a few days. If it doesn't, remove the app and install it again.\nInstalled via Google Play: remove the app and install it again in Chrome.\niPhone/iPad: remove the app from the Home Screen. Then in Safari tap the share button and \"Add to Home Screen\" again.",
       "q-contact": "How do I get help or send feedback?",
       "q-install": "How do I install PKU Tools?",
-      "a-install": "PKU Tools is a web app and can be installed on any device like an app. Android: get it on Google Play or install it in Chrome. iOS: in Safari, tap the share button and then \"Add to Home Screen\". PC: click the little installation icon in the address bar in Chrome, Brave or Edge."
+      "a-install": "PKU Tools is a web app and can be installed on any device like an app. Android: in Chrome, tap the three dots and then \"Install\". iOS: in Safari, tap the share button and then \"Add to Home Screen\". Desktop: in Chrome, click the installation icon in the address bar."
     }
   },
   "imprint": {

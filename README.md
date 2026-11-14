@@ -19,7 +19,7 @@ PKU Tools is an All-in-One Nutrition App for PKU — a Progressive Web App (PWA)
 ### User Experience
 
 - **🌍 Multi-language Support**: English, German, Spanish, and French with localized routes
-- **📱 PWA Support**: Installable as native app (also available as TWA on Google Play Store)
+- **📱 PWA Support**: Installable as native app
 - **🔄 Real-time Sync**: Data syncs across devices via Firebase Realtime Database
 - **🌓 Dark Mode**: Automatic based on system preferences with manual override
 
@@ -213,7 +213,7 @@ Both keys are server-side only, never exposed to client.
 ## Additional Information
 
 - **i18n**: 4 languages (en, de, es, fr) with localized routes, content, dates, and charts
-- **PWA**: Installable on mobile/desktop, TWA on Google Play, safe area support, mobile-first design
+- **PWA**: Installable on mobile/desktop, safe area support, mobile-first design
 - **Privacy**: Health data consent (GDPR), cookie consent for analytics, consent history tracking
 - **License**: Freemium model (limited free tier, premium with license key). Server-side validation only.
 

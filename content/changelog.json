@@ -1,5 +1,26 @@
 [
   {
+    "revision": 133,
+    "publishedAt": "2026-11-14T14:10:37.559Z",
+    "category": "tip",
+    "en": {
+      "title": "Important: Google Play Store",
+      "body": "Due to constantly changing requirements, I'm no longer offering PKU Tools on the Google Play Store for now. The Android app still keeps working, but it's best if you switch to the web app via Chrome now. You'll find out how to install it in Help. Your data stays in your account."
+    },
+    "de": {
+      "title": "Wichtig: Google Play Store",
+      "body": "Aufgrund von sich ständig ändernden Vorgaben biete ich PKU Tools vorerst nicht mehr im Google Play Store an. Die Android App funktioniert zwar noch weiter, am besten wechselt ihr jetzt aber zur Web App über Chrome. Wie sie installiert wird, steht in der Hilfe. Eure Daten bleiben in eurem Konto."
+    },
+    "es": {
+      "title": "Importante: Google Play Store",
+      "body": "Debido a requisitos que cambian constantemente, por ahora ya no ofrezco PKU Tools en Google Play Store. La app de Android todavía sigue funcionando, pero lo mejor es que os paséis ahora a la aplicación web desde Chrome. En Ayuda encontraréis cómo instalarla. Vuestros datos se quedan en vuestra cuenta."
+    },
+    "fr": {
+      "title": "Important : Google Play Store",
+      "body": "En raison d'exigences qui changent sans cesse, je ne propose plus PKU Tools sur le Google Play Store pour le moment. L'app Android continue encore de fonctionner, mais le mieux est que vous passiez maintenant à l'application web via Chrome. Vous trouverez comment l'installer dans l'Aide. Vos données restent dans votre compte."
+    }
+  },
+  {
     "revision": 132,
     "publishedAt": "2026-11-01T09:53:24.204Z",
     "category": "improved",

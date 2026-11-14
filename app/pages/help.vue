@@ -6,7 +6,7 @@ const { t } = useI18n()
 // below; the remaining items render their translated answer text. Install
 // also has a plain-text answer (a-install) used only for the structured data.
 const faqItems = [
-  { q: 'help.faq.q-install', slot: 'install', a: 'help.faq.a-install' },
+  { id: 'install', q: 'help.faq.q-install', slot: 'install', a: 'help.faq.a-install' },
   { q: 'help.faq.q-contact', slot: 'contact' },
   ...Array.from({ length: 18 }, (_, i) => ({
     q: `help.faq.q${i + 1}`,
@@ -68,16 +68,6 @@ defineOgImage('Default', {
 
             <p class="mt-4">
               <span class="font-bold">{{ $t('help.install-p2') }}</span>
-              <a
-                href="https://play.google.com/store/apps/details?id=com.pkutools.twa"
-                target="_blank"
-              >
-                <img
-                  alt="Get it on Google Play"
-                  src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-                  class="gplay-btn"
-                />
-              </a>
               {{ $t('help.install-p2-2') }}
             </p>
             <img
@@ -93,7 +83,7 @@ defineOgImage('Default', {
             <img src="~/assets/images/install-pwa-ios.png" alt="PWA on iOS" class="pwa-img" />
 
             <p class="mt-2">
-              <span class="font-bold">PC:</span>
+              <span class="font-bold">{{ $t('help.install-desktop') }}</span>
               {{ $t('help.install-p4') }}
             </p>
             <img
@@ -109,12 +99,6 @@ defineOgImage('Default', {
 </template>
 
 <style scoped>
-.gplay-btn {
-  display: inline-block;
-  width: 125px;
-  vertical-align: middle;
-}
-
 .pwa-img {
   width: 100%;
   max-width: 700px;

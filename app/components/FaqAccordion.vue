@@ -2,12 +2,17 @@
 // Renders a list of collapsible questions. `items` is an array of
 // { q, a } i18n keys, e.g. [{ q: 'help.faq.q1', a: 'help.faq.a1' }].
 // Answers may contain line breaks (rendered via whitespace-pre-line).
+// An item with an `id` is briefly highlighted when the page is opened with
+// ?faq=<id>.
 defineProps({
   items: {
     type: Array,
     required: true
   }
 })
+
+const route = useRoute()
+const highlightId = computed(() => route.query.faq)
 </script>
 
 <template>
@@ -19,7 +24,7 @@ defineProps({
       as="div"
       class="py-5 first:pt-0 last:pb-0"
     >
-      <dt>
+      <dt :class="{ 'faq-highlight': item.id && item.id === highlightId }">
         <HeadlessDisclosureButton
           class="flex w-full items-start justify-between gap-6 text-left text-gray-900 dark:text-white cursor-pointer"
         >
@@ -41,3 +46,24 @@ defineProps({
     </HeadlessDisclosure>
   </dl>
 </template>
+
+<style scoped>
+/* The negative margin offsets the padding, so the tinted area grows around
+   the question without shifting the layout. */
+.faq-highlight {
+  margin: -0.5rem -0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  animation: faq-highlight 3s ease-out;
+}
+
+@keyframes faq-highlight {
+  0%,
+  50% {
+    background-color: rgb(14 165 233 / 0.15);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+</style>

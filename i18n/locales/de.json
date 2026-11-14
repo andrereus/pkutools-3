@@ -139,7 +139,7 @@
       "q2": "Ist PKU Tools kostenlos?",
       "a2": "Ja. Lebensmittelsuche, Barcode Scanner und Phe Rechner sind komplett kostenlos und brauchen nicht einmal ein Konto. Für Tagebuch, Blutwerte, eigene Lebensmittel und den KI Rechner gibt es eine kostenlose Testversion, ganz ohne Werbung. Optionale Premium-Abos erweitern diese Limits und bieten CSV-Export und mehr KI.",
       "q3": "Auf welchen Geräten kann ich es nutzen?",
-      "a3": "PKU Tools ist eine Progressive Web App. Sie lässt sich auf Android, iOS, Mac und Windows installieren und ist auch im Google Play Store verfügbar. Deine Daten werden in Echtzeit über deine Geräte synchronisiert.",
+      "a3": "PKU Tools ist eine Progressive Web App. Sie lässt sich auf Android, iOS, Mac und Windows installieren. Deine Daten werden in Echtzeit über deine Geräte synchronisiert.",
       "q4": "Sind meine Gesundheitsdaten privat und sicher?",
       "a4": "Ja. Deine Daten werden sicher gespeichert und nicht verkauft. Sie gehören dir, und du kannst sie jederzeit exportieren oder löschen. PKU Tools ist Open Source und unabhängig, entwickelt von und für die PKU-Community. Details findest du in der Datenschutzerklärung.",
       "q5": "Brauche ich ein Konto?",
@@ -468,9 +468,10 @@
     "contact-me": "Kontaktiere mich per E-Mail:",
     "install-p1": "Diese Web App kann auf jedem Gerät wie eine App installiert werden.",
     "install-p2": "Android:",
-    "install-p2-2": "oder in Chrome",
+    "install-p2-2": "Tippe in Chrome auf die drei Punkte und dann „Installieren“.",
     "install-p3": "Tippe in Safari auf den Teilen-Button und dann „Zum Home-Bildschirm“.",
-    "install-p4": "Klicke auf das kleine Installations-Icon in der Adressleiste in Chrome, Brave oder Edge.",
+    "install-desktop": "Desktop:",
+    "install-p4": "Klicke in Chrome auf das Installations-Icon in der Adressleiste.",
     "faq": {
       "title": "Häufig gestellte Fragen",
       "q1": "Was ist PKU Tools?",
@@ -508,10 +509,10 @@
       "q17": "Funktioniert PKU Tools offline?",
       "a17": "Nein, PKU Tools braucht eine Internetverbindung. Offline-Unterstützung verträgt sich schlecht mit der Echtzeit-Synchronisation über deine Geräte und mit App-Updates. Deshalb verzichtet die App bewusst darauf. Dafür siehst du immer deine aktuellen Daten und nutzt die neueste Version.",
       "q18": "Das App Icon auf meinem Gerät ist veraltet. Was kann ich tun?",
-      "a18": "Über den Browser installiert: Das Icon aktualisiert sich innerhalb weniger Tage von selbst. Falls nicht, entferne die App und installiere sie neu.\nÜber Google Play installiert: Das Icon kommt mit dem nächsten App-Update.\niPhone/iPad: Entferne die App vom Home-Bildschirm. Tippe dann in Safari auf den Teilen-Button und wieder auf „Zum Home-Bildschirm“.",
+      "a18": "Über den Browser installiert: Das Icon aktualisiert sich innerhalb weniger Tage von selbst. Falls nicht, entferne die App und installiere sie neu.\nÜber Google Play installiert: Entferne die App und installiere sie in Chrome neu.\niPhone/iPad: Entferne die App vom Home-Bildschirm. Tippe dann in Safari auf den Teilen-Button und wieder auf „Zum Home-Bildschirm“.",
       "q-contact": "Wie erhalte ich Hilfe oder sende Feedback?",
       "q-install": "Wie installiere ich PKU Tools?",
-      "a-install": "PKU Tools ist eine Web App und kann auf jedem Gerät wie eine App installiert werden. Android: über Google Play oder in Chrome. iOS: Tippe in Safari auf den Teilen-Button und dann „Zum Home-Bildschirm“. PC: Klicke auf das kleine Installations-Icon in der Adressleiste in Chrome, Brave oder Edge."
+      "a-install": "PKU Tools ist eine Web App und kann auf jedem Gerät wie eine App installiert werden. Android: Tippe in Chrome auf die drei Punkte und dann „Installieren“. iOS: Tippe in Safari auf den Teilen-Button und dann „Zum Home-Bildschirm“. Desktop: Klicke in Chrome auf das Installations-Icon in der Adressleiste."
     }
   },
   "imprint": {
