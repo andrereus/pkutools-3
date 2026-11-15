@@ -13,7 +13,7 @@ node_modules
 logs
 *.log
 
-# Source data for the food database (large, freely downloadable, see scripts/bls-convert.py)
+# Source data for the food database (large, freely downloadable, see scripts/*-convert.py)
 data-src
 
 # Local working notes (kept out of the public repo)

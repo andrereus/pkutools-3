@@ -1,5 +1,26 @@
 [
   {
+    "revision": 134,
+    "publishedAt": "2026-11-15T09:20:33.246Z",
+    "category": "improved",
+    "en": {
+      "title": "USDA data",
+      "body": "USDA foods now show more nutrients."
+    },
+    "de": {
+      "title": "USDA-Daten",
+      "body": "USDA-Lebensmittel zeigen jetzt mehr Nährwerte."
+    },
+    "es": {
+      "title": "Datos de USDA",
+      "body": "Los alimentos de USDA ahora muestran más nutrientes."
+    },
+    "fr": {
+      "title": "Données USDA",
+      "body": "Les aliments USDA affichent maintenant plus de nutriments."
+    }
+  },
+  {
     "revision": 133,
     "publishedAt": "2026-11-14T14:10:37.559Z",
     "category": "tip",

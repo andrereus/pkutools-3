@@ -342,6 +342,16 @@ const loadFoodData = () => {
         // five decimals there, which a whole-mg rounding would throw away — keep
         // two decimals so the stored reference is the published value.
         const toMgPhe = (value) => roundReference(value * 1000)
+        // Both files carry the same nutrient fields, null where the database
+        // has no value
+        const nutrientsOf = (item) => ({
+          protein: item.protein,
+          fat: item.fat,
+          carbs: item.carbs,
+          sugar: item.sugar,
+          fiber: item.fiber,
+          salt: item.salt
+        })
         const usdaFood = usdaData.map((item) => ({
           name: item[locale.value] || item.en,
           emoji: item.emoji,
@@ -349,6 +359,7 @@ const loadFoodData = () => {
           kcal: item.kcal,
           source: 'usda',
           sourceId: item.id != null ? String(item.id) : null,
+          nutrients: nutrientsOf(item),
           isOwnFood: false,
           isCommunityFood: false
         }))
@@ -359,14 +370,7 @@ const loadFoodData = () => {
           kcal: item.kcal,
           source: 'bls',
           sourceId: item.id != null ? String(item.id) : null,
-          nutrients: {
-            protein: item.protein,
-            fat: item.fat,
-            carbs: item.carbs,
-            sugar: item.sugar,
-            fiber: item.fiber,
-            salt: item.salt
-          },
+          nutrients: nutrientsOf(item),
           isOwnFood: false,
           isCommunityFood: false
         }))

@@ -1,0 +1,8 @@
+# Implausible Phe = 0 (protein > 0.5 g or >= 2 other amino acids present): 7
+3019 Babyfood, snack, GERBER GRADUATE FRUIT  STRIPS, Real Fruit Bars
+4017 Salad dressing, thousand island, commercial, regular
+4023 Salad dressing, thousand island dressing, reduced fat
+14003 Alcoholic beverage, beer, regular, all
+14006 Alcoholic beverage, beer, light
+15162 Mollusks, clam, mixed species, canned, liquid
+19018 Fruit syrup

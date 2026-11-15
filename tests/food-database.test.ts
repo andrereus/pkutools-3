@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
-// The USDA and BLS files are generated (see scripts/bls-convert.py) and shipped
+// The USDA and BLS files are generated (see scripts/usda-convert.py and
+// scripts/bls-convert.py) and shipped
 // as static assets, so a bad regeneration is only noticed when a user logs the
 // wrong Phe. These checks assert the invariants the app relies on when it maps
 // a record into a diary entry.
@@ -13,7 +14,16 @@ const LOCALES = ['en', 'de', 'es', 'fr'] as const
 const loadJson = <T>(relativePath: string): T =>
   JSON.parse(readFileSync(join(root, relativePath), 'utf8'))
 
-type UsdaFood = {
+type OptionalNutrients = {
+  protein: number | null
+  fat: number | null
+  carbs: number | null
+  sugar: number | null
+  fiber: number | null
+  salt: number | null
+}
+
+type UsdaFood = OptionalNutrients & {
   id: number
   en: string
   de: string
@@ -24,17 +34,11 @@ type UsdaFood = {
   emoji?: string
 }
 
-type BlsFood = {
+type BlsFood = OptionalNutrients & {
   id: string
   name: string
   phe: number
   kcal: number
-  protein: number | null
-  fat: number | null
-  carbs: number | null
-  sugar: number | null
-  fiber: number | null
-  salt: number | null
   emoji?: string
 }
 
@@ -57,7 +61,12 @@ const NUMERIC_FIELDS = ['phe', 'kcal', ...OPTIONAL_NUTRIENTS] as const
 const isNonNegativeNumber = (value: unknown) =>
   typeof value === 'number' && Number.isFinite(value) && value >= 0
 
-type FoodRow = { id: string | number; phe: number; kcal: number; emoji?: string }
+type FoodRow = OptionalNutrients & {
+  id: string | number
+  phe: number
+  kcal: number
+  emoji?: string
+}
 
 /**
  * The row-level checks both databases have to satisfy. Registered inside each
@@ -90,6 +99,42 @@ const itHasValidRows = <T extends FoodRow>(rows: T[], describeRow: (row: T) => s
     const missing = rows.filter((food) => !food.emoji || food.emoji.trim() === '')
     expect(missing.map((f) => f.id)).toEqual([])
   })
+
+  // Any optional nutrient can be absent: the source either did not determine
+  // it, or marked it as a trace the converter deliberately does not write as 0
+  // (unknown is not "contains none"). The app leaves such a row out. What must
+  // never happen is a negative or non-numeric value.
+  it('has no negative or implausible optional nutrients', () => {
+    const broken: string[] = []
+    for (const food of rows) {
+      for (const nutrient of OPTIONAL_NUTRIENTS) {
+        const value = food[nutrient]
+        if (value === null || value === undefined) continue
+        // Every optional nutrient is g/100 g, so none can exceed 100.
+        if (!isNonNegativeNumber(value) || value > 100) {
+          broken.push(`${food.id} ${nutrient}=${value}`)
+        }
+      }
+    }
+    expect(broken).toEqual([])
+  })
+
+  // The single most dangerous error this app can ship: a food that reads 0 mg
+  // Phe while it demonstrably contains protein, since any real protein contains
+  // phenylalanine. The converters drop those, but that rule lives in the Python
+  // importers, which no test here can reach — so this asserts the outcome.
+  //
+  // It covers one of the two drop criteria: the protein threshold. The other
+  // criterion (two or more of the 17 other amino acids measured) cannot be
+  // checked here, because the amino acids are not written to the output. A BLS
+  // trace marker on a food below the protein threshold is likewise invisible
+  // to this test.
+  it('ships no food with zero Phe that still contains protein', () => {
+    const falseZeros = rows
+      .filter((food) => food.phe === 0 && (food.protein ?? 0) > 0.5)
+      .map((food) => `${describeRow(food)} — protein ${food.protein} g, phe 0`)
+    expect(falseZeros).toEqual([])
+  })
 }
 
 describe('USDA food database', () => {
@@ -105,6 +150,18 @@ describe('USDA food database', () => {
       LOCALES.some((locale) => typeof food[locale] !== 'string' || food[locale].trim() === '')
     )
     expect(broken.map((f) => f.id)).toEqual([])
+  })
+
+  // Food search reads all six nutrient fields off every row. A regeneration
+  // that drops a column would otherwise go unnoticed, because an absent value
+  // is valid for any single food.
+  it('carries every optional nutrient field', () => {
+    const incomplete = usda.filter((food) => OPTIONAL_NUTRIENTS.some((key) => !(key in food)))
+    expect(incomplete.map((f) => f.id)).toEqual([])
+    for (const nutrient of OPTIONAL_NUTRIENTS) {
+      const reported = usda.filter((food) => food[nutrient] !== null).length
+      expect(reported, nutrient).toBeGreaterThan(usda.length / 2)
+    }
   })
 
   itHasValidRows(usda, (food) => `${food.id} ${food.en}`)
@@ -162,40 +219,4 @@ describe('BLS food database', () => {
   // field, and the two tests above already pin every other field of every other
   // locale to the English row it sits beside.
   itHasValidRows(bls.en, (food) => `${food.id} ${food.name}`)
-
-  // Any optional nutrient can be absent: the BLS either did not determine it,
-  // or marked it as a trace the converter deliberately does not write as 0
-  // (unknown is not "contains none"). The app leaves such a row out. What must
-  // never happen is a negative or non-numeric value.
-  it('has no negative or implausible optional nutrients', () => {
-    const broken: string[] = []
-    for (const food of bls.en) {
-      for (const nutrient of OPTIONAL_NUTRIENTS) {
-        const value = food[nutrient]
-        if (value === null || value === undefined) continue
-        // Every optional nutrient is g/100 g, so none can exceed 100.
-        if (!isNonNegativeNumber(value) || value > 100) {
-          broken.push(`${food.id} ${nutrient}=${value}`)
-        }
-      }
-    }
-    expect(broken).toEqual([])
-  })
-
-  // The single most dangerous error this app can ship: a food that reads 0 mg
-  // Phe while it demonstrably contains protein, since any real protein contains
-  // phenylalanine. The converter drops those, but that rule lives in the Python
-  // importer, which no test here can reach — so this asserts the outcome.
-  //
-  // It covers one of the two drop criteria: the protein threshold. The other
-  // criterion (two or more of the 17 other amino acids measured) cannot be
-  // checked here, because the amino acid columns are not written to the output.
-  // A trace marker on a food below the protein threshold is likewise invisible
-  // to this test.
-  it('ships no food with zero Phe that still contains protein', () => {
-    const falseZeros = bls.en
-      .filter((food) => food.phe === 0 && (food.protein ?? 0) > 0.5)
-      .map((food) => `${food.id} ${food.name} — protein ${food.protein} g, phe 0`)
-    expect(falseZeros).toEqual([])
-  })
 })

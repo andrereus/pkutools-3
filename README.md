@@ -61,7 +61,7 @@ pkutools-3/
 ├── shared/utils/       # Code shared by app and server
 ├── stores/             # Pinia stores
 ├── tests/              # Vitest suites
-├── scripts/            # BLS conversion and translation data
+├── scripts/            # Food database conversion and translation data
 └── nuxt.config.ts
 ```
 
@@ -208,7 +208,7 @@ Both keys are server-side only, never exposed to client.
 
 **Food Database**: Search merges the static JSON files in `/public/data/` with the user's own and community foods from Firebase. The BLS ships one file per locale, so nobody downloads names they cannot read.
 
-**Database Creation**: The BLS files are generated, not hand-edited — `scripts/bls-convert.py` builds them from an xlsx placed in `data-src/` (not committed) and documents its translation and drop rules.
+**Database Creation**: The files are generated, not hand-edited — `scripts/bls-convert.py` and `scripts/usda-convert.py` build them from the downloads placed in `data-src/` (not committed) and document their translation, calculation and drop rules.
 
 ## Additional Information
 
