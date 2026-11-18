@@ -4,6 +4,7 @@ import { QrcodeStream } from 'vue-qrcode-reader'
 import { format } from 'date-fns'
 import {
   pheFactor,
+  proteinPheReference,
   roundReference,
   scaleToWeight,
   nutrientRows,
@@ -20,7 +21,7 @@ const notifications = useNotifications()
 const { addFoodItemToDiary } = useApi()
 const { saveAlongsideDiary, reportSaved } = useSaveToOwnFood()
 const { ensureEmojiForLogEntry } = useFoodEmoji()
-const { suggestFoodType } = useFoodTypeSuggestion()
+const { suggestFoodType, describeSuggestion, offerFoodType } = useFoodTypeSuggestion()
 
 // Reactive state
 const loaded = ref(false)
@@ -53,6 +54,9 @@ const categorySuggestion = ref(null)
 const suggestionSource = ref('category')
 // Invalidates a pending name suggestion after any manual choice.
 let typeChoices = 0
+// The name suggestion for the product on screen while it is on its way, so a
+// save can wait for it rather than skip the question.
+let nameSuggestion = null
 
 // Camera selection.
 // The MediaDevices API exposes no lens metadata, so there's no reliable way to
@@ -143,7 +147,8 @@ const categorySuggestionLabel = computed(
 // A suggestion from the product name, fetched only when the categories yielded
 // nothing. It is deliberately not awaited by the scan: the product is on screen
 // straight away, and the box appears underneath it when the answer arrives. A
-// suggestion that only repeats the active type is dropped rather than shown.
+// save waits for it instead. A suggestion that only repeats the active type is
+// dropped rather than shown.
 const suggestFromName = async (forCode, foodName) => {
   const choicesWhenAsked = typeChoices
   const suggested = await suggestFoodType(foodName)
@@ -227,9 +232,10 @@ const onDetect = async (detectedCodes) => {
       // Where the categories name a type, that is the suggestion. Where they
       // leave it open, the name is asked instead — a product Open Food Facts
       // publishes no name for has nothing to ask about.
-      if (!categorySuggestion.value && response.product.product_name) {
-        suggestFromName(scannedCode, response.product.product_name)
-      }
+      nameSuggestion =
+        !categorySuggestion.value && response.product.product_name
+          ? suggestFromName(scannedCode, response.product.product_name)
+          : null
       return
     }
     showLookupError(scannedCode, t('barcode-scanner.error-not-found'))
@@ -365,6 +371,33 @@ const calculatePhe = () => scaleToWeight(pheReference.value, weight.value)
 const calculateKcal = () =>
   scaleToWeight(Number(nutriments.value['energy-kcal_100g']), weight.value)
 
+// The suggestion while it would change the entry. A product without protein
+// comes out the same under every type, so there is nothing to decide.
+const openSuggestion = computed(() => {
+  const suggested = categorySuggestion.value
+  if (!suggested) return null
+  const reference = proteinPheReference(nutriments.value.proteins_100g, suggested)
+  return reference !== pheReference.value ? suggested : null
+})
+
+// The hint under the food type and the question on save read the same, in the
+// mg Phe the entry comes to for the weight entered.
+const suggestionMessage = computed(() => {
+  const suggested = openSuggestion.value
+  if (!suggested) return ''
+  const reason = t(
+    suggestionSource.value === 'name'
+      ? 'barcode-scanner.type-suggestion-name'
+      : 'barcode-scanner.type-suggestion',
+    { type: categorySuggestionLabel.value }
+  )
+  const corrected = scaleToWeight(
+    proteinPheReference(nutriments.value.proteins_100g, suggested),
+    weight.value
+  )
+  return describeSuggestion(reason, calculatePhe(), corrected)
+})
+
 const save = async () => {
   if (!store.user || store.settings.healthDataConsent !== true) {
     notifications.error(t('health-consent.no-consent'))
@@ -374,6 +407,28 @@ const save = async () => {
   if (!productName.value) {
     notifications.error(t('errors.validation.required', { field: t('common.food-name') }))
     return
+  }
+
+  isSaving.value = true
+
+  // A suggestion still open is asked about before anything is built, so keeping
+  // the general factor is a choice rather than a hint scrolled past. A name
+  // suggestion still on its way is waited for, or a quick tap would skip it.
+  const forCode = code.value
+  await nameSuggestion
+  if (code.value !== forCode) {
+    // A scan landed while waiting; the button was pressed for another product.
+    isSaving.value = false
+    return
+  }
+  if (openSuggestion.value) {
+    const chosen = await offerFoodType(suggestionMessage.value, select.value, openSuggestion.value)
+    if (chosen === null) {
+      isSaving.value = false
+      return
+    }
+    // Either answer is the user's choice: the hint goes, and a failed save keeps it.
+    selectFoodType(chosen)
   }
 
   let logEntry = {
@@ -406,8 +461,6 @@ const save = async () => {
   // product in front of the user
   const entryNote = shouldSaveToOwnFood && note.value?.trim() ? note.value.trim() : null
   if (shouldSaveToOwnFood) logEntry.note = entryNote
-
-  isSaving.value = true
 
   // Reported together with the diary entry below, rather than as a failure of
   // the whole save
@@ -631,21 +684,13 @@ defineOgImage('Default', {
         </SelectMenu>
 
         <!-- A category or a name is a suggestion, not evidence. Keep the
-             conservative general factor active until the user chooses this. -->
+             conservative general factor active until the user chooses this,
+             here or in the question on save. -->
         <div
-          v-if="categorySuggestion"
+          v-if="openSuggestion"
           class="-mt-2 mb-3 rounded-lg bg-sky-50 p-3 text-sm text-gray-700 dark:bg-sky-950/50 dark:text-gray-300"
         >
-          <p>
-            {{
-              $t(
-                suggestionSource === 'name'
-                  ? 'barcode-scanner.type-suggestion-name'
-                  : 'barcode-scanner.type-suggestion',
-                { type: categorySuggestionLabel }
-              )
-            }}
-          </p>
+          <p>{{ suggestionMessage }}</p>
           <SecondaryButton
             :text="$t('barcode-scanner.use-suggestion')"
             class="mt-2 mr-0! mb-0!"

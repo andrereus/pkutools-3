@@ -4,8 +4,9 @@ import { parseModelJson } from '../utils/model-json'
 import type { FoodType } from '../utils/nutrition'
 
 // A food type suggested from a food name, alongside `foodTypeFromCategories`,
-// which reads a scanned product's category data. Offered only: the caller keeps
-// its current type until the user accepts a suggestion.
+// which reads a scanned product's category data, and the dialog that offers
+// either one. Offered only: the caller keeps its current type until the user
+// accepts a suggestion.
 const FOOD_TYPE_MODEL = 'gemini-3.5-flash-lite'
 
 const FOOD_TYPES: readonly string[] = ['fruit', 'vegetable', 'meat', 'other']
@@ -79,17 +80,51 @@ Return JSON: {"foodType": "fruit" | "vegetable" | "meat" | "other" | null}`
   }
 
   /**
+   * A suggestion as the user reads it: why the type is suggested, what the
+   * entry comes to under it in mg Phe, and that the ingredients decide. The
+   * number is what is being decided; a factor name means nothing on its own to
+   * someone counting Phe for the day.
+   */
+  const describeSuggestion = (reason: string, current: number, corrected: number): string =>
+    `${reason} ${t('phe-calculator.type-suggestion-result', { corrected, current })} ${t(
+      'common.check-composition'
+    )}`
+
+  /**
+   * Asks whether to switch from `currentType` to `suggested`, with `message`
+   * from `describeSuggestion`. Returns the type to calculate with, or null when
+   * the dialog is dismissed, which tells the caller to abort its save and leave
+   * the form available for editing.
+   */
+  const offerFoodType = async (
+    message: string,
+    currentType: FoodType,
+    suggested: FoodType
+  ): Promise<FoodType | null> => {
+    // The buttons stand on their own rather than naming the types: a food type
+    // label is a phrase ("Protein from vegetables"), and two of them side by
+    // side wrap onto several lines on a phone.
+    const accepted = await confirm.confirm({
+      title: t('phe-calculator.type-suggestion-title'),
+      message,
+      confirmLabel: t('phe-calculator.type-suggestion-use'),
+      cancelLabel: t('phe-calculator.type-suggestion-keep'),
+      variant: 'default'
+    })
+
+    if (accepted === null) return null
+    return accepted ? suggested : currentType
+  }
+
+  /**
    * The type to calculate with, after offering the user a correction. Returns
    * `currentType` unchanged when there is nothing to suggest, when the
    * suggestion agrees with it, or when the user explicitly keeps it. Returns
-   * null when the dialog is dismissed, which tells the caller to abort its save
-   * and leave the form available for editing.
+   * null when the dialog is dismissed.
    *
-   * `pheFor` gives the mg Phe the entry ends up with under a type, so the
-   * question is asked in the number the user is actually deciding about rather
-   * than in the name of a factor. It has to be computed from the same values the
-   * entry was built from, or the dialog would quote a figure the save doesn't
-   * produce.
+   * `pheFor` gives the mg Phe the entry ends up with under a type. It has to be
+   * computed from the same values the entry was built from, or the dialog would
+   * quote a figure the save doesn't produce.
    *
    * `isCurrent` prevents a suggestion for an edit that was dismissed while the
    * model request was pending.
@@ -103,25 +138,15 @@ Return JSON: {"foodType": "fruit" | "vegetable" | "meat" | "other" | null}`
     const suggested = await suggestFoodType(foodName)
     if (!suggested || suggested === currentType || !isCurrent()) return currentType
 
-    // The buttons stand on their own rather than naming the types: a food type
-    // label is a phrase ("Protein from vegetables"), and two of them side by
-    // side wrap onto several lines on a phone.
-    const accepted = await confirm.confirm({
-      title: t('phe-calculator.type-suggestion-title'),
-      // The same disclaimer the scanner shows under its own suggestion
-      message: `${t('phe-calculator.type-suggestion-message', {
-        type: t(`phe-calculator.${suggested}`),
-        current: pheFor(currentType),
-        corrected: pheFor(suggested)
-      })} ${t('common.check-composition')}`,
-      confirmLabel: t('phe-calculator.type-suggestion-use'),
-      cancelLabel: t('phe-calculator.type-suggestion-keep'),
-      variant: 'default'
+    const reason = t('phe-calculator.type-suggestion-message', {
+      type: t(`phe-calculator.${suggested}`)
     })
-
-    if (accepted === null) return null
-    return accepted ? suggested : currentType
+    return offerFoodType(
+      describeSuggestion(reason, pheFor(currentType), pheFor(suggested)),
+      currentType,
+      suggested
+    )
   }
 
-  return { suggestFoodType, confirmFoodType }
+  return { suggestFoodType, describeSuggestion, offerFoodType, confirmFoodType }
 }
